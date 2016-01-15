@@ -1,11 +1,16 @@
 import {Component} from 'angular2/core';
 
-import {HistoryEntry} from './history-entry';
+import {HistoryService} from './history.service';
 
 @Component({
   selector: 'command-prompt',
-  inputs: ['history'],
-  template: `
+  template: `\n\
+    <div class="history">
+      <div *ngFor="#entry of _historyService.history">
+        <p class="history-command">{{entry.command}}</p>
+        <p class="history-results">{{entry.results}}</p>
+      </div>
+    </div>
     <div class="command-prompt">
       <span class="prompt">Your Command: </span>
       <input #cmd (keyup)="onKeyPress($event, cmd.value)"
@@ -15,12 +20,15 @@ import {HistoryEntry} from './history-entry';
        />
     </div>
     `,
+  providers: [HistoryService]
 })
 export class CommandPromptComponent {
   public command: string;
-  public history: HistoryEntry[];
-  
-  private history_index = 0;
+    
+  /**
+   * Constructor. No actual code, but needed for DI
+   */  
+  constructor(private _historyService: HistoryService) { }
   
   /**
    * Handle keypresses, looking for special keys like enter and arrows.
@@ -32,33 +40,28 @@ export class CommandPromptComponent {
       
       case 'Enter':  // enter key runs the command
         // if the user didn't type a new command, run the last command
-        if (value.length == 0 && this.history.length > 0) {
-          value = this.history[this.history.length-1]['command'];
+        if (value.length == 0) {
+          value = this._historyService.getLastCommand();
         }
         this.command = '';
-        this.history.push(new HistoryEntry(value, "Ran command: "+value))
-        console.log(this.history)
+        
+        // TODO: parse and execute the command.
+        
+        this._historyService.push(value, "Ran command: "+value)
         break;
         
       case 'Up':
         // up arrow moves back through the history
-        if (this.history_index <= this.history.length) {
-          this.history_index++;
-        }
-        var real_index = this.history.length - this.history_index;
-        if (real_index >= 0 && real_index < this.history.length) {
-          this.command = this.history[real_index]['command'];
+        var prev_command = this._historyService.getOlderCommand();
+        if (prev_command != '') {
+          this.command = prev_command
         }
         break;
         
       case 'Down':
-        // down arrow moves forward through the history
-        if (this.history_index > 0) {
-          this.history_index--;
-        }
-        var real_index = this.history.length - this.history_index;
-        if (real_index >= 0 && real_index < this.history.length) {
-          this.command = this.history[real_index]['command'];
+        var next_command = this._historyService.getNewerCommand();
+        if (next_command != '') {
+          this.command = next_command
         }
         break;
         
