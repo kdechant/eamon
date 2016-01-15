@@ -1,5 +1,3 @@
-'use strict'
-
 export class RoomExit {
     
   static MAIN_HALL: number = -99;
