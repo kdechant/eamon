@@ -4,32 +4,32 @@ import {OnInit} from 'angular2/core';
 import {Room} from './room';
 import {RoomExit} from './room';
 
-import {OutputComponent} from './output.component';
+import {HistoryComponent} from './history.component';
 import {CommandPromptComponent} from './command.component';
 
-import {Output} from './output';
+import {HistoryEntry} from './history-entry';
 
 @Component({
   selector: 'my-app',
   template:`
   <h1>{{title}}</h1>
-  <output [output]="output"></output>
-  <command-prompt [output]="output"></command-prompt>
+  <history [history]="history"></history>
+  <command-prompt [history]="history"></command-prompt>
   `,
-  directives: [OutputComponent, CommandPromptComponent],
+  directives: [HistoryComponent, CommandPromptComponent],
 //  providers: [HeroService]
 })
 export class AppComponent {
   
   public title = 'The Angular World of Eamon';
 
-  public output: Output[];
+  public history: HistoryEntry[];
   
   constructor() { }
 
   ngOnInit() {
     // initialize empty output array
-    this.output = [];
+    this.history = [];
   }
   
 }
