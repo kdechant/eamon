@@ -1,6 +1,7 @@
 import {Component} from 'angular2/core';
 
 import {HistoryService} from './history.service';
+import {CommandParserService} from './command-parser.service';
 
 @Component({
   selector: 'command-prompt',
@@ -20,7 +21,7 @@ import {HistoryService} from './history.service';
        />
     </div>
     `,
-  providers: [HistoryService]
+  providers: [HistoryService, CommandParserService]
 })
 export class CommandPromptComponent {
   public command: string;
@@ -28,7 +29,9 @@ export class CommandPromptComponent {
   /**
    * Constructor. No actual code, but needed for DI
    */  
-  constructor(private _historyService: HistoryService) { }
+  constructor(
+    private _historyService: HistoryService,
+    private _commandParserService: CommandParserService) { }
   
   /**
    * Handle keypresses, looking for special keys like enter and arrows.
@@ -43,11 +46,14 @@ export class CommandPromptComponent {
         if (value.length == 0) {
           value = this._historyService.getLastCommand();
         }
+        
+        // run the command
+        var result = this._commandParserService.run(value);
+        
+        // clear the input box
         this.command = '';
         
-        // TODO: parse and execute the command.
-        
-        this._historyService.push(value, "Ran command: "+value)
+        this._historyService.push(value, result)
         break;
         
       case 'Up':
