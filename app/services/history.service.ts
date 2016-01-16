@@ -20,7 +20,7 @@ export class HistoryService {
    */
   push(command, results) {
     this.history.push(new HistoryEntry(command, results))
-    console.log(this.history)
+//    console.log(this.history)
     
     // reset the counter whenever a command is added.
     this.index = this.history.length;
@@ -48,7 +48,7 @@ export class HistoryService {
     if (this.index >= 0 && this.index < this.history.length) {
       return this.history[this.index]['command'];
     } else {
-      return '';
+      return null;
     }
   }
   
@@ -57,13 +57,16 @@ export class HistoryService {
    * Used for recalling the history with the arrow keys.
    */
   getNewerCommand() {
-    if (this.index < this.history.length) {
+    if (this.index <= this.history.length) {
       this.index++;
     }
     if (this.index >= 0 && this.index < this.history.length) {
       return this.history[this.index]['command'];
-    } else {
+    } else if (this.index == this.history.length) {
+      // reached the newest command. clear the field.
       return '';
+    } else {
+      return null;
     }
   }
   

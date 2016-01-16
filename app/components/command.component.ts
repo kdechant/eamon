@@ -24,6 +24,11 @@ import {CommandParserService} from '../services/command-parser.service';
   providers: [HistoryService, CommandParserService]
 })
 export class CommandPromptComponent {
+  
+  static KEYCODE_UP: number = 38;
+  static KEYCODE_DOWN: number = 40;
+  static KEYCODE_ENTER: number = 13;
+  
   public command: string;
     
   /**
@@ -32,16 +37,16 @@ export class CommandPromptComponent {
   constructor(
     private _historyService: HistoryService,
     private _commandParserService: CommandParserService) { }
-  
+      
   /**
    * Handle keypresses, looking for special keys like enter and arrows.
    * Other keys like letters, numbers, space, etc. will be ignored.
    */
   onKeyPress(event:KeyboardEvent, value:string) {
     
-    switch (event.keyIdentifier) {  // is valid, though NetBeans doesn't think so.
+    switch (event.keyCode) {  // is valid, though NetBeans doesn't think so.
       
-      case 'Enter':  // enter key runs the command
+      case CommandPromptComponent.KEYCODE_ENTER:  // enter key runs the command
         // if the user didn't type a new command, run the last command
         if (value.length == 0) {
           value = this._historyService.getLastCommand();
@@ -56,17 +61,17 @@ export class CommandPromptComponent {
         this._historyService.push(value, result)
         break;
         
-      case 'Up':
+      case CommandPromptComponent.KEYCODE_UP:
         // up arrow moves back through the history
         var prev_command = this._historyService.getOlderCommand();
-        if (prev_command != '') {
+        if (prev_command !== null) {
           this.command = prev_command
         }
         break;
         
-      case 'Down':
+      case CommandPromptComponent.KEYCODE_DOWN:
         var next_command = this._historyService.getNewerCommand();
-        if (next_command != '') {
+        if (next_command !== null) {
           this.command = next_command
         }
         break;
