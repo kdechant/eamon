@@ -21,7 +21,6 @@ import {CommandParserService} from '../services/command-parser.service';
        />
     </div>
     `,
-  providers: [HistoryService, CommandParserService]
 })
 export class CommandPromptComponent {
   

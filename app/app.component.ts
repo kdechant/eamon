@@ -5,18 +5,19 @@ import {Room} from './models/room';
 import {RoomExit} from './models/room';
 
 import {CommandPromptComponent} from './components/command.component';
+import {StatusComponent} from './components/status.component';
 
 @Component({
   selector: 'my-app',
   template:`
   <h1>{{title}}</h1>
+  <status></status>
   <command-prompt></command-prompt>
   `,
-  directives: [CommandPromptComponent],
-//  providers: [HeroService]
+  directives: [CommandPromptComponent, StatusComponent]
 })
 export class AppComponent {
-  
+
   public title = 'The Angular World of Eamon';
   
   constructor() { }

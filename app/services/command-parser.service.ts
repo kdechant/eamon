@@ -1,5 +1,7 @@
 import {Injectable} from 'angular2/core';
 
+import {RoomService} from '../services/room.service';
+
 import {BaseCommand} from '../commands/base-command';
 import {core_commands} from '../commands/core-commands';
 // TODO: import custom commands
@@ -21,7 +23,7 @@ export class CommandParserService {
    */
   available_commands: { [key:string]:BaseCommand; } = {};
 
-  constructor() {
+  constructor(private _roomService:RoomService) {
     for(var i in core_commands) {
       this.register(core_commands[i]);
     }
@@ -32,7 +34,11 @@ export class CommandParserService {
    * @param BaseCommand command The command object, a subclass of BaseCommand
    */
   register(command:BaseCommand) {
-        
+    
+    // no easy way to do DI at the time the command objects are created,
+    // so do it manually here.
+    command._roomService = this._roomService;
+    
     // add to the list of verbs, used for parsing commands
     for (var i in command.verbs) {
       this.available_verbs[command.verbs[i]] = command.name;
