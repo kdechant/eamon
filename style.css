@@ -1,0 +1,19 @@
+.status {
+  border: 1px solid #999;
+}
+
+.history {
+  border: 1px solid #999;
+  height: 400px;
+  overflow-y: scroll;
+  padding: 12px;
+}
+
+.history .history-command {
+  color: #009;
+  font-weight: bold;
+}
+
+.command-prompt {
+  padding-top: 12px;
+}

@@ -8,9 +8,11 @@ import {RoomService} from '../services/room.service';
 @Component({
   selector: 'status',
   template: `
-    <div class="status">
-      <p>Current Room: {{ _roomService.current_room.name }}</p>
-    </div>
+    <p class="room-name">Current Location: {{ _roomService.current_room.name }}</p>
+    <p class="room-description">{{ _roomService.current_room.description }}</p>
+    <p class="room-exits">Visible Exits:
+      <span *ngFor="#exit of _roomService.current_room.exits">{{ exit.direction }} </span>
+    </p>
     `,
 })
 export class StatusComponent {

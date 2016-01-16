@@ -5,13 +5,7 @@ import {CommandParserService} from '../services/command-parser.service';
 
 @Component({
   selector: 'command-prompt',
-  template: `\n\
-    <div class="history">
-      <div *ngFor="#entry of _historyService.history">
-        <p class="history-command">{{entry.command}}</p>
-        <p class="history-results">{{entry.results}}</p>
-      </div>
-    </div>
+  template: `
     <div class="command-prompt">
       <span class="prompt">Your Command: </span>
       <input #cmd (keyup)="onKeyPress($event, cmd.value)"
