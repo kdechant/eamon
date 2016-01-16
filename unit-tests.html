@@ -16,8 +16,8 @@
       }
     });
     Promise.all([
-      System.import('app/room.spec'),
-      System.import('app/history-entry.spec'),
+      System.import('app/models/room.spec'),
+      System.import('app/models/history-entry.spec'),
 //    System.import('app/history-service.spec') // test is not currently runnable due to import statements
     ])
       .then(window.onload)

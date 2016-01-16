@@ -1,8 +1,8 @@
 import {Component} from 'angular2/core';
 import {OnInit} from 'angular2/core';
 
-import {Room} from './room';
-import {RoomExit} from './room';
+import {Room} from './models/room';
+import {RoomExit} from './models/room';
 
 import {CommandPromptComponent} from './command.component';
 
