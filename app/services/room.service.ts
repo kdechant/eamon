@@ -57,6 +57,9 @@ export class RoomService {
    */
   moveTo(room_id:number) {
     this.current_room = this.getRoomById(room_id);
+    
+    this.current_room.times_visited++;
+    
   }
   
 }

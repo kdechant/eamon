@@ -37,6 +37,7 @@ export class CommandParserService {
     
     // no easy way to do DI at the time the command objects are created,
     // so do it manually here.
+    command._commandParserService = this;
     command._roomService = this._roomService;
     
     // add to the list of verbs, used for parsing commands
