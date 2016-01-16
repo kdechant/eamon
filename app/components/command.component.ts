@@ -1,7 +1,7 @@
 import {Component} from 'angular2/core';
 
-import {HistoryService} from './history.service';
-import {CommandParserService} from './command-parser.service';
+import {HistoryService} from '../services/history.service';
+import {CommandParserService} from '../services/command-parser.service';
 
 @Component({
   selector: 'command-prompt',

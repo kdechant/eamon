@@ -1,7 +1,7 @@
 import {Injectable} from 'angular2/core';
 
-import {BaseCommand} from './base-command';
-import {core_commands} from './core-commands';
+import {BaseCommand} from '../commands/base-command';
+import {core_commands} from '../commands/core-commands';
 // TODO: import custom commands
 
 /**

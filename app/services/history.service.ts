@@ -1,6 +1,6 @@
 import {Injectable} from 'angular2/core';
 
-import {HistoryEntry} from './models/history-entry';
+import {HistoryEntry} from '../models/history-entry';
 
 /**
  * History service. Provides a container for all the history entries.
