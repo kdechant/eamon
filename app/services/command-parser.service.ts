@@ -1,6 +1,8 @@
 import {Injectable} from 'angular2/core';
 
 import {RoomService} from '../services/room.service';
+import {MonsterService} from '../services/monster.service';
+import {ArtifactService} from '../services/artifact.service';
 
 import {BaseCommand} from '../commands/base-command';
 import {core_commands} from '../commands/core-commands';
@@ -23,7 +25,10 @@ export class CommandParserService {
    */
   available_commands: { [key:string]:BaseCommand; } = {};
 
-  constructor(private _roomService:RoomService) {
+  constructor(
+    private _roomService: RoomService,
+    private _monsterService: MonsterService,
+    private _artifactService: ArtifactService) {
     for(var i in core_commands) {
       this.register(core_commands[i]);
     }
@@ -70,7 +75,16 @@ export class CommandParserService {
     // look up the command in the list of available verbs
     if (this.available_verbs.hasOwnProperty(verb)) {
       var command = this.available_commands[this.available_verbs[verb]];
-      return command.run(verb, args);
+      var msg = command.run(verb, args);
+      
+      // game clock ticks here
+      // TODO: implement a signal from the command class to skip the tick.
+      // (e.g., if user enters incorrect argument. "Attack who?" scenario.)
+      
+      this._artifactService.updateVisible();
+      this._monsterService.updateVisible();
+      
+      return msg;
     } else {
       return "I don't know the command "+verb+"!";
     }
