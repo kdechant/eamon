@@ -8,6 +8,16 @@ import {MonsterRepository} from '../repositories/monster.repo';
 export class GameData {
   
   /**
+   * @var string The current adventure's name
+   */
+  name:string;
+
+  /**
+   * @var string The current adventure's description
+   */
+  description:string;
+
+  /**
    * A container for all the Room objects
    */
   rooms: RoomRepository;
@@ -30,11 +40,14 @@ export class GameData {
   /**
    * Sets up data received from the GameLoaderService.
    */
-  setupData(room_data:Array<Object>, artifact_data:Array<Object>, monster_data:Array<Object>) {
+  setupData(data) {
+//    console.log('Setting up GameData', data);
+    this.name = data[0].name;
+    this.description = data[0].description;
     
-    this.rooms = new RoomRepository(room_data);
-    this.artifacts = new ArtifactRepository(artifact_data, this);
-    this.monsters = new MonsterRepository(monster_data, this);
+    this.rooms = new RoomRepository(data[1]);
+    this.artifacts = new ArtifactRepository(data[2], this);
+    this.monsters = new MonsterRepository(data[3], this);
     
   }
          

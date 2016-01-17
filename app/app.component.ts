@@ -14,7 +14,7 @@ import {StatusComponent} from './components/status.component';
   template:`
 <div class="container">
   <h1>{{game_title}}</h1>
-  <h2>{{adventure_title}}</h2>
+  <h2>{{game.name}}</h2>
   <div class="row">
     <div class="command col-sm-6">
       <history></history>
@@ -31,7 +31,6 @@ import {StatusComponent} from './components/status.component';
 export class AppComponent {
 
   public game_title = 'The Angular World of Eamon';
-  public adventure_title = 'Demo Adventure';
   public game:GameData;
   
   constructor(private _gameLoaderService: GameLoaderService) { }
