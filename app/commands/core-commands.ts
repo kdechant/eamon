@@ -1,5 +1,4 @@
 import {BaseCommand} from './base-command';
-import {RoomService} from '../services/room.service';
 import {CommandParserService} from '../services/command-parser.service';
 
 export var core_commands = [];
@@ -11,7 +10,7 @@ export class MoveCommand extends BaseCommand {
   run(verb, arg) {
     
     // TODO: turn "north" into "n"
-    var exit = this._roomService.current_room.getExit(verb);
+    var exit = this.game.rooms.current_room.getExit(verb);
     var msg:string;
     if (exit === null) {
       msg = "You can't go that way!";
@@ -19,15 +18,15 @@ export class MoveCommand extends BaseCommand {
     
       // TODO: monster checks and key checks go here
       
-      var room_to = this._roomService.getRoomById(exit.room_to);
+      var room_to = this.game.rooms.getRoomById(exit.room_to);
       msg = "Entering " + room_to.name;
-      this._roomService.moveTo(room_to.id);
+      this.game.rooms.moveTo(room_to.id);
       
       // TODO: move friendly monsters
       
       // show room description if first time seeing
-      if (this._roomService.current_room.times_visited == 1) {
-        msg += "\n\n"+this._roomService.current_room.description;
+      if (this.game.rooms.current_room.times_visited == 1) {
+        msg += "\n\n"+this.game.rooms.current_room.description;
       }
       
     }

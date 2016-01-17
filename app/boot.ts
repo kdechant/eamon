@@ -1,16 +1,15 @@
 import {bootstrap}    from 'angular2/platform/browser'
+//import {Http, Response, ConnectionBackend} from 'angular2/http';
 import {AppComponent} from './app.component'
 
 import {CommandParserService} from './services/command-parser.service'
 import {HistoryService} from './services/history.service'
-import {RoomService} from './services/room.service'
-import {MonsterService} from './services/monster.service'
-import {ArtifactService} from './services/artifact.service'
+import {GameLoaderService} from './services/game-loader.service'
 
 bootstrap(AppComponent, [
+//  Http,
+//  ConnectionBackend,
   CommandParserService,
   HistoryService,
-  RoomService,
-  MonsterService,
-  ArtifactService
+  GameLoaderService
 ]);

@@ -1,8 +1,9 @@
-import {Component} from 'angular2/core';
-import {OnInit} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 
-import {Room} from './models/room';
-import {RoomExit} from './models/room';
+import {GameLoaderService} from './services/game-loader.service';
+
+import {GameData} from './models/game-data';
+import {Room, RoomExit} from './models/room';
 
 import {HistoryComponent} from './components/history.component';
 import {CommandPromptComponent} from './components/command.component';
@@ -13,7 +14,7 @@ import {StatusComponent} from './components/status.component';
   template:`
 <div class="container">
   <h1>{{game_title}}</h1>
-  <h2>{{adventure_title}}</h2>\n\
+  <h2>{{adventure_title}}</h2>
   <div class="row">
     <div class="command col-sm-6">
       <history></history>
@@ -31,7 +32,12 @@ export class AppComponent {
 
   public game_title = 'The Angular World of Eamon';
   public adventure_title = 'Demo Adventure';
+  public game:GameData;
   
-  constructor() { }
+  constructor(private _gameLoaderService: GameLoaderService) { }
+  
+  ngOnInit() {
+    this.game = this._gameLoaderService.setupGameData();
+  }
   
 }

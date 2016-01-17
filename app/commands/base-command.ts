@@ -1,4 +1,4 @@
-import {RoomService} from '../services/room.service';
+import {GameData} from '../models/game-data';
 import {CommandParserService} from '../services/command-parser.service';
 
 /**
@@ -8,8 +8,8 @@ import {CommandParserService} from '../services/command-parser.service';
 export class BaseCommand {
   name: string;
   verbs: Array<string>;
+  game: GameData;
   
-  _roomService: RoomService;
   _commandParserService: CommandParserService;
   
   run(verb, arg) {

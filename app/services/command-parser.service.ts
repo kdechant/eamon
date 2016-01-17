@@ -1,8 +1,7 @@
 import {Injectable} from 'angular2/core';
 
-import {RoomService} from '../services/room.service';
-import {MonsterService} from '../services/monster.service';
-import {ArtifactService} from '../services/artifact.service';
+import {GameLoaderService} from '../services/game-loader.service';
+import {GameData} from '../models/game-data';
 
 import {BaseCommand} from '../commands/base-command';
 import {core_commands} from '../commands/core-commands';
@@ -16,6 +15,11 @@ import {core_commands} from '../commands/core-commands';
 export class CommandParserService {
 
   /**
+   * A reference to the GameData object
+   */
+  game: GameData;
+
+  /**
    * A hash map of all the verbs used by the registered commands
    */
   available_verbs: { [key:string]:string; } = {};
@@ -25,10 +29,10 @@ export class CommandParserService {
    */
   available_commands: { [key:string]:BaseCommand; } = {};
 
-  constructor(
-    private _roomService: RoomService,
-    private _monsterService: MonsterService,
-    private _artifactService: ArtifactService) {
+  constructor(private _gameLoader: GameLoaderService) {
+    
+    this.game = this._gameLoader.game_data;
+    
     for(var i in core_commands) {
       this.register(core_commands[i]);
     }
@@ -43,7 +47,7 @@ export class CommandParserService {
     // no easy way to do DI at the time the command objects are created,
     // so do it manually here.
     command._commandParserService = this;
-    command._roomService = this._roomService;
+    command.game = this.game;
     
     // add to the list of verbs, used for parsing commands
     for (var i in command.verbs) {
@@ -81,8 +85,7 @@ export class CommandParserService {
       // TODO: implement a signal from the command class to skip the tick.
       // (e.g., if user enters incorrect argument. "Attack who?" scenario.)
       
-      this._artifactService.updateVisible();
-      this._monsterService.updateVisible();
+      this.game.tick();
       
       return msg;
     } else {
