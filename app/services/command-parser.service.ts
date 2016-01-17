@@ -79,13 +79,12 @@ export class CommandParserService {
     // look up the command in the list of available verbs
     if (this.available_verbs.hasOwnProperty(verb)) {
       var command = this.available_commands[this.available_verbs[verb]];
-      var msg = command.run(verb, args);
-      
-      // game clock ticks here
-      // TODO: implement a signal from the command class to skip the tick.
-      // (e.g., if user enters incorrect argument. "Attack who?" scenario.)
-      
-      this.game.tick();
+      try {
+        var msg = command.run(verb, args);
+        this.game.tick();
+      } catch (ex) {
+        var msg:string = ex.message;
+      }
       
       return msg;
     } else {

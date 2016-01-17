@@ -13,7 +13,7 @@ export class MoveCommand extends BaseCommand {
     var exit = this.game.rooms.current_room.getExit(verb);
     var msg:string;
     if (exit === null) {
-      msg = "You can't go that way!";
+      throw new Error("You can't go that way!");
     } else {
     
       // TODO: monster checks and key checks go here
