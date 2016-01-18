@@ -17,7 +17,7 @@ export var ARTIFACTS: Array<Object> = [
     'room_id': 4,
     'weight': 50,
     'value': 1000
-  },  
+  },
   {
     'id': 3,
     'name': 'magic sword',
@@ -28,20 +28,22 @@ export var ARTIFACTS: Array<Object> = [
     'is_weapon': true,
     'weapon_type': 5,
     'weapon_odds': 20,
-    'weapon_dice': 2,
-    'weapon_sides': 8
+    'dice': 2,
+    'sides': 8
   },
   {
     'id': 4,
     'name': 'spear',
     'description': 'You see a standard 10-foot-long spear.',
-    'room_id': 0,
+    'room_id': null,
     'monster_id': 1,
     'weight': 5,
     'value': 10,
+    'is_weapon': true,
+    'is_standard_weapon': true,
     'weapon_type': 4,
     'weapon_odds': 10,
-    'weapon_dice': 1,
-    'weapon_sides': 5
+    'dice': 1,
+    'sides': 5
   },
 ];

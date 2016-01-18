@@ -6,7 +6,7 @@ import {GameData} from '../models/game-data';
  * Storage class for all artifact data.
  */
 export class ArtifactRepository {
-  
+
   /**
    * An array of all the Artifact objects
    */
@@ -21,16 +21,45 @@ export class ArtifactRepository {
    * An array of visible Artifact objects
    */
   visible: Artifact[] = [];
-    
+
+  /**
+   * The highest ID in the system
+   */
+  index:number = 0;
+
   constructor(artifact_data: Array<Object>, game_data: GameData) {
     this.game = game_data;
-    
+
     for(var i in artifact_data) {
-      var a = new Artifact(artifact_data[i])
-      this.artifacts.push(a);
+      this.add(artifact_data[i]);
     }
   }
-  
+
+  /**
+   * Adds an artifact to the system.
+   * @param object artifact_data
+   */
+  add(artifact_data) {
+    var a = new Artifact(artifact_data);
+
+    // autonumber the ID if not provided
+    if (a.id === undefined) {
+      a.id = this.index + 1;
+    }
+
+    if (this.get(a.id) !== undefined) {
+      throw new Error("Tried to create an artifact #"+a.id+" but that ID is already taken.");
+    }
+
+    this.artifacts.push(a);
+
+    // update the autonumber index
+    if (a.id > this.index) {
+      this.index = a.id;
+    }
+    return a.id;
+  }
+
   /**
    * Gets a numbered artifact.
    * @param number id
@@ -57,5 +86,5 @@ export class ArtifactRepository {
     }
     this.visible = artifacts;
   }
-  
+
 }

@@ -8,22 +8,22 @@ export class Artifact extends Loadable {
   id: number;
   name: string;
   description: string;
-  room_id: number; // if on the ground, which room
-  monster_id: number; // if in inventory, who is carrying it
+  room_id:number; // if on the ground, which room
+  monster_id:number; // if in inventory, who is carrying it
   weight: number;
   value: number = 0;
-  fixed_value: boolean = false;
-  is_container: boolean = false;
-  is_open: boolean = false;
-  is_weapon: boolean = false;
-  is_standard_weapon: boolean = false;
+  fixed_value: boolean;
+  is_container: boolean;
+  is_open: boolean;
+  is_weapon: boolean;
+  is_standard_weapon: boolean;
   weapon_type: number;
   weapon_odds: number;
-  weapon_dice: number;
-  weapon_sides: number;
-  get_all: boolean = true;
-  embedded: boolean = false;
-  
+  dice: number;
+  sides: number;
+  get_all: boolean;
+  embedded: boolean;
+
   // game-state properties
   seen: boolean = false;
 

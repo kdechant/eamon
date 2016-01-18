@@ -6,7 +6,7 @@ import {GameData} from '../models/game-data';
  * Storage class for all monster data.
  */
 export class MonsterRepository {
-  
+
   /**
    * An array of all the Monster objects
    */
@@ -21,15 +21,47 @@ export class MonsterRepository {
    * An array of visible Monster objects
    */
   visible: Monster[] = [];
-    
+
+  /**
+   * The highest ID in the system
+   */
+  index:number = 0;
+
   constructor(monster_data: Array<Object>, game_data: GameData) {
     this.game = game_data;
     for(var i in monster_data) {
-      var a = new Monster(monster_data[i])
-      this.monsters.push(a);
+      this.add(monster_data[i]);
     }
   }
-  
+
+  /**
+   * Adds a monster.
+   * @param number id
+   */
+  add(monster_data) {
+    var m = new Monster(monster_data);
+
+    // autonumber the ID if not provided
+    if (m.id === undefined) {
+      m.id = this.index + 1;
+    }
+
+    if (this.get(m.id) !== undefined) {
+      throw new Error("Tried to create a monster #"+m.id+" but that ID is already taken.");
+    }
+
+    this.monsters.push(m);
+
+    // update the autonumber index
+    if (m.id > this.index) {
+      this.index = m.id;
+    }
+    return m;
+  }
+
+    }
+  }
+
   /**
    * Gets a numbered monster.
    * @param number id
@@ -42,7 +74,7 @@ export class MonsterRepository {
       }
     }
   }
-            
+
   /**
    * Updates the list of monsters in the current room, that are visible to the player
    * @return Monster[]
@@ -56,5 +88,5 @@ export class MonsterRepository {
     }
     this.visible = monsters;
   }
-  
+
 }
