@@ -3,9 +3,7 @@
  */
 export abstract class Loadable {
 
-  constructor(source) {
-    this.init(source);
-  }
+  constructor() { }
 
   /**
    * Loads data from JSON source into the object properties.

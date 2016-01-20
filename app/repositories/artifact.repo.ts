@@ -40,7 +40,8 @@ export class ArtifactRepository {
    * @param object artifact_data
    */
   add(artifact_data) {
-    var a = new Artifact(artifact_data);
+    var a = new Artifact();
+    a.init(artifact_data);
 
     // autonumber the ID if not provided
     if (a.id === undefined) {
@@ -72,7 +73,23 @@ export class ArtifactRepository {
       }
     }
   }
-            
+
+  /**
+   * Gets the inventory for a monster.
+   * This should probably be moved to the Monster class but need to resolve some dependencies first.
+   * @param number monster_id
+   * @return Array<Artifact>
+   */
+  getInventory(monster_id) {
+    var inv = [];
+    for(var i in this.artifacts) {
+      if (this.artifacts[i].monster_id == monster_id) {
+        inv.push(this.artifacts[i]);
+      }
+    }
+    return inv;
+  }
+
   /**
    * Updates the list of artifacts in the current room, that are visible to the player
    * @return Artifact[]

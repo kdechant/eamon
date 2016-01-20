@@ -2,13 +2,15 @@ import {GameData} from '../models/game-data';
 import {Artifact} from '../models/artifact';
 import {ArtifactRepository} from '../repositories/artifact.repo';
 
+import {HistoryService} from '../services/history.service';
+
 import {ARTIFACTS} from '../mock-data/artifacts';
 
 describe("Artifact", function() {
 
   // initialize the test with the full repository of artifacts
   let repo:ArtifactRepository;
-  var game_data = new GameData();
+  var game_data = new GameData(new HistoryService());
   beforeEach(() => {
     repo = new ArtifactRepository(ARTIFACTS, game_data);
   });

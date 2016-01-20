@@ -13,6 +13,11 @@ export class MonsterRepository {
   monsters: Monster[] = [];
 
   /**
+   * A Monster object representing the player.
+   */
+  player: Monster;
+
+  /**
    * A reference to the parent GameData object
    */
   game: GameData;
@@ -39,7 +44,8 @@ export class MonsterRepository {
    * @param number id
    */
   add(monster_data) {
-    var m = new Monster(monster_data);
+    var m = new Monster();
+    m.init(monster_data);
 
     // autonumber the ID if not provided
     if (m.id === undefined) {
@@ -59,7 +65,39 @@ export class MonsterRepository {
     return m;
   }
 
+  /**
+   * Adds the player to the game. Player has more data than the regular monsters.
+   * @param
+   */
+  addPlayer(player_data) {
+    this.player = new Monster;
+    this.player.init(player_data);
+
+    // player is always monster 0
+    this.player.id = 0;
+    this.player.room_id = 1;
+    this.monsters.push(this.player);
+
+    // create new artifact objects for the weapons the player brought
+    var wpns = player_data.weapons;
+    for (var w in wpns) {
+      var a = wpns[w];
+      a.room_id = null;
+      a.monster_id = 0; // 0 = carried by player
+      var art = this.game.artifacts.add(a);
     }
+
+    // ready the player's best weapon
+
+    for (var a in this.game.artifacts.getInventory(Monster.PLAYER)) {
+      if (a.is_weapon) {
+        if (this.player.weapon === undefined ||
+            a.maxDamage() > this.game.artifacts.get(this.player.weapon).maxDamage()) {
+          this.player.weapon = a.id;
+        }
+      }
+    }
+    return this.player
   }
 
   /**
@@ -82,7 +120,7 @@ export class MonsterRepository {
   updateVisible() {
     var monsters:Monster[] = [];
     for(var i in this.monsters) {
-      if (this.monsters[i].room_id == this.game.rooms.current_room.id) {
+      if (this.monsters[i].id != 0 && this.monsters[i].room_id == this.game.rooms.current_room.id) {
         monsters.push(this.monsters[i]);
       }
     }

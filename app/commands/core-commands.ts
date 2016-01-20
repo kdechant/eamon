@@ -6,31 +6,32 @@ export var core_commands = [];
 export class MoveCommand extends BaseCommand {
   name: string = 'move';
   verbs: string[] = ['north', 'n', 'south', 's', 'east', 'e', 'west', 'w', 'up', 'u', 'down', 'd'];
-  
+
   run(verb, arg) {
-    
+
     // TODO: turn "north" into "n"
     var exit = this.game.rooms.current_room.getExit(verb);
     var msg:string;
     if (exit === null) {
       throw new Error("You can't go that way!");
     } else {
-    
+
       // TODO: monster checks and key checks go here
-      
+
       var room_to = this.game.rooms.getRoomById(exit.room_to);
       msg = "Entering " + room_to.name;
+      this.game.monsters.player.room_id = room_to.id;
       this.game.rooms.moveTo(room_to.id);
-      
+
       // TODO: move friendly monsters
-      
+
       // show room description if first time seeing
       if (this.game.rooms.current_room.times_visited == 1) {
         msg += "\n\n"+this.game.rooms.current_room.description;
       }
-      
+
     }
-    
+
     return msg;
   }
 }

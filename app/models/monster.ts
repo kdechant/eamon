@@ -4,8 +4,9 @@ import {Loadable} from './loadable';
  * Monster class. Represents all properties of a single monster
  */
 export class Monster extends Loadable {
-  
+
   // constants
+  static PLAYER:number = 0;
   static FRIEND_ALWAYS: string = 'friend';
   static FRIEND_NEUTRAL: string = 'neutral';
   static FRIEND_NEVER: string = 'hostile';
@@ -18,25 +19,32 @@ export class Monster extends Loadable {
   // status
   static STATUS_ALIVE: number = 1;
   static STATUS_DEAD: number = 2;
-  
-  // data properties
+
+  // data properties for all monsters
+  // don't use default values here because they won't be overwritten when loading the data object.
   id: number;
   name: string;
   description: string;
   room_id: number;
+  gender:string;
   hardiness: number;
-  agility: number = 0;
-  charisma: number = 0; // for the player only
-  friendliness: string; // friendliness algorithm, see constants above
-  friend_odds: number = 50; // if random friendliness, chance of being friendly
+  agility: number;
+  friendliness: string;
+  friend_odds: number;
   courage: number;
-  weapon: number = 0;
-  attack_odds: number = 50;
+  gold:number;
+  weapon: number;
+  attack_odds: number;
   weapon_dice: number;
   weapon_sides: number;
-  defense_bonus: number = 0; // makes monster harder to hit
+  defense_bonus: number; // makes monster harder to hit
   armor: number;
-  
+
+  // data properties for player only
+  charisma: number; // for the player only
+  spell_abilities:Array<Object>;
+  weapon_abilities:Array<Object>;
+
   // game-state properties
   seen: boolean = false;
   reaction: number;

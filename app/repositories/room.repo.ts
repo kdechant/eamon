@@ -5,7 +5,7 @@ import {Room} from '../models/room';
  * Storage class for all room data.
  */
 export class RoomRepository {
-  
+
   /**
    * An array of all the Room objects
    */
@@ -15,18 +15,15 @@ export class RoomRepository {
    * The object representing the room the player is currently in
    */
   current_room: Room;
-  
+
   constructor(room_data) {
     for(var i in room_data) {
-      var r = new Room(room_data[i])
+      var r = new Room();
+      r.init(room_data[i]);
       this.rooms.push(r);
-      // the user will start in room 1
-//      if (r.id == 1) {
-//        this.current_room = r;
-//      }
     }
   }
-  
+
   /**
    * Gets a numbered room.
    * @param number room_id
@@ -39,15 +36,15 @@ export class RoomRepository {
       }
     }
   }
-  
+
   /**
    * Moves the player into a given room
    */
   moveTo(room_id:number) {
     this.current_room = this.getRoomById(room_id);
-    
+
     this.current_room.times_visited++;
-    
+
   }
-  
+
 }
