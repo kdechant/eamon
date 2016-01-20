@@ -1,5 +1,5 @@
 import {Artifact} from '../models/artifact';
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 
 /**
  * Class ArtifactRepository.
@@ -13,9 +13,9 @@ export class ArtifactRepository {
   artifacts: Artifact[] = [];
 
   /**
-   * A reference to the parent GameData object
+   * A reference to the parent Game object
    */
-  game: GameData;
+  game: Game;
 
   /**
    * An array of visible Artifact objects
@@ -27,8 +27,8 @@ export class ArtifactRepository {
    */
   index:number = 0;
 
-  constructor(artifact_data: Array<Object>, game_data: GameData) {
-    this.game = game_data;
+  constructor(artifact_data: Array<Object>, game: Game) {
+    this.game = game;
 
     for(var i in artifact_data) {
       this.add(artifact_data[i]);

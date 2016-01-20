@@ -1,4 +1,4 @@
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 import {Monster} from '../models/monster';
 import {ArtifactRepository} from './artifact.repo';
 import {MonsterRepository} from './monster.repo';
@@ -12,9 +12,9 @@ describe("Monster Repo", function() {
 
   let repo:MonsterRepository;
   beforeEach(() => {
-    var game_data = new GameData(new HistoryService);
-    game_data.artifacts = new ArtifactRepository([], game_data);
-    repo = new MonsterRepository(MONSTERS, game_data);
+    var game = new Game(new HistoryService);
+    game.artifacts = new ArtifactRepository([], game);
+    repo = new MonsterRepository(MONSTERS, game);
   });
 
   it("should add a monster", function() {

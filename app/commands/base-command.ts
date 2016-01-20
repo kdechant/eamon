@@ -1,4 +1,4 @@
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 import {CommandParserService} from '../services/command-parser.service';
 
 /**
@@ -8,10 +8,10 @@ import {CommandParserService} from '../services/command-parser.service';
 export class BaseCommand {
   name: string;
   verbs: Array<string>;
-  game: GameData;
-  
+  game: Game;
+
   _commandParserService: CommandParserService;
-  
+
   run(verb, arg) {
     return '';
   }

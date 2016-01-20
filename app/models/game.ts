@@ -13,7 +13,7 @@ import {Monster} from '../models/monster';
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
  */
-export class GameData {
+export class Game {
 
   /**
    * @var string The current adventure's name
@@ -53,7 +53,7 @@ export class GameData {
   /**
    * Sets up data received from the GameLoaderService.
    */
-  setupData(data) {
+  init(data) {
 
     this.name = data[0].name;
     this.description = data[0].description;

@@ -2,7 +2,7 @@ import {Injectable} from 'angular2/core';
 //import {Http, Response} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 
 import {HistoryService} from '../services/history.service';
 
@@ -19,15 +19,15 @@ import {MONSTERS} from '../mock-data/monsters';
 @Injectable()
 export class GameLoaderService {
   /**
-   * An array of all the Monster objects
+   * The main game object
    */
-  game_data: GameData;
+  game: Game;
 
   /**
    * Constructor. Loads monster data.
    */
   constructor(private _historyService:HistoryService) {
-    this.game_data = new GameData(this._historyService);
+    this.game = new Game(this._historyService);
   }
 
   setupGameData() {
@@ -40,18 +40,18 @@ export class GameLoaderService {
       Promise.resolve(PLAYER),
     ]).then(
       result => {
-        this.game_data.setupData(result);
-        this._historyService.push('', this.game_data.description)
+        this.game.init(result);
+        this._historyService.push('', this.game.description)
 
         // Place the player in the first room
-        this.game_data.rooms.moveTo(1);
+        this.game.rooms.moveTo(1);
 
         // Tick the game clock. This builds the list of monsters/items in the first room.
-        this.game_data.tick();
+        this.game.tick();
 
       }
     );
-    return this.game_data;
+    return this.game;
   }
 
 }

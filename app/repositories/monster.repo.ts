@@ -1,5 +1,5 @@
 import {Monster} from '../models/monster';
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 
 /**
  * Class MonsterRepository.
@@ -18,9 +18,9 @@ export class MonsterRepository {
   player: Monster;
 
   /**
-   * A reference to the parent GameData object
+   * A reference to the parent Game object
    */
-  game: GameData;
+  game: Game;
 
   /**
    * An array of visible Monster objects
@@ -32,8 +32,8 @@ export class MonsterRepository {
    */
   index:number = 0;
 
-  constructor(monster_data: Array<Object>, game_data: GameData) {
-    this.game = game_data;
+  constructor(monster_data: Array<Object>, game: Game) {
+    this.game = game;
     for(var i in monster_data) {
       this.add(monster_data[i]);
     }

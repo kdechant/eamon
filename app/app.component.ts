@@ -2,7 +2,7 @@ import {Component, OnInit} from 'angular2/core';
 
 import {GameLoaderService} from './services/game-loader.service';
 
-import {GameData} from './models/game-data';
+import {Game} from './models/game';
 import {Room, RoomExit} from './models/room';
 
 import {HistoryComponent} from './components/history.component';
@@ -31,12 +31,12 @@ import {StatusComponent} from './components/status.component';
 export class AppComponent {
 
   public game_title = 'The Angular World of Eamon';
-  public game:GameData;
-  
+  public game:Game;
+
   constructor(private _gameLoaderService: GameLoaderService) { }
-  
+
   ngOnInit() {
     this.game = this._gameLoaderService.setupGameData();
   }
-  
+
 }

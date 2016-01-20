@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 
 import {GameLoaderService} from '../services/game-loader.service';
 
@@ -26,13 +26,13 @@ import {GameLoaderService} from '../services/game-loader.service';
 })
 export class StatusComponent {
 
-  game: GameData;
+  game: Game;
 
   /**
    * Constructor. No actual code, but needed for DI
    */
   constructor(_loader:GameLoaderService) {
-    this.game = _loader.game_data;
+    this.game = _loader.game;
   }
 
 }

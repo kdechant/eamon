@@ -1,4 +1,4 @@
-import {GameData} from '../models/game-data';
+import {Game} from '../models/game';
 import {Artifact} from '../models/artifact';
 import {ArtifactRepository} from '../repositories/artifact.repo';
 
@@ -10,9 +10,9 @@ describe("Artifact", function() {
 
   // initialize the test with the full repository of artifacts
   let repo:ArtifactRepository;
-  var game_data = new GameData(new HistoryService());
+  var game = new Game(new HistoryService());
   beforeEach(() => {
-    repo = new ArtifactRepository(ARTIFACTS, game_data);
+    repo = new ArtifactRepository(ARTIFACTS, game);
   });
 
   it("should know its max damage", function() {
