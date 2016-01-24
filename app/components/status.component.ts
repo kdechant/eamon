@@ -1,8 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component, Input} from 'angular2/core';
 
 import {Game} from '../models/game';
-
-import {GameLoaderService} from '../services/game-loader.service';
 
 @Component({
   selector: 'status',
@@ -25,14 +23,5 @@ import {GameLoaderService} from '../services/game-loader.service';
     `,
 })
 export class StatusComponent {
-
-  game: Game;
-
-  /**
-   * Constructor. No actual code, but needed for DI
-   */
-  constructor(_loader:GameLoaderService) {
-    this.game = _loader.game;
-  }
-
+  @Input() game;
 }

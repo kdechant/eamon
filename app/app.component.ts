@@ -1,6 +1,7 @@
 import {Component, OnInit} from 'angular2/core';
 
 import {GameLoaderService} from './services/game-loader.service';
+import {HistoryService} from './services/history.service';
 
 import {Game} from './models/game';
 import {Room, RoomExit} from './models/room';
@@ -21,7 +22,7 @@ import {StatusComponent} from './components/status.component';
       <command-prompt></command-prompt>
     </div>
     <div class="status col-sm-6">
-      <status></status>
+      <status [game]="game"></status>
     </div>
   </div>
 </div>
@@ -33,10 +34,11 @@ export class AppComponent {
   public game_title = 'The Angular World of Eamon';
   public game:Game;
 
-  constructor(private _gameLoaderService: GameLoaderService) { }
+  constructor(private _gameLoaderService: GameLoaderService, private _historyService: HistoryService) { }
 
   ngOnInit() {
-    this.game = this._gameLoaderService.setupGameData();
+    this.game = new Game(this._historyService);
+    this._gameLoaderService.setupGameData(this.game);
   }
 
 }

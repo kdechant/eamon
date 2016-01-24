@@ -4,7 +4,7 @@ import {ArtifactRepository} from '../repositories/artifact.repo';
 
 import {HistoryService} from '../services/history.service';
 
-import {ARTIFACTS} from '../mock-data/artifacts';
+import {ARTIFACTS} from '../demo1/mock-data/artifacts';
 
 describe("Artifact", function() {
 

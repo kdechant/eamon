@@ -8,15 +8,22 @@
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
     <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+    <script src="node_modules/angular2/bundles/http.dev.js"></script>
 
     <!-- 2. Configure SystemJS -->
     <script>
+      var game_id = 'demo1';
+
       System.config({
-        packages: {        
+        map: {
+            'rxjs': 'node_modules/rxjs'
+        },
+        packages: {
           app: {
             format: 'register',
             defaultExtension: 'js'
-          }
+          },
+          'rxjs': {defaultExtension: 'js'}
         }
       });
       System.import('app/boot')
@@ -27,7 +34,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
     <link rel="stylesheet" href="style.css" />
-    
+
   </head>
 
   <!-- 3. Display the application -->

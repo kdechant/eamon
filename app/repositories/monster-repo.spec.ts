@@ -5,8 +5,8 @@ import {MonsterRepository} from './monster.repo';
 
 import {HistoryService} from '../services/history.service';
 
-import {MONSTERS} from '../mock-data/monsters';
-import {PLAYER} from '../mock-data/player';
+var MONSTERS = require('../demo1/mock-data/monsters.json');
+var PLAYER = require('../demo1/mock-data/player');
 
 describe("Monster Repo", function() {
 
