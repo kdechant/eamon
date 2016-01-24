@@ -4,11 +4,11 @@ import {RoomRepository} from '../repositories/room.repo';
 import {ArtifactRepository} from '../repositories/artifact.repo';
 import {MonsterRepository} from '../repositories/monster.repo';
 
-import {HistoryService} from '../services/history.service';
-
 import {Room, RoomExit} from '../models/room';
 import {Artifact} from '../models/artifact';
 import {Monster} from '../models/monster';
+import {HistoryManager} from '../models/history-manager';
+import {CommandParser} from '../models/command-parser';
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -46,9 +46,14 @@ export class Game {
   timer:number = 0;
 
   /**
-   * Constructor. No actual code, but needed for DI
+   * Command history and results
    */
-  constructor(private _historyService: HistoryService) { }
+  history: HistoryManager;
+
+  /**
+   * Command parser object
+   */
+  command_parser: CommandParser;
 
   /**
    * Sets up data received from the GameLoaderService.
@@ -64,6 +69,8 @@ export class Game {
 
     this.monsters.addPlayer(data[4]);
 
+    this.history = new HistoryManager;
+    this.command_parser = new CommandParser(this);
   }
 
   /**
@@ -75,7 +82,7 @@ export class Game {
 
     // if the player is seeing the room for the first time, show the description
     if (this.rooms.current_room.times_visited == 1) {
-      this._historyService.push('', this.rooms.current_room.description);
+      this.history.push('', this.rooms.current_room.description);
     }
 
     this.artifacts.updateVisible();

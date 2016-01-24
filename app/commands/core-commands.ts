@@ -1,5 +1,4 @@
 import {BaseCommand} from './base-command';
-import {CommandParserService} from '../services/command-parser.service';
 
 export var core_commands = [];
 

@@ -1,12 +1,10 @@
-import {Component} from 'angular2/core';
-
-import {HistoryService} from '../services/history.service';
+import {Component, Input} from 'angular2/core';
 
 @Component({
   selector: 'history',
   template: `
     <div class="history">
-      <div *ngFor="#entry of _historyService.history">
+      <div *ngFor="#entry of history?.history">
         <p class="history-command">{{entry.command}}</p>
         <p class="history-results">{{entry.results}}</p>
       </div>
@@ -14,10 +12,5 @@ import {HistoryService} from '../services/history.service';
     `,
 })
 export class HistoryComponent {
-  
-  /**
-   * Constructor. No actual code, but needed for DI
-   */  
-  constructor(private _historyService: HistoryService) { }
-  
+  @Input() history;
 }

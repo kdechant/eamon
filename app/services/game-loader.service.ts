@@ -4,8 +4,6 @@ import {Observable} from 'rxjs/Rx';
 
 import {Game} from '../models/game';
 
-import {HistoryService} from '../services/history.service';
-
 // game_id is passed in from the back-end and written in index.html
 declare var game_id:string;
 
@@ -23,7 +21,7 @@ export class GameLoaderService {
   /**
    * Constructor. Loads monster data.
    */
-  constructor(private _historyService:HistoryService, private http:Http) { }
+  constructor(private http:Http) { }
 
   setupGameData(game:Game) {
 
@@ -39,7 +37,7 @@ export class GameLoaderService {
     ).subscribe(
         data => {
           this.game.init(data);
-          this._historyService.push('', this.game.description)
+          this.game.history.push('', this.game.description)
 
           // Place the player in the first room
           this.game.rooms.moveTo(1);

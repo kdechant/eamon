@@ -46,7 +46,6 @@ export class Artifact extends Loadable {
    * Returns the maximum damage a weapon can do.
    */
   maxDamage() {
-    console.log(this)
     if (this.is_weapon) {
       return this.dice * this.sides;
     } else {

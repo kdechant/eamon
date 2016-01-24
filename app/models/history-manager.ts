@@ -1,31 +1,27 @@
-import {Injectable} from 'angular2/core';
-
 import {HistoryEntry} from '../models/history-entry';
 
 /**
  * History service. Provides a container for all the history entries.
  */
-@Injectable()
-export class HistoryService {
+export class HistoryManager {
   history: HistoryEntry[];
   index: number;
-  
+
   constructor() {
     this.history = [];
     this.index = this.history.length;
   }
-  
+
   /**
    * Pushes a command onto the history
    */
   push(command, results) {
     this.history.push(new HistoryEntry(command, results))
-//    console.log(this.history)
-    
+
     // reset the counter whenever a command is added.
     this.index = this.history.length;
   }
-  
+
   /**
    * Gets the most recent command the user entered
    */
@@ -51,7 +47,7 @@ export class HistoryService {
       return null;
     }
   }
-  
+
   /**
    * Gets the next-newer command in the history.
    * Used for recalling the history with the arrow keys.
@@ -69,5 +65,5 @@ export class HistoryService {
       return null;
     }
   }
-  
+
 }

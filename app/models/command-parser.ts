@@ -1,6 +1,3 @@
-import {Injectable} from 'angular2/core';
-
-import {GameLoaderService} from '../services/game-loader.service';
 import {Game} from '../models/game';
 
 import {BaseCommand} from '../commands/base-command';
@@ -11,8 +8,7 @@ import {core_commands} from '../commands/core-commands';
  * Command Parser class. Handles registration of available commands and parsing
  * user input.
  */
-@Injectable()
-export class CommandParserService {
+export class CommandParser {
 
   /**
    * A reference to the Game object
@@ -29,9 +25,8 @@ export class CommandParserService {
    */
   available_commands: { [key:string]:BaseCommand; } = {};
 
-  constructor(private _gameLoader: GameLoaderService) {
-
-    this.game = this._gameLoader.game;
+  constructor(game) {
+    this.game = game;
 
     for(var i in core_commands) {
       this.register(core_commands[i]);
@@ -44,9 +39,7 @@ export class CommandParserService {
    */
   register(command:BaseCommand) {
 
-    // no easy way to do DI at the time the command objects are created,
-    // so do it manually here.
-    command._commandParserService = this;
+    // commands need a reference to the game object.
     command.game = this.game;
 
     // add to the list of verbs, used for parsing commands

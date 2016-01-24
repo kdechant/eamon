@@ -1,14 +1,15 @@
-import {HistoryService} from './history.service';
+import {HistoryManager} from './history-manager';
 
 describe("Command history", function() {
 
-  let hist:HistoryService;
+  let hist:HistoryManager;
   beforeEach(() => {
-    hist = new HistoryService();
+    hist = new HistoryManager();
   });
 
-  // NOTE: the following test is failing due to a weird bug where the spec runs 3 times.
-
+  // somehow the tests get run multiple times, and the following test will fail
+  // the second/third time through.
+//
 //  it('should start with empty history', function() {
 //    expect(hist.history.length).toEqual(0);
 //  });
