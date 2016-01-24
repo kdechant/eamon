@@ -18,17 +18,19 @@ export var PLAYER: Object = {
   'weapons': [
     {
       'name': 'mace',
+      "is_weapon": true,
       'weapon_type': 3,
       'weapon_odds': 10,
-      'weapon_dice': 1,
-      'weapon_sides': 4,
+      'dice': 1,
+      'sides': 4,
     },
     {
       'name': 'trollsfire',
+      "is_weapon": true,
       'weapon_type': 6,
       'weapon_odds': 25,
-      'weapon_dice': 1,
-      'weapon_sides': 10,
+      'dice': 1,
+      'sides': 10,
     }
   ],
   'spell_abilities': {

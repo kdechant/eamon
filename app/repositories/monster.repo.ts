@@ -89,11 +89,16 @@ export class MonsterRepository {
 
     // ready the player's best weapon
 
-    for (var a in this.game.artifacts.getInventory(Monster.PLAYER)) {
-      if (a.is_weapon) {
+    var inven = this.game.artifacts.getInventory(Monster.PLAYER);
+    for (var a in inven) {
+//      console.log(inven[a]);
+      if (inven[a].is_weapon) {
+//        console.log('player weapon', this.player.weapon)
+//        console.log('max damage', inven[a].maxDamage())
+//        console.log('max damage plyr wpn', this.game.artifacts.get(this.player.weapon).maxDamage())
         if (this.player.weapon === undefined ||
-            a.maxDamage() > this.game.artifacts.get(this.player.weapon).maxDamage()) {
-          this.player.weapon = a.id;
+            inven[a].maxDamage() > this.game.artifacts.get(this.player.weapon).maxDamage()) {
+          this.player.weapon = inven[a].id;
         }
       }
     }
