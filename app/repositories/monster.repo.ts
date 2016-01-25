@@ -56,6 +56,8 @@ export class MonsterRepository {
       throw new Error("Tried to create a monster #"+m.id+" but that ID is already taken.");
     }
 
+    m.game = this.game;
+
     this.monsters.push(m);
 
     // update the autonumber index
@@ -91,11 +93,7 @@ export class MonsterRepository {
 
     var inven = this.game.artifacts.getInventory(Monster.PLAYER);
     for (var a in inven) {
-//      console.log(inven[a]);
       if (inven[a].is_weapon) {
-//        console.log('player weapon', this.player.weapon)
-//        console.log('max damage', inven[a].maxDamage())
-//        console.log('max damage plyr wpn', this.game.artifacts.get(this.player.weapon).maxDamage())
         if (this.player.weapon === undefined ||
             inven[a].maxDamage() > this.game.artifacts.get(this.player.weapon).maxDamage()) {
           this.player.weapon = inven[a].id;
@@ -126,6 +124,9 @@ export class MonsterRepository {
     var monsters:Monster[] = [];
     for(var i in this.monsters) {
       if (this.monsters[i].id != 0 && this.monsters[i].room_id == this.game.rooms.current_room.id) {
+        if (this.monsters[i].reaction == Monster.RX_UNKNOWN) {
+          this.monsters[i].checkReaction();
+        }
         monsters.push(this.monsters[i]);
       }
     }

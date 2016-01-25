@@ -13,7 +13,12 @@ import {Game} from '../models/game';
       <span *ngFor="#exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
     </p>
     <p class="room-exits">Who's here:<br />
-      <span *ngFor="#monster of game.monsters.visible">{{ monster.name }}<br /></span>
+      <span *ngFor="#monster of game.monsters.visible">
+        <span class="monster"
+          [class.friendly]="monster.reaction == 'friend'"
+          [class.hostile]="monster.reaction == 'hostile'"
+          >{{ monster.name }} - {{monster.reaction}}</span><br />
+      </span>
     </p>
     <p class="room-exits">What's around:<br />
       <span *ngFor="#artifact of game.artifacts.visible">{{ artifact.name }}<br /></span>

@@ -1,9 +1,11 @@
+import {Game} from './game'
+
 /**
  * Loadable class. Parent class for all objects loaded from the database.
  */
 export abstract class Loadable {
 
-  constructor() { }
+  public game:Game;
 
   /**
    * Loads data from JSON source into the object properties.

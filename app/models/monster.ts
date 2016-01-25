@@ -12,10 +12,10 @@ export class Monster extends Loadable {
   static FRIEND_NEVER: string = 'hostile';
   static FRIEND_RANDOM: string = 'random';
   // reaction to player
-  static RX_UNKNOWN: number = 0;
-  static RX_FRIEND: number = 1;
-  static RX_NEUTRAL: number = 2;
-  static RX_HOSTILE: number = 3;
+  static RX_UNKNOWN: string = 'unknown';
+  static RX_FRIEND: string = 'friend';
+  static RX_NEUTRAL: string = 'neutral';
+  static RX_HOSTILE: string = 'hostile';
   // status
   static STATUS_ALIVE: number = 1;
   static STATUS_DEAD: number = 2;
@@ -41,13 +41,13 @@ export class Monster extends Loadable {
   armor: number;
 
   // data properties for player only
-  charisma: number; // for the player only
+  charisma: number;
   spell_abilities:Array<Object>;
   weapon_abilities:Array<Object>;
 
   // game-state properties
   seen: boolean = false;
-  reaction: number;
+  reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
   damage: number = 0;
 
@@ -73,7 +73,20 @@ export class Monster extends Loadable {
         this.reaction = Monster.RX_HOSTILE;
         break;
       case Monster.FRIEND_RANDOM:
-        // TODO: calculate reaction based on random odds
+        // calculate reaction based on random odds
+
+        this.reaction = Monster.RX_FRIEND;
+        var friend_odds = this.friend_odds + ((this.game.monsters.player.charisma - 10) * 2)
+        // first roll determines a neutral vs. friendly monster
+        var roll1 = this.game.diceRoll(1,100);
+        if (roll1 > friend_odds) {
+          this.reaction = Monster.RX_NEUTRAL;
+          // second roll determines a hostile vs. neutral monster
+          var roll2 = this.game.diceRoll(1,100)
+          if (roll2 > friend_odds) {
+            this.reaction = Monster.RX_HOSTILE;
+          }
+        }
         break;
     }
   }

@@ -56,6 +56,11 @@ export class Game {
   command_parser: CommandParser;
 
   /**
+   * In Battle flag
+   */
+  in_battle: boolean = false;
+
+  /**
    * Sets up data received from the GameLoaderService.
    */
   init(data) {
@@ -87,6 +92,17 @@ export class Game {
 
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
+  }
+
+  /**
+   * Rolls a set of dice
+   */
+  diceRoll(dice, sides) {
+    var result = 0;
+    for(var i=0; i < dice; i++) {
+      result += Math.random() * sides + 1;
+    }
+    return result;
   }
 
 }
