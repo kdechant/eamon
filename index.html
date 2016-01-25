@@ -10,20 +10,23 @@
     <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
     <script src="node_modules/angular2/bundles/http.dev.js"></script>
 
+    <!-- load custom commands from the specific game -->
+    <script src="demo1/commands.js"></script>
+
     <!-- 2. Configure SystemJS -->
     <script>
       var game_id = 'demo1';
 
       System.config({
         map: {
-            'rxjs': 'node_modules/rxjs'
+          'rxjs': 'node_modules/rxjs'
         },
         packages: {
           app: {
             format: 'register',
             defaultExtension: 'js'
           },
-          'rxjs': {defaultExtension: 'js'}
+          rxjs: {defaultExtension: 'js'}
         }
       });
       System.import('app/boot')
