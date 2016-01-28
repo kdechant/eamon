@@ -24,6 +24,12 @@ import {Game} from '../models/game';
       <span *ngFor="#artifact of game.artifacts.visible">{{ artifact.name }}<br /></span>
     </p>
     <p class="timer">Timer: {{game.timer}}</p>
+    <p class="weight">Weight carried: {{game.monsters.player.weight_carried}}</p>
+
+    <p class="weapon" *ngIf="game.monsters.player.weapon">Ready weapon: {{game.monsters.player.weapon.name}}
+     ({{game.monsters.player.weapon.dice}}d{{game.monsters.player.weapon.sides}})</p>
+    <p class="weapon none" *ngIf="!game.monsters.player.weapon">Ready weapon: none!</p>
+
     </div>
     `,
 })

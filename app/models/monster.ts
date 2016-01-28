@@ -1,9 +1,11 @@
-import {Loadable} from './loadable';
+import {Game} from '../models/game';
+import {GameObject} from '../models/game-object';
+import {Artifact} from '../models/artifact';
 
 /**
  * Monster class. Represents all properties of a single monster
  */
-export class Monster extends Loadable {
+export class Monster extends GameObject {
 
   // constants
   static PLAYER:number = 0;
@@ -33,7 +35,7 @@ export class Monster extends Loadable {
   friend_odds: number;
   courage: number;
   gold:number;
-  weapon: number;
+  weapon_id: number;
   attack_odds: number;
   weapon_dice: number;
   weapon_sides: number;
@@ -50,6 +52,8 @@ export class Monster extends Loadable {
   reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
   damage: number = 0;
+  weight_carried: number = 0;
+  weapon: Artifact;
 
   /**
    * Moves the monster to a specific room.
@@ -88,6 +92,90 @@ export class Monster extends Loadable {
           }
         }
         break;
+    }
+  }
+
+  /**
+   * Calculates the maximum weight the monster can carry
+   * @return number
+   */
+  maxWeight() {
+    return this.hardiness * 10;
+  }
+
+  /**
+   * The monster picks up an artifact
+   * @param Artifact artifact
+   */
+  pickUp(artifact) {
+    // TODO: call get hook here with artifact ID
+    artifact.room_id = null;
+    artifact.monster_id = this.id;
+    this.updateWeight();
+  }
+
+  /**
+   * The monster drops an artifact
+   * @param Artifact artifact
+   */
+  drop(artifact) {
+    // TODO: invoke drop hook
+    artifact.room_id = this.room_id;
+    artifact.monster_id = null;
+
+    // if dropping the ready weapon, set weapon to none
+    if (artifact.id == this.weapon_id) {
+      this.weapon_id = null;
+      this.weapon = null;
+    }
+
+    this.updateWeight();
+  }
+
+  /**
+   * Calculates the weight of the artifacts carried by the monster
+   * @return number
+   */
+  updateWeight() {
+    var weight = 0;
+    var artifacts = this.getInventory();
+    for (var i in artifacts) {
+       weight += artifacts[i].weight;
+    }
+    this.weight_carried = weight;
+  }
+
+  /**
+   * Gets the inventory for a monster.
+   * This should probably be moved to the Monster class but need to resolve some dependencies first.
+   * @param number monster_id
+   * @return Array<Artifact>
+   */
+  getInventory() {
+    var inv = [];
+    for(var i in this.game.artifacts.all) {
+      if (this.game.artifacts.all[i].monster_id == this.id) {
+        inv.push(this.game.artifacts.all[i]);
+      }
+    }
+    return inv;
+  }
+
+  /**
+   * Readies the best weapon the monster is carrying
+   */
+  readyBestWeapon() {
+    var inven = this.getInventory();
+    for (var a in inven) {
+      if (inven[a].is_weapon) {
+        if (this.weapon === undefined ||
+            inven[a].maxDamage() > this.weapon.maxDamage()) {
+          this.weapon = inven[a];
+          this.weapon_id = inven[a].id;
+          this.weapon_dice = inven[a].dice;
+          this.weapon_sides = inven[a].sides;
+        }
+      }
     }
   }
 

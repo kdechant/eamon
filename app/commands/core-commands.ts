@@ -44,3 +44,60 @@ export class SayCommand extends BaseCommand {
   }
 }
 core_commands.push(new SayCommand());
+
+export class GetCommand extends BaseCommand {
+  name: string = 'get';
+  verbs: string[] = ['get', 'take'];
+  run(verb, arg) {
+
+    var output = '';
+    var match = false;
+
+    for (var i in this.game.artifacts.visible) {
+      var a = this.game.artifacts.visible[i];
+      if (arg == a.name || arg == 'all') {
+        match = true;
+        if (this.game.monsters.player.weight_carried + a.weight <= this.game.monsters.player.maxWeight()) {
+          this.game.monsters.player.pickUp(a);
+          output += a.name + ' taken.';
+        } else {
+          output += a.name + ' is too heavy.';
+        }
+      }
+    }
+
+    // message if nothing was taken
+    if (!match && arg != 'all') {
+      throw new Error("I see no " + arg + " here!")
+    }
+
+    return output;
+  }
+}
+core_commands.push(new GetCommand());
+
+export class DropCommand extends BaseCommand {
+  name: string = 'drop';
+  verbs: string[] = ['drop'];
+  run(verb, arg) {
+
+    var output = '';
+    var match = false;
+
+    var inventory = this.game.monsters.player.getInventory();
+    for (var i in inventory) {
+      match = true;
+      if (arg == inventory[i].name || arg == 'all') {
+        this.game.monsters.player.drop(inventory[i]);
+      }
+    }
+
+    // message if nothing was dropped
+    if (!match && arg != 'all') {
+      throw new Error("You aren't carrying a " + arg + "!")
+    }
+
+    return output;
+  }
+}
+core_commands.push(new DropCommand());

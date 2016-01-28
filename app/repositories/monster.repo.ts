@@ -44,7 +44,7 @@ export class MonsterRepository {
    * @param number id
    */
   add(monster_data) {
-    var m = new Monster();
+    var m = new Monster(this.game);
     m.init(monster_data);
 
     // autonumber the ID if not provided
@@ -72,7 +72,7 @@ export class MonsterRepository {
    * @param
    */
   addPlayer(player_data) {
-    this.player = new Monster;
+    this.player = new Monster(this.game);
     this.player.init(player_data);
 
     // player is always monster 0
@@ -84,22 +84,14 @@ export class MonsterRepository {
     var wpns = player_data.weapons;
     for (var w in wpns) {
       var a = wpns[w];
-      a.room_id = null;
-      a.monster_id = 0; // 0 = carried by player
+      a.weight = 3;
       var art = this.game.artifacts.add(a);
+      this.game.monsters.player.pickUp(art);
     }
 
     // ready the player's best weapon
+    this.game.monsters.player.readyBestWeapon();
 
-    var inven = this.game.artifacts.getInventory(Monster.PLAYER);
-    for (var a in inven) {
-      if (inven[a].is_weapon) {
-        if (this.player.weapon === undefined ||
-            inven[a].maxDamage() > this.game.artifacts.get(this.player.weapon).maxDamage()) {
-          this.player.weapon = inven[a].id;
-        }
-      }
-    }
     return this.player
   }
 

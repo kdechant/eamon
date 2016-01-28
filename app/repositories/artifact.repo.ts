@@ -10,7 +10,7 @@ export class ArtifactRepository {
   /**
    * An array of all the Artifact objects
    */
-  artifacts: Artifact[] = [];
+  all: Artifact[] = [];
 
   /**
    * A reference to the parent Game object
@@ -40,7 +40,7 @@ export class ArtifactRepository {
    * @param object artifact_data
    */
   add(artifact_data) {
-    var a = new Artifact();
+    var a = new Artifact(this.game);
     a.init(artifact_data);
 
     // autonumber the ID if not provided
@@ -52,13 +52,13 @@ export class ArtifactRepository {
       throw new Error("Tried to create an artifact #"+a.id+" but that ID is already taken.");
     }
 
-    this.artifacts.push(a);
+    this.all.push(a);
 
     // update the autonumber index
     if (a.id > this.index) {
       this.index = a.id;
     }
-    return a.id;
+    return a;
   }
 
   /**
@@ -67,27 +67,11 @@ export class ArtifactRepository {
    * @return Artifact
    */
   get(id) {
-    for(var i in this.artifacts) {
-      if (this.artifacts[i].id == id) {
-        return this.artifacts[i];
+    for(var i in this.all) {
+      if (this.all[i].id == id) {
+        return this.all[i];
       }
     }
-  }
-
-  /**
-   * Gets the inventory for a monster.
-   * This should probably be moved to the Monster class but need to resolve some dependencies first.
-   * @param number monster_id
-   * @return Array<Artifact>
-   */
-  getInventory(monster_id) {
-    var inv = [];
-    for(var i in this.artifacts) {
-      if (this.artifacts[i].monster_id == monster_id) {
-        inv.push(this.artifacts[i]);
-      }
-    }
-    return inv;
   }
 
   /**
@@ -96,9 +80,9 @@ export class ArtifactRepository {
    */
   updateVisible() {
     var artifacts:Artifact[] = [];
-    for(var i in this.artifacts) {
-      if (this.artifacts[i].room_id == this.game.rooms.current_room.id) {
-        artifacts.push(this.artifacts[i]);
+    for(var i in this.all) {
+      if (this.all[i].room_id == this.game.rooms.current_room.id) {
+        artifacts.push(this.all[i]);
       }
     }
     this.visible = artifacts;

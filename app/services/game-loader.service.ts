@@ -45,8 +45,7 @@ export class GameLoaderService {
           // Tick the game clock. This builds the list of monsters/items in the first room.
           this.game.tick();
 
-        },
-        err => console.error(err)
+        }
     )
 
     return this.game;

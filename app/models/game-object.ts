@@ -1,9 +1,17 @@
 import {Game} from './game'
+import {Loadable} from './loadable';
 
 /**
- * Loadable class. Parent class for all objects loaded from the database.
+ * GameObject class. Parent class for monsters and artifacts.
  */
-export abstract class Loadable {
+export abstract class GameObject extends Loadable {
+
+  public game:Game;
+
+  constructor(game:Game) {
+    super()
+    this.game = game;
+  }
 
   /**
    * Loads data from JSON source into the object properties.

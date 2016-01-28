@@ -1,9 +1,9 @@
-import {Loadable} from './loadable';
+import {GameObject} from './game-object';
 
 /**
  * Artifact class. Represents all properties of a single artifact
  */
-export class Artifact extends Loadable {
+export class Artifact extends GameObject {
   // data properties
   id: number;
   name: string;
@@ -11,7 +11,7 @@ export class Artifact extends Loadable {
   room_id:number; // if on the ground, which room
   monster_id:number; // if in inventory, who is carrying it
   weight: number;
-  value: number = 0;
+  value: number;
   fixed_value: boolean;
   is_container: boolean;
   is_open: boolean;
