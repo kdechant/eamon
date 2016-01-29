@@ -37,7 +37,11 @@ export class SayCommand implements BaseCommand {
   name: string = 'say';
   verbs: string[] = ['say'];
   run(verb, arg) {
-    Game.getInstance().history.write('Ok... "'+arg+'"')
+    var game = Game.getInstance();
+
+    game.history.write('Ok... "'+arg+'"')
+    game.invoke('say', verb, arg);
+
   }
 }
 core_commands.push(new SayCommand());
@@ -55,11 +59,14 @@ export class GetCommand implements BaseCommand {
       var a = game.artifacts.visible[i];
       if (arg == a.name || arg == 'all') {
         match = true;
-        if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
-          game.monsters.player.pickUp(a);
-          game.history.write(a.name + ' taken.');
-        } else {
-          game.history.write(a.name + ' is too heavy.');
+        if (game.invoke('beforeGet', verb, a.name)) {
+          if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
+            game.monsters.player.pickUp(a);
+            game.history.write(a.name + ' taken.');
+            game.invoke('afterGet', verb, a.name)
+          } else {
+            game.history.write(a.name + ' is too heavy.');
+          }
         }
       }
     }

@@ -68,6 +68,19 @@ export class ArtifactRepository {
   }
 
   /**
+   * Gets an artifact by name.
+   * @param string name
+   * @return Artifact
+   */
+  getByName(name:string) {
+    for(var i in this.all) {
+      if (this.all[i].name == name) {
+        return this.all[i];
+      }
+    }
+  }
+
+  /**
    * Updates the list of artifacts in the current room, that are visible to the player
    * @return Artifact[]
    */

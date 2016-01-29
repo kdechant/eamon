@@ -6,6 +6,10 @@ import {MonsterRepository} from '../repositories/monster.repo';
 
 import {HistoryManager} from '../models/history-manager';
 import {CommandParser} from '../models/command-parser';
+import {Hook} from '../commands/hook';
+
+// hooks are defined in a plain JS file in the adventure.
+declare var hooks:Array<Hook>;
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -55,6 +59,11 @@ export class Game {
   command_parser: CommandParser;
 
   /**
+   * Command parser object
+   */
+  hooks: Hook[] = [];
+
+  /**
    * In Battle flag
    */
   in_battle: boolean = false;
@@ -86,6 +95,15 @@ export class Game {
 
     this.history = new HistoryManager;
     this.command_parser = new CommandParser();
+
+    // register the hooks
+    for (var i in hooks) {
+      var h = new Hook();
+      h.game = this;
+      h.name = hooks[i].name;
+      h.run = hooks[i].run;
+      this.hooks.push(h);
+    }
 
     // Show the adventure description
     this.history.push('');
@@ -147,6 +165,20 @@ export class Game {
       result += Math.random() * sides + 1;
     }
     return result;
+  }
+
+  /**
+   * Invokes a game hook
+   * @param string hook_name The name of the hook.
+   * @param string verb The verb of the command that was run
+   * @param string arg The arguments to the command
+   */
+  public invoke(hook_name, verb, arg) {
+    for (var i in this.hooks) {
+      if (this.hooks[i].name == hook_name) {
+        this.hooks[i].run(verb, arg);
+      }
+    }
   }
 
 }
