@@ -18,7 +18,7 @@ export class Room extends Loadable {
   public name: string;
   public description: string;
   public exits: RoomExit[];
-  public times_visited: number = 0;
+  public seen: boolean = false;
 
   /**
    * Gets the exit from the room in a given direction

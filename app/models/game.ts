@@ -96,12 +96,35 @@ export class Game {
     this.timer++;
 
     // if the player is seeing the room for the first time, show the description
-    if (this.rooms.current_room.times_visited == 1) {
+    if (!this.rooms.current_room.seen) {
       this.history.push('', this.rooms.current_room.description);
+      this.rooms.current_room.seen = true;
     }
 
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
+
+    // show monster and artifact descriptions
+    for (var i in this.monsters.visible) {
+      var m = this.monsters.visible[i];
+      if (!m.seen) {
+        this.history.push('', m.description);
+        m.seen = true;
+      } else {
+        this.history.push('', m.name + ' is here.');
+      }
+    }
+
+    for (var i in this.artifacts.visible) {
+      var a = this.artifacts.visible[i];
+      if (!a.seen) {
+        this.history.push('', a.description);
+        a.seen = true;
+      } else {
+        this.history.push('', 'You see ' + a.name);
+      }
+    }
+
   }
 
   /**
