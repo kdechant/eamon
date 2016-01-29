@@ -162,6 +162,16 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Readies a weapon
+   */
+  ready(weapon:Artifact) {
+    this.weapon = weapon;
+    this.weapon_id = weapon.id;
+    this.weapon_dice = weapon.dice;
+    this.weapon_sides = weapon.sides;
+  }
+
+  /**
    * Readies the best weapon the monster is carrying
    */
   readyBestWeapon() {
@@ -170,10 +180,7 @@ export class Monster extends GameObject {
       if (inven[a].is_weapon) {
         if (this.weapon === undefined ||
             inven[a].maxDamage() > this.weapon.maxDamage()) {
-          this.weapon = inven[a];
-          this.weapon_id = inven[a].id;
-          this.weapon_dice = inven[a].dice;
-          this.weapon_sides = inven[a].sides;
+          this.ready(inven[a]);
         }
       }
     }

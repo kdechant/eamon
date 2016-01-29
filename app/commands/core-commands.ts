@@ -97,3 +97,30 @@ export class DropCommand implements BaseCommand {
   }
 }
 core_commands.push(new DropCommand());
+
+
+export class ReadyCommand implements BaseCommand {
+  name: string = 'ready';
+  verbs: string[] = ['ready'];
+  run(verb, arg) {
+
+    var game = Game.getInstance();
+
+    var match = false;
+
+    var inventory = game.monsters.player.getInventory();
+    for (var i in inventory) {
+      match = true;
+      if (arg == inventory[i].name) {
+        game.monsters.player.ready(inventory[i]);
+        game.history.write(inventory[i].name + " readied.")
+      }
+    }
+
+    // message if nothing was dropped
+    if (!match) {
+      throw new CommandException("You aren't carrying a " + arg + "!")
+    }
+  }
+}
+core_commands.push(new ReadyCommand());
