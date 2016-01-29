@@ -10,9 +10,8 @@ describe("Monster", function() {
 
   // initialize the test with the full repository of artifacts
   let repo:MonsterRepository;
-  var game = new Game();
   beforeEach(() => {
-    repo = new MonsterRepository(MONSTERS, game);
+    repo = new MonsterRepository(MONSTERS);
   });
 
   it("should know its carrying capacity", function() {

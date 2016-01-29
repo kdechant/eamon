@@ -4,9 +4,6 @@ import {RoomRepository} from '../repositories/room.repo';
 import {ArtifactRepository} from '../repositories/artifact.repo';
 import {MonsterRepository} from '../repositories/monster.repo';
 
-import {Room, RoomExit} from '../models/room';
-import {Artifact} from '../models/artifact';
-import {Monster} from '../models/monster';
 import {HistoryManager} from '../models/history-manager';
 import {CommandParser} from '../models/command-parser';
 
@@ -14,6 +11,8 @@ import {CommandParser} from '../models/command-parser';
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
  */
 export class Game {
+
+  private static _instance:Game = new Game();
 
   /**
    * @var string The current adventure's name
@@ -60,6 +59,17 @@ export class Game {
    */
   in_battle: boolean = false;
 
+  constructor() {
+    if(Game._instance){
+      throw new Error("Error: Instantiation failed: Use Game.getInstance() instead of new.");
+    }
+    Game._instance = this;
+  }
+
+  public static getInstance():Game {
+    return Game._instance;
+  }
+
   /**
    * Sets up data received from the GameLoaderService.
    */
@@ -69,13 +79,13 @@ export class Game {
     this.description = data[0].description;
 
     this.rooms = new RoomRepository(data[1]);
-    this.artifacts = new ArtifactRepository(data[2], this);
-    this.monsters = new MonsterRepository(data[3], this);
+    this.artifacts = new ArtifactRepository(data[2]);
+    this.monsters = new MonsterRepository(data[3]);
 
     this.monsters.addPlayer(data[4]);
 
     this.history = new HistoryManager;
-    this.command_parser = new CommandParser(this);
+    this.command_parser = new CommandParser();
   }
 
   /**

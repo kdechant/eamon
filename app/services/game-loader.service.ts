@@ -13,19 +13,12 @@ declare var game_id:string;
  */
 @Injectable()
 export class GameLoaderService {
-  /**
-   * The main game object
-   */
-  game: Game;
 
-  /**
-   * Constructor. Loads monster data.
-   */
   constructor(private http:Http) { }
 
-  setupGameData(game:Game) {
+  setupGameData() {
 
-    this.game = game;
+    var game = Game.getInstance();
 
     // load all the game data objects in parallel
     Observable.forkJoin(
@@ -36,19 +29,18 @@ export class GameLoaderService {
       this.http.get('/app/'+game_id+'/mock-data/player.json').map((res:Response) => res.json())
     ).subscribe(
         data => {
-          this.game.init(data);
-          this.game.history.push('', this.game.description)
+          game.init(data);
+          game.history.push('', game.description)
 
           // Place the player in the first room
-          this.game.rooms.moveTo(1);
+          game.rooms.moveTo(1);
 
           // Tick the game clock. This builds the list of monsters/items in the first room.
-          this.game.tick();
+          game.tick();
 
         }
     )
 
-    return this.game;
   }
 
 }

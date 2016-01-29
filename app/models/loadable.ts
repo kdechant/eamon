@@ -1,5 +1,3 @@
-import {Game} from './game'
-
 /**
  * Loadable class. Parent class for all objects loaded from the database.
  */

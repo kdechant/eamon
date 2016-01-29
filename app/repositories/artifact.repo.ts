@@ -13,11 +13,6 @@ export class ArtifactRepository {
   all: Artifact[] = [];
 
   /**
-   * A reference to the parent Game object
-   */
-  game: Game;
-
-  /**
    * An array of visible Artifact objects
    */
   visible: Artifact[] = [];
@@ -27,9 +22,7 @@ export class ArtifactRepository {
    */
   index:number = 0;
 
-  constructor(artifact_data: Array<Object>, game: Game) {
-    this.game = game;
-
+  constructor(artifact_data: Array<Object>) {
     for(var i in artifact_data) {
       this.add(artifact_data[i]);
     }
@@ -40,7 +33,7 @@ export class ArtifactRepository {
    * @param object artifact_data
    */
   add(artifact_data) {
-    var a = new Artifact(this.game);
+    var a = new Artifact();
     a.init(artifact_data);
 
     // autonumber the ID if not provided
@@ -81,7 +74,7 @@ export class ArtifactRepository {
   updateVisible() {
     var artifacts:Artifact[] = [];
     for(var i in this.all) {
-      if (this.all[i].room_id == this.game.rooms.current_room.id) {
+      if (this.all[i].room_id == Game.getInstance().rooms.current_room.id) {
         artifacts.push(this.all[i]);
       }
     }

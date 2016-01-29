@@ -8,9 +8,8 @@ describe("Artifact", function() {
 
   // initialize the test with the full repository of artifacts
   let repo:ArtifactRepository;
-  var game = new Game();
   beforeEach(() => {
-    repo = new ArtifactRepository(ARTIFACTS, game);
+    repo = new ArtifactRepository(ARTIFACTS);
   });
 
   it("should know its max damage", function() {

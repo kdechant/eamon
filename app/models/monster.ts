@@ -80,13 +80,13 @@ export class Monster extends GameObject {
         // calculate reaction based on random odds
 
         this.reaction = Monster.RX_FRIEND;
-        var friend_odds = this.friend_odds + ((this.game.monsters.player.charisma - 10) * 2)
+        var friend_odds = this.friend_odds + ((Game.getInstance().monsters.player.charisma - 10) * 2)
         // first roll determines a neutral vs. friendly monster
-        var roll1 = this.game.diceRoll(1,100);
+        var roll1 = Game.getInstance().diceRoll(1,100);
         if (roll1 > friend_odds) {
           this.reaction = Monster.RX_NEUTRAL;
           // second roll determines a hostile vs. neutral monster
-          var roll2 = this.game.diceRoll(1,100)
+          var roll2 = Game.getInstance().diceRoll(1,100)
           if (roll2 > friend_odds) {
             this.reaction = Monster.RX_HOSTILE;
           }
@@ -153,9 +153,9 @@ export class Monster extends GameObject {
    */
   getInventory() {
     var inv = [];
-    for(var i in this.game.artifacts.all) {
-      if (this.game.artifacts.all[i].monster_id == this.id) {
-        inv.push(this.game.artifacts.all[i]);
+    for(var i in Game.getInstance().artifacts.all) {
+      if (Game.getInstance().artifacts.all[i].monster_id == this.id) {
+        inv.push(Game.getInstance().artifacts.all[i]);
       }
     }
     return inv;

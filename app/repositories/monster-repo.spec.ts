@@ -11,9 +11,9 @@ describe("Monster Repo", function() {
 
   let repo:MonsterRepository;
   beforeEach(() => {
-    var game = new Game();
-    game.artifacts = new ArtifactRepository([], game);
-    repo = new MonsterRepository(MONSTERS, game);
+    var game = Game.getInstance();
+    game.artifacts = new ArtifactRepository([]);
+    repo = new MonsterRepository(MONSTERS);
     console.log(repo);
   });
 

@@ -18,11 +18,6 @@ export class MonsterRepository {
   player: Monster;
 
   /**
-   * A reference to the parent Game object
-   */
-  game: Game;
-
-  /**
    * An array of visible Monster objects
    */
   visible: Monster[] = [];
@@ -32,8 +27,7 @@ export class MonsterRepository {
    */
   index:number = 0;
 
-  constructor(monster_data: Array<Object>, game: Game) {
-    this.game = game;
+  constructor(monster_data: Array<Object>) {
     for(var i in monster_data) {
       this.add(monster_data[i]);
     }
@@ -44,7 +38,7 @@ export class MonsterRepository {
    * @param number id
    */
   add(monster_data) {
-    var m = new Monster(this.game);
+    var m = new Monster();
     m.init(monster_data);
 
     // autonumber the ID if not provided
@@ -55,8 +49,6 @@ export class MonsterRepository {
     if (this.get(m.id) !== undefined) {
       throw new Error("Tried to create a monster #"+m.id+" but that ID is already taken.");
     }
-
-    m.game = this.game;
 
     this.monsters.push(m);
 
@@ -72,7 +64,7 @@ export class MonsterRepository {
    * @param
    */
   addPlayer(player_data) {
-    this.player = new Monster(this.game);
+    this.player = new Monster();
     this.player.init(player_data);
 
     // player is always monster 0
@@ -85,12 +77,12 @@ export class MonsterRepository {
     for (var w in wpns) {
       var a = wpns[w];
       a.weight = 3;
-      var art = this.game.artifacts.add(a);
-      this.game.monsters.player.pickUp(art);
+      var art = Game.getInstance().artifacts.add(a);
+      Game.getInstance().monsters.player.pickUp(art);
     }
 
     // ready the player's best weapon
-    this.game.monsters.player.readyBestWeapon();
+    Game.getInstance().monsters.player.readyBestWeapon();
 
     return this.player
   }
@@ -115,7 +107,7 @@ export class MonsterRepository {
   updateVisible() {
     var monsters:Monster[] = [];
     for(var i in this.monsters) {
-      if (this.monsters[i].id != 0 && this.monsters[i].room_id == this.game.rooms.current_room.id) {
+      if (this.monsters[i].id != 0 && this.monsters[i].room_id == Game.getInstance().rooms.current_room.id) {
         if (this.monsters[i].reaction == Monster.RX_UNKNOWN) {
           this.monsters[i].checkReaction();
         }

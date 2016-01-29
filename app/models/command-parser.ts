@@ -27,8 +27,7 @@ export class CommandParser {
    */
   available_commands: { [key:string]:BaseCommand; } = {};
 
-  constructor(game) {
-    this.game = game;
+  constructor() {
 
     for(var i in core_commands) {
       this.register(core_commands[i]);
@@ -49,8 +48,6 @@ export class CommandParser {
    * @param BaseCommand command The command object, a subclass of BaseCommand
    */
   register(command:BaseCommand) {
-    // commands need a reference to the game object.
-    command.game = this.game;
 
     // add to the list of verbs, used for parsing commands
     for (var i in command.verbs) {
@@ -84,7 +81,7 @@ export class CommandParser {
       var command = this.available_commands[this.available_verbs[verb]];
       try {
         var msg = command.run(verb, args);
-        this.game.tick();
+        Game.getInstance().tick();
       } catch (ex) {
         var msg:string = ex.message;
       }

@@ -36,8 +36,8 @@ export class AppComponent {
   constructor(private _gameLoaderService: GameLoaderService) { }
 
   ngOnInit() {
-    this.game = new Game();
-    this._gameLoaderService.setupGameData(this.game);
+    this.game = Game.getInstance();
+    this._gameLoaderService.setupGameData();
   }
 
 }
