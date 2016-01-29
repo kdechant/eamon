@@ -7,9 +7,7 @@ import {MonsterRepository} from '../repositories/monster.repo';
 import {HistoryManager} from '../models/history-manager';
 import {CommandParser} from '../models/command-parser';
 import {Hook} from '../commands/hook';
-
-// hooks are defined in a plain JS file in the adventure.
-declare var hooks:Array<Hook>;
+import {hooks} from 'adventure/hooks';
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -99,7 +97,6 @@ export class Game {
     // register the hooks
     for (var i in hooks) {
       var h = new Hook();
-      h.game = this;
       h.name = hooks[i].name;
       h.run = hooks[i].run;
       this.hooks.push(h);
@@ -176,7 +173,7 @@ export class Game {
   public invoke(hook_name, verb, arg) {
     for (var i in this.hooks) {
       if (this.hooks[i].name == hook_name) {
-        this.hooks[i].run(verb, arg);
+        return this.hooks[i].run(verb, arg);
       }
     }
   }

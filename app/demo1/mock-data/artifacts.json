@@ -14,7 +14,7 @@
     "room_id": 4,
     "weight": 50,
     "value": 1000
-  },  
+  },
   {
     "id": 3,
     "name": "magic sword",
@@ -25,8 +25,8 @@
     "is_weapon": true,
     "weapon_type": 5,
     "weapon_odds": 20,
-    "weapon_dice": 2,
-    "weapon_sides": 8
+    "dice": 2,
+    "sides": 8
   },
   {
     "id": 4,
@@ -38,7 +38,7 @@
     "value": 10,
     "weapon_type": 4,
     "weapon_odds": 10,
-    "weapon_dice": 1,
-    "weapon_sides": 5
+    "dice": 1,
+    "sides": 5
   }
 ]

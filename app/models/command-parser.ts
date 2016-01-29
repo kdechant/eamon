@@ -5,8 +5,8 @@ import {CustomCommand} from '../commands/base-command';
 import {core_commands} from '../commands/core-commands';
 import {CommandException} from '../utils/command.exception';
 
-// custom commands are passed in from the back-end.
-declare var commands:Array<CustomCommand>;
+// import custom commands from the adventure directory.
+import {custom_commands} from 'adventure/commands';
 
 /**
  * Command Parser class. Handles registration of available commands and parsing
@@ -31,12 +31,11 @@ export class CommandParser {
     }
 
     // register custom commands
-    for (var i in commands) {
+    for (var i in custom_commands) {
       var cmd = new CustomCommand();
-      cmd.game = Game.getInstance();
-      cmd.name = commands[i].name;
-      cmd.verbs = commands[i].verbs;
-      cmd.run = commands[i].run;
+      cmd.name = custom_commands[i].name;
+      cmd.verbs = custom_commands[i].verbs;
+      cmd.run = custom_commands[i].run;
       this.register(cmd);
     }
   }

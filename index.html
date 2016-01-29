@@ -10,28 +10,32 @@
     <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
     <script src="node_modules/angular2/bundles/http.dev.js"></script>
 
-    <!-- load custom commands and hooks from the specific game -->
-    <script src="demo1/commands.js"></script>
-    <script src="demo1/hooks.js"></script>
-
     <!-- 2. Configure SystemJS -->
     <script>
       var game_id = 'demo1';
 
       System.config({
         map: {
-          'rxjs': 'node_modules/rxjs'
+          'rxjs': 'node_modules/rxjs',
+          'adventure': game_id
         },
         packages: {
           app: {
             format: 'register',
             defaultExtension: 'js'
           },
+          adventure: {
+            format: 'register',
+            defaultExtension: 'js'
+          },
           rxjs: {defaultExtension: 'js'}
         }
       });
-      System.import('app/boot')
-            .then(null, console.error.bind(console));
+      Promise.all([
+        System.import('app/boot'),
+        System.import('adventure/commands'),
+        System.import('adventure/hooks')
+      ]).then(null, console.error.bind(console));
     </script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
