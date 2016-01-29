@@ -36,7 +36,7 @@ hooks.push({
     var game = Game.getInstance();
     // 'say trollsfire' is the same as running the command 'trollsfire'
     if (arg == 'trollsfire') {
-      game.command_parser.run('trollsfire');
+      game.command_parser.run('trollsfire', false);
     }
   }
 });

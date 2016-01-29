@@ -18,6 +18,6 @@ custom_commands.push({
     var game = Game.getInstance();
     var exits = game.rooms.current_room.exits;
     var rand = exits[Math.floor(Math.random() * exits.length)];
-    game.command_parser.run(rand.direction);
+    game.command_parser.run(rand.direction, false);
   }
 });

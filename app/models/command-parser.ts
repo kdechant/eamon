@@ -57,9 +57,14 @@ export class CommandParser {
 
   /**
    * Parses a command into a verb and arguments, then runs the command
-   * @param string input The input string from the user, e.g., "n", "get all", "give sword to marcus"
+   * @param string input
+   *   The input string from the user, e.g., "n", "get all", "give sword to marcus"
+   * @param boolean tick
+   *   Whether to tick the game clock after running this command. Defaults to true.
+   *   Set this to false when calling a command from within another command,
+   *   to prevent multiple game clock ticks.
    */
-  run(input:string) {
+  run(input:string, tick:boolean = true) {
 
     var game = Game.getInstance();
 
@@ -80,7 +85,9 @@ export class CommandParser {
       var command = this.available_commands[this.available_verbs[verb]];
       try {
         command.run(verb, args);
-        game.tick();
+        if (tick) {
+          game.tick();
+        }
       } catch (ex) {
         if (ex instanceof CommandException) {
           // illegal command. show in game but not in console.
