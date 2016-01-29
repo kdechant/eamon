@@ -1,22 +1,18 @@
 import {Game} from '../models/game';
 
 import {BaseCommand} from '../commands/base-command';
+import {CustomCommand} from '../commands/base-command';
 import {core_commands} from '../commands/core-commands';
 import {CommandException} from '../utils/command.exception';
 
 // custom commands are passed in from the back-end.
-declare var commands:Array<BaseCommand>;
+declare var commands:Array<CustomCommand>;
 
 /**
  * Command Parser class. Handles registration of available commands and parsing
  * user input.
  */
 export class CommandParser {
-
-  /**
-   * A reference to the Game object
-   */
-  game: Game;
 
   /**
    * A hash map of all the verbs used by the registered commands
@@ -36,7 +32,8 @@ export class CommandParser {
 
     // register custom commands
     for (var i in commands) {
-      var cmd = new BaseCommand();
+      var cmd = new CustomCommand();
+      cmd.game = Game.getInstance();
       cmd.name = commands[i].name;
       cmd.verbs = commands[i].verbs;
       cmd.run = commands[i].run;

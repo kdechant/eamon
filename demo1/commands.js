@@ -4,7 +4,7 @@ commands.push({
   name: 'trollsfire',
   verbs: ['trollsfire'],
   run: function(verb, arg) {
-    return 'As you say the magic word (Trollsfire), green flames rise from the sword\'s blade';
+    this.game.history.write('As you say the magic word (Trollsfire), green flames rise from the sword\'s blade');
   }
 });
 

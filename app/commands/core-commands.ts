@@ -4,7 +4,7 @@ import {CommandException} from '../utils/command.exception';
 
 export var core_commands = [];
 
-export class MoveCommand extends BaseCommand {
+export class MoveCommand implements BaseCommand {
   name: string = 'move';
   verbs: string[] = ['north', 'n', 'south', 's', 'east', 'e', 'west', 'w', 'up', 'u', 'down', 'd'];
 
@@ -33,7 +33,7 @@ export class MoveCommand extends BaseCommand {
 }
 core_commands.push(new MoveCommand());
 
-export class SayCommand extends BaseCommand {
+export class SayCommand implements BaseCommand {
   name: string = 'say';
   verbs: string[] = ['say'];
   run(verb, arg) {
@@ -42,7 +42,7 @@ export class SayCommand extends BaseCommand {
 }
 core_commands.push(new SayCommand());
 
-export class GetCommand extends BaseCommand {
+export class GetCommand implements BaseCommand {
   name: string = 'get';
   verbs: string[] = ['get', 'take'];
   run(verb, arg) {
@@ -72,7 +72,7 @@ export class GetCommand extends BaseCommand {
 }
 core_commands.push(new GetCommand());
 
-export class DropCommand extends BaseCommand {
+export class DropCommand implements BaseCommand {
   name: string = 'drop';
   verbs: string[] = ['drop'];
   run(verb, arg) {
