@@ -7,8 +7,5 @@ import {Game} from '../models/game';
 export class BaseCommand {
   name: string;
   verbs: Array<string>;
-
-  run(verb, arg) {
-    return '';
-  }
+  run(verb, arg) { }
 }

@@ -2,6 +2,7 @@ import {Game} from '../models/game';
 
 import {BaseCommand} from '../commands/base-command';
 import {core_commands} from '../commands/core-commands';
+import {CommandException} from '../utils/command.exception';
 
 // custom commands are passed in from the back-end.
 declare var commands:Array<BaseCommand>;
@@ -64,6 +65,8 @@ export class CommandParser {
    */
   run(input:string) {
 
+    var game = Game.getInstance();
+
     input = input.trim();
     var space_pos = input.indexOf(' ');
     if (space_pos == -1) {
@@ -80,15 +83,20 @@ export class CommandParser {
     if (this.available_verbs.hasOwnProperty(verb)) {
       var command = this.available_commands[this.available_verbs[verb]];
       try {
-        var msg = command.run(verb, args);
-        Game.getInstance().tick();
+        command.run(verb, args);
+        game.tick();
       } catch (ex) {
-        var msg:string = ex.message;
+        if (ex instanceof CommandException) {
+          // illegal command. show in game but not in console.
+          game.history.write(ex.message);
+        } else {
+          // an actual JS error occurred. Throw again so error appears in console.
+          throw(ex); // for debugging
+        }
       }
 
-      return msg;
     } else {
-      return "I don't know the command "+verb+"!";
+      game.history.write("I don't know the command '"+verb+"'!");
     }
 
   }

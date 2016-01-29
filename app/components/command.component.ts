@@ -36,13 +36,15 @@ export class CommandPromptComponent {
           value = this.game.history.getLastCommand();
         }
 
+        // start a new history entry
+        this.game.history.push(value)
+
         // run the command
         var result = this.game.command_parser.run(value);
 
         // clear the input box
         this.command = '';
 
-        this.game.history.push(value, result)
         break;
 
       case CommandPromptComponent.KEYCODE_UP:

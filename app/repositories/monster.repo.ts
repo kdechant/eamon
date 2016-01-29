@@ -77,6 +77,7 @@ export class MonsterRepository {
     for (var w in wpns) {
       var a = wpns[w];
       a.weight = 3;
+      a.description = 'You see your ' + a.name + '.';
       var art = Game.getInstance().artifacts.add(a);
       Game.getInstance().monsters.player.pickUp(art);
     }

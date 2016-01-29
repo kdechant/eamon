@@ -30,14 +30,6 @@ export class GameLoaderService {
     ).subscribe(
         data => {
           game.init(data);
-          game.history.push('', game.description)
-
-          // Place the player in the first room
-          game.rooms.moveTo(1);
-
-          // Tick the game clock. This builds the list of monsters/items in the first room.
-          game.tick();
-
         }
     )
 

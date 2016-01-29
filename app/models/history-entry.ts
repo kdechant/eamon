@@ -3,8 +3,15 @@
  * Holds the commands and results run previously.
  */
 export class HistoryEntry {
-  constructor(
-    public command?: string,
-    public results?: string
-  ) { }
+
+  public command: string
+  public results: string[] = [];
+
+  constructor(command) {
+    this.command = command;
+  }
+
+  public push(text:string) {
+    this.results.push(text);
+  }
 }

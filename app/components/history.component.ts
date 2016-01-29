@@ -6,7 +6,7 @@ import {Component, Input} from 'angular2/core';
     <div class="history">
       <div *ngFor="#entry of history?.history">
         <p class="history-command">{{entry.command}}</p>
-        <p class="history-results">{{entry.results}}</p>
+        <p class="history-results" *ngFor="#line of entry.results">{{line}}</p>
       </div>
     </div>
     `,

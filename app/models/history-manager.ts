@@ -15,11 +15,18 @@ export class HistoryManager {
   /**
    * Pushes a command onto the history
    */
-  push(command, results) {
-    this.history.push(new HistoryEntry(command, results))
+  push(command:string) {
+    this.history.push(new HistoryEntry(command))
 
     // reset the counter whenever a command is added.
     this.index = this.history.length;
+  }
+
+  /**
+   * Pushes some output text onto the history
+   */
+  write(text:string) {
+    this.history[this.index-1].push(text)
   }
 
   /**

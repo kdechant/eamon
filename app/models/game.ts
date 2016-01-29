@@ -86,6 +86,17 @@ export class Game {
 
     this.history = new HistoryManager;
     this.command_parser = new CommandParser();
+
+    // Show the adventure description
+    this.history.push('');
+    this.history.write(this.description)
+
+    // Place the player in the first room
+    this.rooms.moveTo(1);
+
+    // Tick the game clock. This builds the list of monsters/items in the first room.
+    this.tick();
+
   }
 
   /**
@@ -97,7 +108,7 @@ export class Game {
 
     // if the player is seeing the room for the first time, show the description
     if (!this.rooms.current_room.seen) {
-      this.history.push('', this.rooms.current_room.description);
+      this.history.write(this.rooms.current_room.description);
       this.rooms.current_room.seen = true;
     }
 
@@ -108,20 +119,20 @@ export class Game {
     for (var i in this.monsters.visible) {
       var m = this.monsters.visible[i];
       if (!m.seen) {
-        this.history.push('', m.description);
+        this.history.write(m.description);
         m.seen = true;
       } else {
-        this.history.push('', m.name + ' is here.');
+        this.history.write(m.name + ' is here.');
       }
     }
 
     for (var i in this.artifacts.visible) {
       var a = this.artifacts.visible[i];
       if (!a.seen) {
-        this.history.push('', a.description);
+        this.history.write(a.description);
         a.seen = true;
       } else {
-        this.history.push('', 'You see ' + a.name);
+        this.history.write('You see ' + a.name);
       }
     }
 
