@@ -1,5 +1,13 @@
-.status {
+.status-widget {
   border: 1px solid #999;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+.status-widget .heading {
+  font-weight: bold;
+}
+.status-widget .none {
+  color: #999;
 }
 
 .history {

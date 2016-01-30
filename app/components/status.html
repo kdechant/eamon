@@ -1,0 +1,53 @@
+<div *ngIf="game?.rooms?.current_room">
+
+  <div class="status-widget player">
+    <p class="heading">{{ game.monsters.player.name }}</p>
+
+    <div class="health">
+      HP: {{ game.monsters.player.hardiness - game.monsters.player.damage }}/{{ game.monsters.player.hardiness }}
+    </div>
+
+    <div class="weapon" *ngIf="game.monsters.player.weapon">Ready weapon: {{game.monsters.player.weapon.name}}
+     ({{game.monsters.player.weapon.dice}}d{{game.monsters.player.weapon.sides}})</div>
+    <div class="weapon none" *ngIf="!game.monsters.player.weapon">Ready weapon: none!</div>
+
+  </div>
+
+  <div class="status-widget room">
+    <p class="room-name">Current Location: {{ game.rooms.current_room.name }}</p>
+    <p class="room-description">{{ game.rooms.current_room.description }}</p>
+    <div class="room-exits">Visible Exits:
+      <span *ngFor="#exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
+    </div>
+  </div>
+
+  <div class="status-widget monsters">
+    <p class="heading">Who's here:</p>
+    <div class="monsters-list">
+      <span *ngFor="#monster of game.monsters.visible">
+        <span class="monster"
+          [class.friendly]="monster.reaction == 'friend'"
+          [class.hostile]="monster.reaction == 'hostile'"
+          >{{ monster.name }} - {{monster.reaction}}</span><br />
+      </span>
+      <span class="monster none" *ngIf="game.monsters.visible.length == 0">no one<br /></span>
+    </div>
+  </div>
+
+  <div class="status-widget artifacts">
+    <p class="heading">What's around:</p>
+    <div class="artifacts-list">
+      <span class="artifact" *ngFor="#artifact of game.artifacts.visible">{{ artifact.name }}<br /></span>
+      <span class="artifact none" *ngIf="game.artifacts.visible.length == 0">nothing<br /></span>
+    </div>
+  </div>
+
+  <div class="status-widget inventory">
+    <p class="heading">You are carrying:</p>
+    <div class="artifacts-list">
+      <span class="artifact" *ngFor="#artifact of game.monsters.player.inventory">{{ artifact.name }}<br /></span>
+      <span class="artifact none" *ngIf="game.monsters.player.inventory.length == 0">nothing<br /></span>
+    </div>
+    <p class="weight">Weight carried: {{game.monsters.player.weight_carried}}</p>
+  </div>
+</div>
