@@ -87,7 +87,8 @@ export class ArtifactRepository {
   updateVisible() {
     var artifacts:Artifact[] = [];
     for(var i in this.all) {
-      if (this.all[i].room_id == Game.getInstance().rooms.current_room.id) {
+      var a = this.all[i];
+      if (a.room_id == Game.getInstance().rooms.current_room.id && !a.embedded) {
         artifacts.push(this.all[i]);
       }
     }

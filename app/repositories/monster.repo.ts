@@ -10,7 +10,7 @@ export class MonsterRepository {
   /**
    * An array of all the Monster objects
    */
-  monsters: Monster[] = [];
+  all: Monster[] = [];
 
   /**
    * A Monster object representing the player.
@@ -50,7 +50,7 @@ export class MonsterRepository {
       throw new Error("Tried to create a monster #"+m.id+" but that ID is already taken.");
     }
 
-    this.monsters.push(m);
+    this.all.push(m);
 
     // update the autonumber index
     if (m.id > this.index) {
@@ -70,7 +70,7 @@ export class MonsterRepository {
     // player is always monster 0
     this.player.id = 0;
     this.player.room_id = 1;
-    this.monsters.push(this.player);
+    this.all.push(this.player);
 
     // create new artifact objects for the weapons the player brought
     var wpns = player_data.weapons;
@@ -79,11 +79,11 @@ export class MonsterRepository {
       a.weight = 3;
       a.description = 'You see your ' + a.name + '.';
       var art = Game.getInstance().artifacts.add(a);
-      Game.getInstance().monsters.player.pickUp(art);
+      this.player.pickUp(art);
     }
 
     // ready the player's best weapon
-    Game.getInstance().monsters.player.readyBestWeapon();
+    this.player.readyBestWeapon();
 
     return this.player
   }
@@ -94,9 +94,9 @@ export class MonsterRepository {
    * @return Monster
    */
   get(id) {
-    for(var i in this.monsters) {
-      if (this.monsters[i].id == id) {
-        return this.monsters[i];
+    for(var i in this.all) {
+      if (this.all[i].id == id) {
+        return this.all[i];
       }
     }
   }
@@ -107,12 +107,12 @@ export class MonsterRepository {
    */
   updateVisible() {
     var monsters:Monster[] = [];
-    for(var i in this.monsters) {
-      if (this.monsters[i].id != 0 && this.monsters[i].room_id == Game.getInstance().rooms.current_room.id) {
-        if (this.monsters[i].reaction == Monster.RX_UNKNOWN) {
-          this.monsters[i].checkReaction();
+    for(var i in this.all) {
+      if (this.all[i].id != 0 && this.all[i].room_id == Game.getInstance().rooms.current_room.id) {
+        if (this.all[i].reaction == Monster.RX_UNKNOWN) {
+          this.all[i].checkReaction();
         }
-        monsters.push(this.monsters[i]);
+        monsters.push(this.all[i]);
       }
     }
     this.visible = monsters;

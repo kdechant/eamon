@@ -8,7 +8,8 @@ export var ARTIFACTS: Array<Object> = [
     'description': 'You see the king\'s throne. It has a large sunburst on top.',
     'room_id': 3,
     'weight': 1000,
-    'value': 0
+    'value': 0,
+    "embedded": true
   },
   {
     'id': 2,

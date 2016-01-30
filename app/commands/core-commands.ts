@@ -41,6 +41,56 @@ export class MoveCommand implements BaseCommand {
 }
 core_commands.push(new MoveCommand());
 
+
+export class LookCommand implements BaseCommand {
+  name: string = 'look';
+  verbs: string[] = ['look','examine'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    // look event. can be used to reveal secret doors, etc.
+    game.invoke('look', verb, arg);
+
+    if (arg == '') {
+      // if not looking at anything in particular, show the room description
+      game.history.write(game.rooms.current_room.description);
+    } else {
+      // looking at a specific thing.
+
+      var match = false;
+
+      // see if there is a matching artifact.
+      for (var i in game.artifacts.all) {
+        var a = game.artifacts.all[i];
+        if (a.name == arg && a.room_id == game.rooms.current_room.id) {
+          match = true;
+          // if it's an embedded artifact, reveal it
+          if (a.embedded) {
+            a.embedded = false;
+          }
+          game.history.write(a.description);
+        }
+      }
+      // see if there is a matching monster.
+      for (var i in game.monsters.all) {
+        match = true;
+        var m = game.monsters.all[i];
+        if (m.name == arg && m.room_id == game.rooms.current_room.id) {
+          game.history.write(m.description);
+        }
+      }
+
+      // error message if nothing matched
+      if (!match) {
+        throw new CommandException("I see no " + arg + " here!");
+      }
+
+    }
+  }
+}
+core_commands.push(new LookCommand());
+
+
 export class SayCommand implements BaseCommand {
   name: string = 'say';
   verbs: string[] = ['say'];
