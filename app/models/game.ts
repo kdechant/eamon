@@ -107,7 +107,7 @@ export class Game {
     this.history.write(this.description)
 
     // Place the player in the first room
-    this.rooms.moveTo(1);
+    this.monsters.player.moveToRoom(1);
 
     // Tick the game clock. This builds the list of monsters/items in the first room.
     this.tick();

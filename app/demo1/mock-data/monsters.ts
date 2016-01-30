@@ -9,7 +9,7 @@ export var MONSTERS: Array<Object> = [
     'room_id': 1,
     'hardiness': 12,
     'agility': 15,
-    'friendliness': 'neutral',
+    'friendliness': 'hostile',
     'weapon': 4,
     'weapon_dice': 1,
     'weapon_sides': 5,

@@ -37,11 +37,4 @@ export class RoomRepository {
     }
   }
 
-  /**
-   * Moves the player into a given room
-   */
-  moveTo(room_id:number) {
-    this.current_room = this.getRoomById(room_id);
-  }
-
 }

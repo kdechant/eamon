@@ -61,6 +61,12 @@ export class Monster extends GameObject {
    */
   moveToRoom(room_id) {
     this.room_id = room_id;
+
+    // when the player moves, set the current room reference
+    if (this.id == Monster.PLAYER) {
+      var game = Game.getInstance();
+      game.rooms.current_room = game.rooms.getRoomById(room_id);
+    }
   }
 
   /**

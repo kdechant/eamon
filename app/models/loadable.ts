@@ -8,13 +8,8 @@ export abstract class Loadable {
    * @param Object source an object, e.g., from JSON.
    */
   init(source) {
-    for(var prop in source) {
-//      if(this.hasOwnProperty(prop)) {
-        this[prop] = source[prop];
-//      }
-//      else {
-//        console.error("Cannot set undefined property: " + prop);
-//      }
+    for (var prop in source) {
+      this[prop] = source[prop];
     }
 
   }

@@ -1,5 +1,6 @@
 import {BaseCommand} from './base-command';
 import {Game} from '../models/game';
+import {RoomExit} from '../models/room';
 import {CommandException} from '../utils/command.exception';
 
 export var core_commands = [];
@@ -17,9 +18,14 @@ export class MoveCommand implements BaseCommand {
     var msg:string;
     if (exit === null) {
       throw new CommandException("You can't go that way!");
-    } else if (exit.key_id && !game.monsters.player.hasArtifact(exit.key_id)) {
+    } else if (exit.isLocked()) {
       throw new CommandException("The door is locked and you don't have the key!");
     } else {
+
+      // hostile monsters prevent the player from moving
+      if (game.in_battle) {
+        throw new CommandException("You can't do that with unfriendlies about!");
+      }
 
       // if a key was used, tell the player which key they used.
       if (exit.key_id) {
@@ -27,12 +33,9 @@ export class MoveCommand implements BaseCommand {
         game.history.write("You unlock the door using the " + key.name + ".");
       }
 
-      // TODO: monster checks and key checks go here
-
       var room_to = game.rooms.getRoomById(exit.room_to);
-      Game.getInstance().history.write("Entering " + room_to.name);
-      Game.getInstance().monsters.player.room_id = room_to.id;
-      Game.getInstance().rooms.moveTo(room_to.id);
+      game.history.write("Entering " + room_to.name);
+      game.monsters.player.moveToRoom(room_to.id);
 
       // TODO: move friendly monsters
 
@@ -191,3 +194,38 @@ export class ReadyCommand implements BaseCommand {
   }
 }
 core_commands.push(new ReadyCommand());
+
+
+export class FleeCommand implements BaseCommand {
+  name: string = 'flee';
+  verbs: string[] = ['flee'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    if (!game.in_battle) {
+      throw new CommandException("There is nothing to flee from!");
+    }
+
+    // choose a random exit
+    var exits:RoomExit[] = game.rooms.current_room.exits;
+    var good_exits:RoomExit[] = [];
+    // exclude any locked exit and the game exit
+    for (var i in exits) {
+      if (exits[i].room_to != RoomExit.EXIT && !exits[i].isLocked()) {
+        good_exits.push(exits[i]);
+      }
+    }
+    if (good_exits.length == 0) {
+      throw new CommandException("There is nowhere to flee to!");
+    } else {
+      var random_exit = good_exits[Math.floor(Math.random() * good_exits.length)];
+
+      var room_to = game.rooms.getRoomById(random_exit.room_to);
+      game.history.write("Fleeing to " + room_to.name);
+      game.monsters.player.moveToRoom(room_to.id);
+
+      // TODO: check if other monsters follow
+    }
+  }
+}
+core_commands.push(new FleeCommand());

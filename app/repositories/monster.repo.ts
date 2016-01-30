@@ -106,12 +106,19 @@ export class MonsterRepository {
    * @return Monster[]
    */
   updateVisible() {
+    var game = Game.getInstance()
     var monsters:Monster[] = [];
+    game.in_battle = false;
     for(var i in this.all) {
-      if (this.all[i].id != 0 && this.all[i].room_id == Game.getInstance().rooms.current_room.id) {
+      if (this.all[i].id != 0 && this.all[i].room_id == game.rooms.current_room.id) {
+        // check monster reactions
         if (this.all[i].reaction == Monster.RX_UNKNOWN) {
           this.all[i].checkReaction();
         }
+        if (this.all[i].reaction == Monster.RX_HOSTILE) {
+          game.in_battle = true;
+        }
+
         monsters.push(this.all[i]);
       }
     }
