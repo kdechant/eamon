@@ -159,7 +159,7 @@ export class Game {
   diceRoll(dice, sides) {
     var result = 0;
     for(var i=0; i < dice; i++) {
-      result += Math.random() * sides + 1;
+      result += Math.floor(Math.random() * sides + 1);
     }
     return result;
   }
