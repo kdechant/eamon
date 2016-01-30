@@ -1,4 +1,5 @@
 import {GameObject} from './game-object';
+import {Game} from './game';
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -23,6 +24,9 @@ export class Artifact extends GameObject {
   sides: number;
   get_all: boolean;
   embedded: boolean;
+  is_edible: boolean;
+  is_drinkable: boolean;
+  quantity: number;
 
   // game-state properties
   seen: boolean = false;
@@ -50,6 +54,18 @@ export class Artifact extends GameObject {
       return this.dice * this.sides;
     } else {
       return 0;
+    }
+  }
+
+  /**
+   * Use an item, eat food, drink a potion, etc.
+   */
+  use() {
+    // the real logic for this is done in an event handler defined in the adventure.
+    Game.getInstance().triggerEvent('use', this);
+
+    if (this.is_edible || this.is_drinkable) {
+      this.quantity--;
     }
   }
 

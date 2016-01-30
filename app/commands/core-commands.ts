@@ -175,20 +175,11 @@ export class ReadyCommand implements BaseCommand {
   run(verb, arg) {
 
     var game = Game.getInstance();
-
-    var match = false;
-
-    var inventory = game.monsters.player.inventory;
-    for (var i in inventory) {
-      match = true;
-      if (arg == inventory[i].name) {
-        game.monsters.player.ready(inventory[i]);
-        game.history.write(inventory[i].name + " readied.")
-      }
-    }
-
-    // message if nothing was dropped
-    if (!match) {
+    var wpn = game.monsters.player.findInInventory(arg);
+    if (wpn) {
+      game.monsters.player.ready(wpn);
+      game.history.write(wpn.name + " readied.")
+    } else {
       throw new CommandException("You aren't carrying a " + arg + "!")
     }
   }
@@ -229,3 +220,55 @@ export class FleeCommand implements BaseCommand {
   }
 }
 core_commands.push(new FleeCommand());
+
+
+export class DrinkCommand implements BaseCommand {
+  name: string = 'drink';
+  verbs: string[] = ['drink'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+    var item = game.monsters.player.findInInventory(arg);
+    if (item) {
+      if (item.is_drinkable) {
+        if (item.quantity > 0) {
+          game.history.write("You drink the " + item.name + ".");
+          item.use();
+        } else {
+          throw new CommandException("There's none left!")
+        }
+      } else {
+        throw new CommandException("You can't drink that!")
+      }
+    } else {
+      throw new CommandException("You aren't carrying it!")
+    }
+
+  }
+}
+core_commands.push(new DrinkCommand());
+
+
+export class EatCommand implements BaseCommand {
+  name: string = 'eat';
+  verbs: string[] = ['eat'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+    var item = game.monsters.player.findInInventory(arg);
+    if (item) {
+      if (item.is_edible) {
+        if (item.quantity > 0) {
+          game.history.write("You eat the " + item.name + ".");
+          item.use();
+        } else {
+          throw new CommandException("There's none left!")
+        }
+      } else {
+        throw new CommandException("You can't eat that!")
+      }
+    } else {
+      throw new CommandException("You aren't carrying it!")
+    }
+
+  }
+}
+core_commands.push(new EatCommand());

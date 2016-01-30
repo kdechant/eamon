@@ -195,4 +195,68 @@ export class Monster extends GameObject {
     }
   }
 
+  /**
+   * Finds an item in a monster's inventory by name
+   * @param string artifact_name
+   * @returns Artifact
+   */
+  findInInventory(artifact_name) {
+    for (var i in this.inventory) {
+      if (artifact_name == this.inventory[i].name) {
+        return this.inventory[i];
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Deals damage to a monster
+   * @param number The amount of damage to do.
+   */
+  injure(amount) {
+    this.damage += amount;
+    this.showHealth();
+
+    // handle death
+    if (this.damage > this.hardiness) {
+      this.room_id = null;
+    }
+
+  }
+
+  /**
+   * Heals a monster
+   * @param number The amount of hit points to heal
+   */
+  heal(amount) {
+    this.damage -= amount;
+    if (this.damage < 0) {
+      this.damage = 0;
+    }
+    this.showHealth();
+  }
+
+  /**
+   * Shows monster health status
+   */
+  showHealth() {
+    var game = Game.getInstance();
+    var status = (this.hardiness - this.damage) / this.hardiness;
+    if (status > .99) {
+      game.history.write(this.name + " is in perfect health.")
+    } else if (status > .8) {
+      game.history.write(this.name + " is in good shape.")
+    } else if (status > .6) {
+      game.history.write(this.name + " is hurting.")
+    } else if (status > .4) {
+      game.history.write(this.name + " is in pain.")
+    } else if (status > .2) {
+      game.history.write(this.name + " is badly injured.")
+    } else if (status > 0) {
+      game.history.write(this.name + " is at death's door.")
+    } else {
+      game.history.write(this.name + " is dead!")
+    }
+  }
+
 }

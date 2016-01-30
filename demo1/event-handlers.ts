@@ -1,4 +1,6 @@
 import {Game} from "../app/models/game";
+import {Artifact} from "../app/models/artifact";
+import {Monster} from "../app/models/monster";
 
 export var event_handlers = [];
 
@@ -37,6 +39,29 @@ event_handlers.push({
     // 'say trollsfire' is the same as running the command 'trollsfire'
     if (arg == 'trollsfire') {
       game.command_parser.run('trollsfire', false);
+    }
+  }
+});
+
+event_handlers.push({
+  name: 'use',
+  // 'use' event handler takes an Artifact as an argument
+  run: function(artifact) {
+    var game = Game.getInstance();
+    switch (artifact.name) {
+      case 'healing potion':
+        var hp = game.diceRoll(1,4);
+        game.history.write("It heals you " + hp + " hit points.")
+        game.monsters.player.heal(hp);
+        break;
+      case 'bread':
+        if (game.monsters.get(1).room_id == game.rooms.current_room.id) {
+          game.history.write("The guard shouts at you for stealing his bread.")
+          game.monsters.get(1).reaction = Monster.RX_HOSTILE;
+        } else {
+          game.history.write("It tases OK. Would be better with some cheese.")
+        }
+        break;
     }
   }
 });

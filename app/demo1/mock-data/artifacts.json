@@ -51,5 +51,28 @@
     "weight": 1,
     "value": 0,
     "is_weapon": false
+  },
+  {
+    "id": 6,
+    "name": "healing potion",
+    "description": "You see a bottle of healing potion.",
+    "room_id": 3,
+    "monster_id": null,
+    "weight": 1,
+    "value": 0,
+    "is_weapon": false,
+    "is_drinkable": true,
+    "quantity": 3
+  },
+  {
+    "id": 7,
+    "name": "bread",
+    "description": "You see a loaf of bread.",
+    "room_id": 1,
+    "weight": 1,
+    "value": 0,
+    "is_weapon": false,
+    "is_edible": true,
+    "quantity": 3
   }
 ]
