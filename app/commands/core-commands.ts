@@ -148,7 +148,7 @@ export class DropCommand implements BaseCommand {
 
     var match = false;
 
-    var inventory = game.monsters.player.getInventory();
+    var inventory = game.monsters.player.inventory;
     for (var i in inventory) {
       match = true;
       if (arg == inventory[i].name || arg == 'all') {
@@ -175,7 +175,7 @@ export class ReadyCommand implements BaseCommand {
 
     var match = false;
 
-    var inventory = game.monsters.player.getInventory();
+    var inventory = game.monsters.player.inventory;
     for (var i in inventory) {
       match = true;
       if (arg == inventory[i].name) {

@@ -54,6 +54,7 @@ export class Monster extends GameObject {
   damage: number = 0;
   weight_carried: number = 0;
   weapon: Artifact;
+  inventory: Artifact[];
 
   /**
    * Moves the monster to a specific room.
@@ -111,7 +112,7 @@ export class Monster extends GameObject {
     // TODO: call get hook here with artifact ID
     artifact.room_id = null;
     artifact.monster_id = this.id;
-    this.updateWeight();
+    this.updateInventory();
   }
 
   /**
@@ -129,34 +130,24 @@ export class Monster extends GameObject {
       this.weapon = null;
     }
 
-    this.updateWeight();
+    this.updateInventory();
   }
 
   /**
-   * Calculates the weight of the artifacts carried by the monster
-   * @return number
+   * Refreshes the inventory of artifacts carried by the monster
    */
-  updateWeight() {
-    var weight = 0;
-    var artifacts = this.getInventory();
-    for (var i in artifacts) {
-       weight += artifacts[i].weight;
-    }
-    this.weight_carried = weight;
-  }
-
-  /**
-   * Gets the inventory for a monster.
-   * @return Array<Artifact>
-   */
-  getInventory() {
+  updateInventory() {
     var inv = [];
-    for(var i in Game.getInstance().artifacts.all) {
-      if (Game.getInstance().artifacts.all[i].monster_id == this.id) {
-        inv.push(Game.getInstance().artifacts.all[i]);
+    var weight = 0;
+    for (var i in Game.getInstance().artifacts.all) {
+      var a = Game.getInstance().artifacts.all[i];
+      if (a.monster_id == this.id) {
+        inv.push(a);
+        weight += a.weight;
       }
     }
-    return inv;
+    this.inventory = inv;
+    this.weight_carried = weight;
   }
 
   /**
@@ -165,10 +156,9 @@ export class Monster extends GameObject {
    * @return boolean
    */
   hasArtifact(artifact_id:number):boolean {
-    var inv = this.getInventory();
     var has = false;
-    for(var i in inv) {
-      if (inv[i].id == artifact_id) {
+    for(var i in this.inventory) {
+      if (this.inventory[i].id == artifact_id) {
         has = true;
       }
     }
@@ -189,12 +179,11 @@ export class Monster extends GameObject {
    * Readies the best weapon the monster is carrying
    */
   readyBestWeapon() {
-    var inven = this.getInventory();
-    for (var a in inven) {
-      if (inven[a].is_weapon) {
+    for (var a in this.inventory) {
+      if (this.inventory[a].is_weapon) {
         if (this.weapon === undefined ||
-            inven[a].maxDamage() > this.weapon.maxDamage()) {
-          this.ready(inven[a]);
+            this.inventory[a].maxDamage() > this.weapon.maxDamage()) {
+          this.ready(this.inventory[a]);
         }
       }
     }
