@@ -147,8 +147,6 @@ export class Monster extends GameObject {
 
   /**
    * Gets the inventory for a monster.
-   * This should probably be moved to the Monster class but need to resolve some dependencies first.
-   * @param number monster_id
    * @return Array<Artifact>
    */
   getInventory() {
@@ -159,6 +157,22 @@ export class Monster extends GameObject {
       }
     }
     return inv;
+  }
+
+  /**
+   * Determines whether a monster is carrying an artifact.
+   * @param number artifact_id The ID of an artifact
+   * @return boolean
+   */
+  hasArtifact(artifact_id:number):boolean {
+    var inv = this.getInventory();
+    var has = false;
+    for(var i in inv) {
+      if (inv[i].id == artifact_id) {
+        has = true;
+      }
+    }
+    return has;
   }
 
   /**

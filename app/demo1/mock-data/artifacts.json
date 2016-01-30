@@ -40,5 +40,15 @@
     "weapon_odds": 10,
     "dice": 1,
     "sides": 5
+  },
+  {
+    "id": 5,
+    "name": "gold key",
+    "description": "You see a gold key sitting next to the throne.",
+    "room_id": 3,
+    "monster_id": null,
+    "weight": 1,
+    "value": 0,
+    "is_weapon": false
   }
 ]

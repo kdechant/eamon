@@ -25,7 +25,7 @@ export var ROOMS: Array<Object> = [
     'name': 'Throne Room',
     'description': 'You are in the throne room. There is a large throne on the north wall. A locked door leads east.',
     'exits': [
-      {'direction': 'e', 'room_to': 4},
+      {'direction': 'e', 'room_to': 4, "key_id": 5},
       {'direction': 's', 'room_to': 2},
     ],
   },

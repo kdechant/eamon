@@ -17,7 +17,15 @@ export class MoveCommand implements BaseCommand {
     var msg:string;
     if (exit === null) {
       throw new CommandException("You can't go that way!");
+    } else if (exit.key_id && !game.monsters.player.hasArtifact(exit.key_id)) {
+      throw new CommandException("The door is locked and you don't have the key!");
     } else {
+
+      // if a key was used, tell the player which key they used.
+      if (exit.key_id) {
+        var key = game.artifacts.get(exit.key_id);
+        game.history.write("You unlock the door using the " + key.name + ".");
+      }
 
       // TODO: monster checks and key checks go here
 
@@ -45,6 +53,7 @@ export class SayCommand implements BaseCommand {
   }
 }
 core_commands.push(new SayCommand());
+
 
 export class GetCommand implements BaseCommand {
   name: string = 'get';
@@ -78,6 +87,7 @@ export class GetCommand implements BaseCommand {
   }
 }
 core_commands.push(new GetCommand());
+
 
 export class DropCommand implements BaseCommand {
   name: string = 'drop';
