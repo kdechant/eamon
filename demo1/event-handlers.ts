@@ -1,10 +1,10 @@
 import {Game} from "../app/models/game";
 
-export var hooks = [];
+export var event_handlers = [];
 
-hooks.push({
+event_handlers.push({
   name: 'beforeGet',
-  run: function(verb, arg) {
+  run: function(arg) {
     var game = Game.getInstance();
     var ar = game.artifacts.getByName(arg);
     // special message when the player tries to pick up the throne
@@ -16,9 +16,9 @@ hooks.push({
   }
 });
 
-hooks.push({
+event_handlers.push({
   name: 'afterGet',
-  run: function(verb, arg) {
+  run: function(arg) {
     var game = Game.getInstance();
     var ar = game.artifacts.getByName(arg);
     // special message when the player finds the treasure
@@ -30,9 +30,9 @@ hooks.push({
   }
 });
 
-hooks.push({
+event_handlers.push({
   name: 'say',
-  run: function(verb, arg) {
+  run: function(arg) {
     var game = Game.getInstance();
     // 'say trollsfire' is the same as running the command 'trollsfire'
     if (arg == 'trollsfire') {

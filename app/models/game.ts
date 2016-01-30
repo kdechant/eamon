@@ -6,8 +6,8 @@ import {MonsterRepository} from '../repositories/monster.repo';
 
 import {HistoryManager} from '../models/history-manager';
 import {CommandParser} from '../models/command-parser';
-import {Hook} from '../commands/hook';
-import {hooks} from 'adventure/hooks';
+import {EventHandler} from '../commands/event-handler';
+import {event_handlers} from 'adventure/event-handlers';
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -57,9 +57,9 @@ export class Game {
   command_parser: CommandParser;
 
   /**
-   * Command parser object
+   * Game event handlers defined in the adventure's "event-handers" file
    */
-  hooks: Hook[] = [];
+  event_handlers: EventHandler[] = [];
 
   /**
    * In Battle flag
@@ -94,12 +94,12 @@ export class Game {
     this.history = new HistoryManager;
     this.command_parser = new CommandParser();
 
-    // register the hooks
-    for (var i in hooks) {
-      var h = new Hook();
-      h.name = hooks[i].name;
-      h.run = hooks[i].run;
-      this.hooks.push(h);
+    // register the event handlers defined in the adventure
+    for (var i in event_handlers) {
+      var e = new EventHandler();
+      e.name = event_handlers[i].name;
+      e.run = event_handlers[i].run;
+      this.event_handlers.push(e);
     }
 
     // Show the adventure description
@@ -165,15 +165,17 @@ export class Game {
   }
 
   /**
-   * Invokes a game hook
-   * @param string hook_name The name of the hook.
-   * @param string verb The verb of the command that was run
-   * @param string arg The arguments to the command
+   * Triggers a game event.
+   * @param string event_name
+   *   The name of the event, e.g., "beforeGet", "look", "open", "read"
+   * @param string arg
+   *   An argument to the event. e.g., the Artifact that was picked up or read,
+   *   or the word that was said.
    */
-  public invoke(hook_name, verb, arg) {
-    for (var i in this.hooks) {
-      if (this.hooks[i].name == hook_name) {
-        return this.hooks[i].run(verb, arg);
+  public triggerEvent(event_name, arg:any) {
+    for (var i in this.event_handlers) {
+      if (this.event_handlers[i].name == event_name) {
+        return this.event_handlers[i].run(arg);
       }
     }
   }

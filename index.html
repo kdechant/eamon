@@ -34,7 +34,7 @@
       Promise.all([
         System.import('app/boot'),
         System.import('adventure/commands'),
-        System.import('adventure/hooks')
+        System.import('adventure/event-handlers')
       ]).then(null, console.error.bind(console));
     </script>
 

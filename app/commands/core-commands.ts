@@ -49,7 +49,7 @@ export class LookCommand implements BaseCommand {
     var game = Game.getInstance();
 
     // look event. can be used to reveal secret doors, etc.
-    game.invoke('look', verb, arg);
+    game.triggerEvent('look', arg);
 
     if (arg == '') {
       // if not looking at anything in particular, show the room description
@@ -98,7 +98,7 @@ export class SayCommand implements BaseCommand {
     var game = Game.getInstance();
 
     game.history.write('Ok... "'+arg+'"')
-    game.invoke('say', verb, arg);
+    game.triggerEvent('say', arg);
 
   }
 }
@@ -118,11 +118,11 @@ export class GetCommand implements BaseCommand {
       var a = game.artifacts.visible[i];
       if (arg == a.name || arg == 'all') {
         match = true;
-        if (game.invoke('beforeGet', verb, a.name)) {
+        if (game.triggerEvent('beforeGet', a)) {
           if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
             game.monsters.player.pickUp(a);
             game.history.write(a.name + ' taken.');
-            game.invoke('afterGet', verb, a.name)
+            game.triggerEvent('afterGet', a)
           } else {
             game.history.write(a.name + ' is too heavy.');
           }
