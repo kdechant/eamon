@@ -46,7 +46,8 @@ export class MonsterRepository {
       m.id = this.index + 1;
     }
 
-    if (this.get(m.id) !== undefined) {
+    if (this.get(m.id) !== null) {
+      console.log(this.get(m.id))
       throw new Error("Tried to create a monster #"+m.id+" but that ID is already taken.");
     }
 
@@ -99,7 +100,22 @@ export class MonsterRepository {
         return this.all[i];
       }
     }
+    return null;
   }
+
+  /**
+   * Gets a monster by name.
+   * @param string name
+   * @return Monster
+   */
+  getByName(name:string) {
+    for(var i in this.all) {
+      if (this.all[i].name == name) {
+        return this.all[i];
+      }
+    }
+  }
+
 
   /**
    * Updates the list of monsters in the current room, that are visible to the player

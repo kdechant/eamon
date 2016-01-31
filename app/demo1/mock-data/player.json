@@ -24,7 +24,7 @@
     {
       "name": "trollsfire",
       "is_weapon": true,
-      "weapon_type": 6,
+      "weapon_type": 5,
       "weapon_odds": 25,
       "dice": 1,
       "sides": 10

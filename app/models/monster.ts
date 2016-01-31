@@ -44,8 +44,8 @@ export class Monster extends GameObject {
 
   // data properties for player only
   charisma: number;
-  spell_abilities:Array<Object>;
-  weapon_abilities:Array<Object>;
+  spell_abilities:Object;
+  weapon_abilities:{ [key:number]:number; };
 
   // game-state properties
   seen: boolean = false;
@@ -172,6 +172,20 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Finds an item in a monster's inventory by name
+   * @param string artifact_name
+   * @returns Artifact
+   */
+  findInInventory(artifact_name) {
+    for (var i in this.inventory) {
+      if (artifact_name == this.inventory[i].name) {
+        return this.inventory[i];
+      }
+    }
+    return null;
+  }
+
+  /**
    * Readies a weapon
    */
   ready(weapon:Artifact) {
@@ -196,32 +210,141 @@ export class Monster extends GameObject {
   }
 
   /**
-   * Finds an item in a monster's inventory by name
-   * @param string artifact_name
-   * @returns Artifact
+   * Attacks another monster
+   * @param Monster target
    */
-  findInInventory(artifact_name) {
-    for (var i in this.inventory) {
-      if (artifact_name == this.inventory[i].name) {
-        return this.inventory[i];
+  attack(target:Monster) {
+    var game = Game.getInstance();
+    game.history.write(this.name + " attacks " + target.name);
+
+    var wpn = Game.getInstance().artifacts.get(this.weapon_id);
+    var odds = this.getBaseToHit();
+    if (target.defense_bonus) odds -= target.defense_bonus;
+
+    var hit_roll = game.diceRoll(1, 100);
+//    game.history.write("Odds:" + odds);
+//    game.history.write("Roll:" + hit_roll);
+
+    if (hit_roll <= odds || hit_roll <= 5) {
+      // hit
+      var damage = game.diceRoll(this.weapon_dice, this.weapon_sides);
+      var multiplier = 1;
+      var ignore_armor = false;
+      // regular or critical hit
+      if (hit_roll <= 5) {
+        game.history.write('--a critical hit!');
+        // roll another die to determine the effect of the critical hit
+        var critical_roll = game.diceRoll(1,100);
+        if (critical_roll <= 50) {
+          ignore_armor = true
+        } else if (critical_roll <= 85) {
+          multiplier = 1.5;		// half again damage
+        } else if (critical_roll <= 95) {
+          multiplier = 2;		// double damage
+        } else if (critical_roll <= 99) {
+          multiplier = 3;		// triple damage
+        } else {
+          multiplier = 1000;	// instant kill
+        }
+      } else {
+        game.history.write('--a hit!');
+      }
+      // deal the damage
+      target.injure(damage * multiplier, ignore_armor);
+
+      // check for weapon ability increase
+      if (this.id == Monster.PLAYER) {
+        var inc_roll = game.diceRoll(1, 100);
+        if (inc_roll > odds) {
+          this.weapon_abilities[wpn.weapon_type] += 2;
+          game.history.write('weapon ability increased!');
+          console.log(this.weapon_abilities);
+        }
+      }
+      // TODO: check for armor expertise increase
+
+    } else {
+
+      // miss or fumble
+      if (hit_roll < 97) {
+        game.history.write('--a miss!');
+      } else {
+        game.history.write('--a fumble!');
+        // see whether the player recovers, drops, or breaks their weapon
+        var fumble_roll = game.diceRoll(1,100);
+        if (fumble_roll <= 35 || (this.weapon_id == 0 && fumble_roll <= 75)) {
+
+          game.history.write('--fumble recovered!');
+
+        } else if (fumble_roll <= 75) {
+
+          game.history.write('--weapon dropped!');
+          this.drop(wpn);
+
+        } else if (fumble_roll <= 95) {
+
+          game.history.write('--weapon broken!');
+          this.weapon_id = null;
+          wpn.monster_id = null;
+          this.courage /= 2;
+          // broken weapon can hurt user
+          if (fumble_roll > 95) {
+            game.history.write('--broken weapon hurts user!');
+            var dice = wpn.dice;
+            if (fumble_roll == 100) dice++;  // worst case - extra damage
+            this.injure(game.diceRoll(dice, wpn.sides));
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  /**
+   * Gets the base "to hit" percentage for a monster
+   */
+  getBaseToHit() {
+    var wpn = Game.getInstance().artifacts.get(this.weapon_id);
+    var to_hit:number;
+    if (this.id == Monster.PLAYER) {
+      // for player, calculate chance to hit based on weapon type, ability, and weapon odds
+      var to_hit = this.weapon_abilities[wpn.weapon_type] + wpn.weapon_odds + 2 * this.agility;
+    } else {
+      // other monsters have the same weapon ability for all weapon types
+      var to_hit = this.attack_odds + 2 * this.agility;
+      if (this.weapon_id != 0) {
+        to_hit += wpn.weapon_odds;
       }
     }
-    return null;
+    return to_hit;
   }
 
   /**
    * Deals damage to a monster
-   * @param number The amount of damage to do.
+   * @param number amount The amount of damage to do.
+   * @param boolean ignore_armor Whether to ignore the effect of armor
+   * @returns number The amount of actual damage done
    */
-  injure(amount) {
+  injure(amount:number, ignore_armor:boolean = false) {
+    console.log(this.damage);
+    if (this.armor && !ignore_armor) {
+      amount -= this.armor;
+      if (amount <= 0) {
+        Game.getInstance().history.write('--blow bounces off armor!');
+      }
+    }
     this.damage += amount;
     this.showHealth();
 
     // handle death
-    if (this.damage > this.hardiness) {
+    if (this.damage >= this.hardiness) {
       this.room_id = null;
+      // TODO: place dead body artifact
     }
-
+    return amount;
   }
 
   /**

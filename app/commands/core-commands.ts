@@ -1,5 +1,7 @@
 import {BaseCommand} from './base-command';
 import {Game} from '../models/game';
+import {Artifact} from '../models/artifact';
+import {Monster} from '../models/monster';
 import {RoomExit} from '../models/room';
 import {CommandException} from '../utils/command.exception';
 
@@ -272,3 +274,31 @@ export class EatCommand implements BaseCommand {
   }
 }
 core_commands.push(new EatCommand());
+
+
+export class AttackCommand implements BaseCommand {
+  name: string = 'attack';
+  verbs: string[] = ['attack','a'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    if (!game.monsters.player.weapon_id) {
+      throw new CommandException("You don't have a weapon ready!")
+    }
+
+    var target = game.monsters.getByName(arg);
+    if (target) {
+
+      // halve the target's friendliness and reset target's reaction.
+      // this will allow friendly/neutral monsters to fight back if you anger them.
+      target.friend_odds /= 2;
+      target.checkReaction();
+
+      game.monsters.player.attack(target);
+    } else {
+      throw new CommandException("Attack whom?")
+    }
+
+  }
+}
+core_commands.push(new AttackCommand());
