@@ -44,7 +44,7 @@
 
   <div class="status-widget inventory">
     <p class="heading">You are carrying:</p>
-    <div class="artifacts-list">
+    <div class="artifacts-list" *ngIf="game?.monsters?.player?.inventory">
       <span class="artifact" *ngFor="#artifact of game.monsters.player.inventory">{{ artifact.name }}<br /></span>
       <span class="artifact none" *ngIf="game.monsters.player.inventory.length == 0">nothing<br /></span>
     </div>

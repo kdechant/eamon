@@ -147,6 +147,8 @@ export class Game {
           }
         }
       }
+      this.artifacts.updateVisible();
+      this.monsters.updateVisible();
     }
 
     // show monster and artifact descriptions

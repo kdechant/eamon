@@ -33,7 +33,7 @@
     "id": 4,
     "name": "spear",
     "description": "You see a standard 10-foot-long spear.",
-    "room_id": 0,
+    "room_id": null,
     "monster_id": 1,
     "weight": 5,
     "value": 10,
@@ -76,5 +76,18 @@
     "is_weapon": false,
     "is_edible": true,
     "quantity": 3
+  },
+  {
+    "id": 8,
+    "name": "sword",
+    "description": "You see a good-quality sword.",
+    "room_id": null,
+    "monster_id": 3,
+    "weight": 5,
+    "value": 10,
+    "weapon_type": 5,
+    "weapon_odds": 10,
+    "dice": 1,
+    "sides": 8
   }
 ]

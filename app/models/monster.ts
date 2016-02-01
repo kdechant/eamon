@@ -149,8 +149,7 @@ export class Monster extends GameObject {
    * The monster picks up an artifact
    * @param Artifact artifact
    */
-  pickUp(artifact) {
-    // TODO: call get hook here with artifact ID
+  pickUp(artifact:Artifact) {
     artifact.room_id = null;
     artifact.monster_id = this.id;
     this.updateInventory();
@@ -160,8 +159,7 @@ export class Monster extends GameObject {
    * The monster drops an artifact
    * @param Artifact artifact
    */
-  drop(artifact) {
-    // TODO: invoke drop hook
+  drop(artifact:Artifact) {
     artifact.room_id = this.room_id;
     artifact.monster_id = null;
 
