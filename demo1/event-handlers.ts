@@ -49,11 +49,6 @@ event_handlers.push({
   run: function(artifact) {
     var game = Game.getInstance();
     switch (artifact.name) {
-      case 'healing potion':
-        var hp = game.diceRoll(1,4);
-        game.history.write("It heals you " + hp + " hit points.")
-        game.monsters.player.heal(hp);
-        break;
       case 'bread':
         if (game.monsters.get(1).room_id == game.rooms.current_room.id) {
           game.history.write("The guard shouts at you for stealing his bread.")

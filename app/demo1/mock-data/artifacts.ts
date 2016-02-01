@@ -62,10 +62,12 @@ export var ARTIFACTS: Array<Object> = [
     "room_id": 3,
     "monster_id": null,
     "weight": 1,
-    "value": 0,
-    "is_weapon": false,
+    "value": 20,
+    "is_healing": true,
     "is_drinkable": true,
-    "quantity": 3
+    "quantity": 3,
+    "dice": 1,
+    "sides": 6
   },
   {
     "id": 7,
@@ -73,7 +75,7 @@ export var ARTIFACTS: Array<Object> = [
     "description": "You see a loaf of bread.",
     "room_id": 1,
     "weight": 1,
-    "value": 0,
+    "value": 1,
     "is_weapon": false,
     "is_edible": true,
     "quantity": 3

@@ -8,6 +8,7 @@
     "agility": 15,
     "friendliness": "neutral",
     "friend_odds": 40,
+    "attack_odds": 33,
     "weapon_id": 4,
     "weapon_dice": 1,
     "weapon_sides": 5

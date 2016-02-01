@@ -16,6 +16,7 @@ export class Artifact extends GameObject {
   fixed_value: boolean;
   is_container: boolean;
   is_open: boolean;
+  is_healing: boolean; // for simple healing potions, etc. - healing amount based on dice and sides
   is_weapon: boolean;
   is_standard_weapon: boolean;
   weapon_type: number;
@@ -61,10 +62,20 @@ export class Artifact extends GameObject {
    * Use an item, eat food, drink a potion, etc.
    */
   use() {
-    // the real logic for this is done in an event handler defined in the adventure.
-    Game.getInstance().triggerEvent('use', this);
+    var game = Game.getInstance();
 
-    if (this.is_edible || this.is_drinkable) {
+    // logic for simple healing potions, healing by eating food, etc.
+    if (this.is_healing) {
+      var heal_amount = game.diceRoll(this.dice,this.sides);
+      game.history.write("It heals you " + heal_amount + " hit points.")
+      game.monsters.player.heal(heal_amount);
+    }
+
+    // the real logic for this is done in an event handler defined in the adventure.
+    game.triggerEvent('use', this);
+
+    // reduce quantity/number of charges remaining
+    if (this.quantity > 0) {
       this.quantity--;
     }
   }
