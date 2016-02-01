@@ -39,7 +39,12 @@ export class MoveCommand implements BaseCommand {
       game.history.write("Entering " + room_to.name);
       game.monsters.player.moveToRoom(room_to.id);
 
-      // TODO: move friendly monsters
+      // move friendly monsters
+      for (var i in game.monsters.visible) {
+        if (game.monsters.visible[i].reaction == Monster.RX_FRIEND) {
+          game.monsters.visible[i].moveToRoom(room_to.id);
+        }
+      }
 
     }
   }
