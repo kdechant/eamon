@@ -66,6 +66,12 @@ export class Game {
    */
   in_battle: boolean = false;
 
+  /**
+   * "skip battle actions" flag. Set this to true to not have battle actions
+   * happen this turn (e.g., when first moving into a room)
+   */
+  skip_battle_actions: boolean = false;
+
   constructor() {
     if(Game._instance){
       throw new Error("Error: Instantiation failed: Use Game.getInstance() instead of new.");
@@ -131,25 +137,15 @@ export class Game {
     this.monsters.updateVisible();
 
     // non-player monster actions
-    if (this.in_battle) {
+    if (this.in_battle && !this.skip_battle_actions) {
       for (var i in this.monsters.visible) {
         var m = this.monsters.visible[i];
-
-        // TODO: flee
-
-        // TODO: pick up weapon
-
-        // attack!
-        if (m.weapon_id != null) {
-          var target = m.chooseTarget();
-          if (target) {
-            m.attack(target);
-          }
-        }
+        m.doBattleActions();
       }
       this.artifacts.updateVisible();
       this.monsters.updateVisible();
     }
+    this.skip_battle_actions = false;
 
     // show monster and artifact descriptions
     for (var i in this.monsters.visible) {

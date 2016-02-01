@@ -45,7 +45,7 @@ export class MoveCommand implements BaseCommand {
           game.monsters.visible[i].moveToRoom(room_to.id);
         }
       }
-
+      game.skip_battle_actions = true;
     }
   }
 }
@@ -204,26 +204,14 @@ export class FleeCommand implements BaseCommand {
       throw new CommandException("There is nothing to flee from!");
     }
 
-    // choose a random exit
-    var exits:RoomExit[] = game.rooms.current_room.exits;
-    var good_exits:RoomExit[] = [];
-    // exclude any locked exit and the game exit
-    for (var i in exits) {
-      if (exits[i].room_to != RoomExit.EXIT && !exits[i].isLocked()) {
-        good_exits.push(exits[i]);
-      }
-    }
-    if (good_exits.length == 0) {
+    var room_to = game.monsters.player.chooseRandomExit();
+    if (!room_to) {
       throw new CommandException("There is nowhere to flee to!");
-    } else {
-      var random_exit = good_exits[Math.floor(Math.random() * good_exits.length)];
-
-      var room_to = game.rooms.getRoomById(random_exit.room_to);
-      game.history.write("Fleeing to " + room_to.name);
-      game.monsters.player.moveToRoom(room_to.id);
-
-      // TODO: check if other monsters follow
     }
+    game.history.write("Fleeing to " + room_to.name);
+    game.monsters.player.moveToRoom(room_to.id);
+
+    // TODO: check if other monsters follow
   }
 }
 core_commands.push(new FleeCommand());

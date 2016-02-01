@@ -1,6 +1,8 @@
 import {Game} from '../models/game';
 import {GameObject} from '../models/game-object';
 import {Artifact} from '../models/artifact';
+import {Room} from '../models/room';
+import {RoomExit} from '../models/room';
 
 /**
  * Monster class. Represents all properties of a single monster
@@ -66,6 +68,32 @@ export class Monster extends GameObject {
     if (this.id == Monster.PLAYER) {
       var game = Game.getInstance();
       game.rooms.current_room = game.rooms.getRoomById(room_id);
+    }
+  }
+
+  /**
+   * Monster flees out a random exit
+   */
+  chooseRandomExit():Room {
+    var game = Game.getInstance();
+
+    // choose a random exit
+    var exits:RoomExit[] = game.rooms.current_room.exits;
+    var good_exits:RoomExit[] = [];
+    // exclude any locked exit and the game exit
+    for (var i in exits) {
+      // FIXME: NPCs will be able to flee through locked doors if the PLAYER is holding the key.
+      if (exits[i].room_to != RoomExit.EXIT && !exits[i].isLocked()) {
+        good_exits.push(exits[i]);
+      }
+    }
+    if (good_exits.length == 0) {
+      return null;
+    } else {
+      var random_exit = good_exits[Math.floor(Math.random() * good_exits.length)];
+
+      var room_to = game.rooms.getRoomById(random_exit.room_to);
+      return room_to;
     }
   }
 
@@ -243,6 +271,38 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Battle actions the monster can do (attack, flee, pick up weapon)
+   */
+  doBattleActions() {
+    var game = Game.getInstance();
+
+    // if the monster managed to die or somehow disappear before its turn, do nothing
+    if (this.status == Monster.STATUS_DEAD || this.room_id != game.rooms.current_room.id) return;
+
+    // check if the monster should flee
+    var fear = 40 * this.damage / this.hardiness + game.diceRoll(1,41) - 21;
+    if (fear > this.courage) {
+      var room_to = this.chooseRandomExit();
+      if (room_to) {
+        game.history.write(this.name + " flees out an exit");
+        this.moveToRoom(room_to.id);
+        return;
+      }
+      // if there are no valid exits, the monster has to stay and fight.
+    }
+
+    // TODO: pick up weapon
+
+    // attack!
+    if (this.weapon_id != null) {
+      var target = this.chooseTarget();
+      if (target) {
+        this.attack(target);
+      }
+    }
+  }
+
+  /**
    * Attacks another monster
    * @param Monster target
    */
@@ -395,6 +455,7 @@ export class Monster extends GameObject {
       }
 
       // TODO: place dead body artifact
+      this.status = Monster.STATUS_DEAD;
       this.room_id = null;
     }
     return amount;
