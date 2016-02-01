@@ -291,8 +291,7 @@ export class AttackCommand implements BaseCommand {
 
       // halve the target's friendliness and reset target's reaction.
       // this will allow friendly/neutral monsters to fight back if you anger them.
-      target.friend_odds /= 2;
-      target.checkReaction();
+      target.hurtFeelings();
 
       game.monsters.player.attack(target);
     } else {

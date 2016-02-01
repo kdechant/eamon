@@ -130,6 +130,25 @@ export class Game {
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
 
+    // non-player monster actions
+    if (this.in_battle) {
+      for (var i in this.monsters.visible) {
+        var m = this.monsters.visible[i];
+
+        // TODO: flee
+
+        // TODO: pick up weapon
+
+        // attack!
+        if (m.weapon_id != null) {
+          var target = m.chooseTarget();
+          if (target) {
+            m.attack(target);
+          }
+        }
+      }
+    }
+
     // show monster and artifact descriptions
     for (var i in this.monsters.visible) {
       var m = this.monsters.visible[i];

@@ -71,6 +71,7 @@ export class MonsterRepository {
     // player is always monster 0
     this.player.id = 0;
     this.player.room_id = 1;
+    this.player.reaction = Monster.RX_FRIEND;
     this.all.push(this.player);
 
     // create new artifact objects for the weapons the player brought

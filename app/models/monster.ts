@@ -103,6 +103,41 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Recheck monster's reaction when the player attacks it or otherwise
+   * does something nasty.
+   */
+  hurtFeelings() {
+
+    // this logic is only meaningful for neutral and friendly monsters
+    if (this.reaction != Monster.RX_HOSTILE) {
+
+      // clear the automatic reactions and set a default percentage
+      switch (this.friendliness) {
+        case Monster.FRIEND_ALWAYS:
+          this.friend_odds = 100;
+          break;
+        case Monster.FRIEND_NEUTRAL:
+          this.friend_odds = 50;
+          break;
+        case Monster.FRIEND_NEVER:
+          this.friend_odds = 50;
+          break;
+      }
+      this.friendliness = Monster.FRIEND_RANDOM;
+
+      // decrease friend odds by half, then recheck
+      this.friend_odds /= 2;
+
+      var old_reaction = this.reaction;
+      this.checkReaction();
+      // attacking a neutral monster can never make it become friendly
+      if (old_reaction == Monster.RX_NEUTRAL && this.reaction == Monster.RX_FRIEND) {
+        this.reaction = Monster.RX_NEUTRAL;
+      }
+    }
+  }
+
+  /**
    * Calculates the maximum weight the monster can carry
    * @return number
    */
@@ -222,8 +257,6 @@ export class Monster extends GameObject {
     if (target.defense_bonus) odds -= target.defense_bonus;
 
     var hit_roll = game.diceRoll(1, 100);
-//    game.history.write("Odds:" + odds);
-//    game.history.write("Roll:" + hit_roll);
 
     if (hit_roll <= odds || hit_roll <= 5) {
       // hit
@@ -250,7 +283,7 @@ export class Monster extends GameObject {
         game.history.write('--a hit!');
       }
       // deal the damage
-      target.injure(damage * multiplier, ignore_armor);
+      target.injure(Math.floor(damage * multiplier), ignore_armor);
 
       // check for weapon ability increase
       if (this.id == Monster.PLAYER) {
@@ -323,6 +356,23 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Finds someone for the monster to attack
+   * @returns Monster
+   */
+  chooseTarget() {
+    var game = Game.getInstance();
+    var monsters = [game.monsters.player].concat(game.monsters.visible);
+    for (var i in monsters) {
+      if (this.reaction == Monster.RX_FRIEND && monsters[i].reaction == Monster.RX_HOSTILE) {
+        return monsters[i];
+      } else if (this.reaction == Monster.RX_HOSTILE && monsters[i].reaction == Monster.RX_FRIEND) {
+        return monsters[i];
+      }
+    }
+    return null;
+  }
+
+  /**
    * Deals damage to a monster
    * @param number amount The amount of damage to do.
    * @param boolean ignore_armor Whether to ignore the effect of armor
@@ -341,8 +391,13 @@ export class Monster extends GameObject {
 
     // handle death
     if (this.damage >= this.hardiness) {
-      this.room_id = null;
+      if (this.weapon_id > 0) {
+        var wpn = Game.getInstance().artifacts.get(this.weapon_id);
+        wpn.room_id = this.room_id;
+      }
+
       // TODO: place dead body artifact
+      this.room_id = null;
     }
     return amount;
   }

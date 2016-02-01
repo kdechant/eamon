@@ -8,7 +8,7 @@
     "agility": 15,
     "friendliness": "neutral",
     "friend_odds": 40,
-    "weapon": 4,
+    "weapon_id": 4,
     "weapon_dice": 1,
     "weapon_sides": 5
   },
@@ -19,9 +19,6 @@
     "room_id": 3,
     "hardiness": 10,
     "agility": 10,
-    "friendliness": "friend",
-    "weapon": 4,
-    "weapon_dice": 1,
-    "weapon_sides": 5
+    "friendliness": "friend"
   }
 ]

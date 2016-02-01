@@ -41,7 +41,7 @@ export class ArtifactRepository {
       a.id = this.index + 1;
     }
 
-    if (this.get(a.id) !== undefined) {
+    if (this.get(a.id) !== null) {
       throw new Error("Tried to create an artifact #"+a.id+" but that ID is already taken.");
     }
 
@@ -65,6 +65,7 @@ export class ArtifactRepository {
         return this.all[i];
       }
     }
+    return null;
   }
 
   /**
