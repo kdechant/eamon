@@ -45,7 +45,9 @@
   <div class="status-widget inventory">
     <p class="heading">You are carrying:</p>
     <div class="artifacts-list" *ngIf="game?.monsters?.player?.inventory">
-      <span class="artifact" *ngFor="#artifact of game.monsters.player.inventory">{{ artifact.name }}<br /></span>
+      <span class="artifact" *ngFor="#artifact of game.monsters.player.inventory">{{ artifact.name }}
+        <span class="lit" *ngIf="artifact.is_lit">(lit)</span><br />
+      </span>
       <span class="artifact none" *ngIf="game.monsters.player.inventory.length == 0">nothing<br /></span>
     </div>
     <p class="weight">Weight carried: {{game.monsters.player.weight_carried}}</p>

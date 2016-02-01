@@ -89,5 +89,16 @@
     "weapon_odds": 10,
     "dice": 1,
     "sides": 8
+  },
+  {
+    "id": 9,
+    "name": "torch",
+    "description": "You see a torch.",
+    "room_id": null,
+    "monster_id": 0,
+    "weight": 1,
+    "value": 1,
+    "is_light_source": true,
+    "quantity": 20
   }
 ]

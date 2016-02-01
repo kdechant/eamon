@@ -127,8 +127,23 @@ export class Game {
   tick() {
     this.timer++;
 
+    // check if there is a light source; decrement its fuel count
+    var light = this.artifacts.isLightSource();
+    for (var i in this.artifacts.all) {
+      var a = this.artifacts.all[i];
+      if (a.is_light_source && a.is_lit) {
+        a.quantity--;
+        if (a.quantity == 0) {
+          a.is_lit = false;
+          this.history.write("Your " + a.name + " just went out.");
+        }
+      }
+    }
+
     // if the player is seeing the room for the first time, show the description
-    if (!this.rooms.current_room.seen) {
+    if (this.rooms.current_room.is_dark && !light) {
+      this.history.write("It's too dark to see anything.");
+    } else if (!this.rooms.current_room.seen) {
       this.history.write(this.rooms.current_room.description);
       this.rooms.current_room.seen = true;
     }
@@ -148,23 +163,27 @@ export class Game {
     this.skip_battle_actions = false;
 
     // show monster and artifact descriptions
-    for (var i in this.monsters.visible) {
-      var m = this.monsters.visible[i];
-      if (!m.seen) {
-        this.history.write(m.description);
-        m.seen = true;
-      } else {
-        this.history.write(m.name + ' is here.');
+    console.log(light)
+    console.log(this.rooms.current_room.is_dark)
+    if (light || !this.rooms.current_room.is_dark) {
+      for (var i in this.monsters.visible) {
+        var m = this.monsters.visible[i];
+        if (!m.seen) {
+          this.history.write(m.description);
+          m.seen = true;
+        } else {
+          this.history.write(m.name + ' is here.');
+        }
       }
-    }
 
-    for (var i in this.artifacts.visible) {
-      var a = this.artifacts.visible[i];
-      if (!a.seen) {
-        this.history.write(a.description);
-        a.seen = true;
-      } else {
-        this.history.write('You see ' + a.name);
+      for (var i in this.artifacts.visible) {
+        var a = this.artifacts.visible[i];
+        if (!a.seen) {
+          this.history.write(a.description);
+          a.seen = true;
+        } else {
+          this.history.write('You see ' + a.name);
+        }
       }
     }
 

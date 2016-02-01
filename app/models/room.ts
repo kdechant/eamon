@@ -30,6 +30,7 @@ export class Room extends Loadable {
   public description: string;
   public exits: RoomExit[] = [];
   public seen: boolean = false;
+  public is_dark: boolean;
 
   /**
    * Loads data from JSON source into the object properties.

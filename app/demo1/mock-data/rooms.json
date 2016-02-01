@@ -14,7 +14,8 @@
     "description": "You are in the great hall of the castle.",
     "exits": [
       {"direction": "n", "room_to": 3},
-      {"direction": "s", "room_to": 1}
+      {"direction": "s", "room_to": 1},
+      {"direction": "d", "room_to": 5}
     ]
   },
   {
@@ -33,5 +34,14 @@
     "exits": [
       {"direction": "w", "room_to": 3}
     ]
+  },
+  {
+    "id": 5,
+    "name": "Dungeon",
+    "description": "You are in a dark dungeon. There are manacles on the walls.",
+    "exits": [
+      {"direction": "u", "room_to": 2}
+    ],
+    "is_dark": true
   }
 ]

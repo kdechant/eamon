@@ -61,6 +61,11 @@ export class LookCommand implements BaseCommand {
     // look event. can be used to reveal secret doors, etc.
     game.triggerEvent('look', arg);
 
+    if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
+      // can't look at anything if it's dark.
+      return;
+    }
+
     if (arg == '') {
       // if not looking at anything in particular, show the room description
       game.history.write(game.rooms.current_room.description);
@@ -294,3 +299,36 @@ export class AttackCommand implements BaseCommand {
   }
 }
 core_commands.push(new AttackCommand());
+
+
+export class LightCommand implements BaseCommand {
+  name: string = 'light';
+  verbs: string[] = ['light'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    var game = Game.getInstance();
+    var artifact = game.monsters.player.findInInventory(arg);
+    if (artifact) {
+      if (artifact.is_light_source) {
+        if (artifact.is_lit) {
+          artifact.is_lit = false;
+          game.history.write("You put out the " + artifact.name + ".");
+        } else {
+          if (artifact.quantity > 0) {
+            artifact.is_lit = true;
+            game.history.write("You light the " + artifact.name + ".");
+          } else {
+            game.history.write("It's out of fuel!");
+          }
+        }
+      } else {
+        throw new CommandException("That isn't a light source!")
+      }
+    } else {
+      throw new CommandException("You aren't carrying a " + arg + "!")
+    }
+
+  }
+}
+core_commands.push(new LightCommand());

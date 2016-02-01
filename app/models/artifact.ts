@@ -27,10 +27,12 @@ export class Artifact extends GameObject {
   embedded: boolean;
   is_edible: boolean;
   is_drinkable: boolean;
+  is_light_source: boolean;
   quantity: number;
 
   // game-state properties
   seen: boolean = false;
+  is_lit: boolean = false;
 
   /**
    * Moves the artifact to a specific room.

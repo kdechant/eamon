@@ -96,4 +96,20 @@ export class ArtifactRepository {
     this.visible = artifacts;
   }
 
+  /**
+   * Checks to see if there is a light source lit
+   * @return boolean
+   */
+  isLightSource() {
+    for (var i in this.all) {
+      var a = this.all[i];
+      if (a.is_light_source && a.is_lit) {
+        if (a.room_id == Game.getInstance().rooms.current_room.id || a.monster_id == 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
 }
