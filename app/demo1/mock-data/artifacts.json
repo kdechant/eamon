@@ -101,5 +101,30 @@
     "value": 1,
     "is_light_source": true,
     "quantity": 20
+  },
+  {
+    "id": 10,
+    "name": "red book",
+    "description": "You see a red book.",
+    "room_id": 6,
+    "weight": 5,
+    "value": 1,
+    "markings": [
+      "In the darkest depths of Mordor",
+      "I met a girl so fair",
+      "But Gollum and the Evil One",
+      "Crept up and slipped away with her."
+    ]
+  },
+  {
+    "id": 11,
+    "name": "black book",
+    "description": "You see a black book with a skull on it.",
+    "room_id": 6,
+    "weight": 5,
+    "value": 1,
+    "is_weapon": false,
+    "is_edible": true,
+    "quantity": 3
   }
 ]

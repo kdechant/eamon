@@ -29,10 +29,12 @@ export class Artifact extends GameObject {
   is_drinkable: boolean;
   is_light_source: boolean;
   quantity: number;
+  markings: string[];  // phrases that appear when you read the item
 
   // game-state properties
   seen: boolean = false;
   is_lit: boolean = false;
+  markings_index: number = 0; // counter used to keep track of the next marking to read
 
   /**
    * Moves the artifact to a specific room.

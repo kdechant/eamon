@@ -1,7 +1,7 @@
 /**
  * JSON data that mocks what would come from the back-end API
  */
-export var ARTIFACTS: Array<Object> = [
+export var ARTIFACTS: Object[] = [
   {
     "id": 1,
     "name": "throne",
@@ -36,10 +36,11 @@ export var ARTIFACTS: Array<Object> = [
     "id": 4,
     "name": "spear",
     "description": "You see a standard 10-foot-long spear.",
-    "room_id": 0,
+    "room_id": null,
     "monster_id": 1,
     "weight": 5,
     "value": 10,
+    "is_weapon": true,
     "weapon_type": 4,
     "weapon_odds": 10,
     "dice": 1,
@@ -75,6 +76,55 @@ export var ARTIFACTS: Array<Object> = [
     "description": "You see a loaf of bread.",
     "room_id": 1,
     "weight": 1,
+    "value": 1,
+    "is_edible": true,
+    "quantity": 3
+  },
+  {
+    "id": 8,
+    "name": "sword",
+    "description": "You see a good-quality sword.",
+    "room_id": null,
+    "monster_id": 3,
+    "weight": 5,
+    "value": 10,
+    "is_weapon": true,
+    "weapon_type": 5,
+    "weapon_odds": 10,
+    "dice": 1,
+    "sides": 8
+  },
+  {
+    "id": 9,
+    "name": "torch",
+    "description": "You see a torch.",
+    "room_id": null,
+    "monster_id": 0,
+    "weight": 1,
+    "value": 1,
+    "is_light_source": true,
+    "quantity": 20
+  },
+  {
+    "id": 10,
+    "name": "red book",
+    "description": "You see a red book.",
+    "room_id": 6,
+    "weight": 5,
+    "value": 1,
+    "markings": [
+      "In the darkest depths of Mordor",
+      "I met a girl so fair",
+      "But Gollum and the Evil One",
+      "Crept up and slipped away with her."
+    ]
+  },
+  {
+    "id": 11,
+    "name": "black book",
+    "description": "You see a black book with a skull on it.",
+    "room_id": 6,
+    "weight": 5,
     "value": 1,
     "is_weapon": false,
     "is_edible": true,

@@ -21,10 +21,11 @@
   {
     "id": 3,
     "name": "Throne Room",
-    "description": "You are in the throne room. There is a large throne on the north wall. A locked door leads east.",
+    "description": "You are in the throne room. There is a large throne on the north wall. An archway leads west and there is a heavy locked door in the east wall.",
     "exits": [
       {"direction": "e", "room_to": 4, "key_id": 5},
-      {"direction": "s", "room_to": 2}
+      {"direction": "s", "room_to": 2},
+      {"direction": "w", "room_to": 6}
     ]
   },
   {
@@ -43,5 +44,13 @@
       {"direction": "u", "room_to": 2}
     ],
     "is_dark": true
+  },
+  {
+    "id": 6,
+    "name": "Library",
+    "description": "You are in the castle library. There are lots of books around.",
+    "exits": [
+      {"direction": "e", "room_to": 3}
+    ]
   }
 ]

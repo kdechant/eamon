@@ -78,3 +78,22 @@ event_handlers.push({
     }
   }
 });
+
+event_handlers.push({
+  name: 'read',
+  // the 'read' event handler should return true if the handler did something,
+  // otherwise the "there are no markings to read" message will appear.
+  run: function(arg) {
+    var game = Game.getInstance();
+    if (arg == 'black book') {
+      var a = game.artifacts.getByName(arg);
+      if (a.room_id == game.rooms.current_room.id || a.monster_id == 0) {
+        game.history.write("The book zaps you when you open it!");
+        game.monsters.player.injure(5);
+      } else {
+        game.history.write("I don't see a " + arg + "!");
+      }
+      return true;
+    }
+  }
+});

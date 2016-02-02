@@ -338,6 +338,36 @@ export class LightCommand implements BaseCommand {
 core_commands.push(new LightCommand());
 
 
+export class ReadCommand implements BaseCommand {
+  name: string = 'read';
+  verbs: string[] = ['read'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+    var markings_read = false;
+
+    // see if we're reading an artifact that has markings
+    var a = game.artifacts.getByName(arg);
+    if (a !== null && (a.room_id == game.rooms.current_room.id || a.monster_id == 0) && a.markings) {
+      game.history.write('It reads: "' + a.markings[a.markings_index] + '"');
+      markings_read = true;
+      a.markings_index++;
+      if (a.markings_index >= a.markings.length) {
+        a.markings_index = 0;
+      }
+    }
+
+    // other effects are custom to the adventure
+    var success = game.triggerEvent('read', arg);
+
+    // otherwise, nothing happens
+    if ((!success || success == undefined) && !markings_read) {
+      game.history.write("There are no markings to read!");
+    }
+  }
+}
+core_commands.push(new ReadCommand());
+
+
 export class PowerCommand implements BaseCommand {
   name: string = 'power';
   verbs: string[] = ['power'];

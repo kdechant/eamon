@@ -79,6 +79,7 @@ export class ArtifactRepository {
         return this.all[i];
       }
     }
+    return null;
   }
 
   /**
