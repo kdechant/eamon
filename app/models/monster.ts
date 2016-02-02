@@ -432,12 +432,16 @@ export class Monster extends GameObject {
   chooseTarget() {
     var game = Game.getInstance();
     var monsters = [game.monsters.player].concat(game.monsters.visible);
+    var targets:Monster[] = [];
     for (var i in monsters) {
       if (this.reaction == Monster.RX_FRIEND && monsters[i].reaction == Monster.RX_HOSTILE) {
-        return monsters[i];
+        targets.push(monsters[i]);
       } else if (this.reaction == Monster.RX_HOSTILE && monsters[i].reaction == Monster.RX_FRIEND) {
-        return monsters[i];
+        targets.push(monsters[i]);
       }
+    }
+    if (targets.length) {
+      return targets[Math.floor(Math.random() * targets.length)];
     }
     return null;
   }
