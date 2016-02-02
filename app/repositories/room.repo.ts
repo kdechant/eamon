@@ -37,4 +37,11 @@ export class RoomRepository {
     }
   }
 
+  /**
+   * Gets a random room.
+   * @return Room
+   */
+  getRandom() {
+    return this.rooms[Math.floor(Math.random() * this.rooms.length)];
+  }
 }

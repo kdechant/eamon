@@ -46,7 +46,8 @@ export class Monster extends GameObject {
 
   // data properties for player only
   charisma: number;
-  spell_abilities:Object;
+  spell_abilities:any;
+  spell_abilities_original:any;
   weapon_abilities:{ [key:number]:number; };
 
   // game-state properties
@@ -57,6 +58,7 @@ export class Monster extends GameObject {
   weight_carried: number = 0;
   weapon: Artifact;
   inventory: Artifact[];
+  speed_time: number = 0; // time remaining on speed spell
 
   /**
    * Moves the monster to a specific room.
@@ -447,7 +449,6 @@ export class Monster extends GameObject {
    * @returns number The amount of actual damage done
    */
   injure(amount:number, ignore_armor:boolean = false) {
-    console.log(this.damage);
     if (this.armor && !ignore_armor) {
       amount -= this.armor;
       if (amount <= 0) {
@@ -506,4 +507,54 @@ export class Monster extends GameObject {
     }
   }
 
+  /**
+   * When player casts a spell, this method determines if it was successful
+   * @param string spell_name
+   * @returns boolean
+   */
+  spellCast(spell_name:string) {
+    var game = Game.getInstance();
+
+    if (!game.monsters.player.spell_abilities[spell_name]) {
+      game.history.write("You don't know that spell!")
+      return;
+    }
+
+    // temporarily decrease spell ability
+    this.spell_abilities[spell_name] = Math.round(this.spell_abilities[spell_name] / 2);
+
+    // roll to see if the spell succeeded
+    var roll = game.diceRoll(1, 100);
+    if (roll == 100) {
+
+      game.history.write("The strain of attempting to cast POWER overloads your brain and you forget it completely for the rest of this adventure.")
+      game.monsters.player.spell_abilities.power = 0;
+
+    // always a 5% chance to work and a 5% chance to fail
+    } else if (roll <= game.monsters.player.spell_abilities.power || roll <= 5 && roll <= 95) {
+      // success!
+
+      // check for ability increase
+      var inc_roll = game.diceRoll(1, 100);
+      if (inc_roll > this.spell_abilities_original[spell_name]) {
+        this.spell_abilities_original[spell_name] += 2;
+        game.history.write('Spell ability increased!');
+      }
+
+      return true;
+    } else {
+      game.history.write("Nothing happens.")
+    }
+  }
+
+  /**
+   * Recharges the player's spell abilities. Called on game tick.
+   */
+  rechargeSpellAbilities() {
+    for (var spell_name in this.spell_abilities) {
+      if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
+        this.spell_abilities[spell_name]++;
+      }
+    }
+  }
 }

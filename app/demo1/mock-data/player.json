@@ -1,7 +1,7 @@
 {
   "name": "Princess Leia",
   "gender": "f",
-  "hardiness": 18,
+  "hardiness": 50,
   "agility": 15,
   "charisma": 16,
   "gold": 200,
@@ -31,9 +31,9 @@
     }
   ],
   "spell_abilities": {
-    "blast": 0,
+    "blast": 60,
     "heal": 50,
     "power": 70,
-    "speed": 0
+    "speed": 75
   }
 }

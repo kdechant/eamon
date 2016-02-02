@@ -72,6 +72,12 @@ export class MonsterRepository {
     this.player.id = 0;
     this.player.room_id = 1;
     this.player.reaction = Monster.RX_FRIEND;
+    this.player.spell_abilities_original = {
+      'power': this.player.spell_abilities.power,
+      'heal': this.player.spell_abilities.heal,
+      'blast': this.player.spell_abilities.blast,
+      'speed': this.player.spell_abilities.speed
+    }
     this.all.push(this.player);
 
     // create new artifact objects for the weapons the player brought

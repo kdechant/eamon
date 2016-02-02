@@ -163,8 +163,6 @@ export class Game {
     this.skip_battle_actions = false;
 
     // show monster and artifact descriptions
-    console.log(light)
-    console.log(this.rooms.current_room.is_dark)
     if (light || !this.rooms.current_room.is_dark) {
       for (var i in this.monsters.visible) {
         var m = this.monsters.visible[i];
@@ -184,6 +182,17 @@ export class Game {
         } else {
           this.history.write('You see ' + a.name);
         }
+      }
+    }
+
+    this.monsters.player.rechargeSpellAbilities();
+
+    // if speed spell is active, decrease its time remaining
+    if (this.monsters.player.speed_time > 0) {
+      this.monsters.player.speed_time--;
+      if (this.monsters.player.speed_time == 0) {
+        this.history.write('You speed spell just expired!');
+        this.monsters.player.agility /= 2;
       }
     }
 

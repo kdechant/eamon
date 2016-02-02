@@ -312,8 +312,6 @@ export class LightCommand implements BaseCommand {
   verbs: string[] = ['light'];
   run(verb, arg) {
     var game = Game.getInstance();
-
-    var game = Game.getInstance();
     var artifact = game.monsters.player.findInInventory(arg);
     if (artifact) {
       if (artifact.is_light_source) {
@@ -338,3 +336,93 @@ export class LightCommand implements BaseCommand {
   }
 }
 core_commands.push(new LightCommand());
+
+
+export class PowerCommand implements BaseCommand {
+  name: string = 'power';
+  verbs: string[] = ['power'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    if (game.monsters.player.spellCast(verb)) {
+      //  this spell has no effect except what is defined in the adventure
+      var roll = game.diceRoll(1, 100);
+      game.triggerEvent('power', roll);
+    }
+  }
+}
+core_commands.push(new PowerCommand());
+
+
+export class HealCommand implements BaseCommand {
+  name: string = 'heal';
+  verbs: string[] = ['heal'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    if (game.monsters.player.spellCast(verb)) {
+      var heal_amount = game.diceRoll(2, 6);
+      game.triggerEvent('heal', arg);
+      if (arg != '') {
+        // heal a monster
+        var m = game.monsters.getByName(arg);
+        if (m.room_id = game.rooms.current_room.id) {
+          game.history.write("Some of " + m + "'s wounds seem to clear up.")
+          m.heal(heal_amount);
+
+        } else {
+          throw new CommandException("Heal whom?")
+        }
+      } else {
+        // heal player
+        game.history.write("Some of your wounds seem to clear up.");
+        game.monsters.player.heal(heal_amount);
+      }
+    }
+  }
+}
+core_commands.push(new HealCommand());
+
+
+export class BlastCommand implements BaseCommand {
+  name: string = 'blast';
+  verbs: string[] = ['blast'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    if (game.monsters.player.spellCast(verb)) {
+      game.triggerEvent('blast', arg);
+      // heal a monster
+      var m = game.monsters.getByName(arg);
+      if (m.room_id = game.rooms.current_room.id) {
+        game.history.write("--a direct hit!")
+        var damage = game.diceRoll(2, 5);
+        m.injure(damage);
+        m.hurtFeelings();
+      } else {
+        throw new CommandException("Blast whom?")
+      }
+    }
+  }
+}
+core_commands.push(new BlastCommand());
+
+
+export class SpeedCommand implements BaseCommand {
+  name: string = 'speed';
+  verbs: string[] = ['speed'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    if (game.monsters.player.spellCast(verb)) {
+      game.triggerEvent('speed', arg);
+      // double player's agility
+      game.history.write("You can feel the new agility flowing through you!")
+      if (game.monsters.player.speed_time == 0) {
+        game.monsters.player.agility *= 2;
+      }
+      game.monsters.player.speed_time += 10 + game.diceRoll(1, 10);
+    }
+  }
+}
+core_commands.push(new SpeedCommand());
