@@ -37,6 +37,7 @@
     "monster_id": 1,
     "weight": 5,
     "value": 10,
+    "is_weapon": true,
     "weapon_type": 4,
     "weapon_odds": 10,
     "dice": 1,
@@ -73,7 +74,6 @@
     "room_id": 1,
     "weight": 1,
     "value": 1,
-    "is_weapon": false,
     "is_edible": true,
     "quantity": 3
   },
@@ -85,6 +85,7 @@
     "monster_id": 3,
     "weight": 5,
     "value": 10,
+    "is_weapon": true,
     "weapon_type": 5,
     "weapon_odds": 10,
     "dice": 1,

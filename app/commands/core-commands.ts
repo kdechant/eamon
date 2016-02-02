@@ -138,6 +138,12 @@ export class GetCommand implements BaseCommand {
             game.monsters.player.pickUp(a);
             game.history.write(a.name + ' taken.');
             game.triggerEvent('afterGet', a)
+
+            // if in battle and player has no weapon ready, ready it
+            if (game.in_battle && a.is_weapon && game.monsters.player.weapon_id == null) {
+              game.monsters.player.ready(a);
+              Game.getInstance().history.write(a.name + " readied.");
+            }
           } else {
             game.history.write(a.name + ' is too heavy.');
           }

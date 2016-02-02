@@ -291,7 +291,17 @@ export class Monster extends GameObject {
       // if there are no valid exits, the monster has to stay and fight.
     }
 
-    // TODO: pick up weapon
+    // pick up weapon
+    if (this.weapon_id == null) {
+      for (var i in game.artifacts.visible) {
+        if (game.artifacts.visible[i].is_weapon) {
+          game.history.write(this.name + " picks up " + game.artifacts.visible[i].name + ".");
+          this.pickUp(game.artifacts.visible[i]);
+          this.ready(game.artifacts.visible[i]);
+          return;
+        }
+      }
+    }
 
     // attack!
     if (this.weapon_id != null) {
