@@ -122,16 +122,16 @@ core_commands.push(new SayCommand());
 
 export class GetCommand implements BaseCommand {
   name: string = 'get';
-  verbs: string[] = ['get', 'take'];
-  run(verb, arg) {
+  verbs: string[] = ['get'];
+  run(verb:string, arg:string) {
 
     var game = Game.getInstance();
-
+    arg = arg.toLowerCase();
     var match = false;
 
     for (var i in game.artifacts.visible) {
       var a = game.artifacts.visible[i];
-      if (arg == a.name || arg == 'all') {
+      if (arg == a.name.toLowerCase() || arg == 'all') {
         match = true;
         if (game.triggerEvent('beforeGet', a)) {
           if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
@@ -158,6 +158,63 @@ export class GetCommand implements BaseCommand {
   }
 }
 core_commands.push(new GetCommand());
+
+
+export class RemoveCommand implements BaseCommand {
+  name: string = 'remove';
+  verbs: string[] = ['remove'];
+  run(verb:string, arg:string) {
+
+    var game:Game = Game.getInstance();
+    var match = false;
+
+    // check if we're removing something from a container
+    var regex_result = /(.+) from (.*)/.exec(arg);
+    if (regex_result !== null) {
+      var item_name:string = regex_result[1];
+      var container_name:string = regex_result[2];
+
+      // catch user mischief
+      var m:Monster = game.monsters.getByName(container_name);
+      if (m) {
+        throw new CommandException("I can't remove something from " + container_name + "!");
+      }
+
+      // look for a container artifact and see if we can remove the item from it
+      var container:Artifact = game.artifacts.getByName(container_name);
+      if (container && container.isHere()) {
+        if (container.is_container) {
+          if (container.is_open) {
+            var item:Artifact = container.getContainedArtifact(item_name);
+            if (item) {
+              if (game.triggerEvent('beforeRemove', item)) {
+                game.history.write(item.name + ' removed from ' + container.name + '.');
+                match = true;
+                item.removeFromContainer();
+                game.triggerEvent('afterRemove', item)
+              }
+            } else {
+              throw new CommandException("There is no " + item_name + " inside the " + container_name + "!");
+            }
+          } else {
+            throw new CommandException("Try opening the " + container_name + " first.");
+          }
+        } else {
+          throw new CommandException("I can't remove things from the " + container_name + "!");
+        }
+      } else {
+        throw new CommandException("I see no " + container_name + " here!")
+      }
+
+    } else {
+
+      // TODO: remove armor/clothing
+
+    }
+
+  }
+}
+core_commands.push(new RemoveCommand());
 
 
 export class DropCommand implements BaseCommand {
@@ -347,7 +404,7 @@ export class ReadCommand implements BaseCommand {
 
     // see if we're reading an artifact that has markings
     var a = game.artifacts.getByName(arg);
-    if (a !== null && (a.room_id == game.rooms.current_room.id || a.monster_id == 0) && a.markings) {
+    if (a !== null && a.isHere() && a.markings) {
       game.history.write('It reads: "' + a.markings[a.markings_index] + '"');
       markings_read = true;
       a.markings_index++;
@@ -366,6 +423,40 @@ export class ReadCommand implements BaseCommand {
   }
 }
 core_commands.push(new ReadCommand());
+
+
+export class OpenCommand implements BaseCommand {
+  name: string = 'open';
+  verbs: string[] = ['open'];
+  run(verb, arg) {
+    var game = Game.getInstance();
+
+    var container_opened:boolean = false;
+    var a = game.artifacts.getByName(arg);
+    if (a !== null && a.isHere() && a.is_container) {
+      if (!a.is_open) {
+        // not open. open it.
+        a.is_open = true;
+        container_opened = true;
+      } else {
+        throw new CommandException("It's already open!")
+      }
+    }
+
+    // other effects are custom to the adventure
+    var success = game.triggerEvent('open', arg);
+
+    // otherwise, nothing happens
+    if ((!success || success == undefined) && !container_opened) {
+      if (arg == 'door') {
+        game.history.write("The door will open when you pass through it.");
+      } else {
+        game.history.write("I don't know how to open that!");
+      }
+    }
+  }
+}
+core_commands.push(new OpenCommand());
 
 
 export class PowerCommand implements BaseCommand {

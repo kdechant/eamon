@@ -37,7 +37,9 @@
   <div class="status-widget artifacts">
     <p class="heading">What's around:</p>
     <div class="artifacts-list">
-      <span class="artifact" *ngFor="#artifact of game.artifacts.visible">{{ artifact.name }}<br /></span>
+      <div class="artifact" *ngFor="#artifact of game.artifacts.visible">{{ artifact.name }}
+        <div class="artifact-contents" *ngFor="#content of artifact.contents">{{ content.name }}</div>
+      </div>
       <span class="artifact none" *ngIf="game.artifacts.visible.length == 0">nothing<br /></span>
     </div>
   </div>

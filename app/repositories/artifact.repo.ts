@@ -89,9 +89,20 @@ export class ArtifactRepository {
   updateVisible() {
     var artifacts:Artifact[] = [];
     for(var i in this.all) {
-      var a = this.all[i];
+      var a:Artifact = this.all[i];
       if (a.room_id == Game.getInstance().rooms.current_room.id && !a.embedded) {
-        artifacts.push(this.all[i]);
+
+        // if the artifact is an open container, build the list of contents
+        if (a.is_container && a.is_open) {
+          a.contents = [];
+          for (var i in this.all) {
+            if (this.all[i].container_id == a.id) {
+              a.contents.push(this.all[i]);
+            }
+          }
+        }
+        
+        artifacts.push(a);
       }
     }
     this.visible = artifacts;

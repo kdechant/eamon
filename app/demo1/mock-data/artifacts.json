@@ -20,7 +20,7 @@
     "id": 3,
     "name": "magic sword",
     "description": "You see a shiny magic sword.",
-    "room_id": 4,
+    "container_id": 12,
     "weight": 3,
     "value": 500,
     "is_weapon": true,
@@ -126,5 +126,32 @@
     "is_weapon": false,
     "is_edible": true,
     "quantity": 3
+  },
+  {
+    "id": 12,
+    "name": "chest",
+    "description": "You see a big treasure chest. It's too heavy to carry.",
+    "room_id": 4,
+    "weight": 500,
+    "value": 0,
+    "is_container": true
+  },
+  {
+    "id": 13,
+    "name": "jewels",
+    "description": "You see a bag of jewels.",
+    "room_id": null,
+    "container_id": 12,
+    "weight": 3,
+    "value": 500
+  },
+  {
+    "id": 14,
+    "name": "magic wand",
+    "description": "You see a magic wand. The tip glows blue with a mystical energy.",
+    "room_id": null,
+    "container_id": 12,
+    "weight": 3,
+    "value": 500
   }
 ]

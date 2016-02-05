@@ -1,5 +1,7 @@
 import {GameObject} from './game-object';
 import {Game} from './game';
+import {Monster} from './monster';
+import {CommandException} from '../utils/command.exception';
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -11,6 +13,7 @@ export class Artifact extends GameObject {
   description: string;
   room_id:number; // if on the ground, which room
   monster_id:number; // if in inventory, who is carrying it
+  container_id:number; // if inside a container, the artifact id of the container
   weight: number;
   value: number;
   fixed_value: boolean;
@@ -32,6 +35,7 @@ export class Artifact extends GameObject {
   markings: string[];  // phrases that appear when you read the item
 
   // game-state properties
+  contents: Artifact[] = [];  // the Artifact objects for the things inside a container
   seen: boolean = false;
   is_lit: boolean = false;
   markings_index: number = 0; // counter used to keep track of the next marking to read
@@ -44,11 +48,44 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Determines whether an artifact is available to the player right now.
+   * Artifacts are available if the player is carrying them or if they are in
+   * the current room.
+   * @returns boolean
+   */
+  isHere():boolean {
+    return (this.room_id == Game.getInstance().rooms.current_room.id || this.monster_id == Monster.PLAYER)
+  }
+
+  /**
+   * Gets the Artifact object for an artifact inside the container
+   */
+  getContainedArtifact(name:string) {
+    for (var i in this.contents) {
+      if (this.contents[i].name.toLowerCase() == name.toLowerCase()) {
+        return this.contents[i];
+      }
+    }
+  }
+
+  /**
    * Removes an artifact from a container and
    * places it in the room where the container is.
    */
-  removeArtifact(artifact_id) {
-    // under construction
+  removeFromContainer() {
+    var game = Game.getInstance();
+    var container: Artifact = game.artifacts.get(this.container_id);
+    if (container) {
+      if (container.room_id) {
+        this.room_id = container.room_id;
+      } else if (container.monster_id) {
+        this.monster_id = container.monster_id;
+      }
+      this.container_id = null;
+      game.artifacts.updateVisible();
+    } else {
+      throw new CommandException("I couldn't find that container!");
+    }
   }
 
   /**

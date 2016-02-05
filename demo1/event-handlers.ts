@@ -97,3 +97,34 @@ event_handlers.push({
     }
   }
 });
+
+event_handlers.push({
+  name: 'beforeRemove',
+  run: function(artifact: Artifact) {
+    var game = Game.getInstance();
+    // special message when the player tries to pick up the throne
+    if (artifact) {
+      if (artifact.id == 13) {
+        game.history.write("Sucker! The jewels are fake. The thief must have stolen the real ones.");
+        artifact.name = 'Fake jewels';
+        artifact.value = 0;
+      } else if (artifact.id == 14) {
+        game.history.write("A magic force is holding the wand in the chest. You can't remove it.");
+        return false;
+      }
+    }
+    return true;
+  }
+});
+
+event_handlers.push({
+  name: 'afterRemove',
+  run: function(artifact) {
+    var game = Game.getInstance();
+    // special message when the player finds the treasure
+    if (artifact && artifact.id == 3) {
+      game.history.write("That's a fine-looking sword.");
+    }
+    return true;
+  }
+});

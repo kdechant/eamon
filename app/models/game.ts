@@ -217,12 +217,14 @@ export class Game {
    *   An argument to the event. e.g., the Artifact that was picked up or read,
    *   or the word that was said.
    */
-  public triggerEvent(event_name, arg:any) {
+  public triggerEvent(event_name, arg:any):any {
     for (var i in this.event_handlers) {
       if (this.event_handlers[i].name == event_name) {
         return this.event_handlers[i].run(arg);
       }
     }
+    // if we didn't find a matching event handler, return true to continue executing remaining code
+    return true;
   }
 
 }

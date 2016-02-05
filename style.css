@@ -32,3 +32,7 @@
 .hostile {
   color: red;
 }
+
+.artifact-contents {
+  padding-left: 15px;
+}
