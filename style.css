@@ -21,6 +21,18 @@
   color: #009;
   font-weight: bold;
 }
+.success {
+  color: green;
+  font-weight: bold;
+}
+.warning {
+  color: orange;
+  font-weight: bold;
+}
+.danger {
+  color: red;
+  font-weight: bold;
+}
 
 .command-prompt {
   padding-top: 12px;

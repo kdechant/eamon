@@ -335,7 +335,7 @@ export class Monster extends GameObject {
       var ignore_armor = false;
       // regular or critical hit
       if (hit_roll <= 5) {
-        game.history.write('--a critical hit!');
+        game.history.write('--a critical hit!', 'success');
         // roll another die to determine the effect of the critical hit
         var critical_roll = game.diceRoll(1,100);
         if (critical_roll <= 50) {
@@ -350,7 +350,7 @@ export class Monster extends GameObject {
           multiplier = 1000;	// instant kill
         }
       } else {
-        game.history.write('--a hit!');
+        game.history.write('--a hit!', 'success');
       }
       // deal the damage
       target.injure(Math.floor(damage * multiplier), ignore_armor);
@@ -360,7 +360,7 @@ export class Monster extends GameObject {
         var inc_roll = game.diceRoll(1, 100);
         if (inc_roll > odds) {
           this.weapon_abilities[wpn.weapon_type] += 2;
-          game.history.write('weapon ability increased!');
+          game.history.write('weapon ability increased!', 'success');
           console.log(this.weapon_abilities);
         }
       }
@@ -372,7 +372,7 @@ export class Monster extends GameObject {
       if (hit_roll < 97) {
         game.history.write('--a miss!');
       } else {
-        game.history.write('--a fumble!');
+        game.history.write('--a fumble!', 'warning');
         // see whether the player recovers, drops, or breaks their weapon
         var fumble_roll = game.diceRoll(1,100);
         if (fumble_roll <= 35 || (this.weapon_id == 0 && fumble_roll <= 75)) {
@@ -381,18 +381,18 @@ export class Monster extends GameObject {
 
         } else if (fumble_roll <= 75) {
 
-          game.history.write('--weapon dropped!');
+          game.history.write('--weapon dropped!', 'warning');
           this.drop(wpn);
 
         } else if (fumble_roll <= 95) {
 
-          game.history.write('--weapon broken!');
+          game.history.write('--weapon broken!', 'danger');
           this.weapon_id = null;
           wpn.monster_id = null;
           this.courage /= 2;
           // broken weapon can hurt user
           if (fumble_roll > 95) {
-            game.history.write('--broken weapon hurts user!');
+            game.history.write('--broken weapon hurts user!', 'danger');
             var dice = wpn.dice;
             if (fumble_roll == 100) dice++;  // worst case - extra damage
             this.injure(game.diceRoll(dice, wpn.sides));
@@ -503,11 +503,11 @@ export class Monster extends GameObject {
     } else if (status > .4) {
       game.history.write(this.name + " is in pain.")
     } else if (status > .2) {
-      game.history.write(this.name + " is badly injured.")
+      game.history.write(this.name + " is badly injured.", "warning")
     } else if (status > 0) {
-      game.history.write(this.name + " is at death's door.")
+      game.history.write(this.name + " is at death's door.", "warning")
     } else {
-      game.history.write(this.name + " is dead!")
+      game.history.write(this.name + " is dead!", "danger")
     }
   }
 
@@ -542,7 +542,7 @@ export class Monster extends GameObject {
       var inc_roll = game.diceRoll(1, 100);
       if (inc_roll > this.spell_abilities_original[spell_name]) {
         this.spell_abilities_original[spell_name] += 2;
-        game.history.write('Spell ability increased!');
+        game.history.write('Spell ability increased!', 'success');
       }
 
       return true;

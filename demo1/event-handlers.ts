@@ -49,7 +49,7 @@ event_handlers.push({
     switch (artifact.name) {
       case 'bread':
         if (game.monsters.get(1).room_id == game.rooms.current_room.id) {
-          game.history.write("The guard shouts at you for stealing his bread.")
+          game.history.write("The guard shouts at you for stealing his bread.", "warning")
           game.monsters.get(1).reaction = Monster.RX_HOSTILE;
         } else {
           game.history.write("It tases OK. Would be better with some cheese.")
@@ -88,7 +88,7 @@ event_handlers.push({
     if (arg == 'black book') {
       var a = game.artifacts.getByName(arg);
       if (a.room_id == game.rooms.current_room.id || a.monster_id == 0) {
-        game.history.write("The book zaps you when you open it!");
+        game.history.write("The book zaps you when you open it!", "danger");
         game.monsters.player.injure(5);
       } else {
         game.history.write("I don't see a " + arg + "!");

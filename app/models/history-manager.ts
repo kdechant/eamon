@@ -15,7 +15,7 @@ export class HistoryManager {
   /**
    * Pushes a command onto the history
    */
-  push(command:string) {
+  push(command:string, type:string) {
     this.history.push(new HistoryEntry(command))
 
     // reset the counter whenever a command is added.
@@ -25,8 +25,8 @@ export class HistoryManager {
   /**
    * Pushes some output text onto the history
    */
-  write(text:string) {
-    this.history[this.index-1].push(text)
+  write(text:string, type:string = 'normal') {
+    this.history[this.index-1].push(text, type)
   }
 
   /**

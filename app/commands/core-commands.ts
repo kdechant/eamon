@@ -520,7 +520,7 @@ export class BlastCommand implements BaseCommand {
       // heal a monster
       var m = game.monsters.getByName(arg);
       if (m.room_id = game.rooms.current_room.id) {
-        game.history.write("--a direct hit!")
+        game.history.write("--a direct hit!", "success")
         var damage = game.diceRoll(2, 5);
         m.injure(damage);
         m.hurtFeelings();
