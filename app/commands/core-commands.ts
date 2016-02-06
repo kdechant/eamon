@@ -136,13 +136,17 @@ export class GetCommand implements BaseCommand {
         if (game.triggerEvent('beforeGet', a)) {
           if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
             game.monsters.player.pickUp(a);
-            game.history.write(a.name + ' taken.');
+            if (arg == 'all') {
+              game.history.write(a.name + ' taken.');
+            } else {
+              game.history.write('Got it.');
+            }
             game.triggerEvent('afterGet', a)
 
             // if in battle and player has no weapon ready, ready it
             if (game.in_battle && a.is_weapon && game.monsters.player.weapon_id == null) {
               game.monsters.player.ready(a);
-              Game.getInstance().history.write(a.name + " readied.");
+              Game.getInstance().history.write("Readied.");
             }
           } else {
             game.history.write(a.name + ' is too heavy.');

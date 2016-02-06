@@ -294,7 +294,7 @@ export class Monster extends GameObject {
     }
 
     // pick up weapon
-    if (this.weapon_id == null) {
+    if (this.reaction != Monster.RX_NEUTRAL && this.weapon_id == null) {
       for (var i in game.artifacts.visible) {
         if (game.artifacts.visible[i].is_weapon) {
           game.history.write(this.name + " picks up " + game.artifacts.visible[i].name + ".");
