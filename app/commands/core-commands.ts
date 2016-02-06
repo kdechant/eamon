@@ -352,7 +352,7 @@ export class AttackCommand implements BaseCommand {
     }
 
     var target = game.monsters.getByName(arg);
-    if (target) {
+    if (target && target.room_id == game.monsters.player.room_id) {
 
       // halve the target's friendliness and reset target's reaction.
       // this will allow friendly/neutral monsters to fight back if you anger them.
