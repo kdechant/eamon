@@ -11,6 +11,11 @@
      ({{game.monsters.player.weapon.dice}}d{{game.monsters.player.weapon.sides}})</div>
     <div class="weapon none" *ngIf="!game.monsters.player.weapon">Ready weapon: none!</div>
 
+    <div class="armor" *ngIf="game.monsters.player.armor_strength">Armor:
+      <span *ngFor="#armor of game.monsters.player.armor_worn; #isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
+    ({{game.monsters.player.armor_strength}})</div>
+    <div class="armor none" *ngIf="!game.monsters.player.armor_strength">Armor: none!</div>
+
   </div>
 
   <div class="status-widget room">
@@ -48,7 +53,10 @@
     <p class="heading">You are carrying:</p>
     <div class="artifacts-list" *ngIf="game?.monsters?.player?.inventory">
       <span class="artifact" *ngFor="#artifact of game.monsters.player.inventory">{{ artifact.name }}
-        <span class="lit" *ngIf="artifact.is_lit">(lit)</span><br />
+        <span class="lit" *ngIf="artifact.is_lit">(lit)</span>
+        <span class="worn" *ngIf="artifact.is_worn">(wearing)</span>
+        <span class="ready" *ngIf="artifact.id == game.monsters.player.weapon_id">(ready weapon)</span>
+        <br />
       </span>
       <span class="artifact none" *ngIf="game.monsters.player.inventory.length == 0">nothing<br /></span>
     </div>

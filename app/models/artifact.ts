@@ -26,6 +26,10 @@ export class Artifact extends GameObject {
   weapon_odds: number;
   dice: number;
   sides: number;
+  is_wearable: boolean;
+  is_armor: boolean;
+  is_shield: boolean;
+  armor_strength: number;
   get_all: boolean;
   embedded: boolean;
   is_edible: boolean;
@@ -39,6 +43,7 @@ export class Artifact extends GameObject {
   seen: boolean = false;
   is_lit: boolean = false;
   markings_index: number = 0; // counter used to keep track of the next marking to read
+  is_worn: boolean = false; // if the monster is wearing it
 
   /**
    * Moves the artifact to a specific room.

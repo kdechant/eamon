@@ -1,5 +1,6 @@
 import {Monster} from '../models/monster';
 import {Game} from '../models/game';
+import {Artifact} from '../models/artifact';
 
 /**
  * Class MonsterRepository.
@@ -80,14 +81,20 @@ export class MonsterRepository {
     }
     this.all.push(this.player);
 
-    // create new artifact objects for the weapons the player brought
-    var wpns = player_data.weapons;
-    for (var w in wpns) {
-      var a = wpns[w];
-      a.weight = 3;
+    // create new artifact objects for the weapons and armor the player brought
+    for (var i in player_data.items) {
+      var a:Artifact = player_data.items[i];
+      if (a.is_armor) {
+        a.weight = 10;
+      } else {
+        a.weight = 3;
+      }
       a.description = 'You see your ' + a.name + '.';
       var art = Game.getInstance().artifacts.add(a);
       this.player.pickUp(art);
+      if (art.is_armor || art.is_shield) {
+        this.player.wear(art);
+      }
     }
 
     // ready the player's best weapon

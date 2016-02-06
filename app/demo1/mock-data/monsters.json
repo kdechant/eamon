@@ -12,7 +12,8 @@
     "attack_odds": 33,
     "weapon_id": 4,
     "weapon_dice": 1,
-    "weapon_sides": 5
+    "weapon_sides": 5,
+    "armor_strength": 2
   },
   {
     "id": 2,
@@ -22,7 +23,8 @@
     "hardiness": 10,
     "agility": 10,
     "courage": 100,
-    "friendliness": "neutral"
+    "friendliness": "neutral",
+    "armor_strength": 0
   },
   {
     "id": 3,
@@ -36,7 +38,8 @@
     "attack_odds": 50,
     "weapon_id": 8,
     "weapon_dice": 1,
-    "weapon_sides": 8
+    "weapon_sides": 8,
+    "armor_strength": 5
   },
   {
     "id": 4,
@@ -48,6 +51,7 @@
     "courage": 10,
     "friendliness": "hostile",
     "attack_odds": 30,
-    "weapon_id": null
+    "weapon_id": null,
+    "armor_strength": 1
   }
 ]

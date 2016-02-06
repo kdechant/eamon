@@ -42,7 +42,7 @@ export class Monster extends GameObject {
   weapon_dice: number;
   weapon_sides: number;
   defense_bonus: number; // makes monster harder to hit
-  armor: number;
+  armor_strength: number;
 
   // data properties for player only
   charisma: number;
@@ -56,6 +56,7 @@ export class Monster extends GameObject {
   status: number = Monster.STATUS_ALIVE;
   damage: number = 0;
   weight_carried: number = 0;
+  armor_worn: Artifact[];
   weapon: Artifact;
   inventory: Artifact[];
   speed_time: number = 0; // time remaining on speed spell
@@ -206,17 +207,25 @@ export class Monster extends GameObject {
    * Refreshes the inventory of artifacts carried by the monster
    */
   updateInventory() {
-    var inv = [];
-    var weight = 0;
+    this.inventory = [];
+    if (this.id == Monster.PLAYER) { // armor handling currently only applies to the player
+      this.armor_worn = [];
+      this.armor_strength = 0;
+    }
+    this.weight_carried = 0;
     for (var i in Game.getInstance().artifacts.all) {
       var a = Game.getInstance().artifacts.all[i];
       if (a.monster_id == this.id) {
-        inv.push(a);
-        weight += a.weight;
+        this.inventory.push(a);
+        this.weight_carried += a.weight;
+        if (this.id == Monster.PLAYER) {
+          if (a.is_worn && (a.is_armor || a.is_shield)) {
+            this.armor_worn.push(a);
+            this.armor_strength += a.armor_strength;
+          }
+        }
       }
     }
-    this.inventory = inv;
-    this.weight_carried = weight;
   }
 
   /**
@@ -270,6 +279,24 @@ export class Monster extends GameObject {
         }
       }
     }
+  }
+
+  /**
+   * Wears an armor, shield, or article of clothing
+   */
+  wear(artifact:Artifact) {
+    artifact.is_worn = true;
+    // need to update inventory to set the monster's armor value
+    this.updateInventory();
+  }
+
+  /**
+   * Wears an armor, shield, or article of clothing
+   */
+  remove(artifact:Artifact) {
+    artifact.is_worn = false;
+    // need to update inventory to set the monster's armor value
+    this.updateInventory();
   }
 
   /**
@@ -452,14 +479,14 @@ export class Monster extends GameObject {
    * @param boolean ignore_armor Whether to ignore the effect of armor
    * @returns number The amount of actual damage done
    */
-  injure(amount:number, ignore_armor:boolean = false) {
-    if (this.armor && !ignore_armor) {
-      amount -= this.armor;
-      if (amount <= 0) {
+  injure(damage:number, ignore_armor:boolean = false) {
+    if (this.armor_strength && !ignore_armor) {
+      damage -= this.armor_strength;
+      if (damage <= 0) {
         Game.getInstance().history.write('--blow bounces off armor!');
       }
     }
-    this.damage += amount;
+    this.damage += damage;
     this.showHealth();
 
     // handle death
@@ -473,7 +500,7 @@ export class Monster extends GameObject {
       this.status = Monster.STATUS_DEAD;
       this.room_id = null;
     }
-    return amount;
+    return damage;
   }
 
   /**

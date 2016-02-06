@@ -212,7 +212,17 @@ export class RemoveCommand implements BaseCommand {
 
     } else {
 
-      // TODO: remove armor/clothing
+      var artifact = game.monsters.player.findInInventory(arg);
+      if (artifact) {
+        if (artifact.is_worn) {
+          game.monsters.player.remove(artifact);
+          game.history.write("You take off the " + artifact.name + ".")
+        } else {
+          throw new CommandException("You aren't wearing it!")
+        }
+      } else {
+        throw new CommandException("You aren't carrying a " + arg + "!")
+      }
 
     }
 
@@ -264,6 +274,28 @@ export class ReadyCommand implements BaseCommand {
   }
 }
 core_commands.push(new ReadyCommand());
+
+
+export class WearCommand implements BaseCommand {
+  name: string = 'wear';
+  verbs: string[] = ['wear'];
+  run(verb: string, arg: string) {
+
+    var game = Game.getInstance();
+    var artifact = game.monsters.player.findInInventory(arg);
+    if (artifact) {
+      if (artifact.is_wearable) {
+        game.monsters.player.wear(artifact);
+        game.history.write("You put on the " + artifact.name + ".")
+      } else {
+        throw new CommandException("You can't wear that!")
+      }
+    } else {
+      throw new CommandException("You aren't carrying a " + arg + "!")
+    }
+  }
+}
+core_commands.push(new WearCommand());
 
 
 export class FleeCommand implements BaseCommand {
