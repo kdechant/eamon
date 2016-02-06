@@ -193,6 +193,7 @@ export class Monster extends GameObject {
   drop(artifact:Artifact) {
     artifact.room_id = this.room_id;
     artifact.monster_id = null;
+    artifact.is_worn = false;
 
     // if dropping the ready weapon, set weapon to none
     if (artifact.id == this.weapon_id) {

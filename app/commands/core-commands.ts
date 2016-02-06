@@ -244,6 +244,10 @@ export class DropCommand implements BaseCommand {
     for (var i in inventory) {
       match = true;
       if (arg == inventory[i].name || arg == 'all') {
+        // "drop all" doesn't drop items the player is wearing
+        if (arg == 'all' && inventory[i].is_worn) {
+          continue;
+        }
         game.monsters.player.drop(inventory[i]);
         game.history.write(inventory[i].name + " dropped.")
       }
