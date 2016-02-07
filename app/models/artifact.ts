@@ -127,4 +127,27 @@ export class Artifact extends GameObject {
     }
   }
 
+  /**
+   * Returns the name of the weapon type
+   */
+  getWeaponTypeName() {
+    switch (this.weapon_type) {
+      case 1:
+        return 'axe';
+        break;
+      case 2:
+        return 'bow';
+        break;
+      case 3:
+        return 'club';
+        break;
+      case 4:
+        return 'spear';
+        break;
+      case 5:
+        return 'sword';
+        break;
+    }
+  }
+
 }

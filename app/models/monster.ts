@@ -389,7 +389,7 @@ export class Monster extends GameObject {
         var inc_roll = game.diceRoll(1, 100);
         if (inc_roll > odds) {
           this.weapon_abilities[wpn.weapon_type] += 2;
-          game.history.write('weapon ability increased!', 'success');
+          game.history.write("Your " + wpn.getWeaponTypeName() + " ability increased!", "success");
           console.log(this.weapon_abilities);
         }
         // check for armor expertise increase
