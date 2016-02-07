@@ -30,6 +30,7 @@ export class Artifact extends GameObject {
   is_armor: boolean;
   is_shield: boolean;
   armor_strength: number;
+  armor_penalty: number; // the amount of armor expertise needed to avoid to-hit penalty
   get_all: boolean;
   embedded: boolean;
   is_edible: boolean;

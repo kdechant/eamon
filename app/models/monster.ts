@@ -49,6 +49,7 @@ export class Monster extends GameObject {
   spell_abilities:any;
   spell_abilities_original:any;
   weapon_abilities:{ [key:number]:number; };
+  armor_expertise: number;
 
   // game-state properties
   seen: boolean = false;
@@ -391,8 +392,17 @@ export class Monster extends GameObject {
           game.history.write('weapon ability increased!', 'success');
           console.log(this.weapon_abilities);
         }
+        // check for armor expertise increase
+        var af = this.getArmorFactor();
+        if (af > 0) {
+          var inc_roll = game.diceRoll(1, 100);
+          // always a 5% chance to increase. this was not present in the original.
+          if (Math.max(af, 5) < inc_roll) {
+            this.armor_expertise += Math.min(af, 2); // can sometimes increase by only 1
+            game.history.write('Your armor expertise increased!', 'success');
+          }
+        }
       }
-      // TODO: check for armor expertise increase
 
     } else {
 
@@ -437,12 +447,15 @@ export class Monster extends GameObject {
   /**
    * Gets the base "to hit" percentage for a monster
    */
-  getBaseToHit() {
+  getBaseToHit(): number {
     var wpn = Game.getInstance().artifacts.get(this.weapon_id);
     var to_hit:number;
     if (this.id == Monster.PLAYER) {
       // for player, calculate chance to hit based on weapon type, ability, and weapon odds
       var to_hit = this.weapon_abilities[wpn.weapon_type] + wpn.weapon_odds + 2 * this.agility;
+      // calculate the effect of the armor penalty
+      console.log('armor factor: ', this.getArmorFactor());
+      to_hit -= this.getArmorFactor();
     } else {
       // other monsters have the same weapon ability for all weapon types
       var to_hit = this.attack_odds + 2 * this.agility;
@@ -451,6 +464,23 @@ export class Monster extends GameObject {
       }
     }
     return to_hit;
+  }
+
+  /**
+   * Gets the armor penalty for the armor items the player is wearing, adjusted
+   * by the player's armor expertise
+   * @returns number
+   */
+  getArmorFactor(): number {
+    var ae_max = 0;
+    for (var i in this.inventory) {
+      if (this.inventory[i].is_worn) {
+        ae_max += this.inventory[i].armor_penalty;
+      }
+    }
+    ae_max -= this.armor_expertise;
+    if (ae_max < 0) ae_max = 0;
+    return ae_max;
   }
 
   /**
@@ -485,6 +515,7 @@ export class Monster extends GameObject {
       damage -= this.armor_strength;
       if (damage <= 0) {
         Game.getInstance().history.write('--blow bounces off armor!');
+        return 0; // no need to show health here.
       }
     }
     this.damage += damage;

@@ -12,6 +12,7 @@
     "4": 10,
     "5": 0
   },
+  "armor_expertise": 20,
   "items": [
     {
       "name": "mace",
@@ -33,13 +34,15 @@
       "name": "chain mail",
       "is_wearable": true,
       "is_armor": true,
-      "armor_strength": 2
+      "armor_strength": 2,
+      "armor_penalty": 20
     },
     {
       "name": "shield",
       "is_wearable": true,
       "is_shield": true,
-      "armor_strength": 1
+      "armor_strength": 1,
+      "armor_penalty": 5
     }
   ],
   "spell_abilities": {
