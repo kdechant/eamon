@@ -6,7 +6,7 @@ export var event_handlers = [];
 
 event_handlers.push({
   name: 'beforeGet',
-  run: function(artifact) {
+  run: function(arg, artifact) {
     var game = Game.getInstance();
     // special message when the player tries to pick up the throne
     if (artifact && artifact.id == 1) {
@@ -19,7 +19,7 @@ event_handlers.push({
 
 event_handlers.push({
   name: 'afterGet',
-  run: function(artifact) {
+  run: function(arg, artifact) {
     var game = Game.getInstance();
     // special message when the player finds the treasure
     if (artifact && artifact.id == 3) {
@@ -124,6 +124,32 @@ event_handlers.push({
     // special message when the player finds the treasure
     if (artifact && artifact.id == 3) {
       game.history.write("That's a fine-looking sword.");
+    }
+    return true;
+  }
+});
+
+event_handlers.push({
+  name: 'give',
+  run: function(arg:string, artifact:Artifact, monster:Monster) {
+    var game = Game.getInstance();
+    // alfred doesn't like the looks of that black book
+    if (monster.id == 3 && artifact.id == 11) {
+      game.history.write("Alfred says, \"That looks dangerous. Why don't you keep it?\"");
+      return false;
+    }
+    return true;
+  }
+});
+
+event_handlers.push({
+  name: 'take',
+  run: function(arg:string, artifact:Artifact, monster:Monster) {
+    var game = Game.getInstance();
+    // you can't take alfred's lucky sword.
+    if (monster.id == 3 && artifact.id == 8) {
+      game.history.write("Alfred says, \"That's my lucky sword! My father gave it to me!\"");
+      return false;
     }
     return true;
   }

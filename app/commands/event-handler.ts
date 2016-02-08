@@ -1,4 +1,6 @@
 import {Game} from '../models/game';
+import {Artifact} from '../models/artifact';
+import {Monster} from '../models/monster';
 
 /**
  * EventHandler class.
@@ -13,5 +15,5 @@ import {Game} from '../models/game';
 export class EventHandler {
   name: string;
   game: Game;
-  run(arg) { }
+  run(arg1:number|string|Artifact|Monster, arg2?:Artifact|Monster, arg3?:Artifact|Monster) { }
 }

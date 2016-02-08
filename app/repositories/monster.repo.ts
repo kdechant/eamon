@@ -53,6 +53,7 @@ export class MonsterRepository {
     }
 
     this.all.push(m);
+    m.updateInventory();
 
     // update the autonumber index
     if (m.id > this.index) {

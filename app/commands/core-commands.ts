@@ -133,7 +133,7 @@ export class GetCommand implements BaseCommand {
       var a = game.artifacts.visible[i];
       if (arg == a.name.toLowerCase() || arg == 'all') {
         match = true;
-        if (game.triggerEvent('beforeGet', a)) {
+        if (game.triggerEvent('beforeGet', arg, a)) {
           if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
             game.monsters.player.pickUp(a);
             if (arg == 'all') {
@@ -141,7 +141,7 @@ export class GetCommand implements BaseCommand {
             } else {
               game.history.write('Got it.');
             }
-            game.triggerEvent('afterGet', a)
+            game.triggerEvent('afterGet', arg, a)
 
             // if in battle and player has no weapon ready, ready it
             if (game.in_battle && a.is_weapon && game.monsters.player.weapon_id == null) {
@@ -191,11 +191,11 @@ export class RemoveCommand implements BaseCommand {
           if (container.is_open) {
             var item:Artifact = container.getContainedArtifact(item_name);
             if (item) {
-              if (game.triggerEvent('beforeRemove', item)) {
+              if (game.triggerEvent('beforeRemove', arg, item)) {
                 game.history.write(item.name + ' removed from ' + container.name + '.');
                 match = true;
                 item.removeFromContainer();
-                game.triggerEvent('afterRemove', item)
+                game.triggerEvent('afterRemove', arg, item)
               }
             } else {
               throw new CommandException("There is no " + item_name + " inside the " + container_name + "!");
@@ -497,6 +497,100 @@ export class OpenCommand implements BaseCommand {
   }
 }
 core_commands.push(new OpenCommand());
+
+
+export class GiveCommand implements BaseCommand {
+  name: string = 'give';
+  verbs: string[] = ['give'];
+  run(verb:string, arg:string) {
+
+    var game:Game = Game.getInstance();
+    var match = false;
+
+    var regex_result = /(.+) to (.*)/.exec(arg);
+    if (regex_result == null) {
+      throw new CommandException("Try giving (something) to (someone).");
+    }
+
+    var item_name:string = regex_result[1];
+    var monster_name:string = regex_result[2];
+
+    var item = game.monsters.player.findInInventory(item_name);
+    if (!item) {
+      throw new CommandException("You're not carrying it!");
+    }
+
+    var monster = game.monsters.getByName(monster_name);
+    if (!monster || monster.room_id != game.rooms.current_room.id) {
+      throw new CommandException(monster_name + " is not here!");
+    }
+
+    if (game.triggerEvent('give', arg, item, monster)) {
+
+      if (item.is_worn) {
+        game.monsters.player.remove(item);
+      }
+      item.monster_id = monster.id;
+      if ((item.is_edible || item.is_drinkable) && item.is_healing) {
+        var v: string = item.is_edible ? 'eats' : 'drinks'
+        game.history.write(monster.name + " " + v + " the " + item.name + " and hands it back.");
+        item.use();
+        item.monster_id = game.monsters.player.id;
+      } else {
+        monster.updateInventory();
+        game.history.write(monster.name + " takes the " + item.name + ".");
+      }
+      game.monsters.player.updateInventory();
+
+      if (item.is_weapon && monster.weapon_id == null) {
+        game.history.write(monster.name + " readies the " + item.name + ".");
+        monster.ready(item);
+      }
+    }
+
+  }
+}
+core_commands.push(new GiveCommand());
+
+
+export class TakeCommand implements BaseCommand {
+  name: string = 'take';
+  verbs: string[] = ['take'];
+  run(verb:string, arg:string) {
+
+    var game:Game = Game.getInstance();
+    var match = false;
+
+    var regex_result = /(.+) from (.*)/.exec(arg);
+    if (regex_result == null) {
+      throw new CommandException("Try taking (something) from (someone).");
+    }
+
+    var item_name:string = regex_result[1];
+    var monster_name:string = regex_result[2];
+
+    var monster = game.monsters.getByName(monster_name);
+    if (!monster || monster.room_id != game.rooms.current_room.id) {
+      throw new CommandException(monster_name + " is not here!");
+    }
+
+    var item = monster.findInInventory(item_name);
+    if (!item) {
+      throw new CommandException(monster.name + " doesn't have it!");
+    }
+
+    if (game.triggerEvent('take', arg, item, monster)) {
+
+      item.monster_id = game.monsters.player.id;
+      monster.updateInventory();
+      game.history.write(monster.name + " gives you the " + item.name + ".");
+      game.monsters.player.updateInventory();
+
+    }
+
+  }
+}
+core_commands.push(new TakeCommand());
 
 
 export class PowerCommand implements BaseCommand {

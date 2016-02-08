@@ -3,6 +3,8 @@ import {Inject} from 'angular2/core';
 import {RoomRepository} from '../repositories/room.repo';
 import {ArtifactRepository} from '../repositories/artifact.repo';
 import {MonsterRepository} from '../repositories/monster.repo';
+import {Artifact} from '../models/artifact';
+import {Monster} from '../models/monster';
 
 import {HistoryManager} from '../models/history-manager';
 import {CommandParser} from '../models/command-parser';
@@ -217,10 +219,10 @@ export class Game {
    *   An argument to the event. e.g., the Artifact that was picked up or read,
    *   or the word that was said.
    */
-  public triggerEvent(event_name, arg:any):any {
+  public triggerEvent(event_name, arg1:number|string|Artifact|Monster, arg2?:Artifact|Monster, arg3?:Artifact|Monster):any {
     for (var i in this.event_handlers) {
       if (this.event_handlers[i].name == event_name) {
-        return this.event_handlers[i].run(arg);
+        return this.event_handlers[i].run(arg1, arg2, arg3);
       }
     }
     // if we didn't find a matching event handler, return true to continue executing remaining code

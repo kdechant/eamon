@@ -114,8 +114,16 @@ export class Artifact extends GameObject {
     // logic for simple healing potions, healing by eating food, etc.
     if (this.is_healing) {
       var heal_amount = game.diceRoll(this.dice,this.sides);
-      game.history.write("It heals you " + heal_amount + " hit points.")
-      game.monsters.player.heal(heal_amount);
+
+      // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
+      var owner = game.monsters.get(this.monster_id);
+      if (owner) {
+        game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.")
+      } else {
+        owner = game.monsters.player;
+        game.history.write("It heals you " + heal_amount + " hit points.")
+      }
+      owner.heal(heal_amount);
     }
 
     // the real logic for this is done in an event handler defined in the adventure.
