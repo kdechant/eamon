@@ -153,5 +153,42 @@
     "container_id": 12,
     "weight": 3,
     "value": 500
+  },
+  {
+    "id": 15,
+    "name": "Plate armor",
+    "description": "You see a suit of well-worn plate armor.",
+    "room_id": 7,
+    "weight": 30,
+    "value": 200,
+    "is_wearable": true,
+    "is_armor": true,
+    "armor_strength": 5,
+    "armor_penalty": 60
+  },
+  {
+    "id": 16,
+    "name": "Halberd",
+    "description": "You see a very large halberd. It looks dangerous but too big to wield comfortably.",
+    "room_id": 7,
+    "weight": 10,
+    "value": 20,
+    "is_weapon": true,
+    "weapon_type": 4,
+    "weapon_odds": -10,
+    "dice": 2,
+    "sides": 5
+  },
+  {
+    "id": 17,
+    "name": "Magic shield",
+    "description": "You see a glowing shield with strange runes carved into it.",
+    "room_id": 7,
+    "weight": 2,
+    "value": 200,
+    "is_wearable": true,
+    "is_shield": true,
+    "armor_strength": 2,
+    "armor_penalty": 2
   }
 ]

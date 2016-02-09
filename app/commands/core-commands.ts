@@ -234,16 +234,17 @@ core_commands.push(new RemoveCommand());
 export class DropCommand implements BaseCommand {
   name: string = 'drop';
   verbs: string[] = ['drop'];
-  run(verb, arg) {
+  run(verb:string, arg:string) {
 
     var game = Game.getInstance();
+    arg = arg.toLowerCase();
 
     var match = false;
 
     var inventory = game.monsters.player.inventory;
     for (var i in inventory) {
       match = true;
-      if (arg == inventory[i].name || arg == 'all') {
+      if (arg == inventory[i].name.toLowerCase() || arg == 'all') {
         // "drop all" doesn't drop items the player is wearing
         if (arg == 'all' && inventory[i].is_worn) {
           continue;
@@ -289,6 +290,15 @@ export class WearCommand implements BaseCommand {
     var artifact = game.monsters.player.findInInventory(arg);
     if (artifact) {
       if (artifact.is_wearable) {
+        if (artifact.is_worn) {
+          throw new CommandException("You're already wearing it!")
+        }
+        if (artifact.is_armor && game.monsters.player.isWearingArmor()) {
+          throw new CommandException("Try removing your other armor first.")
+        }
+        if (artifact.is_shield && game.monsters.player.isUsingShield()) {
+          throw new CommandException("Try removing your other shield first.")
+        }
         game.monsters.player.wear(artifact);
         game.history.write("You put on the " + artifact.name + ".")
       } else {

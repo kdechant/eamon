@@ -253,7 +253,7 @@ export class Monster extends GameObject {
    */
   findInInventory(artifact_name) {
     for (var i in this.inventory) {
-      if (artifact_name == this.inventory[i].name) {
+      if (artifact_name.toLowerCase() == this.inventory[i].name.toLowerCase()) {
         return this.inventory[i];
       }
     }
@@ -300,6 +300,31 @@ export class Monster extends GameObject {
     artifact.is_worn = false;
     // need to update inventory to set the monster's armor value
     this.updateInventory();
+  }
+
+  /**
+   * Determines if the player is wearing armor
+   */
+  public isWearingArmor():boolean {
+    for (var i in this.inventory) {
+      if (this.inventory[i].is_armor && this.inventory[i].is_worn) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Determines if the player is using a shield
+   */
+  public isUsingShield():boolean {
+    for (var i in this.inventory) {
+      console.log(this.inventory[i]);
+      if (this.inventory[i].is_shield && this.inventory[i].is_worn) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
