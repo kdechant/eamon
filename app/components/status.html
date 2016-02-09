@@ -13,6 +13,14 @@
       HP: {{ game.monsters.player.hardiness - game.monsters.player.damage }}/{{ game.monsters.player.hardiness }}
     </div>
 
+    <div class="weapon-abilities row">
+      <div class="axe col-sm-2">Axe: {{game.monsters.player.weapon_abilities[1]}}%</div>
+      <div class="bow col-sm-2">Bow: {{game.monsters.player.weapon_abilities[2]}}%</div>
+      <div class="club col-sm-2">Club: {{game.monsters.player.weapon_abilities[3]}}%</div>
+      <div class="spear col-sm-2">Spear: {{game.monsters.player.weapon_abilities[4]}}%</div>
+      <div class="sword col-sm-2">Sword: {{game.monsters.player.weapon_abilities[5]}}%</div>
+    </div>
+
     <div class="weapon" *ngIf="game.monsters.player.weapon">Ready weapon: {{game.monsters.player.weapon.name}}
      ({{game.monsters.player.weapon.dice}}d{{game.monsters.player.weapon.sides}})</div>
     <div class="weapon none" *ngIf="!game.monsters.player.weapon">Ready weapon: none!</div>
