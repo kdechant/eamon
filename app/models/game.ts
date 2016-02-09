@@ -194,7 +194,7 @@ export class Game {
       this.monsters.player.speed_time--;
       if (this.monsters.player.speed_time == 0) {
         this.history.write('You speed spell just expired!');
-        this.monsters.player.agility /= 2;
+        this.monsters.player.speed_multiplier = 1;
       }
     }
 

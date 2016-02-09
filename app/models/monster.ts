@@ -61,6 +61,7 @@ export class Monster extends GameObject {
   weapon: Artifact;
   inventory: Artifact[];
   speed_time: number = 0; // time remaining on speed spell
+  speed_multiplier: number = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
 
   /**
    * Moves the monster to a specific room.
@@ -452,9 +453,8 @@ export class Monster extends GameObject {
     var to_hit:number;
     if (this.id == Monster.PLAYER) {
       // for player, calculate chance to hit based on weapon type, ability, and weapon odds
-      var to_hit = this.weapon_abilities[wpn.weapon_type] + wpn.weapon_odds + 2 * this.agility;
+      var to_hit = this.weapon_abilities[wpn.weapon_type] + wpn.weapon_odds + 2 * this.agility * this.speed_multiplier;
       // calculate the effect of the armor penalty
-      console.log('armor factor: ', this.getArmorFactor());
       to_hit -= this.getArmorFactor();
     } else {
       // other monsters have the same weapon ability for all weapon types

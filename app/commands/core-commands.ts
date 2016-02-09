@@ -672,9 +672,9 @@ export class SpeedCommand implements BaseCommand {
     if (game.monsters.player.spellCast(verb)) {
       game.triggerEvent('speed', arg);
       // double player's agility
-      game.history.write("You can feel the new agility flowing through you!")
+      game.history.write("You can feel the new agility flowing through you!", "success")
       if (game.monsters.player.speed_time == 0) {
-        game.monsters.player.agility *= 2;
+        game.monsters.player.speed_multiplier = 2;
       }
       game.monsters.player.speed_time += 10 + game.diceRoll(1, 10);
     }

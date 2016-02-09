@@ -3,6 +3,12 @@
   <div class="status-widget player">
     <p class="heading">{{ game.monsters.player.name }}</p>
 
+    <div class="stats">
+      <span class="hardiness">HD: {{game.monsters.player.hardiness}}</span>
+      <span class="agility">AG: <span [class.success]="game.monsters.player.speed_multiplier > 1">{{game.monsters.player.agility * game.monsters.player.speed_multiplier}}</span></span>
+      <span class="charisma">CH: {{game.monsters.player.charisma}}</span>
+    </div>
+
     <div class="health">
       HP: {{ game.monsters.player.hardiness - game.monsters.player.damage }}/{{ game.monsters.player.hardiness }}
     </div>
