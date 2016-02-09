@@ -414,9 +414,13 @@ export class Monster extends GameObject {
       if (this.id == Monster.PLAYER) {
         var inc_roll = game.diceRoll(1, 100);
         if (inc_roll > odds) {
-          this.weapon_abilities[wpn.weapon_type] += 2;
+          if (this.weapon_abilities[wpn.weapon_type] < 50) {
+            this.weapon_abilities[wpn.weapon_type] += 2;
+          } else {
+            // new feature (not in original) - slower ability increase above 50%
+            this.weapon_abilities[wpn.weapon_type] += 1;
+          }
           game.history.write("Your " + wpn.getWeaponTypeName() + " ability increased!", "success");
-          console.log(this.weapon_abilities);
         }
         // check for armor expertise increase
         var af = this.getArmorFactor();
