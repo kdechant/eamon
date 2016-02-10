@@ -22,6 +22,7 @@ export class Artifact extends GameObject {
   is_healing: boolean; // for simple healing potions, etc. - healing amount based on dice and sides
   is_weapon: boolean;
   is_standard_weapon: boolean;
+  hands: number;  // 1 or 2 = one-handed or two-handed weapon
   weapon_type: number;
   weapon_odds: number;
   dice: number;

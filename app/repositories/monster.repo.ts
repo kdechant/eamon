@@ -79,6 +79,8 @@ export class MonsterRepository {
    * @param
    */
   addPlayer(player_data) {
+    var game = Game.getInstance();
+
     this.player = new Monster();
     this.player.init(player_data);
 
@@ -103,15 +105,20 @@ export class MonsterRepository {
         a.weight = 3;
       }
       a.description = 'You see your ' + a.name + '.';
-      var art = Game.getInstance().artifacts.add(a);
+      var art = game.artifacts.add(a);
       this.player.pickUp(art);
-      if (art.is_armor || art.is_shield) {
-        this.player.wear(art);
-      }
     }
 
     // ready the player's best weapon
     this.player.readyBestWeapon();
+
+    // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
+    for (var i in game.monsters.player.inventory) {
+      var art = game.monsters.player.inventory[i];
+      if (art.is_armor || (art.is_shield && game.monsters.player.weapon.hands == 1)) {
+        this.player.wear(art);
+      }
+    }
 
     return this.player
   }

@@ -149,8 +149,10 @@ export class GetCommand implements BaseCommand {
 
             // if in battle and player has no weapon ready, ready it
             if (game.in_battle && a.is_weapon && game.monsters.player.weapon_id == null) {
-              game.monsters.player.ready(a);
-              Game.getInstance().history.write("Readied.");
+              if (a.hands == 1 || !game.monsters.player.isUsingShield()) {
+                game.monsters.player.ready(a);
+                game.history.write("Readied.");
+              }
             }
           } else {
             game.history.write(a.name + ' is too heavy.');
@@ -275,8 +277,12 @@ export class ReadyCommand implements BaseCommand {
     var game = Game.getInstance();
     var wpn = game.monsters.player.findInInventory(arg);
     if (wpn) {
-      game.monsters.player.ready(wpn);
-      game.history.write(wpn.name + " readied.")
+      if (wpn.hands == 2 && game.monsters.player.isUsingShield()) {
+        throw new CommandException("That is a two-handed weapon. Try removing your shield first.")
+      } else {
+        game.monsters.player.ready(wpn);
+        game.history.write(wpn.name + " readied.")
+      }
     } else {
       throw new CommandException("You aren't carrying a " + arg + "!")
     }
@@ -302,6 +308,9 @@ export class WearCommand implements BaseCommand {
         }
         if (artifact.is_shield && game.monsters.player.isUsingShield()) {
           throw new CommandException("Try removing your other shield first.")
+        }
+        if (artifact.is_shield && game.monsters.player.weapon.hands == 2) {
+          throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.")
         }
         game.monsters.player.wear(artifact);
         game.history.write("You put on the " + artifact.name + ".")

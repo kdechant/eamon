@@ -15,30 +15,41 @@
   "armor_expertise": 20,
   "items": [
     {
-      "name": "mace",
+      "name": "Mace",
       "is_weapon": true,
+      "hands": 1,
       "weapon_type": 3,
       "weapon_odds": 10,
       "dice": 1,
       "sides": 4
     },
     {
-      "name": "trollsfire",
+      "name": "Trollsfire",
       "is_weapon": true,
+      "hands": 1,
       "weapon_type": 5,
       "weapon_odds": 25,
       "dice": 1,
       "sides": 10
     },
     {
-      "name": "chain mail",
+      "name": "Battle Axe",
+      "is_weapon": true,
+      "hands": 2,
+      "weapon_type": 5,
+      "weapon_odds": 25,
+      "dice": 2,
+      "sides": 6
+    },
+    {
+      "name": "Chain mail",
       "is_wearable": true,
       "is_armor": true,
       "armor_strength": 2,
       "armor_penalty": 20
     },
     {
-      "name": "shield",
+      "name": "Shield",
       "is_wearable": true,
       "is_shield": true,
       "armor_strength": 1,

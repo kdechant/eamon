@@ -320,7 +320,6 @@ export class Monster extends GameObject {
    */
   public isUsingShield():boolean {
     for (var i in this.inventory) {
-      console.log(this.inventory[i]);
       if (this.inventory[i].is_shield && this.inventory[i].is_worn) {
         return true;
       }
