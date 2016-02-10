@@ -55,6 +55,18 @@ export class MonsterRepository {
     this.all.push(m);
     m.updateInventory();
 
+    // add the dead body artifact
+    var body = {
+      'name': 'Dead ' + m.name,
+      'description': "You see the dead " + m.name,
+      'room': null,
+      'weight': 100,
+      'value': 0,
+      'get_all': false,
+    };
+    var art:Artifact = Game.getInstance().artifacts.add(body);
+    m.dead_body_id = art.id;
+
     // update the autonumber index
     if (m.id > this.index) {
       this.index = m.id;

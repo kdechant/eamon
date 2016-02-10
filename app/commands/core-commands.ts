@@ -133,6 +133,10 @@ export class GetCommand implements BaseCommand {
       var a = game.artifacts.visible[i];
       if (arg == a.name.toLowerCase() || arg == 'all') {
         match = true;
+        if (arg == 'all' && a.get_all === false) {
+          game.history.write("You don't bother picking up the " + a.name + ".");
+          continue;
+        }
         if (game.triggerEvent('beforeGet', arg, a)) {
           if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
             game.monsters.player.pickUp(a);

@@ -62,6 +62,7 @@ export class Monster extends GameObject {
   inventory: Artifact[];
   speed_time: number = 0; // time remaining on speed spell
   speed_multiplier: number = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
+  dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
 
   /**
    * Moves the monster to a specific room.
@@ -540,10 +541,11 @@ export class Monster extends GameObject {
    * @returns number The amount of actual damage done
    */
   injure(damage:number, ignore_armor:boolean = false) {
+    var game = Game.getInstance();
     if (this.armor_strength && !ignore_armor) {
       damage -= this.armor_strength;
       if (damage <= 0) {
-        Game.getInstance().history.write('--blow bounces off armor!');
+        game.history.write('--blow bounces off armor!');
         return 0; // no need to show health here.
       }
     }
@@ -553,13 +555,16 @@ export class Monster extends GameObject {
     // handle death
     if (this.damage >= this.hardiness) {
       if (this.weapon_id > 0) {
-        var wpn = Game.getInstance().artifacts.get(this.weapon_id);
+        var wpn = game.artifacts.get(this.weapon_id);
         wpn.room_id = this.room_id;
       }
 
-      // TODO: place dead body artifact
+      if (this.dead_body_id) {
+        game.artifacts.get(this.dead_body_id).room_id = this.room_id;
+      }
       this.status = Monster.STATUS_DEAD;
       this.room_id = null;
+
     }
     return damage;
   }
