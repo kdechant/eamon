@@ -4,9 +4,11 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:w": "tsc -w",
+    "build-css": "node-sass scss -o css",
+    "build-css:w": "node-sass -w scss -o css",
     "lite": "lite-server",
-    "start": "concurrent \"npm run tsc:w\" \"npm run lite\" ",
-    "test": "live-server --open=unit-tests.html"
+    "start": "concurrent \"npm run tsc:w\" \"npm run build-css:w\" \"npm run lite\" ",
+    "test": "live-server --open=unit-tests.html",
   },
   "license": "ISC",
   "dependencies": {
@@ -22,6 +24,7 @@
     "concurrently": "^1.0.0",
     "jasmine-core": "2.4.1",
     "lite-server": "^1.3.1",
+    "node-sass": "^3.4.2",
     "typescript": "1.7.3"
   }
 }

@@ -1,0 +1,40 @@
+.status-widget {
+  border: 1px solid #999;
+  margin-bottom: 10px;
+  padding: 6px; }
+  .status-widget .heading {
+    font-weight: bold; }
+  .status-widget .none {
+    color: #999; }
+  .status-widget .artifact-contents {
+    padding-left: 15px; }
+
+.history {
+  border: 1px solid #999;
+  height: 400px;
+  overflow-y: auto;
+  padding: 12px; }
+  .history .history-command {
+    color: #009;
+    font-weight: bold; }
+
+.success {
+  color: green;
+  font-weight: bold; }
+
+.warning {
+  color: orange;
+  font-weight: bold; }
+
+.danger {
+  color: red;
+  font-weight: bold; }
+
+.command-prompt {
+  padding-top: 12px; }
+
+.friendly {
+  color: green; }
+
+.hostile {
+  color: red; }
