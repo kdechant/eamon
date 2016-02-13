@@ -1,7 +1,7 @@
-import {GameObject} from './game-object';
-import {Game} from './game';
-import {Monster} from './monster';
-import {CommandException} from '../utils/command.exception';
+import {GameObject} from "./game-object";
+import {Game} from "./game";
+import {Monster} from "./monster";
+import {CommandException} from "../utils/command.exception";
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -11,9 +11,9 @@ export class Artifact extends GameObject {
   id: number;
   name: string;
   description: string;
-  room_id:number; // if on the ground, which room
-  monster_id:number; // if in inventory, who is carrying it
-  container_id:number; // if inside a container, the artifact id of the container
+  room_id: number; // if on the ground, which room
+  monster_id: number; // if in inventory, who is carrying it
+  container_id: number; // if inside a container, the artifact id of the container
   weight: number;
   value: number;
   fixed_value: boolean;
@@ -60,16 +60,16 @@ export class Artifact extends GameObject {
    * the current room.
    * @returns boolean
    */
-  isHere():boolean {
-    return (this.room_id == Game.getInstance().rooms.current_room.id || this.monster_id == Monster.PLAYER)
+  isHere(): boolean {
+    return (this.room_id === Game.getInstance().rooms.current_room.id || this.monster_id === Monster.PLAYER);
   }
 
   /**
    * Gets the Artifact object for an artifact inside the container
    */
-  getContainedArtifact(name:string) {
-    for (var i in this.contents) {
-      if (this.contents[i].name.toLowerCase() == name.toLowerCase()) {
+  getContainedArtifact(name: string) {
+    for (let i in this.contents) {
+      if (this.contents[i].name.toLowerCase() === name.toLowerCase()) {
         return this.contents[i];
       }
     }
@@ -80,8 +80,8 @@ export class Artifact extends GameObject {
    * places it in the room where the container is.
    */
   removeFromContainer() {
-    var game = Game.getInstance();
-    var container: Artifact = game.artifacts.get(this.container_id);
+    let game = Game.getInstance();
+    let container: Artifact = game.artifacts.get(this.container_id);
     if (container) {
       if (container.room_id) {
         this.room_id = container.room_id;
@@ -110,25 +110,25 @@ export class Artifact extends GameObject {
    * Use an item, eat food, drink a potion, etc.
    */
   use() {
-    var game = Game.getInstance();
+    let game = Game.getInstance();
 
     // logic for simple healing potions, healing by eating food, etc.
     if (this.is_healing) {
-      var heal_amount = game.diceRoll(this.dice,this.sides);
+      let heal_amount = game.diceRoll(this.dice, this.sides);
 
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
-      var owner = game.monsters.get(this.monster_id);
+      let owner = game.monsters.get(this.monster_id);
       if (owner) {
-        game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.")
+        game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
       } else {
         owner = game.monsters.player;
-        game.history.write("It heals you " + heal_amount + " hit points.")
+        game.history.write("It heals you " + heal_amount + " hit points.");
       }
       owner.heal(heal_amount);
     }
 
     // the real logic for this is done in an event handler defined in the adventure.
-    game.triggerEvent('use', this);
+    game.triggerEvent("use", this);
 
     // reduce quantity/number of charges remaining
     if (this.quantity > 0) {
@@ -142,19 +142,19 @@ export class Artifact extends GameObject {
   getWeaponTypeName() {
     switch (this.weapon_type) {
       case 1:
-        return 'axe';
+        return "axe";
         break;
       case 2:
-        return 'bow';
+        return "bow";
         break;
       case 3:
-        return 'club';
+        return "club";
         break;
       case 4:
-        return 'spear';
+        return "spear";
         break;
       case 5:
-        return 'sword';
+        return "sword";
         break;
     }
   }

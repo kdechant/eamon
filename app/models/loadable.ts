@@ -8,7 +8,7 @@ export abstract class Loadable {
    * @param Object source an object, e.g., from JSON.
    */
   init(source) {
-    for (var prop in source) {
+    for (let prop in source) {
       this[prop] = source[prop];
     }
 

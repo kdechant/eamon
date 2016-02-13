@@ -1,4 +1,4 @@
-import {HistoryEntry} from '../models/history-entry';
+import {HistoryEntry} from "../models/history-entry";
 
 /**
  * History service. Provides a container for all the history entries.
@@ -15,8 +15,8 @@ export class HistoryManager {
   /**
    * Pushes a command onto the history
    */
-  push(command:string) {
-    this.history.push(new HistoryEntry(command))
+  push(command: string) {
+    this.history.push(new HistoryEntry(command));
 
     // reset the counter whenever a command is added.
     this.index = this.history.length;
@@ -25,8 +25,8 @@ export class HistoryManager {
   /**
    * Pushes some output text onto the history
    */
-  write(text:string, type:string = 'normal') {
-    this.history[this.index-1].push(text, type)
+  write(text: string, type: string = "normal") {
+    this.history[this.index - 1].push(text, type);
   }
 
   /**
@@ -34,9 +34,9 @@ export class HistoryManager {
    */
   getLastCommand() {
     if (this.history.length > 0) {
-      return this.history[this.history.length-1]['command'];
+      return this.history[this.history.length - 1]["command"];
     } else {
-      return '';
+      return "";
     }
   }
 
@@ -49,7 +49,7 @@ export class HistoryManager {
       this.index--;
     }
     if (this.index >= 0 && this.index < this.history.length) {
-      return this.history[this.index]['command'];
+      return this.history[this.index]["command"];
     } else {
       return null;
     }
@@ -64,10 +64,10 @@ export class HistoryManager {
       this.index++;
     }
     if (this.index >= 0 && this.index < this.history.length) {
-      return this.history[this.index]['command'];
-    } else if (this.index == this.history.length) {
+      return this.history[this.index]["command"];
+    } else if (this.index === this.history.length) {
       // reached the newest command. clear the field.
-      return '';
+      return "";
     } else {
       return null;
     }

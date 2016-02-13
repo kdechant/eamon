@@ -1,4 +1,4 @@
-import {Game} from '../models/game';
+import {Game} from "../models/game";
 
 /**
  * Interface BaseCommand.
@@ -6,7 +6,7 @@ import {Game} from '../models/game';
  */
 export interface BaseCommand {
   name: string;
-  verbs: Array<string>;
+  verbs: string[];
   run(verb, arg);
 }
 
@@ -16,7 +16,7 @@ export interface BaseCommand {
  */
 export class CustomCommand implements BaseCommand {
   name: string;
-  verbs: Array<string>;
+  verbs: string[];
   game: Game;
-  run(verb, arg) { }
+  run(verb: string, arg: string) { }
 }

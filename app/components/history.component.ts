@@ -1,7 +1,7 @@
-import {Component, Input, AfterViewChecked} from 'angular2/core';
+import {Component, Input, AfterViewChecked} from "angular2/core";
 
 @Component({
-  selector: 'history',
+  selector: "history",
   template: `
     <div class="history">
       <div *ngFor="#entry of history?.history">
@@ -16,7 +16,7 @@ export class HistoryComponent implements AfterViewChecked {
 
   public ngAfterViewChecked() {
     // scroll the history box
-    var hist = document.querySelector(".history");
+    let hist = document.querySelector(".history");
     if (hist) {
       hist.scrollTop = hist.scrollHeight;
     }

@@ -9,6 +9,7 @@
     "lite": "lite-server",
     "start": "concurrent \"npm run tsc:w\" \"npm run build-css:w\" \"npm run lite\" ",
     "test": "live-server --open=unit-tests.html",
+    "lint": "tslint app/**/*.ts"
   },
   "license": "ISC",
   "dependencies": {

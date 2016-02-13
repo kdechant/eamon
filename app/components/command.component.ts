@@ -1,7 +1,7 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input} from "angular2/core";
 
 @Component({
-  selector: 'command-prompt',
+  selector: "command-prompt",
   template: `
     <div class="command-prompt">
       <span class="prompt">Your Command: </span>
@@ -26,39 +26,39 @@ export class CommandPromptComponent {
    * Handle keypresses, looking for special keys like enter and arrows.
    * Other keys like letters, numbers, space, etc. will be ignored.
    */
-  onKeyPress(event:KeyboardEvent, value:string) {
+  onKeyPress(event: KeyboardEvent, value: string) {
 
-    switch (event.keyCode) {  // is valid, though NetBeans doesn't think so.
+    switch (event.keyCode) {
 
       case CommandPromptComponent.KEYCODE_ENTER:  // enter key runs the command
-        // if the user didn't type a new command, run the last command
-        if (value.length == 0) {
+        // if the user didn"t type a new command, run the last command
+        if (value.length === 0) {
           value = this.game.history.getLastCommand();
         }
 
         // start a new history entry
-        this.game.history.push(value)
+        this.game.history.push(value);
 
         // run the command
-        var result = this.game.command_parser.run(value);
+        let result = this.game.command_parser.run(value);
 
         // clear the input box
-        this.command = '';
+        this.command = "";
 
         break;
 
       case CommandPromptComponent.KEYCODE_UP:
         // up arrow moves back through the history
-        var prev_command = this.game.history.getOlderCommand();
+        let prev_command = this.game.history.getOlderCommand();
         if (prev_command !== null) {
-          this.command = prev_command
+          this.command = prev_command;
         }
         break;
 
       case CommandPromptComponent.KEYCODE_DOWN:
-        var next_command = this.game.history.getNewerCommand();
+        let next_command = this.game.history.getNewerCommand();
         if (next_command !== null) {
-          this.command = next_command
+          this.command = next_command;
         }
         break;
 

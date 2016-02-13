@@ -1,17 +1,17 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit} from "angular2/core";
 
-import {GameLoaderService} from './services/game-loader.service';
+import {GameLoaderService} from "./services/game-loader.service";
 
-import {Game} from './models/game';
-import {Room, RoomExit} from './models/room';
+import {Game} from "./models/game";
+import {Room, RoomExit} from "./models/room";
 
-import {HistoryComponent} from './components/history.component';
-import {CommandPromptComponent} from './components/command.component';
-import {StatusComponent} from './components/status.component';
+import {HistoryComponent} from "./components/history.component";
+import {CommandPromptComponent} from "./components/command.component";
+import {StatusComponent} from "./components/status.component";
 
 @Component({
-  selector: 'game',
-  template:`
+  selector: "game",
+  template: `
 <div class="container" *ngIf="game">
   <h1>{{game_title}}</h1>
   <h2>{{game.name}}</h2>
@@ -30,8 +30,8 @@ import {StatusComponent} from './components/status.component';
 })
 export class AppComponent {
 
-  public game_title = 'The Angular World of Eamon';
-  public game:Game;
+  public game_title = "The Angular World of Eamon";
+  public game: Game;
 
   constructor(private _gameLoaderService: GameLoaderService) { }
 

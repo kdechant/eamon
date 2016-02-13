@@ -1,4 +1,4 @@
-import {Room} from '../models/room';
+import {Room} from "../models/room";
 
 /**
  * Class RoomRepository.
@@ -17,8 +17,8 @@ export class RoomRepository {
   current_room: Room;
 
   constructor(room_data) {
-    for(var i in room_data) {
-      var r = new Room();
+    for (let i in room_data) {
+      let r = new Room();
       r.init(room_data[i]);
       this.rooms.push(r);
     }
@@ -30,8 +30,8 @@ export class RoomRepository {
    * @return Room
    */
   getRoomById(room_id) {
-    for(var i in this.rooms) {
-      if (this.rooms[i].id == room_id) {
+    for (let i in this.rooms) {
+      if (this.rooms[i].id === room_id) {
         return this.rooms[i];
       }
     }

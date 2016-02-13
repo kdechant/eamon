@@ -1,5 +1,5 @@
-import {Loadable} from './loadable';
-import {Game} from './game';
+import {Loadable} from "./loadable";
+import {Game} from "./game";
 
 export class RoomExit extends Loadable {
 
@@ -18,7 +18,7 @@ export class RoomExit extends Loadable {
    *   False if no key is required, or if the player has the key.
    */
   public isLocked() {
-    return (this.key_id && !Game.getInstance().monsters.player.hasArtifact(this.key_id))
+    return (this.key_id && !Game.getInstance().monsters.player.hasArtifact(this.key_id));
   }
 
 }
@@ -38,10 +38,10 @@ export class Room extends Loadable {
    * @param Object source an object, e.g., from JSON.
    */
   init(source) {
-    for (var prop in source) {
-      if (prop == 'exits') {
-        for (var i in source[prop]) {
-          var ex = new RoomExit();
+    for (let prop in source) {
+      if (prop === "exits") {
+        for (let i in source[prop]) {
+          let ex = new RoomExit();
           ex.init(source[prop][i]);
           this.exits.push(ex);
         }
@@ -55,8 +55,8 @@ export class Room extends Loadable {
    * Gets the exit from the room in a given direction
    */
   getExit(direction: string) {
-    for (var i in this.exits) {
-      if (this.exits[i].direction == direction) {
+    for (let i in this.exits) {
+      if (this.exits[i].direction === direction) {
         return this.exits[i];
       }
     }

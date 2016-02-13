@@ -1,6 +1,6 @@
-import {Monster} from '../models/monster';
-import {Game} from '../models/game';
-import {Artifact} from '../models/artifact';
+import {Monster} from "../models/monster";
+import {Game} from "../models/game";
+import {Artifact} from "../models/artifact";
 
 /**
  * Class MonsterRepository.
@@ -26,10 +26,10 @@ export class MonsterRepository {
   /**
    * The highest ID in the system
    */
-  index:number = 0;
+  index: number = 0;
 
   constructor(monster_data: Array<Object>) {
-    for(var i in monster_data) {
+    for (let i in monster_data) {
       this.add(monster_data[i]);
     }
   }
@@ -39,7 +39,7 @@ export class MonsterRepository {
    * @param number id
    */
   add(monster_data) {
-    var m = new Monster();
+    let m = new Monster();
     m.init(monster_data);
 
     // autonumber the ID if not provided
@@ -48,23 +48,23 @@ export class MonsterRepository {
     }
 
     if (this.get(m.id) !== null) {
-      console.log(this.get(m.id))
-      throw new Error("Tried to create a monster #"+m.id+" but that ID is already taken.");
+      console.log(this.get(m.id));
+      throw new Error("Tried to create a monster #" + m.id + " but that ID is already taken.");
     }
 
     this.all.push(m);
     m.updateInventory();
 
     // add the dead body artifact
-    var body = {
-      'name': 'Dead ' + m.name,
-      'description': "You see the dead " + m.name,
-      'room': null,
-      'weight': 100,
-      'value': 0,
-      'get_all': false,
+    let body = {
+      "name": "Dead " + m.name,
+      "description": "You see the dead " + m.name,
+      "room": null,
+      "weight": 100,
+      "value": 0,
+      "get_all": false,
     };
-    var art:Artifact = Game.getInstance().artifacts.add(body);
+    let art: Artifact = Game.getInstance().artifacts.add(body);
     m.dead_body_id = art.id;
 
     // update the autonumber index
@@ -79,7 +79,7 @@ export class MonsterRepository {
    * @param
    */
   addPlayer(player_data) {
-    var game = Game.getInstance();
+    let game = Game.getInstance();
 
     this.player = new Monster();
     this.player.init(player_data);
@@ -89,23 +89,23 @@ export class MonsterRepository {
     this.player.room_id = 1;
     this.player.reaction = Monster.RX_FRIEND;
     this.player.spell_abilities_original = {
-      'power': this.player.spell_abilities.power,
-      'heal': this.player.spell_abilities.heal,
-      'blast': this.player.spell_abilities.blast,
-      'speed': this.player.spell_abilities.speed
-    }
+      "power": this.player.spell_abilities.power,
+      "heal": this.player.spell_abilities.heal,
+      "blast": this.player.spell_abilities.blast,
+      "speed": this.player.spell_abilities.speed
+    };
     this.all.push(this.player);
 
     // create new artifact objects for the weapons and armor the player brought
-    for (var i in player_data.items) {
-      var a:Artifact = player_data.items[i];
+    for (let i in player_data.items) {
+      let a: Artifact = player_data.items[i];
       if (a.is_armor) {
         a.weight = 10;
       } else {
         a.weight = 3;
       }
-      a.description = 'You see your ' + a.name + '.';
-      var art = game.artifacts.add(a);
+      a.description = "You see your " + a.name + ".";
+      let art = game.artifacts.add(a);
       this.player.pickUp(art);
     }
 
@@ -113,14 +113,14 @@ export class MonsterRepository {
     this.player.readyBestWeapon();
 
     // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
-    for (var i in game.monsters.player.inventory) {
-      var art = game.monsters.player.inventory[i];
-      if (art.is_armor || (art.is_shield && game.monsters.player.weapon.hands == 1)) {
+    for (let i in game.monsters.player.inventory) {
+      let art = game.monsters.player.inventory[i];
+      if (art.is_armor || (art.is_shield && game.monsters.player.weapon.hands === 1)) {
         this.player.wear(art);
       }
     }
 
-    return this.player
+    return this.player;
   }
 
   /**
@@ -129,8 +129,8 @@ export class MonsterRepository {
    * @return Monster
    */
   get(id) {
-    for(var i in this.all) {
-      if (this.all[i].id == id) {
+    for (let i in this.all) {
+      if (this.all[i].id === id) {
         return this.all[i];
       }
     }
@@ -142,9 +142,9 @@ export class MonsterRepository {
    * @param string name
    * @return Monster
    */
-  getByName(name:string) {
-    for(var i in this.all) {
-      if (this.all[i].name.toLowerCase() == name.toLowerCase()) {
+  getByName(name: string) {
+    for (let i in this.all) {
+      if (this.all[i].name.toLowerCase() === name.toLowerCase()) {
         return this.all[i];
       }
     }
@@ -156,16 +156,16 @@ export class MonsterRepository {
    * @return Monster[]
    */
   updateVisible() {
-    var game = Game.getInstance()
-    var monsters:Monster[] = [];
+    let game = Game.getInstance();
+    let monsters: Monster[] = [];
     game.in_battle = false;
-    for(var i in this.all) {
-      if (this.all[i].id != 0 && this.all[i].room_id == game.rooms.current_room.id) {
+    for (let i in this.all) {
+      if (this.all[i].id !== 0 && this.all[i].room_id === game.rooms.current_room.id) {
         // check monster reactions
-        if (this.all[i].reaction == Monster.RX_UNKNOWN) {
+        if (this.all[i].reaction === Monster.RX_UNKNOWN) {
           this.all[i].checkReaction();
         }
-        if (this.all[i].reaction == Monster.RX_HOSTILE) {
+        if (this.all[i].reaction === Monster.RX_HOSTILE) {
           game.in_battle = true;
         }
 
