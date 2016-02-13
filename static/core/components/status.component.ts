@@ -4,7 +4,7 @@ import {Game} from "../models/game";
 
 @Component({
   selector: "status",
-  templateUrl: "/app/components/status.html",
+  templateUrl: "/static/core/components/status.html",
 })
 export class StatusComponent {
   @Input() game;

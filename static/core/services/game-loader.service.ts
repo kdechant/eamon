@@ -22,11 +22,11 @@ export class GameLoaderService {
 
     // load all the game data objects in parallel
     Observable.forkJoin(
-      this.http.get("/" + game_id + "/mock-data/adventure.json").map((res: Response) => res.json()),
-      this.http.get("/" + game_id + "/mock-data/rooms.json").map((res: Response) => res.json()),
-      this.http.get("/" + game_id + "/mock-data/artifacts.json").map((res: Response) => res.json()),
-      this.http.get("/" + game_id + "/mock-data/monsters.json").map((res: Response) => res.json()),
-      this.http.get("/" + game_id + "/mock-data/player.json").map((res: Response) => res.json())
+      this.http.get("/static/" + game_id + "/mock-data/adventure.json").map((res: Response) => res.json()),
+      this.http.get("/static/" + game_id + "/mock-data/rooms.json").map((res: Response) => res.json()),
+      this.http.get("/static/" + game_id + "/mock-data/artifacts.json").map((res: Response) => res.json()),
+      this.http.get("/static/" + game_id + "/mock-data/monsters.json").map((res: Response) => res.json()),
+      this.http.get("/static/" + game_id + "/mock-data/player.json").map((res: Response) => res.json())
     ).subscribe(
         data => {
           game.init(data);

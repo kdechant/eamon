@@ -28,7 +28,7 @@ import {StatusComponent} from "./components/status.component";
   `,
   directives: [CommandPromptComponent, HistoryComponent, StatusComponent]
 })
-export class AppComponent {
+export class CoreComponent {
 
   public game_title = "The Angular World of Eamon";
   public game: Game;

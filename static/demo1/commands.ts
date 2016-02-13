@@ -1,4 +1,4 @@
-import {Game} from "../app/models/game";
+import {Game} from "../core/models/game";
 
 export var custom_commands = [];
 

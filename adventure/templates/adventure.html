@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>The Angular World of Eamon</title>
+
+    <!-- 1. Load libraries -->
+    <script src="{% static "node_modules/angular2/bundles/angular2-polyfills.js" %}"></script>
+    <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
+    <script src="{% static "node_modules/rxjs/bundles/Rx.js" %}"></script>
+    <script src="{% static "node_modules/angular2/bundles/angular2.dev.js" %}"></script>
+    <script src="{% static "node_modules/angular2/bundles/http.dev.js" %}"></script>
+
+    <!-- 2. Configure SystemJS -->
+    <script>
+      var game_id = "{{ adventure_id }}";
+
+      System.config({
+        map: {
+          'core': '/static/core',
+          'rxjs': '/static/node_modules/rxjs',
+          'adventure': "/static/" + game_id
+        },
+        packages: {
+          core: {
+            format: 'register',
+            defaultExtension: 'js'
+          },
+          adventure: {
+            format: 'register',
+            defaultExtension: 'js'
+          },
+          rxjs: {defaultExtension: 'js'}
+        }
+      });
+      Promise.all([
+        System.import('core/boot'),
+        System.import('adventure/commands'),
+        System.import('adventure/event-handlers')
+      ]).then(null, console.error.bind(console));
+    </script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+  </head>
+
+  <!-- 3. Display the application -->
+  <body>
+    <game>Loading...</game>
+  </body>
+
+</html>
