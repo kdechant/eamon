@@ -1,4 +1,4 @@
 /nbproject/
-/node_modules/
+/static/node_modules/
 **/**/*.js
 **/**/*.js.map
