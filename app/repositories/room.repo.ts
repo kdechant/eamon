@@ -29,7 +29,7 @@ export class RoomRepository {
    * @param number room_id
    * @return Room
    */
-  getRoomById(room_id) {
+  getRoomById(room_id: number) {
     for (let i in this.rooms) {
       if (this.rooms[i].id === room_id) {
         return this.rooms[i];

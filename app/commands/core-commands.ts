@@ -704,3 +704,21 @@ export class SpeedCommand implements BaseCommand {
   }
 }
 core_commands.push(new SpeedCommand());
+
+
+// a cheat command used for debugging. say "goto" and the room number (e.g., "goto 5")
+export class GotoCommand implements BaseCommand {
+  name: string = "goto";
+  verbs: string[] = ["goto"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+
+    let room_to = game.rooms.getRoomById(parseInt(arg));
+    if (!room_to) {
+      throw new CommandException("There is no room " + arg);
+    }
+    game.history.write("Entering " + room_to.name);
+    game.monsters.player.moveToRoom(room_to.id);
+  }
+}
+core_commands.push(new GotoCommand());
