@@ -81,8 +81,24 @@ export class CommandParser {
     }
 
     // look up the command in the list of available verbs
+    let command_match: string[] = [];
+    // first, match by the exact string
     if (this.available_verbs.hasOwnProperty(verb)) {
-      var command = this.available_commands[this.available_verbs[verb]];
+      command_match.push(verb);
+    }
+    // if no direct match, try the fuzzy matching
+    if (command_match.length === 0) {
+      let keys: string[] = Object.keys(this.available_verbs);
+      for (let k in keys) {
+        if (keys[k].startsWith(verb)) {
+          command_match.push(keys[k]);
+        }
+      }
+    }
+
+    if (command_match.length === 1) {
+      // found exactly one match. run it.
+      let command = this.available_commands[this.available_verbs[command_match[0]]]
       try {
         command.run(verb, args);
         if (tick) {
@@ -98,6 +114,8 @@ export class CommandParser {
         }
       }
 
+    } else if (command_match.length > 1) {
+      game.history.write("Did you mean " + command_match.join(" or ") + "?");
     } else {
       game.history.write("I don't know the command '"+verb+"'!");
     }
