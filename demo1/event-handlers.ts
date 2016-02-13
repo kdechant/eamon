@@ -100,7 +100,7 @@ event_handlers.push({
 
 event_handlers.push({
   name: 'beforeRemove',
-  run: function(artifact: Artifact) {
+  run: function(arg: string, artifact: Artifact) {
     var game = Game.getInstance();
     // special message when the player tries to pick up the throne
     if (artifact) {
@@ -119,7 +119,7 @@ event_handlers.push({
 
 event_handlers.push({
   name: 'afterRemove',
-  run: function(artifact) {
+  run: function(arg: string, artifact: Artifact) {
     var game = Game.getInstance();
     // special message when the player finds the treasure
     if (artifact && artifact.id == 3) {
