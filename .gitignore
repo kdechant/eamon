@@ -2,3 +2,4 @@
 /static/node_modules/
 **/**/*.js
 **/**/*.js.map
+**/__pycache__/
