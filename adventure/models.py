@@ -77,6 +77,7 @@ class Artifact(models.Model):
     weight = models.IntegerField(default=0)
     value = models.IntegerField(default=0)
     type = models.IntegerField(null=True,choices=ARTIFACT_TYPES)
+    is_worn = models.BooleanField(default=False)
     is_open = models.BooleanField(default=False)
     weapon_type = models.IntegerField(null=True,choices=WEAPON_TYPES)
     hands = models.IntegerField(default=1,choices=(
@@ -121,13 +122,15 @@ class Monster(models.Model):
     monster_id = models.IntegerField(default=0) # The in-game monster ID.
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
+    count = models.IntegerField(default=1)
+    original_group_size = models.IntegerField(default=1)
     hardiness = models.IntegerField(default=12)
     agility = models.IntegerField(default=12)
     friendliness = models.CharField(max_length=10,choices=FRIENDLINESS)
     friend_odds = models.IntegerField(default=50)
     combat_code = models.IntegerField(default=0, choices=COMBAT_CODES)
     courage = models.IntegerField(default=100)
-    room_id = models.IntegerField(default=0)
+    room_id = models.IntegerField(null=True)
     gender = models.CharField(max_length=6, choices=(
         ('male', 'Male'),
         ('female', 'Female'),
