@@ -1,6 +1,6 @@
 import struct
 from django.core.management.base import BaseCommand, CommandError
-from adventure.models import Room, RoomExit, Monster, Artifact
+from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
 
 class Command(BaseCommand):
     help = 'Imports data from Eamon Deluxe data files'
@@ -9,19 +9,29 @@ class Command(BaseCommand):
         parser.add_argument('folder', nargs=1, type=str)
 
     def handle(self, *args, **options):
-        folder = 'C:/EDX/C/EAMONDX/' + options['folder'][0]
+
+        edx = options['folder'][0]
+        adventures = Adventure.objects.filter(edx=edx)
+
+        folder = 'C:/EDX/C/EAMONDX/' + edx
         with open(folder + '/ROOMS.DAT', 'rb') as datafile:
             with open(folder + '/ROOMS.DSC', 'rb') as descfile:
 
-#              for i in range(10):
               room_id = 0
               while True:
 
-                  # name
+                  # read the first bytes (containing the name) and exit if EOF
                   bytes = datafile.read(79)
                   if not bytes: break
                   room_id = room_id + 1
-                  room = Room.objects.get_or_create(adventure_id=1,room_id=room_id)[0]
+
+                  # determine adventure id based on offsets
+                  for a in adventures:
+                      if room_id > a.edx_room_offset:
+                          adventure_id = a.id
+
+                  room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=room_id)[0]
+                  # name
                   room.name = bytes.decode('utf-8').strip()
                   print("Room: " + room.name)
 
@@ -60,15 +70,21 @@ class Command(BaseCommand):
         with open(folder + '/ARTIFACT.DAT', 'rb') as datafile:
             with open(folder + '/ARTIFACT.DSC', 'rb') as descfile:
 
-#              for i in range(10):
               artifact_id = 0;
               while True:
 
-                  # name
+                  # read the first bytes (containing the name) and exit if EOF
                   bytes = datafile.read(35)
                   if not bytes: break
                   artifact_id = artifact_id + 1
-                  artifact = Artifact.objects.get_or_create(adventure_id=1,artifact_id=artifact_id)[0]
+
+                  # determine adventure id based on offsets
+                  for a in adventures:
+                      if artifact_id > a.edx_artifact_offset:
+                          adventure_id = a.id
+
+                  # name
+                  artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=artifact_id)[0]
                   artifact.name = bytes.decode('utf-8').strip()
                   print("Artifact: " + artifact.name)
 
@@ -158,19 +174,45 @@ class Command(BaseCommand):
 
                   artifact.save()
 
+        with open(folder + '/EFFECT.DSC', 'r') as datafile:
+
+            effect_id = 0;
+            while True:
+                bytes = datafile.read(255)
+                if not bytes: break
+                effect_id = effect_id + 1
+
+                # determine adventure id based on offsets
+                for a in adventures:
+                    if effect_id > a.edx_effect_offset:
+                        adventure_id = a.id
+
+                effect = Effect.objects.get_or_create(
+                    adventure_id=adventure_id,
+                    effect_id=effect_id
+                )[0]
+                effect.text = bytes.strip()
+                effect.save()
+
         with open(folder + '/MONSTERS.DAT', 'rb') as datafile:
             with open(folder + '/MONSTERS.DSC', 'rb') as descfile:
 
-#              for i in range(10):
               monster_id = 0
               while True:
 
-                  # name
+                  # read the first bytes (containing the name) and exit if EOF
                   bytes = datafile.read(35)
                   if not bytes: break
                   monster_id = monster_id + 1
+
+                  # determine adventure id based on offsets
+                  for a in adventures:
+                      if monster_id > a.edx_monster_offset:
+                          adventure_id = a.id
+
+                  # name
                   monster = Monster.objects.get_or_create(
-                      adventure_id=1,
+                      adventure_id=adventure_id,
                       monster_id=monster_id
                   )[0]
                   monster.name = bytes.decode('utf-8').strip()
@@ -192,7 +234,6 @@ class Command(BaseCommand):
                   monster.weapon_dice = values[8]  # applies to natural weapons only
                   monster.weapon_sides = values[9]  # applies to natural weapons only
                   # friendliness logic
-                  print(values[10])
                   if values[10] == 1:
                       monster.friendliness = 'hostile'
                   elif values[10] == 2:

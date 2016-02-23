@@ -41,7 +41,11 @@ ARMOR_TYPES = (
 class Adventure(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(null=True)
-    edx = models.IntegerField(null=True)
+    edx = models.CharField(null=True,max_length=50)
+    edx_room_offset = models.IntegerField(default=0,null=True)
+    edx_artifact_offset = models.IntegerField(default=0,null=True)
+    edx_effect_offset = models.IntegerField(default=0,null=True)
+    edx_monster_offset = models.IntegerField(default=0,null=True)
 
 
 class Room(models.Model):
@@ -103,6 +107,12 @@ class ArtifactMarking(models.Model):
     """
     artifact = models.ForeignKey(Artifact)
     marking = models.TextField(max_length=65535)
+
+
+class Effect(models.Model):
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
+    effect_id = models.IntegerField(default=0) # The in-game effect ID.
+    text = models.TextField(max_length=65535)
 
 
 class Monster(models.Model):
