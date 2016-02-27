@@ -29,8 +29,9 @@ class Command(BaseCommand):
                   for a in adventures:
                       if room_id > a.edx_room_offset:
                           adventure_id = a.id
+                          new_room_id = room_id - a.edx_room_offset;
 
-                  room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=room_id)[0]
+                  room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=new_room_id)[0]
                   # name
                   room.name = bytes.decode('utf-8').strip()
                   print("Room: " + room.name)
@@ -82,9 +83,10 @@ class Command(BaseCommand):
                   for a in adventures:
                       if artifact_id > a.edx_artifact_offset:
                           adventure_id = a.id
+                          new_artifact_id = artifact_id - a.edx_artifact_offset;
 
                   # name
-                  artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=artifact_id)[0]
+                  artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=new_artifact_id)[0]
                   artifact.name = bytes.decode('utf-8').strip()
                   print("Artifact: " + artifact.name)
 
@@ -186,10 +188,11 @@ class Command(BaseCommand):
                 for a in adventures:
                     if effect_id > a.edx_effect_offset:
                         adventure_id = a.id
+                        new_effect_id = effect_id - a.edx_effect_offset;
 
                 effect = Effect.objects.get_or_create(
                     adventure_id=adventure_id,
-                    effect_id=effect_id
+                    effect_id=new_effect_id
                 )[0]
                 effect.text = bytes.strip()
                 effect.save()
@@ -209,11 +212,12 @@ class Command(BaseCommand):
                   for a in adventures:
                       if monster_id > a.edx_monster_offset:
                           adventure_id = a.id
+                          new_monster_id = monster_id - a.edx_monster_offset;
 
                   # name
                   monster = Monster.objects.get_or_create(
                       adventure_id=adventure_id,
-                      monster_id=monster_id
+                      monster_id=new_monster_id
                   )[0]
                   monster.name = bytes.decode('utf-8').strip()
 
