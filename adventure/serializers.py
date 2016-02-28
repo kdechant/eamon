@@ -8,10 +8,18 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name', 'description')
 
 
-class RoomSerializer(serializers.HyperlinkedModelSerializer):
+class RoomExitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomExit
+        fields = ('direction', 'room_to', 'key_id', 'message')
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    exits = RoomExitSerializer(many=True, read_only=True)
+
     class Meta:
         model = Room
-        fields = ('room_id', 'name', 'description', 'is_dark')
+        fields = ('room_id', 'name', 'description', 'is_dark', 'exits')
 
 
 class ArtifactSerializer(serializers.ModelSerializer):
