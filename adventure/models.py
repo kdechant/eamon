@@ -42,10 +42,12 @@ class Adventure(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(null=True)
     edx = models.CharField(null=True,max_length=50)
+    edx_version = models.FloatField(default=0, blank=True, null=True)
     edx_room_offset = models.IntegerField(default=0,null=True)
     edx_artifact_offset = models.IntegerField(default=0,null=True)
     edx_effect_offset = models.IntegerField(default=0,null=True)
     edx_monster_offset = models.IntegerField(default=0,null=True)
+    directions = models.IntegerField(default=6)
 
 
 class Room(models.Model):

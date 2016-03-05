@@ -1,4 +1,4 @@
-import struct
+import struct, re
 from django.core.management.base import BaseCommand, CommandError
 from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
 
@@ -11,9 +11,54 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         edx = options['folder'][0]
-        adventures = Adventure.objects.filter(edx=edx)
 
         folder = 'C:/EDX/C/EAMONDX/' + edx
+        # NAME.DAT is a text file
+        with open(folder + '/NAME.DAT', 'r') as datafile:
+            data = datafile.read(65535)
+
+            # read the artifact numbers and database name from the file (used when there is 1 adventure in a db)
+            regexsingle = r"\s?(\d+)[ \n]+(\d+)[ \n]+(\d+)[ \n]+(\d+)[ \n]+([A-Z\"][a-zA-Z0-9 \-!.?'\"]+)\s*(\d+)[ \n]+(\d+)[ \n]+(\d+)[ \n]+"
+            match = re.match(regexsingle, data)
+            if match is None:
+                print('No match for regex!')
+                return
+            else:
+                adv_data = match.groups()
+            print("Adventure database: " + adv_data[4])
+
+            # for DB with multiple adventures, read the data for each adventure.
+            # NOTE: we have to repeat some things in the regexes because Python doesn't make it easy to access multiple matches of subgroups
+            regexmulti = r"([A-Z\"][a-zA-Z0-9 \-!.?'\"]+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+"
+            sub_adventures = re.findall(regexmulti, data)
+            if (len(sub_adventures) > 0):
+                # multiple adventures in the database
+                for adv in sub_adventures:
+                    print("Adventure: " + adv[0])
+                    a = Adventure.objects.get_or_create(name=adv[0], edx=edx)[0]
+                    a.edx_room_offset = adv[5]
+                    a.edx_artifact_offset = adv[6]
+                    a.edx_effect_offset = adv[7]
+                    a.edx_monster_offset = adv[8]
+                    a.directions = adv[9]
+                    a.edx_version = adv_data[6]
+                    a.save()
+            else:
+                print("Adventure: " + adv_data[4])
+                a = Adventure.objects.get_or_create(name=adv_data[4], edx=edx)[0]
+                a.edx_room_offset = 1
+                a.edx_artifact_offset = 1
+                a.edx_effect_offset = 1
+                a.edx_monster_offset = 1
+                a.edx_version = adv_data[6]
+                a.directions = adv_data[5]
+                a.save()
+
+        # load the adventure objects (including ones we just created) so we can reference
+        # them when importing the other files.
+        adventures = Adventure.objects.filter(edx=edx)
+
+        # All other files are binary
         with open(folder + '/ROOMS.DAT', 'rb') as datafile:
             with open(folder + '/ROOMS.DSC', 'rb') as descfile:
 
@@ -27,9 +72,11 @@ class Command(BaseCommand):
 
                   # determine adventure id based on offsets
                   for a in adventures:
-                      if room_id > a.edx_room_offset:
+                      if room_id >= a.edx_room_offset:
+#                          print(a.edx_room_offset)
                           adventure_id = a.id
-                          new_room_id = room_id - a.edx_room_offset;
+                          new_room_id = room_id - a.edx_room_offset + 1;
+#                  print(new_room_id)
 
                   room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=new_room_id)[0]
                   # name
@@ -81,9 +128,9 @@ class Command(BaseCommand):
 
                   # determine adventure id based on offsets
                   for a in adventures:
-                      if artifact_id > a.edx_artifact_offset:
+                      if artifact_id >= a.edx_artifact_offset:
                           adventure_id = a.id
-                          new_artifact_id = artifact_id - a.edx_artifact_offset;
+                          new_artifact_id = artifact_id - a.edx_artifact_offset + 1;
 
                   # name
                   artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=new_artifact_id)[0]
@@ -186,9 +233,9 @@ class Command(BaseCommand):
 
                 # determine adventure id based on offsets
                 for a in adventures:
-                    if effect_id > a.edx_effect_offset:
+                    if effect_id >= a.edx_effect_offset:
                         adventure_id = a.id
-                        new_effect_id = effect_id - a.edx_effect_offset;
+                        new_effect_id = effect_id - a.edx_effect_offset + 1;
 
                 effect = Effect.objects.get_or_create(
                     adventure_id=adventure_id,
@@ -210,9 +257,9 @@ class Command(BaseCommand):
 
                   # determine adventure id based on offsets
                   for a in adventures:
-                      if monster_id > a.edx_monster_offset:
+                      if monster_id >= a.edx_monster_offset:
                           adventure_id = a.id
-                          new_monster_id = monster_id - a.edx_monster_offset;
+                          new_monster_id = monster_id - a.edx_monster_offset + 1;
 
                   # name
                   monster = Monster.objects.get_or_create(
