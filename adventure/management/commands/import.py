@@ -73,10 +73,8 @@ class Command(BaseCommand):
                   # determine adventure id based on offsets
                   for a in adventures:
                       if room_id >= a.edx_room_offset:
-#                          print(a.edx_room_offset)
                           adventure_id = a.id
                           new_room_id = room_id - a.edx_room_offset + 1;
-#                  print(new_room_id)
 
                   room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=new_room_id)[0]
                   # name
@@ -242,7 +240,17 @@ class Command(BaseCommand):
                     effect_id=new_effect_id
                 )[0]
                 effect.text = bytes.strip()
+                # {nn} in the string indicates a color to display the effect in
+                match = re.search(r'{(\d{2})}', effect.text)
+                if match:
+                    effect.text = re.sub(r'{\d{2}}', '', effect.text)
+                    if match.groups()[0] == '02':
+                        effect.style = 'success';
+                    elif match.groups()[0] == '15':
+                        effect.style = 'special';
                 effect.save()
+                
+        # TODO: merge chained effects (looking for *nnn and **nnn at end of text
 
         with open(folder + '/MONSTERS.DAT', 'rb') as datafile:
             with open(folder + '/MONSTERS.DSC', 'rb') as descfile:

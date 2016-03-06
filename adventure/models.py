@@ -115,6 +115,7 @@ class Effect(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
     effect_id = models.IntegerField(default=0) # The in-game effect ID.
     text = models.TextField(max_length=65535)
+    style = models.TextField(max_length=20, null=True) # used by EDX to display effect text in color
 
 
 class Monster(models.Model):
