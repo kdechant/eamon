@@ -55,6 +55,8 @@ class Room(models.Model):
     room_id = models.IntegerField(default=0) # The in-game room ID.
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
+    effect = models.IntegerField(null=True) # The ID of an effect to display after the description
+    effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.
     is_dark = models.BooleanField(default=0)
 
 
@@ -71,6 +73,8 @@ class Artifact(models.Model):
     artifact_id = models.IntegerField(default=0) # The in-game artifact ID.
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
+    effect = models.IntegerField(null=True) # The ID of an effect to display after the description
+    effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.
     room_id = models.IntegerField(null=True,
         help_text="If in a room, the room ID"
     )
@@ -116,6 +120,8 @@ class Effect(models.Model):
     effect_id = models.IntegerField(default=0) # The in-game effect ID.
     text = models.TextField(max_length=65535)
     style = models.TextField(max_length=20, null=True) # used by EDX to display effect text in color
+    next = models.IntegerField(null=True) # The next chained effect
+    next_inline = models.IntegerField(null=True) # The next chained effect, without a paragraph break.
 
 
 class Monster(models.Model):
@@ -135,6 +141,8 @@ class Monster(models.Model):
     monster_id = models.IntegerField(default=0) # The in-game monster ID.
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
+    effect = models.IntegerField(null=True) # The ID of an effect to display after the description
+    effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.
     count = models.IntegerField(default=1)
     original_group_size = models.IntegerField(default=1)
     hardiness = models.IntegerField(default=12)
