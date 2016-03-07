@@ -7,6 +7,28 @@ import {CommandException} from "../utils/command.exception";
  * Artifact class. Represents all properties of a single artifact
  */
 export class Artifact extends GameObject {
+
+  // constants
+  static TYPE_GOLD: number = 0;
+  static TYPE_TREASURE: number = 1;
+  static TYPE_WEAPON: number = 2;
+  static TYPE_MAGIC_WEAPON: number = 3;
+  static TYPE_CONTAINER: number = 4;
+  static TYPE_LIGHT_SOURCE: number = 5;
+  static TYPE_DRINKABLE: number = 6;
+  static TYPE_READABLE: number = 7;
+  static TYPE_DOOR: number = 8;
+  static TYPE_EDIBLE: number = 9;
+  static TYPE_BOUND_MONSTER: number = 10;
+  static TYPE_WEARABLE: number = 11;
+  static TYPE_DISGUISED_MONSTER: number = 12;
+  static TYPE_DEAD_BODY: number = 13;
+  static TYPE_USER_1: number = 14;
+  static TYPE_USER_2: number = 15;
+  static TYPE_USER_3: number = 16;
+  static ARMOR_TYPE_ARMOR: number = 0;
+  static ARMOR_TYPE_SHIELD: number = 1;
+
   // data properties
   id: number;
   name: string;
@@ -17,26 +39,21 @@ export class Artifact extends GameObject {
   weight: number;
   value: number;
   fixed_value: boolean;
-  is_container: boolean;
+  type: number;
   is_open: boolean;
   is_healing: boolean; // for simple healing potions, etc. - healing amount based on dice and sides
   is_weapon: boolean;
-  is_standard_weapon: boolean;
   hands: number;  // 1 or 2 = one-handed or two-handed weapon
   weapon_type: number;
   weapon_odds: number;
   dice: number;
   sides: number;
   is_wearable: boolean;
-  is_armor: boolean;
-  is_shield: boolean;
-  armor_strength: number;
+  armor_type: number;
+  armor_class: number;
   armor_penalty: number; // the amount of armor expertise needed to avoid to-hit penalty
   get_all: boolean;
   embedded: boolean;
-  is_edible: boolean;
-  is_drinkable: boolean;
-  is_light_source: boolean;
   quantity: number;
   markings: string[];  // phrases that appear when you read the item
 
@@ -99,7 +116,7 @@ export class Artifact extends GameObject {
    * Returns the maximum damage a weapon can do.
    */
   maxDamage() {
-    if (this.is_weapon) {
+    if (this.type == Artifact.TYPE_WEAPON || this.type == Artifact.TYPE_MAGIC_WEAPON) {
       return this.dice * this.sides;
     } else {
       return 0;
@@ -113,7 +130,7 @@ export class Artifact extends GameObject {
     let game = Game.getInstance();
 
     // logic for simple healing potions, healing by eating food, etc.
-    if (this.is_healing) {
+    if ((this.type == Artifact.TYPE_EDIBLE || this.type == Artifact.TYPE_DRINKABLE) && this.dice * this.sides > 0) {
       let heal_amount = game.diceRoll(this.dice, this.sides);
 
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.

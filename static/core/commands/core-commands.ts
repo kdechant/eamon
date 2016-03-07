@@ -193,7 +193,7 @@ export class RemoveCommand implements BaseCommand {
       // look for a container artifact and see if we can remove the item from it
       let container: Artifact = game.artifacts.getByName(container_name);
       if (container && container.isHere()) {
-        if (container.is_container) {
+        if (container.type == Artifact.TYPE_CONTAINER) {
           if (container.is_open) {
             let item: Artifact = container.getContainedArtifact(item_name);
             if (item) {
@@ -299,17 +299,17 @@ export class WearCommand implements BaseCommand {
     let game = Game.getInstance();
     let artifact = game.monsters.player.findInInventory(arg);
     if (artifact) {
-      if (artifact.is_wearable) {
+      if (artifact.type == Artifact.TYPE_WEARABLE) {
         if (artifact.is_worn) {
           throw new CommandException("You're already wearing it!");
         }
-        if (artifact.is_armor && game.monsters.player.isWearingArmor()) {
+        if (artifact.armor_type == Artifact.ARMOR_TYPE_ARMOR && game.monsters.player.isWearingArmor()) {
           throw new CommandException("Try removing your other armor first.");
         }
-        if (artifact.is_shield && game.monsters.player.isUsingShield()) {
+        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.monsters.player.isUsingShield()) {
           throw new CommandException("Try removing your other shield first.");
         }
-        if (artifact.is_shield && game.monsters.player.weapon.hands === 2) {
+        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.monsters.player.weapon.hands === 2) {
           throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
         }
         game.monsters.player.wear(artifact);
@@ -355,7 +355,7 @@ export class DrinkCommand implements BaseCommand {
     let game = Game.getInstance();
     let item = game.monsters.player.findInInventory(arg);
     if (item) {
-      if (item.is_drinkable) {
+      if (item.type === Artifact.TYPE_DRINKABLE) {
         if (item.quantity > 0) {
           game.history.write("You drink the " + item.name + ".");
           item.use();
@@ -381,7 +381,7 @@ export class EatCommand implements BaseCommand {
     let game = Game.getInstance();
     let item = game.monsters.player.findInInventory(arg);
     if (item) {
-      if (item.is_edible) {
+        if (item.type === Artifact.TYPE_EDIBLE) {
         if (item.quantity > 0) {
           game.history.write("You eat the " + item.name + ".");
           item.use();
@@ -434,7 +434,7 @@ export class LightCommand implements BaseCommand {
     let game = Game.getInstance();
     let artifact = game.monsters.player.findInInventory(arg);
     if (artifact) {
-      if (artifact.is_light_source) {
+      if (artifact.type === Artifact.TYPE_LIGHT_SOURCE) {
         if (artifact.is_lit) {
           artifact.is_lit = false;
           game.history.write("You put out the " + artifact.name + ".");
@@ -496,7 +496,7 @@ export class OpenCommand implements BaseCommand {
 
     let container_opened: boolean = false;
     let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere() && a.is_container) {
+    if (a !== null && a.isHere() && a.type == Artifact.TYPE_CONTAINER) {
       if (!a.is_open) {
         // not open. open it.
         a.is_open = true;
@@ -554,8 +554,8 @@ export class GiveCommand implements BaseCommand {
         game.monsters.player.remove(item);
       }
       item.monster_id = monster.id;
-      if ((item.is_edible || item.is_drinkable) && item.is_healing) {
-        let v: string = item.is_edible ? "eats" : "drinks";
+      if ((item.type === Artifact.TYPE_EDIBLE || item.type === Artifact.TYPE_DRINKABLE) && item.is_healing) {
+        let v: string = item.type === Artifact.TYPE_EDIBLE ? "eats" : "drinks";
         game.history.write(monster.name + " " + v + " the " + item.name + " and hands it back.");
         item.use();
         item.monster_id = game.monsters.player.id;

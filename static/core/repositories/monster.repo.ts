@@ -99,7 +99,7 @@ export class MonsterRepository {
     // create new artifact objects for the weapons and armor the player brought
     for (let i in player_data.items) {
       let a: Artifact = player_data.items[i];
-      if (a.is_armor) {
+      if (a.type == Artifact.TYPE_WEARABLE && a.armor_type == Artifact.ARMOR_TYPE_ARMOR) {
         a.weight = 10;
       } else {
         a.weight = 3;
@@ -115,7 +115,7 @@ export class MonsterRepository {
     // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
     for (let i in game.monsters.player.inventory) {
       let art = game.monsters.player.inventory[i];
-      if (art.is_armor || (art.is_shield && game.monsters.player.weapon.hands === 1)) {
+      if (art.armor_type == Artifact.ARMOR_TYPE_ARMOR || (art.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.monsters.player.weapon.hands === 1)) {
         this.player.wear(art);
       }
     }

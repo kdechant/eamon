@@ -25,10 +25,10 @@
      ({{game.monsters.player.weapon.dice}}d{{game.monsters.player.weapon.sides}})</div>
     <div class="weapon none" *ngIf="!game.monsters.player.weapon">Ready weapon: none!</div>
 
-    <div class="armor" *ngIf="game.monsters.player.armor_strength">Armor:
+    <div class="armor" *ngIf="game.monsters.player.armor_class">Armor:
       <span *ngFor="#armor of game.monsters.player.armor_worn; #isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
-    ({{game.monsters.player.armor_strength}})</div>
-    <div class="armor none" *ngIf="!game.monsters.player.armor_strength">Armor: none!</div>
+    ({{game.monsters.player.armor_class}})</div>
+    <div class="armor none" *ngIf="!game.monsters.player.armor_class">Armor: none!</div>
 
   </div>
 

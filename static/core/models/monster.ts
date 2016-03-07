@@ -42,7 +42,7 @@ export class Monster extends GameObject {
   weapon_dice: number;
   weapon_sides: number;
   defense_bonus: number; // makes monster harder to hit
-  armor_strength: number;
+  armor_class: number;
 
   // data properties for player only
   charisma: number;
@@ -214,7 +214,7 @@ export class Monster extends GameObject {
     this.inventory = [];
     if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
       this.armor_worn = [];
-      this.armor_strength = 0;
+      this.armor_class = 0;
     }
     this.weight_carried = 0;
     for (let i in Game.getInstance().artifacts.all) {
@@ -223,9 +223,9 @@ export class Monster extends GameObject {
         this.inventory.push(a);
         this.weight_carried += a.weight;
         if (this.id === Monster.PLAYER) {
-          if (a.is_worn && (a.is_armor || a.is_shield)) {
+          if (a.is_worn && (a.armor_type == Artifact.ARMOR_TYPE_ARMOR || a.armor_type == Artifact.ARMOR_TYPE_SHIELD)) {
             this.armor_worn.push(a);
-            this.armor_strength += a.armor_strength;
+            this.armor_class += a.armor_class;
           }
         }
       }
@@ -308,7 +308,7 @@ export class Monster extends GameObject {
    */
   public isWearingArmor(): boolean {
     for (let i in this.inventory) {
-      if (this.inventory[i].is_armor && this.inventory[i].is_worn) {
+      if (this.inventory[i].armor_type == Artifact.ARMOR_TYPE_ARMOR && this.inventory[i].is_worn) {
         return true;
       }
     }
@@ -320,7 +320,7 @@ export class Monster extends GameObject {
    */
   public isUsingShield(): boolean {
     for (let i in this.inventory) {
-      if (this.inventory[i].is_shield && this.inventory[i].is_worn) {
+      if (this.inventory[i].armor_type == Artifact.ARMOR_TYPE_SHIELD && this.inventory[i].is_worn) {
         return true;
       }
     }
@@ -541,8 +541,8 @@ export class Monster extends GameObject {
    */
   injure(damage: number, ignore_armor: boolean = false) {
     let game = Game.getInstance();
-    if (this.armor_strength && !ignore_armor) {
-      damage -= this.armor_strength;
+    if (this.armor_class && !ignore_armor) {
+      damage -= this.armor_class;
       if (damage <= 0) {
         game.history.write("--blow bounces off armor!");
         return 0; // no need to show health here.

@@ -133,7 +133,7 @@ export class Game {
     let light = this.artifacts.isLightSource();
     for (let i in this.artifacts.all) {
       let a = this.artifacts.all[i];
-      if (a.is_light_source && a.is_lit) {
+      if (a.type === Artifact.TYPE_LIGHT_SOURCE && a.is_lit) {
         a.quantity--;
         if (a.quantity === 0) {
           a.is_lit = false;

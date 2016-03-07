@@ -45,6 +45,17 @@ export class ArtifactRepository {
       throw new Error("Tried to create an artifact #" + a.id + " but that ID is already taken.");
     }
 
+    // set some flags based on the artifact type - for compatibility with EDX artifact types
+    if ((a.type == Artifact.TYPE_DRINKABLE || a.type == Artifact.TYPE_EDIBLE) && a.dice > 0 && a.sides > 0) {
+        a.is_healing = true;
+    }
+    if (a.type == Artifact.TYPE_WEAPON || a.type == Artifact.TYPE_MAGIC_WEAPON) {
+        a.is_weapon = true;
+    }
+    if (a.type == Artifact.TYPE_WEARABLE) {
+        a.is_wearable = true;
+    }
+
     this.all.push(a);
 
     // update the autonumber index
@@ -93,7 +104,7 @@ export class ArtifactRepository {
       if (a.room_id === Game.getInstance().rooms.current_room.id && !a.embedded) {
 
         // if the artifact is an open container, build the list of contents
-        if (a.is_container && a.is_open) {
+        if (a.type == Artifact.TYPE_CONTAINER && a.is_open) {
           a.contents = [];
           for (let i in this.all) {
             if (this.all[i].container_id === a.id) {
@@ -115,7 +126,7 @@ export class ArtifactRepository {
   isLightSource() {
     for (let i in this.all) {
       let a = this.all[i];
-      if (a.is_light_source && a.is_lit) {
+      if (a.type === Artifact.TYPE_LIGHT_SOURCE && a.is_lit) {
         if (a.room_id === Game.getInstance().rooms.current_room.id || a.monster_id === 0) {
           return true;
         }

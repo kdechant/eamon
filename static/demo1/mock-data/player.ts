@@ -36,13 +36,13 @@ export var PLAYER: Object = {
       "name": "chain mail",
       "is_wearable": true,
       "is_armor": true,
-      "armor_strength": 2
+      "armor_class": 2
     },
     {
       "name": "shield",
       "is_wearable": true,
       "is_shield": true,
-      "armor_strength": 1
+      "armor_class": 1
     }
   ],
   "spell_abilities": {
