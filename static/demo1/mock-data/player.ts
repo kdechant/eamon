@@ -15,34 +15,48 @@ export var PLAYER: Object = {
     "4": 10,
     "5": 0
   },
+  "armor_expertise": 20,
   "items": [
     {
-      "name": "mace",
-      "is_weapon": true,
+      "name": "Mace",
+      "type": 2,
+      "hands": 1,
       "weapon_type": 3,
       "weapon_odds": 10,
       "dice": 1,
       "sides": 4
     },
     {
-      "name": "trollsfire",
-      "is_weapon": true,
+      "name": "Trollsfire",
+      "type": 3,
+      "hands": 1,
       "weapon_type": 5,
       "weapon_odds": 25,
       "dice": 1,
       "sides": 10
     },
     {
-      "name": "chain mail",
-      "is_wearable": true,
-      "is_armor": true,
-      "armor_class": 2
+      "name": "battle axe",
+      "type": 2,
+      "hands": 2,
+      "weapon_type": 1,
+      "weapon_odds": 25,
+      "dice": 2,
+      "sides": 6
     },
     {
-      "name": "shield",
-      "is_wearable": true,
-      "is_shield": true,
-      "armor_class": 1
+      "name": "Chain mail",
+      "type": 11,
+      "armor_type": 0,
+      "armor_class": 2,
+      "armor_penalty": 20
+    },
+    {
+      "name": "Shield",
+      "type": 11,
+      "armor_type": 1,
+      "armor_class": 1,
+      "armor_penalty": 5
     }
   ],
   "spell_abilities": {

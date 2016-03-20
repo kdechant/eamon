@@ -10,22 +10,30 @@
   <script src="node_modules/systemjs/dist/system.src.js"></script>
   <script src="node_modules/rxjs/bundles/Rx.js"></script>
   <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+  <!-- Import ng2 testing -->
+  <script src="node_modules/angular2/bundles/testing.dev.js"></script>
 </head>
 <body>
   <script>
+    var game_id = 'demo1';
     System.config({
+      map: {
+        'core': '/static/core',
+        'adventure': "/static/" + game_id
+      },
       packages: {
-        'app': {
-          format: 'register', defaultExtension: 'js'},
+        'core': {format: 'register', defaultExtension: 'js'},
+        'demo1': {format: 'register', defaultExtension: 'js'},
+        'adventure': {format: 'register', defaultExtension: 'js'},
       }
     });
     Promise.all([
-      System.import('app/models/room.spec'),
-      System.import('app/models/artifact.spec'),
-      System.import('app/models/monster.spec'),
-      System.import('app/repositories/monster-repo.spec'),
-      System.import('app/models/history-entry.spec'),
-      System.import('app/models/history-manager.spec')
+      System.import('core/models/room.spec'),
+      System.import('core/models/artifact.spec'),
+      System.import('core/models/monster.spec'),
+      System.import('core/repositories/monster-repo.spec'),
+      System.import('core/models/history-entry.spec'),
+      System.import('core/models/history-manager.spec')
     ])
       .then(window.onload)
       .catch(console.error.bind(console));

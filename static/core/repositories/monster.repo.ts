@@ -113,9 +113,9 @@ export class MonsterRepository {
     this.player.readyBestWeapon();
 
     // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
-    for (let i in game.monsters.player.inventory) {
-      let art = game.monsters.player.inventory[i];
-      if (art.armor_type == Artifact.ARMOR_TYPE_ARMOR || (art.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.monsters.player.weapon.hands === 1)) {
+    for (let i in this.player.inventory) {
+      let art = this.player.inventory[i];
+      if (art.armor_type == Artifact.ARMOR_TYPE_ARMOR || (art.armor_type == Artifact.ARMOR_TYPE_SHIELD && this.player.weapon.hands === 1)) {
         this.player.wear(art);
       }
     }

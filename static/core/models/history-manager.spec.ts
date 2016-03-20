@@ -1,3 +1,5 @@
+import {describe, it, beforeEach, expect} from 'angular2/testing';
+
 import {HistoryManager} from "./history-manager";
 
 describe("Command history", function() {

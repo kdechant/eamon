@@ -1,8 +1,10 @@
+import {describe, it, beforeEach, expect} from 'angular2/testing';
+
 import {Game} from "../models/game";
 import {Artifact} from "../models/artifact";
 import {ArtifactRepository} from "../repositories/artifact.repo";
 
-import {ARTIFACTS} from "../demo1/mock-data/artifacts";
+import {ARTIFACTS} from "../../demo1/mock-data/artifacts";
 
 describe("Artifact", function() {
 

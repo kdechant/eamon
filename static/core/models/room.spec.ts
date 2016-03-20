@@ -1,7 +1,9 @@
+import {describe, it, beforeEach, expect} from 'angular2/testing';
+
 import {Room} from "./room";
 import {RoomExit} from "./room";
 
-import {ROOMS} from "../demo1/mock-data/rooms";
+import {ROOMS} from "../../demo1/mock-data/rooms";
 
 describe("Room exits", function() {
 
