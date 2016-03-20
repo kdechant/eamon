@@ -477,7 +477,7 @@ export class ReadCommand implements BaseCommand {
     }
 
     // other effects are custom to the adventure
-    let success = game.triggerEvent("read", arg);
+    let success = game.triggerEvent("read", arg, a);
 
     // otherwise, nothing happens
     if ((!success || success === undefined) && !markings_read) {
