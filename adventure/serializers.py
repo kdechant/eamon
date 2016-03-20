@@ -15,24 +15,31 @@ class RoomExitSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='room_id', read_only=True)
     exits = RoomExitSerializer(many=True, read_only=True)
 
     class Meta:
         model = Room
-        fields = ('room_id', 'name', 'description', 'is_dark', 'exits')
+        fields = ('id', 'name', 'description', 'is_dark', 'exits')
 
 
 class ArtifactSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='artifact_id', read_only=True)
+
     class Meta:
         model = Artifact
 
 
 class EffectSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='effect_id', read_only=True)
+
     class Meta:
         model = Effect
 
 
 class MonsterSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='monster_id', read_only=True)
+
     class Meta:
         model = Monster
 

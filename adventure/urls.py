@@ -3,14 +3,14 @@ from rest_framework import routers
 
 from . import views
 
-from .views import AdventureViewSet, RoomViewSet, ArtifactViewSet
+from .views import AdventureViewSet, RoomViewSet, ArtifactViewSet, EffectViewSet, MonsterViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'adventures', AdventureViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w]+)/rooms$', RoomViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w]+)/artifacts$', ArtifactViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w]+)/effects$', ArtifactViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w]+)/monsters$', ArtifactViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w]+)/effects$', EffectViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w]+)/monsters$', MonsterViewSet)
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
