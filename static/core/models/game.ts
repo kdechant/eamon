@@ -229,4 +229,11 @@ export class Game {
     return true;
   }
 
+  /**
+   * Handles player death.
+   */
+  public die() {
+    this.history.write("You are dead!");
+  }
+
 }
