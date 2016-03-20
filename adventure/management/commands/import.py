@@ -94,9 +94,9 @@ class Command(BaseCommand):
                     if match:
                         room.description = chained_effect_regex.sub('', room.description)
                         if match.groups()[0] == '**':
-                            room.effect_inline = match.groups()[0];
+                            room.effect_inline = match.groups()[1];
                         else:
-                            room.effect = match.groups()[0];
+                            room.effect = match.groups()[1];
 
                     # other properties are in the next 11 2-byte little-endian integers
                     bytes = datafile.read(22)
@@ -319,7 +319,7 @@ class Command(BaseCommand):
                     monster.agility = values[1]
                     monster.count = values[2]
                     monster.courage = values[3]
-                    monster.room = values[4]
+                    monster.room_id = values[4]
                     monster.combat_code = values[5]  # whether monster fights with natural weapons, a real weapon, or never fights. also if it should use the "attacks" verb instead of a random verb
                     monster.armor_class = values[6]
                     monster.weapon_id = values[7]
