@@ -44,7 +44,7 @@ export class CommandParser {
    * Adds a command to the list of registered commands
    * @param BaseCommand command The command object, a subclass of BaseCommand
    */
-  register(command: BaseCommand) {
+  public register(command: BaseCommand): void {
 
     // add to the list of verbs, used for parsing commands
     for (let i in command.verbs) {
@@ -64,7 +64,7 @@ export class CommandParser {
    *   Set this to false when calling a command from within another command,
    *   to prevent multiple game clock ticks.
    */
-  run(input: string, tick: boolean = true) {
+  public run(input: string, tick: boolean = true): void {
 
     let game = Game.getInstance();
 

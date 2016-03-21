@@ -37,7 +37,7 @@ export class Room extends Loadable {
    * Override of parent method to handle RoomExit objects.
    * @param Object source an object, e.g., from JSON.
    */
-  init(source) {
+  public init(source): void {
     for (let prop in source) {
       if (prop === "exits") {
         for (let i in source[prop]) {
@@ -54,7 +54,7 @@ export class Room extends Loadable {
   /**
    * Gets the exit from the room in a given direction
    */
-  getExit(direction: string) {
+  public getExit(direction: string): RoomExit {
     for (let i in this.exits) {
       if (this.exits[i].direction === direction) {
         return this.exits[i];

@@ -67,7 +67,7 @@ export class Artifact extends GameObject {
   /**
    * Moves the artifact to a specific room.
    */
-  moveToRoom(room_id) {
+  public moveToRoom(room_id): void {
     this.room_id = room_id;
   }
 
@@ -77,14 +77,14 @@ export class Artifact extends GameObject {
    * the current room.
    * @returns boolean
    */
-  isHere(): boolean {
+  public isHere(): boolean {
     return (this.room_id === Game.getInstance().rooms.current_room.id || this.monster_id === Monster.PLAYER);
   }
 
   /**
    * Gets the Artifact object for an artifact inside the container
    */
-  getContainedArtifact(name: string) {
+  public getContainedArtifact(name: string): Artifact {
     for (let i in this.contents) {
       if (this.contents[i].name.toLowerCase() === name.toLowerCase()) {
         return this.contents[i];
@@ -96,7 +96,7 @@ export class Artifact extends GameObject {
    * Removes an artifact from a container and
    * places it in the room where the container is.
    */
-  removeFromContainer() {
+  public removeFromContainer(): void {
     let game = Game.getInstance();
     let container: Artifact = game.artifacts.get(this.container_id);
     if (container) {
@@ -115,8 +115,8 @@ export class Artifact extends GameObject {
   /**
    * Returns the maximum damage a weapon can do.
    */
-  maxDamage() {
-    if (this.type == Artifact.TYPE_WEAPON || this.type == Artifact.TYPE_MAGIC_WEAPON) {
+  public maxDamage(): number {
+    if (this.type === Artifact.TYPE_WEAPON || this.type === Artifact.TYPE_MAGIC_WEAPON) {
       return this.dice * this.sides;
     } else {
       return 0;
@@ -126,11 +126,11 @@ export class Artifact extends GameObject {
   /**
    * Use an item, eat food, drink a potion, etc.
    */
-  use() {
+  public use(): void {
     let game = Game.getInstance();
 
     // logic for simple healing potions, healing by eating food, etc.
-    if ((this.type == Artifact.TYPE_EDIBLE || this.type == Artifact.TYPE_DRINKABLE) && this.dice * this.sides > 0) {
+    if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice * this.sides > 0) {
       let heal_amount = game.diceRoll(this.dice, this.sides);
 
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
@@ -156,7 +156,7 @@ export class Artifact extends GameObject {
   /**
    * Returns the name of the weapon type
    */
-  getWeaponTypeName() {
+  public getWeaponTypeName(): string {
     switch (this.weapon_type) {
       case 1:
         return "axe";

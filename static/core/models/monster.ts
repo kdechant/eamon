@@ -67,7 +67,7 @@ export class Monster extends GameObject {
   /**
    * Moves the monster to a specific room.
    */
-  moveToRoom(room_id) {
+  public moveToRoom(room_id): void {
     this.room_id = room_id;
 
     // when the player moves, set the current room reference
@@ -80,7 +80,7 @@ export class Monster extends GameObject {
   /**
    * Monster flees out a random exit
    */
-  chooseRandomExit(): Room {
+  public chooseRandomExit(): Room {
     let game = Game.getInstance();
 
     // choose a random exit
@@ -106,7 +106,7 @@ export class Monster extends GameObject {
   /**
    * Checks the monster's reaction to the player
    */
-  checkReaction() {
+  public checkReaction(): void {
     switch (this.friendliness) {
       case Monster.FRIEND_ALWAYS:
         this.reaction = Monster.RX_FRIEND;
@@ -140,7 +140,7 @@ export class Monster extends GameObject {
    * Recheck monster's reaction when the player attacks it or otherwise
    * does something nasty.
    */
-  hurtFeelings() {
+  public hurtFeelings(): void {
 
     // this logic is only meaningful for neutral and friendly monsters
     if (this.reaction !== Monster.RX_HOSTILE) {
@@ -175,7 +175,7 @@ export class Monster extends GameObject {
    * Calculates the maximum weight the monster can carry
    * @return number
    */
-  maxWeight() {
+  public maxWeight(): number {
     return this.hardiness * 10;
   }
 
@@ -183,7 +183,7 @@ export class Monster extends GameObject {
    * The monster picks up an artifact
    * @param Artifact artifact
    */
-  pickUp(artifact: Artifact) {
+  public pickUp(artifact: Artifact): void {
     artifact.room_id = null;
     artifact.monster_id = this.id;
     this.updateInventory();
@@ -193,7 +193,7 @@ export class Monster extends GameObject {
    * The monster drops an artifact
    * @param Artifact artifact
    */
-  drop(artifact: Artifact) {
+  public drop(artifact: Artifact): void {
     artifact.room_id = this.room_id;
     artifact.monster_id = null;
     artifact.is_worn = false;
@@ -210,7 +210,7 @@ export class Monster extends GameObject {
   /**
    * Refreshes the inventory of artifacts carried by the monster
    */
-  updateInventory() {
+  public updateInventory(): void {
     this.inventory = [];
     if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
       this.armor_worn = [];
@@ -237,7 +237,7 @@ export class Monster extends GameObject {
    * @param number artifact_id The ID of an artifact
    * @return boolean
    */
-  hasArtifact(artifact_id: number): boolean {
+  public hasArtifact(artifact_id: number): boolean {
     let has = false;
     for (let i in this.inventory) {
       if (this.inventory[i].id === artifact_id) {
@@ -252,7 +252,7 @@ export class Monster extends GameObject {
    * @param string artifact_name
    * @returns Artifact
    */
-  findInInventory(artifact_name) {
+  public findInInventory(artifact_name): Artifact {
     for (let i in this.inventory) {
       if (artifact_name.toLowerCase() === this.inventory[i].name.toLowerCase()) {
         return this.inventory[i];
@@ -264,7 +264,7 @@ export class Monster extends GameObject {
   /**
    * Readies a weapon
    */
-  ready(weapon: Artifact) {
+  public ready(weapon: Artifact): void {
     this.weapon = weapon;
     this.weapon_id = weapon.id;
     this.weapon_dice = weapon.dice;
@@ -274,7 +274,7 @@ export class Monster extends GameObject {
   /**
    * Readies the best weapon the monster is carrying
    */
-  readyBestWeapon() {
+  public readyBestWeapon(): void {
     for (let a in this.inventory) {
       if (this.inventory[a].is_weapon) {
         if (this.weapon === undefined ||
@@ -288,7 +288,7 @@ export class Monster extends GameObject {
   /**
    * Wears an armor, shield, or article of clothing
    */
-  wear(artifact: Artifact) {
+  public wear(artifact: Artifact): void {
     artifact.is_worn = true;
     // need to update inventory to set the monster's armor value
     this.updateInventory();
@@ -297,7 +297,7 @@ export class Monster extends GameObject {
   /**
    * Wears an armor, shield, or article of clothing
    */
-  remove(artifact: Artifact) {
+  public remove(artifact: Artifact): void {
     artifact.is_worn = false;
     // need to update inventory to set the monster's armor value
     this.updateInventory();
@@ -330,7 +330,7 @@ export class Monster extends GameObject {
   /**
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
-  doBattleActions() {
+  public doBattleActions(): void {
     let game = Game.getInstance();
 
     // if the monster managed to die or somehow disappear before its turn, do nothing
@@ -373,7 +373,7 @@ export class Monster extends GameObject {
    * Attacks another monster
    * @param Monster target
    */
-  attack(target: Monster) {
+  public attack(target: Monster): void {
     let game = Game.getInstance();
     game.history.write(this.name + " attacks " + target.name);
 
@@ -477,7 +477,7 @@ export class Monster extends GameObject {
   /**
    * Gets the base "to hit" percentage for a monster
    */
-  getBaseToHit(): number {
+  public getBaseToHit(): number {
     let wpn = Game.getInstance().artifacts.get(this.weapon_id);
     let to_hit: number;
     if (this.id === Monster.PLAYER) {
@@ -500,7 +500,7 @@ export class Monster extends GameObject {
    * by the player's armor expertise
    * @returns number
    */
-  getArmorFactor(): number {
+  public getArmorFactor(): number {
     let ae_max = 0;
     for (let i in this.inventory) {
       if (this.inventory[i].is_worn) {
@@ -516,7 +516,7 @@ export class Monster extends GameObject {
    * Finds someone for the monster to attack
    * @returns Monster
    */
-  chooseTarget() {
+  public chooseTarget(): Monster {
     let game = Game.getInstance();
     let monsters = [game.monsters.player].concat(game.monsters.visible);
     let targets: Monster[] = [];
@@ -539,7 +539,7 @@ export class Monster extends GameObject {
    * @param boolean ignore_armor Whether to ignore the effect of armor
    * @returns number The amount of actual damage done
    */
-  injure(damage: number, ignore_armor: boolean = false) {
+  public injure(damage: number, ignore_armor: boolean = false): number {
     let game = Game.getInstance();
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
@@ -576,7 +576,7 @@ export class Monster extends GameObject {
    * Heals a monster
    * @param number The amount of hit points to heal
    */
-  heal(amount) {
+  public heal(amount): void {
     this.damage -= amount;
     if (this.damage < 0) {
       this.damage = 0;
@@ -587,7 +587,7 @@ export class Monster extends GameObject {
   /**
    * Shows monster health status
    */
-  showHealth() {
+  public showHealth(): void {
     let game = Game.getInstance();
     let status = (this.hardiness - this.damage) / this.hardiness;
     if (status > .99) {
@@ -612,7 +612,7 @@ export class Monster extends GameObject {
    * @param string spell_name
    * @returns boolean
    */
-  spellCast(spell_name: string) {
+  public spellCast(spell_name: string): boolean {
     let game = Game.getInstance();
 
     if (!game.monsters.player.spell_abilities[spell_name]) {
@@ -650,7 +650,7 @@ export class Monster extends GameObject {
   /**
    * Recharges the player's spell abilities. Called on game tick.
    */
-  rechargeSpellAbilities() {
+  public rechargeSpellAbilities(): void {
     for (let spell_name in this.spell_abilities) {
       if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
         this.spell_abilities[spell_name]++;

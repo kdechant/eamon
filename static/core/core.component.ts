@@ -35,7 +35,7 @@ export class CoreComponent {
 
   constructor(private _gameLoaderService: GameLoaderService) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.game = Game.getInstance();
     this._gameLoaderService.setupGameData();
   }
