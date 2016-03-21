@@ -18,6 +18,10 @@
     color: #009;
     font-weight: bold; }
 
+.special {
+  color: dodgerblue;
+  font-weight: bold; }
+
 .success {
   color: green;
   font-weight: bold; }

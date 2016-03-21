@@ -2,6 +2,7 @@ import {Inject} from "angular2/core";
 
 import {RoomRepository} from "../repositories/room.repo";
 import {ArtifactRepository} from "../repositories/artifact.repo";
+import {EffectRepository} from "../repositories/effect.repo";
 import {MonsterRepository} from "../repositories/monster.repo";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
@@ -37,6 +38,11 @@ export class Game {
    * A container for all the Artifact objects
    */
   artifacts: ArtifactRepository;
+
+  /**
+   * A container for all the Effect objects
+   */
+  effects: EffectRepository;
 
   /**
    * A container for all the Monster objects
@@ -95,9 +101,10 @@ export class Game {
 
     this.rooms = new RoomRepository(data[1]);
     this.artifacts = new ArtifactRepository(data[2]);
-    this.monsters = new MonsterRepository(data[3]);
+    this.effects = new EffectRepository(data[3]);
+    this.monsters = new MonsterRepository(data[4]);
 
-    this.monsters.addPlayer(data[4]);
+    this.monsters.addPlayer(data[5]);
 
     this.history = new HistoryManager;
     this.command_parser = new CommandParser();
@@ -116,6 +123,8 @@ export class Game {
 
     // Place the player in the first room
     this.monsters.player.moveToRoom(1);
+
+    this.triggerEvent("start", "");
 
     // Tick the game clock. This builds the list of monsters/items in the first room.
     this.tick();
