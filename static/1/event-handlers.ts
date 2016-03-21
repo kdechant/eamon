@@ -50,6 +50,7 @@ event_handlers.push({
           game.history.write("You flop three times and die.", "danger");
         }
         game.die();
+        return true;
       }
     }
   }

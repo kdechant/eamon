@@ -80,6 +80,11 @@ export class Game {
    */
   skip_battle_actions: boolean = false;
 
+  /**
+   * "Game over" flag
+   */
+  ended: boolean = false;
+
   constructor() {
     if (Game._instance) {
       throw new Error("Error: Instantiation failed: Use Game.getInstance() instead of new.");
@@ -242,7 +247,8 @@ export class Game {
    * Handles player death.
    */
   public die() {
-    this.history.write("You are dead!");
+    this.history.write("You are dead!", "danger");
+    this.ended = true;
   }
 
 }

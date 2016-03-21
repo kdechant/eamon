@@ -9,6 +9,7 @@ import {Component, Input} from "angular2/core";
        type="text"
        [(ngModel)]="command"
        placeholder="{{lastCommand}}"
+       [disabled]="game.ended"
        />
     </div>
     `,

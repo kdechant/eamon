@@ -35,17 +35,28 @@ export class MoveCommand implements BaseCommand {
         game.history.write("You unlock the door using the " + key.name + ".");
       }
 
-      let room_to = game.rooms.getRoomById(exit.room_to);
-      game.history.write("Entering " + room_to.name);
-      game.monsters.player.moveToRoom(room_to.id);
+      // monsters never fight during the turn when a player moves to a new room.
+      game.skip_battle_actions = true;
 
-      // move friendly monsters
-      for (let i in game.monsters.visible) {
-        if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
-          game.monsters.visible[i].moveToRoom(room_to.id);
+      console.log(exit.room_to);
+      if (exit.room_to === RoomExit.EXIT) {
+        // leaving the adventure
+        game.history.write("You successfully ride off into the sunset!");
+        game.ended = true;
+        return;
+      } else {
+        let room_to = game.rooms.getRoomById(exit.room_to);
+        game.history.write("Entering " + room_to.name);
+        game.monsters.player.moveToRoom(room_to.id);
+
+        // move friendly monsters
+        for (let i in game.monsters.visible) {
+          if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
+            game.monsters.visible[i].moveToRoom(room_to.id);
+          }
         }
       }
-      game.skip_battle_actions = true;
+
     }
   }
 }

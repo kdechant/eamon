@@ -3,7 +3,7 @@ import {Game} from "./game";
 
 export class RoomExit extends Loadable {
 
-  static EXIT: number = -99;
+  static EXIT: number = -999;
 
   public direction: string;
   public room_to: number;
