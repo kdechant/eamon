@@ -24,7 +24,7 @@
     "name": "Throne Room",
     "description": "You are in the throne room. There is a large throne on the north wall. An archway leads west and there is a heavy locked door in the east wall.",
     "exits": [
-      {"direction": "e", "room_to": 4, "key_id": 5},
+      {"direction": "e", "room_to": 4, "door_id": 18},
       {"direction": "s", "room_to": 2},
       {"direction": "w", "room_to": 6}
     ]

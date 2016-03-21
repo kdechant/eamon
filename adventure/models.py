@@ -64,7 +64,7 @@ class RoomExit(models.Model):
     direction = models.CharField(max_length=2)
     room_from = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='exits')
     room_to = models.IntegerField(default=0) # Not a real foreign key. Yet.
-    key_id = models.IntegerField(null=True)
+    door_id = models.IntegerField(null=True)
     message = models.CharField(max_length=255)
 
 
@@ -83,6 +83,9 @@ class Artifact(models.Model):
     )
     container_id = models.IntegerField(null=True,
         help_text="If in a container, the container ID"
+    )
+    key_id = models.IntegerField(null=True,
+        help_text="If a container or door, the artifact ID of the key that opens it"
     )
     weight = models.IntegerField(default=0)
     value = models.IntegerField(default=0)

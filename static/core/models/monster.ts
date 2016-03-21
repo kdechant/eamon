@@ -88,8 +88,7 @@ export class Monster extends GameObject {
     let good_exits: RoomExit[] = [];
     // exclude any locked exit and the game exit
     for (let i in exits) {
-      // FIXME: NPCs will be able to flee through locked doors if the PLAYER is holding the key.
-      if (exits[i].room_to !== RoomExit.EXIT && !exits[i].isLocked()) {
+      if (exits[i].room_to !== RoomExit.EXIT && exits[i].isOpen()) {
         good_exits.push(exits[i]);
       }
     }

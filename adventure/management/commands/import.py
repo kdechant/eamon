@@ -66,7 +66,7 @@ class Command(BaseCommand):
             with open(folder + '/ROOMS.DSC', 'rb') as descfile:
 
                 room_id = 0
-#                while room_id < 5:  # quick version, for testing
+                # while room_id < 5:  # quick version, for testing
                 while True:
 
                     # read the first bytes (containing the name) and exit if EOF
@@ -121,7 +121,11 @@ class Command(BaseCommand):
                     for d in range(10):
                         e = room.exits.get_or_create(direction=DIRECTIONS[d])[0]
                         if values[d] != 0:
-                            e.room_to=values[d]
+                            if values[d] > 1000:
+                                e.door_id = values[d] - 1000
+                                e.room_to = 0
+                            else:
+                                e.room_to = values[d]
                             e.save()
                         else:
                             e.delete()
@@ -158,23 +162,23 @@ class Command(BaseCommand):
                     location = values[3]
                     if location == -1:
                         # carried by player
-                        artifact.monster_id = 0;
+                        artifact.monster_id = 0
                     elif location == -999:
                         # worn by player
-                        artifact.monster_id = 0;
-                        artifact.is_worn = true;
+                        artifact.monster_id = 0
+                        artifact.is_worn = True
                     elif location < 0 and location > -999:
                         # carried by monster
-                        artifact.monster_id = abs(location) - 1;
+                        artifact.monster_id = abs(location) - 1
                     elif location > 2000:
                         # embedded
-                        artifact.room_id = location - 2000;
-                        artifact.embedded = True;
+                        artifact.room_id = location - 2000
+                        artifact.embedded = True
                     elif location > 1000:
                         # in container
                         artifact.container_id = location - 1000
                     else:
-                        artifact.room_id = location;
+                        artifact.room_id = location
 
                     # the meaning of the last 4 values depends on the artifact type
                     if artifact.type == 2 or artifact.type == 3:
@@ -203,7 +207,11 @@ class Command(BaseCommand):
                       artifact.is_open = values[6]
                     elif artifact.type == 8:
                         # door/gate
-                        artifact.room_beyond = values[4]
+                        room_beyond = RoomExit.objects.filter(room_from__adventure_id=adventure_id, door_id=new_artifact_id)
+                        if len(room_beyond):
+                            # update the room_to field on the RoomExit object
+                            room_beyond[0].room_to = values[4]
+                            room_beyond[0].save()
                         artifact.key_id = values[5]
                         artifact.is_open = 1 if values[6] == 0 else 0  # closed = 1 for this type
                         artifact.embedded = values[7]
@@ -283,7 +291,7 @@ class Command(BaseCommand):
 
                 effect.save()
 
-        # TODO: merge chained effects (looking for  at end of text
+        # TODO: merge chained effects (looking for *nnn at end of text)
 
         with open(folder + '/MONSTERS.DAT', 'rb') as datafile:
             with open(folder + '/MONSTERS.DSC', 'rb') as descfile:

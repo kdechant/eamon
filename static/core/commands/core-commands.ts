@@ -20,44 +20,56 @@ export class MoveCommand implements BaseCommand {
     let msg: string;
     if (exit === null) {
       throw new CommandException("You can't go that way!");
-    } else if (exit.isLocked()) {
-      throw new CommandException("The door is locked and you don't have the key!");
-    } else {
+    }
 
-      // hostile monsters prevent the player from moving
-      if (game.in_battle) {
-        throw new CommandException("You can't do that with unfriendlies about!");
+    // hostile monsters prevent the player from moving
+    if (game.in_battle) {
+      throw new CommandException("You can't do that with unfriendlies about!");
+    }
+
+    // check if there is a door or gate blocking the way
+    if (exit.door_id) {
+      let door = game.artifacts.get(exit.door_id);
+
+      // if it's a hidden or secret door. the exit is blocked even if the door's "open" flag is set.
+      // show the normal "you can't go that way" message here, to avoid giving away secret door locations
+      if (door.embedded) {
+        throw new CommandException("You can't go that way!");
       }
 
-      // if a key was used, tell the player which key they used.
-      if (exit.key_id) {
-        let key = game.artifacts.get(exit.key_id);
+      // try to unlock the door using a key the player is carrying
+      if (!door.is_open && door.key_id && game.monsters.player.hasArtifact(door.key_id)) {
+        let key = game.artifacts.get(door.key_id);
         game.history.write("You unlock the door using the " + key.name + ".");
+        door.is_open = true;
       }
 
-      // monsters never fight during the turn when a player moves to a new room.
-      game.skip_battle_actions = true;
+      if (!door.is_open) {
+        throw new CommandException("The " + door.name + " blocks your way!");
+      }
+    }
 
-      console.log(exit.room_to);
-      if (exit.room_to === RoomExit.EXIT) {
-        // leaving the adventure
-        game.history.write("You successfully ride off into the sunset!");
-        game.ended = true;
-        return;
-      } else {
-        let room_to = game.rooms.getRoomById(exit.room_to);
-        game.history.write("Entering " + room_to.name);
-        game.monsters.player.moveToRoom(room_to.id);
+    // monsters never fight during the turn when a player moves to a new room.
+    game.skip_battle_actions = true;
 
-        // move friendly monsters
-        for (let i in game.monsters.visible) {
-          if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
-            game.monsters.visible[i].moveToRoom(room_to.id);
-          }
+    if (exit.room_to === RoomExit.EXIT) {
+      // leaving the adventure
+      game.history.write("You successfully ride off into the sunset!");
+      game.ended = true;
+      return;
+    } else {
+      let room_to = game.rooms.getRoomById(exit.room_to);
+      game.history.write("Entering " + room_to.name);
+      game.monsters.player.moveToRoom(room_to.id);
+
+      // move friendly monsters
+      for (let i in game.monsters.visible) {
+        if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
+          game.monsters.visible[i].moveToRoom(room_to.id);
         }
       }
-
     }
+
   }
 }
 core_commands.push(new MoveCommand());
@@ -505,13 +517,23 @@ export class OpenCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
-    let container_opened: boolean = false;
+    let opened_something: boolean = false;
     let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere() && a.type == Artifact.TYPE_CONTAINER) {
+    if (a !== null && a.isHere() && (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR)) {
       if (!a.is_open) {
         // not open. open it.
+        if (a.key_id) {
+          if (game.monsters.player.hasArtifact(a.key_id)) {
+            let key = game.artifacts.get(a.key_id);
+            game.history.write("You unlock it using the " + key.name + ".");
+          } else {
+            throw new CommandException("It's locked and you don't have the key!");
+          }
+        } else {
+          game.history.write("Opened.");
+        }
         a.is_open = true;
-        container_opened = true;
+        opened_something = true;
       } else {
         throw new CommandException("It's already open!");
       }
@@ -521,7 +543,7 @@ export class OpenCommand implements BaseCommand {
     let success = game.triggerEvent("open", arg);
 
     // otherwise, nothing happens
-    if ((!success || success === undefined) && !container_opened) {
+    if ((!success || success === undefined) && !opened_something) {
       if (arg === "door") {
         game.history.write("The door will open when you pass through it.");
       } else {

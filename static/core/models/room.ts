@@ -7,18 +7,24 @@ export class RoomExit extends Loadable {
 
   public direction: string;
   public room_to: number;
-  public key_id: number;
+  public door_id: number;
   public open: number;
   public message: string;
 
   /**
    * Check for locked exits.
    * @returns boolean
-   *   True if the exit requires a key, and the player doesn't have it.
-   *   False if no key is required, or if the player has the key.
+   *   True if the exit has no door, or if the door is visible and open.
+   *   False if there is a closed door or a hidden embedded door like an undiscovered secret door.
    */
-  public isLocked() {
-    return (this.key_id && !Game.getInstance().monsters.player.hasArtifact(this.key_id));
+  public isOpen(): boolean {
+    if (this.door_id) {
+      let door = Game.getInstance().artifacts.get(this.door_id);
+      return door.is_open;
+    } else {
+      // no door
+      return true;
+    }
   }
 
 }

@@ -36,6 +36,7 @@ export class Artifact extends GameObject {
   room_id: number; // if on the ground, which room
   monster_id: number; // if in inventory, who is carrying it
   container_id: number; // if inside a container, the artifact id of the container
+  key_id: number; // if a container or door, the artifact id of the key that opens it
   weight: number;
   value: number;
   fixed_value: boolean;

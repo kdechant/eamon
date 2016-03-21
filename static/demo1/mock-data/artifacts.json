@@ -197,5 +197,15 @@
     "armor_type": 1,
     "armor_class": 2,
     "armor_penalty": 2
+  },
+  {
+    "id": 18,
+    "name": "vault door",
+    "description": "You see a big, heavy vault door with a keyhole in it.",
+    "type": 8,
+    "room_id": 3,
+    "key_id": 5,
+    "weight": 999,
+    "value": 0
   }
 ]

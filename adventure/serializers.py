@@ -11,7 +11,7 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer):
 class RoomExitSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomExit
-        fields = ('direction', 'room_to', 'key_id', 'message')
+        fields = ('direction', 'room_to', 'door_id', 'message')
 
 
 class RoomSerializer(serializers.ModelSerializer):
