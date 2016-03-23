@@ -165,6 +165,17 @@ export class GetCommand implements BaseCommand {
           game.history.write("You don't bother picking up the " + a.name + ".");
           continue;
         }
+        // weights of >900 and -999 indicate items that can't be gotten.
+        if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
+          continue;
+        }
+        if (a.weight > 900) {
+          throw new CommandException("Don't be absurd.");
+        }
+        if (a.weight === -999) {
+          throw new CommandException("You can't get that.");
+        }
+        
         if (game.triggerEvent("beforeGet", arg, a)) {
           if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
             game.monsters.player.pickUp(a);
