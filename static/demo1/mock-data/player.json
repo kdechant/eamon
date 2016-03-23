@@ -15,7 +15,7 @@
   "armor_expertise": 20,
   "items": [
     {
-      "name": "Mace",
+      "name": "mace",
       "type": 2,
       "hands": 1,
       "weapon_type": 3,
@@ -24,7 +24,7 @@
       "sides": 4
     },
     {
-      "name": "Trollsfire",
+      "name": "firebrand",
       "type": 3,
       "hands": 1,
       "weapon_type": 5,
@@ -33,7 +33,7 @@
       "sides": 10
     },
     {
-      "name": "Battle Axe",
+      "name": "battle axe",
       "type": 2,
       "hands": 2,
       "weapon_type": 1,
@@ -42,14 +42,14 @@
       "sides": 6
     },
     {
-      "name": "Chain mail",
+      "name": "chain mail",
       "type": 11,
       "armor_type": 0,
       "armor_class": 2,
       "armor_penalty": 20
     },
     {
-      "name": "Shield",
+      "name": "shield",
       "type": 11,
       "armor_type": 1,
       "armor_class": 1,

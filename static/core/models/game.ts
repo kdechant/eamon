@@ -185,6 +185,7 @@ export class Game {
         if (!m.seen) {
           this.history.write(m.description);
           m.seen = true;
+          this.triggerEvent("see_monster", m);
         } else {
           this.history.write(m.name + " is here.");
         }
@@ -194,6 +195,7 @@ export class Game {
         let a = this.artifacts.visible[i];
         if (!a.seen) {
           this.history.write(a.description);
+          this.triggerEvent("see_artifact", a);
           a.seen = true;
         } else {
           this.history.write("You see " + a.name);

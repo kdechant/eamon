@@ -561,7 +561,8 @@ export class Monster extends GameObject {
         game.artifacts.get(this.dead_body_id).room_id = this.room_id;
       }
       this.status = Monster.STATUS_DEAD;
-      if (this.id == Monster.PLAYER) {
+      game.triggerEvent("death", this);
+      if (this.id === Monster.PLAYER) {
         game.die();
       } else {
         this.room_id = null;

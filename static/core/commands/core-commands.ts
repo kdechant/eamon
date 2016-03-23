@@ -298,6 +298,7 @@ export class ReadyCommand implements BaseCommand {
   run(verb, arg) {
 
     let game = Game.getInstance();
+    let old_wpn = game.monsters.player.weapon;
     let wpn = game.monsters.player.findInInventory(arg);
     if (wpn) {
       if (wpn.hands === 2 && game.monsters.player.isUsingShield()) {
@@ -305,6 +306,7 @@ export class ReadyCommand implements BaseCommand {
       } else {
         game.monsters.player.ready(wpn);
         game.history.write(wpn.name + " readied.");
+        game.triggerEvent("ready", arg, old_wpn, wpn);
       }
     } else {
       throw new CommandException("You aren't carrying a " + arg + "!");
@@ -751,6 +753,7 @@ export class GotoCommand implements BaseCommand {
       throw new CommandException("There is no room " + arg);
     }
     game.history.write("Entering " + room_to.name);
+    game.skip_battle_actions = true;
     game.monsters.player.moveToRoom(room_to.id);
   }
 }
