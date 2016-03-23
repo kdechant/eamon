@@ -33,6 +33,17 @@ event_handlers.push({
 });
 
 event_handlers.push({
+  name: "beforeMove",
+  run: function(arg: string, room: Room, exit: RoomExit): boolean {
+    if (exit.room_to === -1) {
+      Game.getInstance().history.write("Sorry, but I'm afraid to go into the water without my life preserver.");
+      return false;
+    }
+    return true;
+  },
+});
+
+event_handlers.push({
   name: "read",
   run: function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();

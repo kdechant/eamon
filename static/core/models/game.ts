@@ -235,7 +235,7 @@ export class Game {
    *   An argument to the event. e.g., the Artifact that was picked up or read,
    *   or the word that was said.
    */
-  public triggerEvent(event_name, arg1: number | string | Artifact | Monster, arg2?: Artifact | Monster, arg3?: Artifact | Monster): any {
+  public triggerEvent(event_name, arg1: any, arg2?: any, arg3?: any): any {
     for (let i in this.event_handlers) {
       if (this.event_handlers[i].name === event_name) {
         return this.event_handlers[i].run(arg1, arg2, arg3);
