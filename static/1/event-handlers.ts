@@ -1,12 +1,12 @@
 import {Game} from "../core/models/game";
 import {Artifact} from "../core/models/artifact";
 import {Monster} from "../core/models/monster";
+import {RoomExit} from "../core/models/room";
+import {Room} from "../core/models/room";
 
-export var event_handlers = [];
+export var event_handlers = {
 
-event_handlers.push({
-  name: "start",
-  run: function(arg: string) {
+  "start": function(arg: string) {
     let game = Game.getInstance();
 
     game.effects.print(8);
@@ -29,23 +29,17 @@ event_handlers.push({
       game.effects.print(11);
     }
 
-  }
-});
+  },
 
-event_handlers.push({
-  name: "beforeMove",
-  run: function(arg: string, room: Room, exit: RoomExit): boolean {
+  "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     if (exit.room_to === -1) {
       Game.getInstance().history.write("Sorry, but I'm afraid to go into the water without my life preserver.");
       return false;
     }
     return true;
   },
-});
 
-event_handlers.push({
-  name: "read",
-  run: function(arg: string, artifact: Artifact) {
+  "read": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
 
     if (artifact !== null) {
@@ -64,62 +58,67 @@ event_handlers.push({
         return true;
       }
     }
-  }
-});
+  },
 
-event_handlers.push({
-  name: "see_monster",
-  run: function(monster: Monster): void {
+  "see_monster": function(monster: Monster): void {
     if (monster.id === 8) {
       // pirate invokes trollsfire when first seen
       Game.getInstance().effects.print(2);
       light_trollsfire();
     }
   },
-});
 
-event_handlers.push({
-  name: "death",
-  run: function(monster: Monster): void {
+  "death": function(monster: Monster): void {
     if (monster.id === 8) {
       // trollsfire goes out when pirate dies
       Game.getInstance().effects.print(3);
       put_out_trollsfire();
     }
   },
-});
 
-event_handlers.push({
-  name: "ready",
-  run: function(arg: string, old_wpn: Artifact, new_wpn: Artifact): void {
+  "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact): void {
     // if unreadying trollsfire, put it out
     if (old_wpn.id === 10 && new_wpn.id !== 10) {
       put_out_trollsfire();
     }
   },
-});
 
-event_handlers.push({
-  name: "drop",
-  run: function(arg: string, artifact: Artifact): void {
+  "drop": function(arg: string, artifact: Artifact): void {
     // if dropping trollsfire, put it out
     if (artifact.id === 10) {
       put_out_trollsfire();
     }
   },
-});
 
-event_handlers.push({
-  name: "give",
-  run: function(arg: string, artifact: Artifact, monster: Monster): boolean {
+  "give": function(arg: string, artifact: Artifact, monster: Monster): boolean {
     // if giving trollsfire to someone else, put it out
     if (artifact.id === 10) {
       put_out_trollsfire();
     }
     return true;
   },
-});
 
+  // 'power' event handler takes a 1d100 dice roll as an argument
+  "power": function(roll) {
+    let game = Game.getInstance();
+    if (roll <= 50) {
+      game.history.write("You hear a loud sonic boom which echoes all around you!");
+    } else if (roll <= 75) {
+      // teleport to random room
+      game.history.write("You are being teleported...");
+      let room = game.rooms.getRandom();
+      game.monsters.player.moveToRoom(room.id);
+      game.skip_battle_actions = true;
+    } else {
+      game.history.write("All your wounds are healed!");
+      game.monsters.player.heal(1000);
+    }
+  },
+
+}; // end event handlers
+
+
+// functions used by event handlers and custom commands
 export function light_trollsfire(): void {
   "use strict";
   let trollsfire = Game.getInstance().artifacts.get(10);

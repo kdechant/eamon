@@ -117,8 +117,8 @@ export class Game {
     // register the event handlers defined in the adventure
     for (let i in event_handlers) {
       let e = new EventHandler();
-      e.name = event_handlers[i].name;
-      e.run = event_handlers[i].run;
+      e.name = i;
+      e.run = event_handlers[i];
       this.event_handlers.push(e);
     }
 
