@@ -14,11 +14,6 @@ export class MonsterRepository {
   all: Monster[] = [];
 
   /**
-   * A Monster object representing the player.
-   */
-  player: Monster;
-
-  /**
    * An array of visible Monster objects
    */
   visible: Monster[] = [];
@@ -81,20 +76,20 @@ export class MonsterRepository {
   addPlayer(player_data) {
     let game = Game.getInstance();
 
-    this.player = new Monster();
-    this.player.init(player_data);
+    game.player = new Monster();
+    game.player.init(player_data);
 
     // player is always monster 0
-    this.player.id = 0;
-    this.player.room_id = 1;
-    this.player.reaction = Monster.RX_FRIEND;
-    this.player.spell_abilities_original = {
-      "power": this.player.spell_abilities.power,
-      "heal": this.player.spell_abilities.heal,
-      "blast": this.player.spell_abilities.blast,
-      "speed": this.player.spell_abilities.speed
+    game.player.id = 0;
+    game.player.room_id = 1;
+    game.player.reaction = Monster.RX_FRIEND;
+    game.player.spell_abilities_original = {
+      "power": game.player.spell_abilities.power,
+      "heal": game.player.spell_abilities.heal,
+      "blast": game.player.spell_abilities.blast,
+      "speed": game.player.spell_abilities.speed
     };
-    this.all.push(this.player);
+    this.all.push(game.player);
 
     // create new artifact objects for the weapons and armor the player brought
     for (let i in player_data.items) {
@@ -106,21 +101,21 @@ export class MonsterRepository {
       }
       a.description = "You see your " + a.name + ".";
       let art = game.artifacts.add(a);
-      this.player.pickUp(art);
+      game.player.pickUp(art);
     }
 
     // ready the player's best weapon
-    this.player.readyBestWeapon();
+    game.player.readyBestWeapon();
 
     // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
-    for (let i in this.player.inventory) {
-      let art = this.player.inventory[i];
-      if (art.armor_type == Artifact.ARMOR_TYPE_ARMOR || (art.armor_type == Artifact.ARMOR_TYPE_SHIELD && this.player.weapon.hands === 1)) {
-        this.player.wear(art);
+    for (let i in game.player.inventory) {
+      let art = game.player.inventory[i];
+      if (art.armor_type == Artifact.ARMOR_TYPE_ARMOR || (art.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 1)) {
+        game.player.wear(art);
       }
     }
 
-    return this.player;
+    return game.player;
   }
 
   /**

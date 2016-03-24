@@ -19,7 +19,7 @@ export var event_handlers = {
     // special message when the player finds the treasure
     if (artifact && artifact.id == 3) {
       game.history.write("The magic sword is so shiny you decided to ready it.");
-      game.monsters.player.ready(artifact);
+      game.player.ready(artifact);
     }
     return true;
   },
@@ -55,11 +55,11 @@ export var event_handlers = {
       // teleport to random room
       game.history.write("You are being teleported...");
       let room = game.rooms.getRandom();
-      game.monsters.player.moveToRoom(room.id);
+      game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {
       game.history.write("All your wounds are healed!");
-      game.monsters.player.heal(1000);
+      game.player.heal(1000);
     }
   },
 
@@ -71,7 +71,7 @@ export var event_handlers = {
       let a = game.artifacts.getByName(arg);
       if (a.room_id === game.rooms.current_room.id || a.monster_id === 0) {
         game.history.write("The book zaps you when you open it!", "danger");
-        game.monsters.player.injure(5);
+        game.player.injure(5);
       } else {
         game.history.write("I don't see a " + arg + "!");
       }

@@ -120,7 +120,7 @@ export class Monster extends GameObject {
         // calculate reaction based on random odds
 
         this.reaction = Monster.RX_FRIEND;
-        let friend_odds = this.friend_odds + ((Game.getInstance().monsters.player.charisma - 10) * 2);
+        let friend_odds = this.friend_odds + ((Game.getInstance().player.charisma - 10) * 2);
         // first roll determines a neutral vs. friendly monster
         let roll1 = Game.getInstance().diceRoll(1, 100);
         if (roll1 > friend_odds) {
@@ -517,7 +517,7 @@ export class Monster extends GameObject {
    */
   public chooseTarget(): Monster {
     let game = Game.getInstance();
-    let monsters = [game.monsters.player].concat(game.monsters.visible);
+    let monsters = [game.player].concat(game.monsters.visible);
     let targets: Monster[] = [];
     for (let i in monsters) {
       if (this.reaction === Monster.RX_FRIEND && monsters[i].reaction === Monster.RX_HOSTILE) {
@@ -615,7 +615,7 @@ export class Monster extends GameObject {
   public spellCast(spell_name: string): boolean {
     let game = Game.getInstance();
 
-    if (!game.monsters.player.spell_abilities[spell_name]) {
+    if (!game.player.spell_abilities[spell_name]) {
       game.history.write("You don't know that spell!");
       return;
     }
@@ -628,10 +628,10 @@ export class Monster extends GameObject {
     if (roll === 100) {
 
       game.history.write("The strain of attempting to cast " + spell_name.toUpperCase() + " overloads your brain and you forget it completely for the rest of this adventure.");
-      game.monsters.player.spell_abilities.power = 0;
+      game.player.spell_abilities.power = 0;
 
       // always a 5% chance to work and a 5% chance to fail
-    } else if (roll <= game.monsters.player.spell_abilities.power || roll <= 5 && roll <= 95) {
+    } else if (roll <= game.player.spell_abilities.power || roll <= 5 && roll <= 95) {
       // success!
 
       // check for ability increase

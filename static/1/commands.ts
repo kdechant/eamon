@@ -14,14 +14,14 @@ custom_commands.push({
     if (trollsfire.monster_id === Monster.PLAYER) {
       if (!trollsfire.is_lit) {
         game.effects.print(4);
-        if (game.monsters.player.weapon_id === trollsfire.id) {
+        if (game.player.weapon_id === trollsfire.id) {
           // player has trollsfire ready. increase its stats.
           trollsfire.is_lit = true;
           trollsfire.sides = 10;
         } else {
           // turned on when carrying but not ready. Ouch.
           game.effects.print(5);
-          game.monsters.player.injure(game.diceRoll(1, 5), true);
+          game.player.injure(game.diceRoll(1, 5), true);
         }
       } else {
         game.effects.print(6);

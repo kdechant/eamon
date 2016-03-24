@@ -13,16 +13,16 @@ export var event_handlers = {
     game.effects.print(10);
 
     // must have weapon
-    if (game.monsters.player.weapon_id === null) {
+    if (game.player.weapon_id === null) {
       game.effects.print(9);
     }
 
     // check if base stats
-    if (game.monsters.player.weapon_abilities[1] === 5 &&
-        game.monsters.player.weapon_abilities[2] === -10 &&
-        game.monsters.player.weapon_abilities[3] === 20 &&
-        game.monsters.player.weapon_abilities[4] === 10 &&
-        game.monsters.player.weapon_abilities[5] === 0) {
+    if (game.player.weapon_abilities[1] === 5 &&
+        game.player.weapon_abilities[2] === -10 &&
+        game.player.weapon_abilities[3] === 20 &&
+        game.player.weapon_abilities[4] === 10 &&
+        game.player.weapon_abilities[5] === 0) {
       game.effects.print(12);
     } else {
       // not a beginner
@@ -107,11 +107,11 @@ export var event_handlers = {
       // teleport to random room
       game.history.write("You are being teleported...");
       let room = game.rooms.getRandom();
-      game.monsters.player.moveToRoom(room.id);
+      game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {
       game.history.write("All your wounds are healed!");
-      game.monsters.player.heal(1000);
+      game.player.heal(1000);
     }
   },
 

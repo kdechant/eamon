@@ -50,6 +50,11 @@ export class Game {
   monsters: MonsterRepository;
 
   /**
+   * A Monster object representing the player.
+   */
+  player: Monster;
+
+  /**
    * The game timer. Keeps track of the number of game clock ticks.
    */
   timer: number = 0;
@@ -127,7 +132,7 @@ export class Game {
     this.history.write(this.description);
 
     // Place the player in the first room
-    this.monsters.player.moveToRoom(1);
+    this.player.moveToRoom(1);
 
     this.triggerEvent("start", "");
 
@@ -203,14 +208,14 @@ export class Game {
       }
     }
 
-    this.monsters.player.rechargeSpellAbilities();
+    this.player.rechargeSpellAbilities();
 
     // if speed spell is active, decrease its time remaining
-    if (this.monsters.player.speed_time > 0) {
-      this.monsters.player.speed_time--;
-      if (this.monsters.player.speed_time === 0) {
+    if (this.player.speed_time > 0) {
+      this.player.speed_time--;
+      if (this.player.speed_time === 0) {
         this.history.write("You speed spell just expired!");
-        this.monsters.player.speed_multiplier = 1;
+        this.player.speed_multiplier = 1;
       }
     }
 

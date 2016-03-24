@@ -139,7 +139,7 @@ export class Artifact extends GameObject {
       if (owner) {
         game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
       } else {
-        owner = game.monsters.player;
+        owner = game.player;
         game.history.write("It heals you " + heal_amount + " hit points.");
       }
       owner.heal(heal_amount);

@@ -38,7 +38,7 @@ export class MoveCommand implements BaseCommand {
       }
 
       // try to unlock the door using a key the player is carrying
-      if (!door.is_open && door.key_id && game.monsters.player.hasArtifact(door.key_id)) {
+      if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
         let key = game.artifacts.get(door.key_id);
         game.history.write("You unlock the door using the " + key.name + ".");
         door.is_open = true;
@@ -61,7 +61,7 @@ export class MoveCommand implements BaseCommand {
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
         game.history.write("Entering " + room_to.name);
-        game.monsters.player.moveToRoom(room_to.id);
+        game.player.moveToRoom(room_to.id);
 
         // move friendly monsters
         for (let i in game.monsters.visible) {
@@ -175,10 +175,10 @@ export class GetCommand implements BaseCommand {
         if (a.weight === -999) {
           throw new CommandException("You can't get that.");
         }
-        
+
         if (game.triggerEvent("beforeGet", arg, a)) {
-          if (game.monsters.player.weight_carried + a.weight <= game.monsters.player.maxWeight()) {
-            game.monsters.player.pickUp(a);
+          if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
+            game.player.pickUp(a);
             if (arg === "all") {
               game.history.write(a.name + " taken.");
             } else {
@@ -187,9 +187,9 @@ export class GetCommand implements BaseCommand {
             game.triggerEvent("afterGet", arg, a);
 
             // if in battle and player has no weapon ready, ready it
-            if (game.in_battle && a.is_weapon && game.monsters.player.weapon_id === null) {
-              if (a.hands === 1 || !game.monsters.player.isUsingShield()) {
-                game.monsters.player.ready(a);
+            if (game.in_battle && a.is_weapon && game.player.weapon_id === null) {
+              if (a.hands === 1 || !game.player.isUsingShield()) {
+                game.player.ready(a);
                 game.history.write("Readied.");
               }
             }
@@ -257,10 +257,10 @@ export class RemoveCommand implements BaseCommand {
 
     } else {
 
-      let artifact = game.monsters.player.findInInventory(arg);
+      let artifact = game.player.findInInventory(arg);
       if (artifact) {
         if (artifact.is_worn) {
-          game.monsters.player.remove(artifact);
+          game.player.remove(artifact);
           game.history.write("You take off the " + artifact.name + ".");
         } else {
           throw new CommandException("You aren't wearing it!");
@@ -286,7 +286,7 @@ export class DropCommand implements BaseCommand {
 
     let match = false;
 
-    let inventory = game.monsters.player.inventory;
+    let inventory = game.player.inventory;
     for (let i in inventory) {
       match = true;
       if (arg === inventory[i].name.toLowerCase() || arg === "all") {
@@ -294,7 +294,7 @@ export class DropCommand implements BaseCommand {
         if (arg === "all" && inventory[i].is_worn) {
           continue;
         }
-        game.monsters.player.drop(inventory[i]);
+        game.player.drop(inventory[i]);
         game.history.write(inventory[i].name + " dropped.");
       }
     }
@@ -314,13 +314,13 @@ export class ReadyCommand implements BaseCommand {
   run(verb, arg) {
 
     let game = Game.getInstance();
-    let old_wpn = game.monsters.player.weapon;
-    let wpn = game.monsters.player.findInInventory(arg);
+    let old_wpn = game.player.weapon;
+    let wpn = game.player.findInInventory(arg);
     if (wpn) {
-      if (wpn.hands === 2 && game.monsters.player.isUsingShield()) {
+      if (wpn.hands === 2 && game.player.isUsingShield()) {
         throw new CommandException("That is a two-handed weapon. Try removing your shield first.");
       } else {
-        game.monsters.player.ready(wpn);
+        game.player.ready(wpn);
         game.history.write(wpn.name + " readied.");
         game.triggerEvent("ready", arg, old_wpn, wpn);
       }
@@ -338,22 +338,22 @@ export class WearCommand implements BaseCommand {
   run(verb: string, arg: string) {
 
     let game = Game.getInstance();
-    let artifact = game.monsters.player.findInInventory(arg);
+    let artifact = game.player.findInInventory(arg);
     if (artifact) {
       if (artifact.type == Artifact.TYPE_WEARABLE) {
         if (artifact.is_worn) {
           throw new CommandException("You're already wearing it!");
         }
-        if (artifact.armor_type == Artifact.ARMOR_TYPE_ARMOR && game.monsters.player.isWearingArmor()) {
+        if (artifact.armor_type == Artifact.ARMOR_TYPE_ARMOR && game.player.isWearingArmor()) {
           throw new CommandException("Try removing your other armor first.");
         }
-        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.monsters.player.isUsingShield()) {
+        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.player.isUsingShield()) {
           throw new CommandException("Try removing your other shield first.");
         }
-        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.monsters.player.weapon.hands === 2) {
+        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 2) {
           throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
         }
-        game.monsters.player.wear(artifact);
+        game.player.wear(artifact);
         game.history.write("You put on the " + artifact.name + ".");
       } else {
         throw new CommandException("You can't wear that!");
@@ -376,12 +376,12 @@ export class FleeCommand implements BaseCommand {
       throw new CommandException("There is nothing to flee from!");
     }
 
-    let room_to = game.monsters.player.chooseRandomExit();
+    let room_to = game.player.chooseRandomExit();
     if (!room_to) {
       throw new CommandException("There is nowhere to flee to!");
     }
     game.history.write("Fleeing to " + room_to.name);
-    game.monsters.player.moveToRoom(room_to.id);
+    game.player.moveToRoom(room_to.id);
 
     // TODO: check if other monsters follow
   }
@@ -394,7 +394,7 @@ export class DrinkCommand implements BaseCommand {
   verbs: string[] = ["drink"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.monsters.player.findInInventory(arg);
+    let item = game.player.findInInventory(arg);
     if (item) {
       if (item.type === Artifact.TYPE_DRINKABLE) {
         if (item.quantity > 0) {
@@ -420,7 +420,7 @@ export class EatCommand implements BaseCommand {
   verbs: string[] = ["eat"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.monsters.player.findInInventory(arg);
+    let item = game.player.findInInventory(arg);
     if (item) {
         if (item.type === Artifact.TYPE_EDIBLE) {
         if (item.quantity > 0) {
@@ -447,18 +447,18 @@ export class AttackCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
-    if (!game.monsters.player.weapon_id) {
+    if (!game.player.weapon_id) {
       throw new CommandException("You don't have a weapon ready!");
     }
 
     let target = game.monsters.getByName(arg);
-    if (target && target.room_id === game.monsters.player.room_id) {
+    if (target && target.room_id === game.player.room_id) {
 
       // halve the target's friendliness and reset target's reaction.
       // this will allow friendly/neutral monsters to fight back if you anger them.
       target.hurtFeelings();
 
-      game.monsters.player.attack(target);
+      game.player.attack(target);
     } else {
       throw new CommandException("Attack whom?");
     }
@@ -473,7 +473,7 @@ export class LightCommand implements BaseCommand {
   verbs: string[] = ["light"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let artifact = game.monsters.player.findInInventory(arg);
+    let artifact = game.player.findInInventory(arg);
     if (artifact) {
       if (artifact.type === Artifact.TYPE_LIGHT_SOURCE) {
         if (artifact.is_lit) {
@@ -541,7 +541,7 @@ export class OpenCommand implements BaseCommand {
       if (!a.is_open) {
         // not open. open it.
         if (a.key_id) {
-          if (game.monsters.player.hasArtifact(a.key_id)) {
+          if (game.player.hasArtifact(a.key_id)) {
             let key = game.artifacts.get(a.key_id);
             game.history.write("You unlock it using the " + key.name + ".");
           } else {
@@ -589,7 +589,7 @@ export class GiveCommand implements BaseCommand {
     let item_name: string = regex_result[1];
     let monster_name: string = regex_result[2];
 
-    let item = game.monsters.player.findInInventory(item_name);
+    let item = game.player.findInInventory(item_name);
     if (!item) {
       throw new CommandException("You're not carrying it!");
     }
@@ -602,19 +602,19 @@ export class GiveCommand implements BaseCommand {
     if (game.triggerEvent("give", arg, item, monster)) {
 
       if (item.is_worn) {
-        game.monsters.player.remove(item);
+        game.player.remove(item);
       }
       item.monster_id = monster.id;
       if ((item.type === Artifact.TYPE_EDIBLE || item.type === Artifact.TYPE_DRINKABLE) && item.is_healing) {
         let v: string = item.type === Artifact.TYPE_EDIBLE ? "eats" : "drinks";
         game.history.write(monster.name + " " + v + " the " + item.name + " and hands it back.");
         item.use();
-        item.monster_id = game.monsters.player.id;
+        item.monster_id = game.player.id;
       } else {
         monster.updateInventory();
         game.history.write(monster.name + " takes the " + item.name + ".");
       }
-      game.monsters.player.updateInventory();
+      game.player.updateInventory();
 
       if (item.is_weapon && monster.weapon_id === null) {
         game.history.write(monster.name + " readies the " + item.name + ".");
@@ -655,10 +655,10 @@ export class TakeCommand implements BaseCommand {
 
     if (game.triggerEvent("take", arg, item, monster)) {
 
-      item.monster_id = game.monsters.player.id;
+      item.monster_id = game.player.id;
       monster.updateInventory();
       game.history.write(monster.name + " gives you the " + item.name + ".");
-      game.monsters.player.updateInventory();
+      game.player.updateInventory();
 
     }
 
@@ -673,7 +673,7 @@ export class PowerCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
-    if (game.monsters.player.spellCast(verb)) {
+    if (game.player.spellCast(verb)) {
       //  this spell has no effect except what is defined in the adventure
       let roll = game.diceRoll(1, 100);
       game.triggerEvent("power", roll);
@@ -689,7 +689,7 @@ export class HealCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
-    if (game.monsters.player.spellCast(verb)) {
+    if (game.player.spellCast(verb)) {
       let heal_amount = game.diceRoll(2, 6);
       game.triggerEvent("heal", arg);
       if (arg !== "") {
@@ -705,7 +705,7 @@ export class HealCommand implements BaseCommand {
       } else {
         // heal player
         game.history.write("Some of your wounds seem to clear up.");
-        game.monsters.player.heal(heal_amount);
+        game.player.heal(heal_amount);
       }
     }
   }
@@ -719,7 +719,7 @@ export class BlastCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
-    if (game.monsters.player.spellCast(verb)) {
+    if (game.player.spellCast(verb)) {
       game.triggerEvent("blast", arg);
       // heal a monster
       let m = game.monsters.getByName(arg);
@@ -743,14 +743,14 @@ export class SpeedCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
-    if (game.monsters.player.spellCast(verb)) {
+    if (game.player.spellCast(verb)) {
       game.triggerEvent("speed", arg);
       // double player's agility
       game.history.write("You can feel the new agility flowing through you!", "success");
-      if (game.monsters.player.speed_time === 0) {
-        game.monsters.player.speed_multiplier = 2;
+      if (game.player.speed_time === 0) {
+        game.player.speed_multiplier = 2;
       }
-      game.monsters.player.speed_time += 10 + game.diceRoll(1, 10);
+      game.player.speed_time += 10 + game.diceRoll(1, 10);
     }
   }
 }
@@ -770,7 +770,7 @@ export class GotoCommand implements BaseCommand {
     }
     game.history.write("Entering " + room_to.name);
     game.skip_battle_actions = true;
-    game.monsters.player.moveToRoom(room_to.id);
+    game.player.moveToRoom(room_to.id);
   }
 }
 core_commands.push(new GotoCommand());

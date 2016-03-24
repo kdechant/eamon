@@ -1,34 +1,34 @@
 <div *ngIf="game?.rooms?.current_room">
 
   <div class="status-widget player">
-    <p class="heading">{{ game.monsters.player.name }}</p>
+    <p class="heading">{{ game.player.name }}</p>
 
     <div class="stats">
-      <span class="hardiness">HD: {{game.monsters.player.hardiness}}</span>
-      <span class="agility">AG: <span [class.success]="game.monsters.player.speed_multiplier > 1">{{game.monsters.player.agility * game.monsters.player.speed_multiplier}}</span></span>
-      <span class="charisma">CH: {{game.monsters.player.charisma}}</span>
+      <span class="hardiness">HD: {{game.player.hardiness}}</span>
+      <span class="agility">AG: <span [class.success]="game.player.speed_multiplier > 1">{{game.player.agility * game.player.speed_multiplier}}</span></span>
+      <span class="charisma">CH: {{game.player.charisma}}</span>
     </div>
 
     <div class="health">
-      HP: {{ game.monsters.player.hardiness - game.monsters.player.damage }}/{{ game.monsters.player.hardiness }}
+      HP: {{ game.player.hardiness - game.player.damage }}/{{ game.player.hardiness }}
     </div>
 
     <div class="weapon-abilities row">
-      <div class="axe col-sm-2">Axe: {{game.monsters.player.weapon_abilities[1]}}%</div>
-      <div class="bow col-sm-2">Bow: {{game.monsters.player.weapon_abilities[2]}}%</div>
-      <div class="club col-sm-2">Club: {{game.monsters.player.weapon_abilities[3]}}%</div>
-      <div class="spear col-sm-2">Spear: {{game.monsters.player.weapon_abilities[4]}}%</div>
-      <div class="sword col-sm-2">Sword: {{game.monsters.player.weapon_abilities[5]}}%</div>
+      <div class="axe col-sm-2">Axe: {{game.player.weapon_abilities[1]}}%</div>
+      <div class="bow col-sm-2">Bow: {{game.player.weapon_abilities[2]}}%</div>
+      <div class="club col-sm-2">Club: {{game.player.weapon_abilities[3]}}%</div>
+      <div class="spear col-sm-2">Spear: {{game.player.weapon_abilities[4]}}%</div>
+      <div class="sword col-sm-2">Sword: {{game.player.weapon_abilities[5]}}%</div>
     </div>
 
-    <div class="weapon" *ngIf="game.monsters.player.weapon">Ready weapon: {{game.monsters.player.weapon.name}}
-     ({{game.monsters.player.weapon.dice}}d{{game.monsters.player.weapon.sides}})</div>
-    <div class="weapon none" *ngIf="!game.monsters.player.weapon">Ready weapon: none!</div>
+    <div class="weapon" *ngIf="game.player.weapon">Ready weapon: {{game.player.weapon.name}}
+     ({{game.player.weapon.dice}}d{{game.player.weapon.sides}})</div>
+    <div class="weapon none" *ngIf="!game.player.weapon">Ready weapon: none!</div>
 
-    <div class="armor" *ngIf="game.monsters.player.armor_class">Armor:
-      <span *ngFor="#armor of game.monsters.player.armor_worn; #isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
-    ({{game.monsters.player.armor_class}})</div>
-    <div class="armor none" *ngIf="!game.monsters.player.armor_class">Armor: none!</div>
+    <div class="armor" *ngIf="game.player.armor_class">Armor:
+      <span *ngFor="#armor of game.player.armor_worn; #isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
+    ({{game.player.armor_class}})</div>
+    <div class="armor none" *ngIf="!game.player.armor_class">Armor: none!</div>
 
   </div>
 
@@ -65,15 +65,15 @@
 
   <div class="status-widget inventory">
     <p class="heading">You are carrying:</p>
-    <div class="artifacts-list" *ngIf="game?.monsters?.player?.inventory">
-      <span class="artifact" *ngFor="#artifact of game.monsters.player.inventory">{{ artifact.name }}
+    <div class="artifacts-list" *ngIf="game?.player?.inventory">
+      <span class="artifact" *ngFor="#artifact of game.player.inventory">{{ artifact.name }}
         <span class="lit" *ngIf="artifact.is_lit">(lit)</span>
         <span class="worn" *ngIf="artifact.is_worn">(wearing)</span>
-        <span class="ready" *ngIf="artifact.id == game.monsters.player.weapon_id">(ready weapon)</span>
+        <span class="ready" *ngIf="artifact.id == game.player.weapon_id">(ready weapon)</span>
         <br />
       </span>
-      <span class="artifact none" *ngIf="game.monsters.player.inventory.length == 0">nothing<br /></span>
+      <span class="artifact none" *ngIf="game.player.inventory.length == 0">nothing<br /></span>
     </div>
-    <p class="weight">Weight carried: {{game.monsters.player.weight_carried}}</p>
+    <p class="weight">Weight carried: {{game.player.weight_carried}}</p>
   </div>
 </div>
