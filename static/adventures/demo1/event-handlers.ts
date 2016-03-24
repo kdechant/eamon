@@ -1,6 +1,6 @@
-import {Game} from "../core/models/game";
-import {Artifact} from "../core/models/artifact";
-import {Monster} from "../core/models/monster";
+import {Game} from "../../core/models/game";
+import {Artifact} from "../../core/models/artifact";
+import {Monster} from "../../core/models/monster";
 
 export var event_handlers = {
 

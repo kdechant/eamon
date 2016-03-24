@@ -1,8 +1,8 @@
-import {Game} from "../core/models/game";
-import {Artifact} from "../core/models/artifact";
-import {Monster} from "../core/models/monster";
-import {RoomExit} from "../core/models/room";
-import {Room} from "../core/models/room";
+import {Game} from "../../core/models/game";
+import {Artifact} from "../../core/models/artifact";
+import {Monster} from "../../core/models/monster";
+import {RoomExit} from "../../core/models/room";
+import {Room} from "../../core/models/room";
 
 export var event_handlers = {
 

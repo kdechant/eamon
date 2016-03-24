@@ -1,5 +1,6 @@
 import struct, re
 from django.core.management.base import BaseCommand, CommandError
+from django.utils.text import slugify
 from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
 
 class Command(BaseCommand):
@@ -39,6 +40,7 @@ class Command(BaseCommand):
                 for adv in sub_adventures:
                     print("Adventure: " + adv[0])
                     a = Adventure.objects.get_or_create(name=adv[0], edx=edx)[0]
+                    a.slug = slugify(adv[0])
                     a.edx_room_offset = adv[5]
                     a.edx_artifact_offset = adv[6]
                     a.edx_effect_offset = adv[7]
@@ -49,6 +51,7 @@ class Command(BaseCommand):
             else:
                 print("Adventure: " + adv_data[4])
                 a = Adventure.objects.get_or_create(name=adv_data[4], edx=edx)[0]
+                a.slug = slugify(adv_data[4])
                 a.edx_room_offset = 1
                 a.edx_artifact_offset = 1
                 a.edx_effect_offset = 1

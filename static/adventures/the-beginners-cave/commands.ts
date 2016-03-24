@@ -1,5 +1,5 @@
-import {Game} from "../core/models/game";
-import {Monster} from "../core/models/monster";
+import {Game} from "../../core/models/game";
+import {Monster} from "../../core/models/monster";
 import {put_out_trollsfire} from "./event-handlers";
 
 export var custom_commands = [];

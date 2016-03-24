@@ -1,8 +1,6 @@
 from rest_framework import viewsets, filters, permissions, mixins, generics
-import django_filters
-from django.shortcuts import render
-from django.http import HttpResponse
-import json
+from rest_framework.response import Response
+from django.shortcuts import render, get_object_or_404
 
 from . import serializers
 from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster
@@ -27,6 +25,12 @@ class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.queryset
         return queryset
 
+    def retrieve(self, request, pk=None):
+        queryset = self.queryset
+        user = get_object_or_404(queryset, slug=pk)
+        serializer = serializers.AdventureSerializer(user)
+        return Response(serializer.data)
+
 
 class RoomViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -37,7 +41,7 @@ class RoomViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
-        return self.queryset.filter(adventure__id=adventure_id)
+        return self.queryset.filter(adventure__slug=adventure_id)
 
 
 class ArtifactViewSet(viewsets.ReadOnlyModelViewSet):
@@ -49,7 +53,7 @@ class ArtifactViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
-        return self.queryset.filter(adventure__id=adventure_id)
+        return self.queryset.filter(adventure__slug=adventure_id)
 
 
 class EffectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -61,7 +65,7 @@ class EffectViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
-        return self.queryset.filter(adventure__id=adventure_id)
+        return self.queryset.filter(adventure__slug=adventure_id)
 
 
 class MonsterViewSet(viewsets.ReadOnlyModelViewSet):
@@ -73,4 +77,4 @@ class MonsterViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
-        return self.queryset.filter(adventure__id=adventure_id)
+        return self.queryset.filter(adventure__slug=adventure_id)

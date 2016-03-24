@@ -21,20 +21,21 @@ export class GameLoaderService {
     let game = Game.getInstance();
 
     // load all the game data objects in parallel
-    if (game_id == 'demo1') {
-        // load mock data
-        Observable.forkJoin(
-          this.http.get("/static/" + game_id + "/mock-data/adventure.json").map((res: Response) => res.json()),
-          this.http.get("/static/" + game_id + "/mock-data/rooms.json").map((res: Response) => res.json()),
-          this.http.get("/static/" + game_id + "/mock-data/artifacts.json").map((res: Response) => res.json()),
-          this.http.get("/static/" + game_id + "/mock-data/effects.json").map((res: Response) => res.json()),
-          this.http.get("/static/" + game_id + "/mock-data/monsters.json").map((res: Response) => res.json()),
-          this.http.get("/static/" + game_id + "/mock-data/player.json").map((res: Response) => res.json())
-        ).subscribe(
-            data => {
-              game.init(data);
-            }
-        );
+    if (game_id === 'demo1') {
+      // load mock data
+      let path = "/static/adventures/" + game_id + "/mock-data";
+      Observable.forkJoin(
+        this.http.get(path + "/adventure.json").map((res: Response) => res.json()),
+        this.http.get(path + "/rooms.json").map((res: Response) => res.json()),
+        this.http.get(path + "/artifacts.json").map((res: Response) => res.json()),
+        this.http.get(path + "/effects.json").map((res: Response) => res.json()),
+        this.http.get(path + "/monsters.json").map((res: Response) => res.json()),
+        this.http.get(path + "/player.json").map((res: Response) => res.json())
+      ).subscribe(
+          data => {
+            game.init(data);
+          }
+      );
     } else {
         // load live data from the back end
         Observable.forkJoin(
@@ -44,7 +45,7 @@ export class GameLoaderService {
           this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
           this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
           // player is still currently loaded from mock data
-          this.http.get("/static/demo1/mock-data/player.json").map((res: Response) => res.json())
+          this.http.get("/static/adventures/demo1/mock-data/player.json").map((res: Response) => res.json())
         ).subscribe(
             data => {
               game.init(data);

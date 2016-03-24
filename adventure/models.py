@@ -41,6 +41,7 @@ ARMOR_TYPES = (
 class Adventure(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(null=True)
+    slug = models.SlugField(null=True)
     edx = models.CharField(null=True,max_length=50)
     edx_version = models.FloatField(default=0, blank=True, null=True)
     edx_room_offset = models.IntegerField(default=0,null=True)
