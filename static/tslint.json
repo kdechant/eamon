@@ -42,7 +42,6 @@
     "no-internal-module": true,
     "no-require-imports": true,
     "no-shadowed-variable": true,
-    "no-string-literal": true,
     "no-switch-case-fall-through": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,

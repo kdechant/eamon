@@ -55,6 +55,12 @@ export class Game {
   player: Monster;
 
   /**
+   * A container for custom data and game flags used by specific adventures
+   * (e.g., rising water level, or whether someone has given the player an item)
+   */
+  data: { [key: string]: any; } = {};
+
+  /**
    * The game timer. Keeps track of the number of game clock ticks.
    */
   timer: number = 0;
