@@ -86,7 +86,10 @@ class Artifact(models.Model):
         help_text="If in a container, the container ID"
     )
     key_id = models.IntegerField(null=True,
-        help_text="If a container or door, the artifact ID of the key that opens it"
+        help_text="If a container, door, or bound monster, the artifact ID of the key that opens it"
+    )
+    guard_id = models.IntegerField(null=True,
+        help_text="If a bound monster, the ID of a monster that prevents the player from freeing it"
     )
     weight = models.IntegerField(default=0)
     value = models.IntegerField(default=0)

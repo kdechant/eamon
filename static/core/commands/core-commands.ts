@@ -175,6 +175,9 @@ export class GetCommand implements BaseCommand {
         if (a.weight === -999) {
           throw new CommandException("You can't get that.");
         }
+        if (a.type === Artifact.TYPE_BOUND_MONSTER) {
+          throw new CommandException("You can't get that.");
+        }
 
         if (game.triggerEvent("beforeGet", arg, a)) {
           if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
@@ -665,6 +668,53 @@ export class TakeCommand implements BaseCommand {
   }
 }
 core_commands.push(new TakeCommand());
+
+
+export class FreeCommand implements BaseCommand {
+  name: string = "free";
+  verbs: string[] = ["free", "release"];
+  run(verb: string, arg: string) {
+
+    let game: Game = Game.getInstance();
+    let monster: Monster = null;
+    let message: string = "";
+
+    // see if we're reading an artifact that has markings
+    let a = game.artifacts.getByName(arg);
+    if (a !== null && a.isHere()) {
+      if (a.type !== Artifact.TYPE_BOUND_MONSTER) {
+        throw new CommandException("You can't free that!");
+      }
+      if (a.guard_id !== null) {
+        let guard = game.monsters.get(a.guard_id);
+        if (guard.isHere()) {
+          throw new CommandException(guard.name + " won't let you!");
+        }
+      }
+      if (a.key_id) {
+        if (game.player.hasArtifact(a.key_id)) {
+          let key = game.artifacts.get(a.key_id);
+          message = "You free it using the " + key.name + ".";
+        } else {
+          throw new CommandException("It's locked and you don't have the key!");
+        }
+      } else {
+        message = "Freed.";
+      }
+      game.history.write(message);
+      game.triggerEvent("free", arg, a, monster);
+      // put the freed monster into the room
+      monster = game.monsters.get(a.monster_id);
+      monster.room_id = game.rooms.current_room.id;
+      // remove the "bound monster" artifact
+      a.destroy();
+    } else {
+      throw new CommandException("I don't see any " + arg + "!");
+    }
+
+  }
+}
+core_commands.push(new FreeCommand());
 
 
 export class PowerCommand implements BaseCommand {

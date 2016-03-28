@@ -232,6 +232,14 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Determines whether a monster is in the room.
+   * @returns boolean
+   */
+  public isHere(): boolean {
+    return (this.room_id === Game.getInstance().rooms.current_room.id);
+  }
+
+  /**
    * Determines whether a monster is carrying an artifact.
    * @param number artifact_id The ID of an artifact
    * @return boolean

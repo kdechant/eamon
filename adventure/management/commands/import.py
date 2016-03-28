@@ -222,7 +222,7 @@ class Command(BaseCommand):
                         # bound monster
                         artifact.monster_id = values[4]
                         artifact.key_id = values[5]
-                        artifact.guard_id = values[6]  # TODO: research what the guard does
+                        artifact.guard_id = values[6]
 
                     elif artifact.type == 11:
                         # wearable

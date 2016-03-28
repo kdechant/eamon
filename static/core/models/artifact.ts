@@ -37,6 +37,7 @@ export class Artifact extends GameObject {
   monster_id: number; // if in inventory, who is carrying it
   container_id: number; // if inside a container, the artifact id of the container
   key_id: number; // if a container or door, the artifact id of the key that opens it
+  guard_id: number; // if a bound monster, the monster id of the monster guarding it
   weight: number;
   value: number;
   fixed_value: boolean;
@@ -152,6 +153,15 @@ export class Artifact extends GameObject {
     if (this.quantity > 0) {
       this.quantity--;
     }
+  }
+
+  /**
+   * Removes an artifact from the game
+   */
+  public destroy(): void {
+    this.monster_id = null;
+    this.room_id = null;
+    this.container_id = null;
   }
 
   /**
