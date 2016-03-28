@@ -112,6 +112,12 @@ class Artifact(models.Model):
     quantity = models.IntegerField(null=True,
         help_text="Drinks or bites, fuel for light source, etc."
     )
+    effect_id = models.IntegerField(null=True,
+        help_text="First effect ID for Readable artifacts"
+    )
+    num_effects = models.IntegerField(null=True,
+        help_text="Number of effects for Readable artifacts (legacy)"
+    )
 
 
 class ArtifactMarking(models.Model):

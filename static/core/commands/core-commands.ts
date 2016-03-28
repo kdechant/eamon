@@ -529,23 +529,40 @@ export class ReadCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
     let markings_read = false;
+    let event_success = false;
 
     // see if we're reading an artifact that has markings
     let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere() && a.markings) {
-      game.history.write("It reads: \"" + a.markings[a.markings_index] + "\"");
-      markings_read = true;
-      a.markings_index++;
-      if (a.markings_index >= a.markings.length) {
-        a.markings_index = 0;
+    if (a !== null && a.isHere()) {
+
+      // "readable" type artifacts have built-in markings logic
+      // (this is the new version, which displays one marking per use of the "read" command.)
+      // NOTE: This is not implemented on most adventures yet.
+      if (a.markings) {
+        game.history.write("It reads: \"" + a.markings[a.markings_index] + "\"");
+        markings_read = true;
+        a.markings_index++;
+        if (a.markings_index >= a.markings.length) {
+          a.markings_index = 0;
+        }
       }
+
+      // markings logic from EDX - uses the effect system to print a bunch of effects in series.
+      // (This prints them all at once. It doesn't page through them on multiple "read" calls.)
+      if (a.effect_id) {
+        for (let i = 0; i < a.num_effects; i++) {
+          game.effects.print(a.effect_id + i);
+        }
+        markings_read = true;
+      }
+
+      // also call the event handler to allow reading custom markings on other artifact types
+      // (or doing special things when reading something)
+      event_success = game.triggerEvent("read", arg, a);
     }
 
-    // other effects are custom to the adventure
-    let success = game.triggerEvent("read", arg, a);
-
     // otherwise, nothing happens
-    if ((!success || success === undefined) && !markings_read) {
+    if ((!event_success || event_success === undefined) && !markings_read) {
       game.history.write("There are no markings to read!");
     }
   }

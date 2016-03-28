@@ -46,13 +46,13 @@ export class ArtifactRepository {
     }
 
     // set some flags based on the artifact type - for compatibility with EDX artifact types
-    if ((a.type == Artifact.TYPE_DRINKABLE || a.type == Artifact.TYPE_EDIBLE) && a.dice > 0 && a.sides > 0) {
+    if ((a.type === Artifact.TYPE_DRINKABLE || a.type === Artifact.TYPE_EDIBLE) && a.dice > 0 && a.sides > 0) {
         a.is_healing = true;
     }
-    if (a.type == Artifact.TYPE_WEAPON || a.type == Artifact.TYPE_MAGIC_WEAPON) {
+    if (a.type === Artifact.TYPE_WEAPON || a.type === Artifact.TYPE_MAGIC_WEAPON) {
         a.is_weapon = true;
     }
-    if (a.type == Artifact.TYPE_WEARABLE) {
+    if (a.type === Artifact.TYPE_WEARABLE) {
         a.is_wearable = true;
     }
 

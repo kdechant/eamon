@@ -17,6 +17,16 @@ export var event_handlers = {
 
   },
 
+  // the 'read' event handler should return true if the handler did something,
+  // otherwise the "there are no markings to read" message will appear.
+  "read": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if (artifact !== null && artifact.id === 11) {
+      game.effects.print(10);
+      return true;
+    }
+  },
+
   "use": function(artifact) {
     let game = Game.getInstance();
     switch (artifact.name) {

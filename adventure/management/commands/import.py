@@ -205,9 +205,9 @@ class Command(BaseCommand):
                         artifact.is_open = values[6]
                     elif artifact.type == 7:
                         # readable
-#                      artifact.markings = values[4]
-#                      artifact.num_markings = values[5]  # TODO: figure out where the rest of the markings are stored
-                      artifact.is_open = values[6]
+                        artifact.effect_id = values[4]
+                        artifact.num_effects = values[5]
+                        artifact.is_open = values[6]
                     elif artifact.type == 8:
                         # door/gate
                         room_beyond = RoomExit.objects.filter(room_from__adventure_id=adventure_id, door_id=new_artifact_id)

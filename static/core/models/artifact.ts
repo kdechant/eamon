@@ -57,6 +57,8 @@ export class Artifact extends GameObject {
   get_all: boolean;
   embedded: boolean;
   quantity: number;
+  effect_id: number; // for readable artifacts, the ID of the marking in the effects table
+  num_effects: number; // for readable artifacts, the number of markings in the effects table
   markings: string[];  // phrases that appear when you read the item
 
   // game-state properties
