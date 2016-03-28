@@ -225,6 +225,8 @@ export class Game {
       }
     }
 
+    this.triggerEvent("endTurn");
+
   }
 
   /**

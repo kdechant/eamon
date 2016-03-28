@@ -13,14 +13,14 @@ export var event_handlers = {
     game.history.write("Recently, a local evil sorcerer was spying on you through his crystal ball. He overheard you talking about him and, having a short temper like most evil sorcerers, he instantly banished you to the Magic Kingdom, thinking you would never return.", "special");
 
     // set up game data
-    game.data['boulder_destroyed'] = false;
+    game.data["boulder_destroyed"] = false;
 
   },
 
   "use": function(artifact) {
     let game = Game.getInstance();
     switch (artifact.name) {
-      case 'cup of coffee':
+      case "cup of coffee":
         game.effects.print(7);
         game.player.hardiness++;
         game.player.agility++;
@@ -28,6 +28,10 @@ export var event_handlers = {
         artifact.room_id = null;
         artifact.monster_id = null;
         game.player.updateInventory();
+        break;
+      case "doughnut":
+        game.history.write("It was delicious, too bad it was also poisonous!");
+        game.die();
         break;
       case "dynamite":
         if (game.artifacts.get(18).room_id !== game.rooms.current_room.id) {
@@ -54,13 +58,87 @@ export var event_handlers = {
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
-    if (exit.room_to === -1) {
-      // the misty trail
-      game.effects.print(9);
-      exit.room_to = 1;
-    } else if (exit.room_to === 26 && game.rooms.current_room.id === 6 && !game.data['boulder_destroyed']) {
-      game.history.write("The giant boulder blocks your way.");
-      return false;
+
+    switch (exit.room_to) {
+      case -1:
+
+        // the misty trail
+        game.effects.print(9);
+        exit.room_to = 1;
+        break;
+
+      case -12:
+
+        // the guard won't let you on the boat without a pass
+        if (game.player.findInInventory('pass')) {
+          exit.room_to = 12;
+          return true;
+        } else {
+          game.history.write("The guard won't let you!");
+          return false;
+        }
+        break;
+
+      case -97:
+
+        // rock climbing is dangerous
+        game.history.write("You would fall to your death.");
+        return false;
+
+      case -98:
+
+        // whoops. the boat went over the waterfall.
+        game.effects.print(5);
+        game.effects.print(6);
+        game.die();
+        return false;
+
+      case 26:
+
+        // the boulder at the mine entrance
+        if (game.rooms.current_room.id === 6) {
+          if (!game.data['boulder_destroyed']) {
+            game.history.write("The giant boulder blocks your way.");
+            return false;
+          } else {
+            game.history.write("You descend into the mine.");
+          }
+        }
+        break;
+
+    }
+    return true;
+  },
+
+  "endTurn": function(): void {
+    let game = Game.getInstance();
+
+    if (game.rooms.current_room.id === 25) {
+      // end game
+      if (game.player.findInInventory("Princess Julene's body")) {
+        // carrying princess' body
+        game.effects.print(2);
+        game.exit();
+      } else {
+        // princess is alive
+        game.effects.print(3);
+        game.player.gold += 1000;
+        game.exit();
+      }
+    }
+
+  },
+
+  "give": function(arg: string, artifact: Artifact, monster: Monster) {
+    let game = Game.getInstance();
+
+    if (monster.id === 17 && artifact.id === 16) {
+      // give the pass to the guard
+      game.history.write("You may pass now.");
+    } else if (monster.id === 10 && artifact.id === 11) {
+      // give the doughnut to the dragon
+      game.history.write("The dragon ate the doughnut!");
+      game.monsters.get(10).injure(1000);
     }
     return true;
   },
