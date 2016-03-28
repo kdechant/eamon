@@ -257,10 +257,18 @@ export class Game {
   }
 
   /**
+   * Handles successful game exit.
+   */
+  public exit() {
+    this.ended = true;
+  }
+
+  /**
    * Handles player death.
    */
   public die() {
-    this.history.write("You are dead!", "danger");
+    this.player.damage = this.player.hardiness;
+    this.player.showHealth();
     this.ended = true;
   }
 
