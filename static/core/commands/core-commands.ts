@@ -444,6 +444,27 @@ export class EatCommand implements BaseCommand {
 core_commands.push(new EatCommand());
 
 
+export class UseCommand implements BaseCommand {
+  name: string = "use";
+  verbs: string[] = ["use"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    let item = game.player.findInInventory(arg);
+    if (item) {
+      if (item.quantity === null || item.quantity > 0) {
+        item.use();
+      } else {
+        throw new CommandException("There's none left!");
+      }
+    } else {
+      throw new CommandException("You aren't carrying it!");
+    }
+
+  }
+}
+core_commands.push(new UseCommand());
+
+
 export class AttackCommand implements BaseCommand {
   name: string = "attack";
   verbs: string[] = ["attack", "a"];

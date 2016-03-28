@@ -29,6 +29,16 @@ export var event_handlers = {
         artifact.monster_id = null;
         game.player.updateInventory();
         break;
+      case "dynamite":
+        if (game.artifacts.get(18).room_id !== game.rooms.current_room.id) {
+          game.history.write("That would be a waste.");
+        } else {
+          game.history.write("  B O O M ! !  ", 'danger');
+          game.data["boulder_destroyed"] = true;
+          artifact.destroy();
+          game.history.write("The explosion opened up the entrance!");
+        }
+        break;
     }
   },
 

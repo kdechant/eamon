@@ -150,7 +150,7 @@ export class Artifact extends GameObject {
     game.triggerEvent("use", this);
 
     // reduce quantity/number of charges remaining
-    if (this.quantity > 0) {
+    if (this.quantity !== null && this.quantity > 0) {
       this.quantity--;
     }
   }
