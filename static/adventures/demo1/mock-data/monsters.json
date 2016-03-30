@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Guard",
+    "name": "guard",
     "description": "You see a big guard wearing chainmail.",
     "room_id": 1,
     "hardiness": 40,
@@ -17,7 +17,7 @@
   },
   {
     "id": 2,
-    "name": "King",
+    "name": "king",
     "description": "You see the king. He has a crown and a purple robe.",
     "room_id": 3,
     "hardiness": 10,
@@ -29,6 +29,7 @@
   {
     "id": 3,
     "name": "Alfred",
+    "aliases": ["al"],
     "description": "You see a fellow adventurer wearing plate mail and holding a sword. He says his name is Alfred.",
     "room_id": 1,
     "hardiness": 15,
@@ -43,7 +44,8 @@
   },
   {
     "id": 4,
-    "name": "Thief",
+    "name": "thief",
+    "aliases": ["bandit", "bad guy"],
     "description": "You see a thief who is looking for the treasure vault.",
     "room_id": 2,
     "hardiness": 15,

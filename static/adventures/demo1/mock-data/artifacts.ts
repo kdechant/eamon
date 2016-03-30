@@ -53,6 +53,7 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 5,
     "name": "gold key",
+    "aliases": ["key"],
     "description": "You see a gold key sitting next to the throne.",
     "type": 1,
     "room_id": 3,
@@ -63,6 +64,7 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 6,
     "name": "healing potion",
+    "aliases": ["potion"],
     "description": "You see a bottle of healing potion.",
     "type": 6,
     "room_id": 3,
@@ -156,6 +158,7 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 14,
     "name": "magic wand",
+    "aliases": ["wand"],
     "description": "You see a magic wand. The tip glows blue with a mystical energy.",
     "type": 1,
     "room_id": null,
@@ -166,6 +169,7 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 15,
     "name": "Plate armor",
+    "aliases": ["plate", "armor"],
     "description": "You see a suit of well-worn plate armor.",
     "type": 11,
     "room_id": 7,
@@ -200,5 +204,17 @@ export var ARTIFACTS: Object[] = [
     "armor_type": 1,
     "armor_class": 2,
     "armor_penalty": 2
+  },
+  {
+    "id": 18,
+    "name": "vault door",
+    "aliases": ["vault", "door"],
+    "description": "You see a big, heavy vault door with a keyhole in it.",
+    "type": 8,
+    "room_id": 3,
+    "embedded": true,
+    "key_id": 5,
+    "weight": 999,
+    "value": 0
   }
 ];

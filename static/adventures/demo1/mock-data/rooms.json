@@ -6,7 +6,7 @@
     "exits": [
       {"direction": "n", "room_to": 2},
       {"direction": "w", "room_to": 7},
-      {"direction": "s", "room_to": -99}
+      {"direction": "s", "room_to": -999}
     ]
   },
   {

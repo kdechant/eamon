@@ -30,8 +30,6 @@ export class Artifact extends GameObject {
   static ARMOR_TYPE_SHIELD: number = 1;
 
   // data properties
-  id: number;
-  name: string;
   description: string;
   room_id: number; // if on the ground, which room
   monster_id: number; // if in inventory, who is carrying it
@@ -90,7 +88,7 @@ export class Artifact extends GameObject {
    */
   public getContainedArtifact(name: string): Artifact {
     for (let i in this.contents) {
-      if (this.contents[i].name.toLowerCase() === name.toLowerCase()) {
+      if (this.contents[i].match(name)) {
         return this.contents[i];
       }
     }

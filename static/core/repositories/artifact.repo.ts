@@ -86,7 +86,7 @@ export class ArtifactRepository {
    */
   getByName(name: string) {
     for (let i in this.all) {
-      if (this.all[i].name.toLowerCase() === name.toLowerCase()) {
+      if (this.all[i].match(name)) {
         return this.all[i];
       }
     }

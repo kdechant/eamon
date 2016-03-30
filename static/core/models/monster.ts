@@ -26,8 +26,6 @@ export class Monster extends GameObject {
 
   // data properties for all monsters
   // don't use default values here because they won't be overwritten when loading the data object.
-  id: number;
-  name: string;
   description: string;
   room_id: number;
   gender: string;
@@ -261,7 +259,7 @@ export class Monster extends GameObject {
    */
   public findInInventory(artifact_name): Artifact {
     for (let i in this.inventory) {
-      if (artifact_name.toLowerCase() === this.inventory[i].name.toLowerCase()) {
+      if (i.nameMatch(artifact_name)) {
         return this.inventory[i];
       }
     }

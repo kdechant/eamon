@@ -104,7 +104,7 @@ export class LookCommand implements BaseCommand {
       // see if there is a matching artifact.
       for (let i in game.artifacts.all) {
         let a = game.artifacts.all[i];
-        if (a.name === arg && a.room_id === game.rooms.current_room.id) {
+        if (a.match(arg) && a.room_id === game.rooms.current_room.id) {
           match = true;
           // if it's an embedded artifact, reveal it
           if (a.embedded) {
@@ -118,7 +118,7 @@ export class LookCommand implements BaseCommand {
       for (let i in game.monsters.all) {
         match = true;
         let m = game.monsters.all[i];
-        if (m.name === arg && m.room_id === game.rooms.current_room.id) {
+        if (m.match(arg) && m.room_id === game.rooms.current_room.id) {
           game.history.write(m.description);
         }
       }
@@ -159,7 +159,7 @@ export class GetCommand implements BaseCommand {
 
     for (let i in game.artifacts.visible) {
       let a = game.artifacts.visible[i];
-      if (arg === a.name.toLowerCase() || arg === "all") {
+      if (a.match(arg) || arg === "all") {
         match = true;
         if (arg === "all" && a.get_all === false) {
           game.history.write("You don't bother picking up the " + a.name + ".");
@@ -292,7 +292,7 @@ export class DropCommand implements BaseCommand {
     let inventory = game.player.inventory;
     for (let i in inventory) {
       match = true;
-      if (arg === inventory[i].name.toLowerCase() || arg === "all") {
+      if (inventory[i].match(arg) || arg === "all") {
         // "drop all" doesn't drop items the player is wearing
         if (arg === "all" && inventory[i].is_worn) {
           continue;

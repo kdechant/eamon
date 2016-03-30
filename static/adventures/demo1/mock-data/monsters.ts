@@ -32,6 +32,7 @@ export var MONSTERS: Array<Object> = [
   {
     "id": 3,
     "name": "Alfred",
+    "aliases": ["al"],
     "description": "You see a fellow adventurer wearing plate mail and holding a sword. He says his name is Alfred.",
     "room_id": 1,
     "hardiness": 15,
@@ -46,7 +47,8 @@ export var MONSTERS: Array<Object> = [
   },
   {
     "id": 4,
-    "name": "Thief",
+    "name": "thief",
+    "aliases": ["bandit", "bad guy"],
     "description": "You see a thief who is looking for the treasure vault.",
     "room_id": 2,
     "hardiness": 15,
