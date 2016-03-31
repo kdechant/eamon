@@ -448,29 +448,50 @@ export class Monster extends GameObject {
         game.history.write("--a fumble!", "warning");
         // see whether the player recovers, drops, or breaks their weapon
         let fumble_roll = game.diceRoll(1, 100);
-        if (fumble_roll <= 35 || (this.weapon_id === 0 && fumble_roll <= 75)) {
+        if (fumble_roll <= 40 || (this.weapon_id === 0 && fumble_roll <= 80)) {
 
           game.history.write("--fumble recovered!");
 
-        } else if (fumble_roll <= 75) {
+        } else if (fumble_roll <= 80) {
 
           game.history.write("--weapon dropped!", "warning");
           this.drop(wpn);
 
-        } else if (fumble_roll <= 95) {
+        } else if (fumble_roll <= 85) {
 
-          game.history.write("--weapon broken!", "danger");
-          this.weapon_id = null;
-          wpn.monster_id = null;
-          this.courage /= 2;
-          // broken weapon can hurt user
-          if (fumble_roll > 95) {
-            game.history.write("--broken weapon hurts user!", "danger");
-            let dice = wpn.dice;
-            if (fumble_roll === 100) dice++;  // worst case - extra damage
-            this.injure(game.diceRoll(dice, wpn.sides));
+          // not broken, user just injured self
+          game.history.write("--weapon hits user!", "danger");
+          this.injure(game.diceRoll(wpn.dice, wpn.sides));
+
+        } else {
+          // damaged or broken
+
+          if (wpn.type === Artifact.TYPE_MAGIC_WEAPON) {
+
+            // magic weapons don't break or get damaged
+            game.history.write("--sparks fly from " + wpn.name + "!", "warning");
+
+          } else {
+
+            if (fumble_roll <= 95 && wpn.sides > 2) {
+              // weapon damaged - decrease its damage potential
+              game.history.write("--weapon damaged!", "warning");
+              wpn.sides -= 2;
+            } else {
+              game.history.write("--weapon broken!", "danger");
+              this.weapon_id = null;
+              this.weapon = null;
+              wpn.destroy();
+              this.courage /= 2;
+              // broken weapon can hurt user
+              if (game.diceRoll(1, 10) > 5) {
+                game.history.write("--broken weapon hurts user!", "danger");
+                let dice = wpn.dice;
+                if (fumble_roll === 100) dice++;  // worst case - extra damage
+                this.injure(game.diceRoll(dice, wpn.sides));
+              }
+            }
           }
-
         }
 
       }
