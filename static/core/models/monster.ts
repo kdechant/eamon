@@ -259,7 +259,7 @@ export class Monster extends GameObject {
    */
   public findInInventory(artifact_name): Artifact {
     for (let i in this.inventory) {
-      if (i.nameMatch(artifact_name)) {
+      if (this.inventory[i].match(artifact_name)) {
         return this.inventory[i];
       }
     }

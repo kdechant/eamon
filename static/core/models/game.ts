@@ -162,7 +162,9 @@ export class Game {
         a.quantity--;
         if (a.quantity === 0) {
           a.is_lit = false;
-          this.history.write("Your " + a.name + " just went out.");
+          this.history.write("Your " + a.name + " just went out!");
+        } else if (a.quantity < 3) {
+          this.history.write("Your " + a.name + " grows dim!");
         }
       }
     }
@@ -242,13 +244,17 @@ export class Game {
 
   /**
    * Triggers a game event.
-   * @param string event_name
+   * @param {string} event_name
    *   The name of the event, e.g., "beforeGet", "look", "open", "read"
-   * @param string arg
+   * @param {string} arg1
    *   An argument to the event. e.g., the Artifact that was picked up or read,
    *   or the word that was said.
+   * @param {string} arg2
+   *   Another argument to the event.
+   * @param {string} arg3
+   *   Another argument to the event.
    */
-  public triggerEvent(event_name, arg1: any, arg2?: any, arg3?: any): any {
+  public triggerEvent(event_name, arg1?: any, arg2?: any, arg3?: any): any {
     for (let i in this.event_handlers) {
       if (this.event_handlers[i].name === event_name) {
         return this.event_handlers[i].run(arg1, arg2, arg3);

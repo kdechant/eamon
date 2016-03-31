@@ -153,15 +153,22 @@ export class Artifact extends GameObject {
     if (this.quantity !== null && this.quantity > 0) {
       this.quantity--;
     }
+    if (this.quantity <= 0) {
+      game.history.write("The " + this.name + " is all gone!");
+      this.destroy();
+    }
   }
 
   /**
    * Removes an artifact from the game
    */
   public destroy(): void {
+    let game = Game.getInstance();
     this.monster_id = null;
     this.room_id = null;
     this.container_id = null;
+    game.artifacts.updateVisible();
+    game.player.updateInventory();
   }
 
   /**

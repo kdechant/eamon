@@ -104,7 +104,7 @@ export class LookCommand implements BaseCommand {
       // see if there is a matching artifact.
       for (let i in game.artifacts.all) {
         let a = game.artifacts.all[i];
-        if (a.match(arg) && a.room_id === game.rooms.current_room.id) {
+        if (a.match(arg) && a.isHere()) {
           match = true;
           // if it's an embedded artifact, reveal it
           if (a.embedded) {
@@ -112,6 +112,29 @@ export class LookCommand implements BaseCommand {
             a.seen = true; // description will be shown here. don't show it again in game clock tick.
           }
           game.history.write(a.description);
+
+          // display quantity for food, drinks, and light sources
+          if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
+            let noun = a.type === Artifact.TYPE_EDIBLE ? "bite" : "swallow";
+            if (a.quantity === 1) {
+              verb = "is";
+            } else {
+              verb = "are";
+              noun += "s";
+            }
+            game.history.write("There " + verb + " " + a.quantity + " " + noun + " remaining.");
+          }
+          if (a.type === Artifact.TYPE_LIGHT_SOURCE) {
+            if (a.quantity >= 25) {
+              game.history.write("It has a lot of fuel left.");
+            } else if (a.quantity >= 10) {
+              game.history.write("It has some fuel left.");
+            } else if (a.quantity > 0) {
+              game.history.write("It is low on fuel.");
+            } else {
+              game.history.write("It is out of fuel.");
+            }
+          }
         }
       }
       // see if there is a matching monster.
