@@ -47,6 +47,8 @@ export class MonsterRepository {
       throw new Error("Tried to create a monster #" + m.id + " but that ID is already taken.");
     }
 
+    m.original_group_size = m.count;
+
     this.all.push(m);
     m.updateInventory();
 
@@ -144,7 +146,6 @@ export class MonsterRepository {
       }
     }
   }
-
 
   /**
    * Updates the list of monsters in the current room, that are visible to the player

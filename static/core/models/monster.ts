@@ -31,6 +31,7 @@ export class Monster extends GameObject {
   gender: string;
   hardiness: number;
   agility: number;
+  count: number;
   friendliness: string;
   friend_odds: number;
   courage: number;
@@ -53,6 +54,7 @@ export class Monster extends GameObject {
   seen: boolean = false;
   reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
+  original_group_size: number;
   damage: number = 0;
   weight_carried: number = 0;
   armor_worn: Artifact[];
@@ -342,11 +344,22 @@ export class Monster extends GameObject {
     if (this.status === Monster.STATUS_DEAD || this.room_id !== game.rooms.current_room.id) return;
 
     // check if the monster should flee
-    let fear = 40 * this.damage / this.hardiness + game.diceRoll(1, 41) - 21;
+    let fear = game.diceRoll(1, 100);
+    if (this.damage > this.hardiness * 0.2 || this.count < this.original_group_size) {
+      // wounded, or members of a group have been killed
+      fear += 10;
+    } else if (this.damage > this.hardiness * 0.6) {
+      // badly wounded
+      fear += 20;
+    }
     if (fear > this.courage) {
       let room_to = this.chooseRandomExit();
       if (room_to) {
-        game.history.write(this.name + " flees out an exit");
+        if (this.count > 1) {
+          game.history.write(this.count + " " + this.name + "s flee out an exit");
+        } else {
+          game.history.write(this.name + " flees out an exit");
+        }
         this.moveToRoom(room_to.id);
         return;
       }
@@ -364,12 +377,18 @@ export class Monster extends GameObject {
         }
       }
     }
+    // NOTE: weapon logic doesn't work well for group monsters. best to give them natural weapons
 
     // attack!
     if (this.weapon_id !== null) {
-      let target = this.chooseTarget();
-      if (target) {
-        this.attack(target);
+      // up to 5 members of a group can attack per round
+      let attacking_member_count = Math.min(this.count, 5);
+      console.log(this.name, attacking_member_count)
+      for (let i = 0; i < attacking_member_count; i++) {
+        let target = this.chooseTarget();
+        if (target) {
+          this.attack(target);
+        }
       }
     }
   }
@@ -579,20 +598,29 @@ export class Monster extends GameObject {
 
     // handle death
     if (this.damage >= this.hardiness) {
-      if (this.weapon_id > 0) {
-        let wpn = game.artifacts.get(this.weapon_id);
-        wpn.room_id = this.room_id;
-      }
 
-      if (this.dead_body_id) {
-        game.artifacts.get(this.dead_body_id).room_id = this.room_id;
-      }
-      this.status = Monster.STATUS_DEAD;
-      game.triggerEvent("death", this);
-      if (this.id === Monster.PLAYER) {
-        game.die();
+      if (this.count > 1) {
+        // group monster - reduce count
+        this.damage = 0;
+        this.count--;
       } else {
-        this.room_id = null;
+        // single monster. drop weapon, etc.
+
+        if (this.weapon_id > 0) {
+          let wpn = game.artifacts.get(this.weapon_id);
+          wpn.room_id = this.room_id;
+        }
+
+        if (this.dead_body_id) {
+          game.artifacts.get(this.dead_body_id).room_id = this.room_id;
+        }
+        this.status = Monster.STATUS_DEAD;
+        game.triggerEvent("death", this);
+        if (this.id === Monster.PLAYER) {
+          game.die();
+        } else {
+          this.room_id = null;
+        }
       }
 
     }
@@ -617,20 +645,21 @@ export class Monster extends GameObject {
   public showHealth(): void {
     let game = Game.getInstance();
     let status = (this.hardiness - this.damage) / this.hardiness;
+    let name = this.count == 1 ? this.name : "One " + this.name;
     if (status > .99) {
-      game.history.write(this.name + " is in perfect health.");
+      game.history.write(name + " is in perfect health.");
     } else if (status > .8) {
-      game.history.write(this.name + " is in good shape.");
+      game.history.write(name + " is in good shape.");
     } else if (status > .6) {
-      game.history.write(this.name + " is hurting.");
+      game.history.write(name + " is hurting.");
     } else if (status > .4) {
-      game.history.write(this.name + " is in pain.");
+      game.history.write(name + " is in pain.");
     } else if (status > .2) {
-      game.history.write(this.name + " is badly injured.", "warning");
+      game.history.write(name + " is badly injured.", "warning");
     } else if (status > 0) {
-      game.history.write(this.name + " is at death's door.", "warning");
+      game.history.write(name + " is at death's door.", "warning");
     } else {
-      game.history.write(this.name + " is dead!", "danger");
+      game.history.write(name + " is dead!", "danger");
     }
   }
 

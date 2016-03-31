@@ -202,7 +202,11 @@ export class Game {
           m.seen = true;
           this.triggerEvent("see_monster", m);
         } else {
-          this.history.write(m.name + " is here.");
+          if (m.count > 1) {
+            this.history.write(m.count + " " + m.name + "s are here.");
+          } else {
+            this.history.write(m.name + " is here.");
+          }
         }
       }
 
