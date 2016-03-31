@@ -163,7 +163,9 @@ export class Game {
         if (a.quantity === 0) {
           a.is_lit = false;
           this.history.write("Your " + a.name + " just went out!");
-        } else if (a.quantity < 3) {
+        } else if (a.quantity < 10) {
+          this.history.write("Your " + a.name + " is almost out!");
+        } else if (a.quantity < 20) {
           this.history.write("Your " + a.name + " grows dim!");
         }
       }
