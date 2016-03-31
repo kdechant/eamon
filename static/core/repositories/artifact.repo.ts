@@ -30,7 +30,7 @@ export class ArtifactRepository {
 
   /**
    * Adds an artifact to the system.
-   * @param object artifact_data
+   * @param {object} artifact_data
    */
   add(artifact_data) {
     let a = new Artifact();
@@ -67,7 +67,7 @@ export class ArtifactRepository {
 
   /**
    * Gets a numbered artifact.
-   * @param number id
+   * @param {number} id
    * @return Artifact
    */
   get(id) {
@@ -81,7 +81,7 @@ export class ArtifactRepository {
 
   /**
    * Gets an artifact by name.
-   * @param string name
+   * @param {string} name
    * @return Artifact
    */
   getByName(name: string) {

@@ -25,9 +25,9 @@ export class EffectRepository {
 
   /**
    * Adds a monster.
-   * @param number id
+   * @param {Object} effect_data - The raw data from the back end
    */
-  add(effect_data) {
+  public add(effect_data) {
     let e = new Effect();
     e.init(effect_data);
 
@@ -52,10 +52,10 @@ export class EffectRepository {
 
   /**
    * Gets a numbered effect.
-   * @param number id
+   * @param {number} id
    * @return Effect
    */
-  get(id) {
+  public get(id): Effect {
     for (let i in this.all) {
       if (this.all[i].id === id) {
         return this.all[i];
@@ -66,17 +66,15 @@ export class EffectRepository {
 
   /**
    * Prints a numbered effect.
-   * @param id The ID of the effect
-   * @param type The display type, e.g., "normal", "special", "warning", "danger"
-   * @return Effect
+   * @param {number} id The ID of the effect
+   * @param {string} type The display type, e.g., "normal", "special", "warning", "danger"
    */
-  print(id: number, type: string = "normal") {
+  public print(id: number, type: string = "normal"): void {
     for (let i in this.all) {
       if (this.all[i].id === id) {
         Game.getInstance().history.write(this.all[i].text, type);
       }
     }
-    return null;
   }
 
 }

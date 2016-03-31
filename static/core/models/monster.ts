@@ -178,7 +178,7 @@ export class Monster extends GameObject {
 
   /**
    * The monster picks up an artifact
-   * @param Artifact artifact
+   * @param {Artifact} artifact
    */
   public pickUp(artifact: Artifact): void {
     artifact.room_id = null;
@@ -188,7 +188,7 @@ export class Monster extends GameObject {
 
   /**
    * The monster drops an artifact
-   * @param Artifact artifact
+   * @param {Artifact} artifact
    */
   public drop(artifact: Artifact): void {
     artifact.room_id = this.room_id;
@@ -220,7 +220,7 @@ export class Monster extends GameObject {
         this.inventory.push(a);
         this.weight_carried += a.weight;
         if (this.id === Monster.PLAYER) {
-          if (a.is_worn && (a.armor_type == Artifact.ARMOR_TYPE_ARMOR || a.armor_type == Artifact.ARMOR_TYPE_SHIELD)) {
+          if (a.is_worn && (a.armor_type === Artifact.ARMOR_TYPE_ARMOR || a.armor_type === Artifact.ARMOR_TYPE_SHIELD)) {
             this.armor_worn.push(a);
             this.armor_class += a.armor_class;
           }
@@ -239,7 +239,7 @@ export class Monster extends GameObject {
 
   /**
    * Determines whether a monster is carrying an artifact.
-   * @param number artifact_id The ID of an artifact
+   * @param {number} artifact_id The ID of an artifact
    * @return boolean
    */
   public hasArtifact(artifact_id: number): boolean {
@@ -254,7 +254,7 @@ export class Monster extends GameObject {
 
   /**
    * Finds an item in a monster's inventory by name
-   * @param string artifact_name
+   * @param {string} artifact_name
    * @returns Artifact
    */
   public findInInventory(artifact_name): Artifact {
@@ -313,7 +313,7 @@ export class Monster extends GameObject {
    */
   public isWearingArmor(): boolean {
     for (let i in this.inventory) {
-      if (this.inventory[i].armor_type == Artifact.ARMOR_TYPE_ARMOR && this.inventory[i].is_worn) {
+      if (this.inventory[i].armor_type === Artifact.ARMOR_TYPE_ARMOR && this.inventory[i].is_worn) {
         return true;
       }
     }
@@ -325,7 +325,7 @@ export class Monster extends GameObject {
    */
   public isUsingShield(): boolean {
     for (let i in this.inventory) {
-      if (this.inventory[i].armor_type == Artifact.ARMOR_TYPE_SHIELD && this.inventory[i].is_worn) {
+      if (this.inventory[i].armor_type === Artifact.ARMOR_TYPE_SHIELD && this.inventory[i].is_worn) {
         return true;
       }
     }
@@ -376,7 +376,7 @@ export class Monster extends GameObject {
 
   /**
    * Attacks another monster
-   * @param Monster target
+   * @param {Monster} target
    */
   public attack(target: Monster): void {
     let game = Game.getInstance();
@@ -540,8 +540,8 @@ export class Monster extends GameObject {
 
   /**
    * Deals damage to a monster
-   * @param number amount The amount of damage to do.
-   * @param boolean ignore_armor Whether to ignore the effect of armor
+   * @param {number} amount - The amount of damage to do.
+   * @param {boolean} ignore_armor - Whether to ignore the effect of armor
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, ignore_armor: boolean = false): number {
@@ -580,7 +580,7 @@ export class Monster extends GameObject {
 
   /**
    * Heals a monster
-   * @param number The amount of hit points to heal
+   * @param {number} amount - The amount of hit points to heal
    */
   public heal(amount): void {
     this.damage -= amount;
@@ -615,7 +615,7 @@ export class Monster extends GameObject {
 
   /**
    * When player casts a spell, this method determines if it was successful
-   * @param string spell_name
+   * @param {string} spell_name
    * @returns boolean
    */
   public spellCast(spell_name: string): boolean {

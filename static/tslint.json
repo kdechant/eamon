@@ -7,7 +7,6 @@
       "statements"
     ],
     "class-name": true,
-    "curly": true,
     "eofline": true,
     "indent": [
       true,

@@ -31,9 +31,9 @@ export class MonsterRepository {
 
   /**
    * Adds a monster.
-   * @param number id
+   * @param {Object} monster_data
    */
-  add(monster_data) {
+  public add(monster_data) {
     let m = new Monster();
     m.init(monster_data);
 
@@ -71,9 +71,9 @@ export class MonsterRepository {
 
   /**
    * Adds the player to the game. Player has more data than the regular monsters.
-   * @param
+   * @param {Object} player_data
    */
-  addPlayer(player_data) {
+  public addPlayer(player_data) {
     let game = Game.getInstance();
 
     game.player = new Monster();
@@ -94,7 +94,7 @@ export class MonsterRepository {
     // create new artifact objects for the weapons and armor the player brought
     for (let i in player_data.items) {
       let a: Artifact = player_data.items[i];
-      if (a.type == Artifact.TYPE_WEARABLE && a.armor_type == Artifact.ARMOR_TYPE_ARMOR) {
+      if (a.type === Artifact.TYPE_WEARABLE && a.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
         a.weight = 10;
       } else {
         a.weight = 3;
@@ -110,7 +110,7 @@ export class MonsterRepository {
     // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
     for (let i in game.player.inventory) {
       let art = game.player.inventory[i];
-      if (art.armor_type == Artifact.ARMOR_TYPE_ARMOR || (art.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 1)) {
+      if (art.armor_type === Artifact.ARMOR_TYPE_ARMOR || (art.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 1)) {
         game.player.wear(art);
       }
     }
@@ -120,10 +120,10 @@ export class MonsterRepository {
 
   /**
    * Gets a numbered monster.
-   * @param number id
+   * @param {number} id
    * @return Monster
    */
-  get(id) {
+  public get(id) {
     for (let i in this.all) {
       if (this.all[i].id === id) {
         return this.all[i];
@@ -134,10 +134,10 @@ export class MonsterRepository {
 
   /**
    * Gets a monster by name.
-   * @param string name
+   * @param {string} name
    * @return Monster
    */
-  getByName(name: string) {
+  public getByName(name: string) {
     for (let i in this.all) {
       if (this.all[i].match(name)) {
         return this.all[i];
@@ -150,7 +150,7 @@ export class MonsterRepository {
    * Updates the list of monsters in the current room, that are visible to the player
    * @return Monster[]
    */
-  updateVisible() {
+  public updateVisible() {
     let game = Game.getInstance();
     let monsters: Monster[] = [];
     game.in_battle = false;

@@ -26,7 +26,7 @@ export class RoomRepository {
 
   /**
    * Gets a numbered room.
-   * @param number room_id
+   * @param {number} room_id
    * @return Room
    */
   getRoomById(room_id: number) {
