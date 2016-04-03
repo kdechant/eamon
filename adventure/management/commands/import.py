@@ -79,13 +79,13 @@ class Command(BaseCommand):
                     # read the first bytes (containing the name) and exit if EOF
                     bytes = datafile.read(79)
                     if not bytes: break
-                    room_id = room_id + 1
+                    room_id += 1
 
                     # determine adventure id based on offsets
                     for a in adventures:
                         if room_id >= a.edx_room_offset:
                             adventure_id = a.id
-                            new_room_id = room_id - a.edx_room_offset + 1;
+                            new_room_id = room_id - a.edx_room_offset + 1
 
                     room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=new_room_id)[0]
                     # name
@@ -101,9 +101,9 @@ class Command(BaseCommand):
                     if match:
                         room.description = chained_effect_regex.sub('', room.description)
                         if match.groups()[0] == '**':
-                            room.effect_inline = match.groups()[1];
+                            room.effect_inline = match.groups()[1]
                         else:
-                            room.effect = match.groups()[1];
+                            room.effect = match.groups()[1]
 
                     # other properties are in the next 11 2-byte little-endian integers
                     bytes = datafile.read(22)
@@ -140,19 +140,19 @@ class Command(BaseCommand):
         with open(folder + '/ARTIFACT.DAT', 'rb') as datafile:
             with open(folder + '/ARTIFACT.DSC', 'rb') as descfile:
 
-                artifact_id = 0;
+                artifact_id = 0
                 while True:
 
                     # read the first bytes (containing the name) and exit if EOF
                     bytes = datafile.read(35)
                     if not bytes: break
-                    artifact_id = artifact_id + 1
+                    artifact_id += 1
 
                     # determine adventure id based on offsets
                     for a in adventures:
                         if artifact_id >= a.edx_artifact_offset:
                             adventure_id = a.id
-                            new_artifact_id = artifact_id - a.edx_artifact_offset + 1;
+                            new_artifact_id = artifact_id - a.edx_artifact_offset + 1
 
                     # name
                     artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=new_artifact_id)[0]
@@ -174,7 +174,7 @@ class Command(BaseCommand):
                         # worn by player
                         artifact.monster_id = 0
                         artifact.is_worn = True
-                    elif location < 0 and location > -999:
+                    elif 0 > location > -999:
                         # carried by monster
                         artifact.monster_id = abs(location) - 1
                     elif location > 2000:
@@ -239,7 +239,7 @@ class Command(BaseCommand):
                         artifact.first_effect = values[5]
                         artifact.number_of_effects = values[6]
 
-                    elif (artifact.type == 13):
+                    elif artifact.type == 13:
                         # dead body
                         artifact.get_all = values[4]
 
@@ -252,25 +252,25 @@ class Command(BaseCommand):
                     if match:
                         artifact.description = chained_effect_regex.sub('', artifact.description)
                         if match.groups()[0] == '**':
-                            artifact.effect_inline = match.groups()[1];
+                            artifact.effect_inline = match.groups()[1]
                         else:
-                            artifact.effect = match.groups()[1];
+                            artifact.effect = match.groups()[1]
 
                     artifact.save()
 
         with open(folder + '/EFFECT.DSC', 'r') as datafile:
 
-            effect_id = 0;
+            effect_id = 0
             while True:
                 bytes = datafile.read(255)
                 if not bytes: break
-                effect_id = effect_id + 1
+                effect_id += 1
 
                 # determine adventure id based on offsets
                 for a in adventures:
                     if effect_id >= a.edx_effect_offset:
                         adventure_id = a.id
-                        new_effect_id = effect_id - a.edx_effect_offset + 1;
+                        new_effect_id = effect_id - a.edx_effect_offset + 1
 
                 effect = Effect.objects.get_or_create(
                     adventure_id=adventure_id,
@@ -283,18 +283,18 @@ class Command(BaseCommand):
                 if match:
                     effect.text = re.sub(r'{\d{2}}', '', effect.text)
                     if match.groups()[0] == '02':
-                        effect.style = 'success';
+                        effect.style = 'success'
                     elif match.groups()[0] == '15':
-                        effect.style = 'special';
+                        effect.style = 'special'
 
                 # *nnn and **nnn in the text represents a chained effect
                 match = chained_effect_regex.search(effect.text)
                 if match:
                     effect.text = chained_effect_regex.sub('', effect.text)
                     if match.groups()[0] == '**':
-                        effect.next_inline = match.groups()[1];
+                        effect.next_inline = match.groups()[1]
                     else:
-                        effect.next = match.groups()[1];
+                        effect.next = match.groups()[1]
 
                 effect.save()
 
@@ -309,13 +309,13 @@ class Command(BaseCommand):
                     # read the first bytes (containing the name) and exit if EOF
                     bytes = datafile.read(35)
                     if not bytes: break
-                    monster_id = monster_id + 1
+                    monster_id += 1
 
                     # determine adventure id based on offsets
                     for a in adventures:
                         if monster_id >= a.edx_monster_offset:
                             adventure_id = a.id
-                            new_monster_id = monster_id - a.edx_monster_offset + 1;
+                            new_monster_id = monster_id - a.edx_monster_offset + 1
 
                     # name
                     monster = Monster.objects.get_or_create(
@@ -335,7 +335,9 @@ class Command(BaseCommand):
                     monster.count = values[2]
                     monster.courage = values[3]
                     monster.room_id = values[4]
-                    monster.combat_code = values[5]  # whether monster fights with natural weapons, a real weapon, or never fights. also if it should use the "attacks" verb instead of a random verb
+                    # whether monster fights with natural weapons, a real weapon, or never fights.
+                    # also if it should use the "attacks" verb instead of a random verb
+                    monster.combat_code = values[5]
                     monster.armor_class = values[6]
                     monster.weapon_id = values[7]
                     monster.weapon_dice = values[8]  # applies to natural weapons only
@@ -351,7 +353,6 @@ class Command(BaseCommand):
                         monster.friendliness = 'random'
                         monster.friend_odds = values[10] - 100
                     monster.original_group_size = values[11]
-  #                  monster.damage = values[12]   # almost always starts at zero
 
                     # description is stored in a separate file
                     bytes = descfile.read(255)
@@ -362,9 +363,9 @@ class Command(BaseCommand):
                     if match:
                         monster.description = chained_effect_regex.sub('', monster.description)
                         if match.groups()[0] == '**':
-                            monster.effect_inline = match.groups()[1];
+                            monster.effect_inline = match.groups()[1]
                         else:
-                            monster.effect = match.groups()[1];
+                            monster.effect = match.groups()[1]
 
                     monster.save()
 
