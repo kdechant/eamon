@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
         folder = 'C:/EDX/C/EAMONDX/' + edx
         # NAME.DAT is a text file
-        with open(folder + '/NAME.DAT', 'r') as datafile:
+        with open(folder + '/NAME.DAT', 'r', encoding="cp437") as datafile:
             data = datafile.read(65535)
 
             # read the artifact numbers and database name from the file (used when there is 1 adventure in a db)
@@ -69,47 +69,9 @@ class Command(BaseCommand):
         # them when importing the other files.
         adventures = Adventure.objects.filter(edx=edx)
 
-        # import artifact synonyms from the .BAS files
-        for a in adventures:
-            if a.edx_program_file:
-                print("Looking for synonyms in " + folder + "/" + a.edx_program_file)
-                with open(folder + "/" + a.edx_program_file) as mainpgm:
-                    basic_code = mainpgm.read()
-                    regx = r'(((sy\$\s=\s\"[-\w\s]+\"|sy\s=\s[\d]+|GOSUB\sSynonym1):?\s*){2,})'
-                    matches = regex.findall(regx, basic_code)
-                    if matches is None:
-                        print('No match for regex!')
-                        return
-                    else:
-                        for mt in matches:
-                            sy_matches = regex.findall(r'sy\s=\s[\d]+', mt[0])
-                            if len(sy_matches) != 1:
-                                print("WARNING: Could not parse synonym code:")
-                                print(mt[0])
-                            else:
-                                sy_artifact_id = regex.findall(r"[\d]+", sy_matches[0])
-                                print("Synonym artifact ID: " + sy_artifact_id[0])
-                                synonyms = []
-                                sys_matches = regex.findall(r'sy\$\s=\s\"[\w\s]+\"', mt[0])
-                                for sm in sys_matches:
-                                    syn = regex.findall(r'\"(.*?)"', sm)
-                                    # print("Synonym: " + syn[0])
-                                    synonyms.append(syn[0])
-                                synonyms = ','.join(synonyms)
-                                print("Synonyms: " + synonyms)
-                                try:
-                                    sy_artifact = Artifact.objects.get(adventure_id=a.id, artifact_id=sy_artifact_id[0])
-                                    if sy_artifact:
-                                        sy_artifact.synonyms = synonyms
-                                        sy_artifact.save()
-                                except ObjectDoesNotExist:
-                                    print("Can't add synonyms to non-existent artifact #" + sy_artifact_id[0])
-
-        return
-
         # All other files are binary
         with open(folder + '/ROOMS.DAT', 'rb') as datafile:
-            with open(folder + '/ROOMS.DSC', 'rb') as descfile:
+            with open(folder + '/ROOMS.DSC', 'r', encoding="cp437") as descfile:
 
                 room_id = 0
                 # while room_id < 5:  # quick version, for testing
@@ -128,12 +90,12 @@ class Command(BaseCommand):
 
                     room = Room.objects.get_or_create(adventure_id=adventure_id,room_id=new_room_id)[0]
                     # name
-                    room.name = bytes.decode('utf-8').strip()
+                    room.name = bytes.decode('cp437').strip()
                     print("Room: " + room.name)
 
                     # description is stored in a separate file
                     bytes = descfile.read(255)
-                    room.description = bytes.decode('utf-8').strip()
+                    room.description = bytes.strip()
 
                     # *nnn and **nnn in the string represents a chained effect
                     match = chained_effect_regex.search(room.description)
@@ -177,9 +139,10 @@ class Command(BaseCommand):
                             e.delete()
 
         with open(folder + '/ARTIFACT.DAT', 'rb') as datafile:
-            with open(folder + '/ARTIFACT.DSC', 'rb') as descfile:
+            with open(folder + '/ARTIFACT.DSC', 'r', encoding="cp437") as descfile:
 
                 artifact_id = 0
+                # while artifact_id < 5:  # quick version, for testing
                 while True:
 
                     # read the first bytes (containing the name) and exit if EOF
@@ -195,7 +158,7 @@ class Command(BaseCommand):
 
                     # name
                     artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=new_artifact_id)[0]
-                    artifact.name = bytes.decode('utf-8').strip()
+                    artifact.name = bytes.decode('cp437').strip()
                     print("Artifact: " + artifact.name)
 
                     # other properties are in the next 8 2-byte little-endian integers
@@ -284,7 +247,7 @@ class Command(BaseCommand):
 
                     # description is stored in a separate file
                     bytes = descfile.read(255)
-                    artifact.description = bytes.decode('utf-8').strip()
+                    artifact.description = bytes.strip()
 
                     # *nnn and **nnn in the description represents a chained effect
                     match = chained_effect_regex.search(artifact.description)
@@ -297,7 +260,7 @@ class Command(BaseCommand):
 
                     artifact.save()
 
-        with open(folder + '/EFFECT.DSC', 'r') as datafile:
+        with open(folder + '/EFFECT.DSC', 'r', encoding="cp437") as datafile:
 
             effect_id = 0
             while True:
@@ -316,6 +279,7 @@ class Command(BaseCommand):
                     effect_id=new_effect_id
                 )[0]
                 effect.text = bytes.strip()
+                print("Effect: " + effect.text[0:20] + "...")
 
                 # {nn} in the text indicates a color to display the effect in
                 match = re.search(r'{(\d{2})}', effect.text)
@@ -340,9 +304,10 @@ class Command(BaseCommand):
         # TODO: merge chained effects (looking for *nnn at end of text)
 
         with open(folder + '/MONSTERS.DAT', 'rb') as datafile:
-            with open(folder + '/MONSTERS.DSC', 'rb') as descfile:
+            with open(folder + '/MONSTERS.DSC', 'r', encoding="cp437") as descfile:
 
                 monster_id = 0
+                # while monster_id < 5:  # quick version, for testing
                 while True:
 
                     # read the first bytes (containing the name) and exit if EOF
@@ -361,7 +326,7 @@ class Command(BaseCommand):
                         adventure_id=adventure_id,
                         monster_id=new_monster_id
                     )[0]
-                    monster.name = bytes.decode('utf-8').strip()
+                    monster.name = bytes.decode('cp437').strip()
 
                     print("Monster: " + monster.name)
 
@@ -395,7 +360,7 @@ class Command(BaseCommand):
 
                     # description is stored in a separate file
                     bytes = descfile.read(255)
-                    monster.description = bytes.decode('utf-8').strip()
+                    monster.description = bytes.strip()
 
                     # *nnn and **nnn in the description represents a chained effect
                     match = chained_effect_regex.search(monster.description)
@@ -408,6 +373,41 @@ class Command(BaseCommand):
 
                     monster.save()
 
+        # import artifact synonyms from the .BAS files
+        for a in adventures:
+            if a.edx_program_file:
+                print("Looking for synonyms in " + folder + "/" + a.edx_program_file)
+                with open(folder + "/" + a.edx_program_file, "r", encoding="cp437") as mainpgm:
+                    basic_code = mainpgm.read()
+                    regx = r'(((sy\$\s=\s\"[-\w\s]+\"|sy\s=\s[\d]+|GOSUB\sSynonym1):?\s*){2,})'
+                    matches = regex.findall(regx, basic_code)
+                    if matches is None:
+                        print('No match for regex!')
+                        return
+                    else:
+                        for mt in matches:
+                            sy_matches = regex.findall(r'sy\s=\s[\d]+', mt[0])
+                            if len(sy_matches) != 1:
+                                print("WARNING: Could not parse synonym code:")
+                                print(mt[0])
+                            else:
+                                sy_artifact_id = regex.findall(r"[\d]+", sy_matches[0])
+                                print("Synonym artifact ID: " + sy_artifact_id[0])
+                                synonyms = []
+                                sys_matches = regex.findall(r'sy\$\s=\s\"[\w\s]+\"', mt[0])
+                                for sm in sys_matches:
+                                    syn = regex.findall(r'\"(.*?)"', sm)
+                                    # print("Synonym: " + syn[0])
+                                    synonyms.append(syn[0])
+                                synonyms = ','.join(synonyms)
+                                print("Synonyms: " + synonyms)
+                                try:
+                                    sy_artifact = Artifact.objects.get(adventure_id=a.id, artifact_id=sy_artifact_id[0])
+                                    if sy_artifact:
+                                        sy_artifact.synonyms = synonyms
+                                        sy_artifact.save()
+                                except ObjectDoesNotExist:
+                                    print("Can't add synonyms to non-existent artifact #" + sy_artifact_id[0])
 
 
 def find_basic_file(dir, adventure_name):
