@@ -88,6 +88,7 @@ export class MonsterRepository {
     // player is always monster 0
     game.player.id = 0;
     game.player.room_id = 1;
+    game.player.count = 1;
     game.player.reaction = Monster.RX_FRIEND;
     game.player.spell_abilities_original = {
       "power": game.player.spell_abilities.power,

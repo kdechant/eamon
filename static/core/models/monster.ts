@@ -645,7 +645,7 @@ export class Monster extends GameObject {
   public showHealth(): void {
     let game = Game.getInstance();
     let status = (this.hardiness - this.damage) / this.hardiness;
-    let name = this.count == 1 ? this.name : "One " + this.name;
+    let name = this.count === 1 ? this.name : "One " + this.name;
     if (status > .99) {
       game.history.write(name + " is in perfect health.");
     } else if (status > .8) {
