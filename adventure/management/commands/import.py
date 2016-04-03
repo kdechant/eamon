@@ -1,7 +1,8 @@
-import struct, re
+import struct, re, os
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.text import slugify
 from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
+
 
 class Command(BaseCommand):
     help = 'Imports data from Eamon Deluxe data files'
@@ -32,10 +33,11 @@ class Command(BaseCommand):
             print("Adventure database: " + adv_data[4])
 
             # for DB with multiple adventures, read the data for each adventure.
-            # NOTE: we have to repeat some things in the regexes because Python doesn't make it easy to access multiple matches of subgroups
+            # NOTE: we have to repeat some things in the regexes because Python doesn't
+            # make it easy to access multiple matches of subgroups
             regexmulti = r"([A-Z\"][a-zA-Z0-9 \-!.?'\"]+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+"
             sub_adventures = re.findall(regexmulti, data)
-            if (len(sub_adventures) > 0):
+            if len(sub_adventures) > 0:
                 # multiple adventures in the database
                 for adv in sub_adventures:
                     print("Adventure: " + adv[0])
@@ -47,6 +49,7 @@ class Command(BaseCommand):
                     a.edx_monster_offset = adv[8]
                     a.directions = adv[9]
                     a.edx_version = adv_data[6]
+                    a.edx_program_file = find_basic_file(folder, a.name)
                     a.save()
             else:
                 print("Adventure: " + adv_data[4])
@@ -58,6 +61,7 @@ class Command(BaseCommand):
                 a.edx_monster_offset = 1
                 a.edx_version = adv_data[6]
                 a.directions = adv_data[5]
+                a.edx_program_file = find_basic_file(folder, a.name)
                 a.save()
 
         # load the adventure objects (including ones we just created) so we can reference
@@ -363,3 +367,23 @@ class Command(BaseCommand):
                             monster.effect = match.groups()[1];
 
                     monster.save()
+
+
+def find_basic_file(dir, adventure_name):
+    """
+    Try to figure out which basic file belongs to this adventure.
+
+    Args:
+        dir: The directory where the adventure's EDX data files live, e.g., "C:/EDX/C/EAMONDX/E001"
+        adventure_name: The name of the adventure, e.g., "The Beginner's Cave"
+
+    Returns:
+        The filename as a string (e.g., "BEGCAVES.BAS")
+    """
+    for fname in os.listdir(dir):
+        full_filename = dir + "/" + fname
+        if os.path.isfile(full_filename) and fname.endswith(".BAS"):
+            with open(full_filename) as f:
+                file_header = f.read(2048)
+                if adventure_name in file_header:
+                    return fname
