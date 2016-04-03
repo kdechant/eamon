@@ -35,6 +35,10 @@ export class MonsterRepository {
    */
   public add(monster_data) {
     let m = new Monster();
+    // "synonyms" in the back end are called "aliases" here
+    if (monster_data.synonyms) {
+      monster_data.aliases = monster_data.synonyms.split(",");
+    }
     m.init(monster_data);
 
     // autonumber the ID if not provided

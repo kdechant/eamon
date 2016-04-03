@@ -74,6 +74,7 @@ class Artifact(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='artifacts')
     artifact_id = models.IntegerField(default=0) # The in-game artifact ID.
     name = models.CharField(max_length=255)
+    synonyms = models.CharField(null=True, max_length=255)
     description = models.TextField(max_length=1000)
     effect = models.IntegerField(null=True) # The ID of an effect to display after the description
     effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.
@@ -154,6 +155,7 @@ class Monster(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='monsters')
     monster_id = models.IntegerField(default=0) # The in-game monster ID.
     name = models.CharField(max_length=255)
+    synonyms = models.CharField(null=True, max_length=255)
     description = models.TextField(max_length=1000)
     effect = models.IntegerField(null=True) # The ID of an effect to display after the description
     effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.

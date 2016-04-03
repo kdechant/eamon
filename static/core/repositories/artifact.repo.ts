@@ -34,6 +34,10 @@ export class ArtifactRepository {
    */
   add(artifact_data) {
     let a = new Artifact();
+    // "synonyms" in the back end are called "aliases" here
+    if (artifact_data.synonyms) {
+      artifact_data.aliases = artifact_data.synonyms.split(",");
+    }
     a.init(artifact_data);
 
     // autonumber the ID if not provided

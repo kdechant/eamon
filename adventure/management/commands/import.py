@@ -1,4 +1,5 @@
-import struct, re, os
+import struct, re, os, regex
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.text import slugify
 from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
@@ -67,6 +68,44 @@ class Command(BaseCommand):
         # load the adventure objects (including ones we just created) so we can reference
         # them when importing the other files.
         adventures = Adventure.objects.filter(edx=edx)
+
+        # import artifact synonyms from the .BAS files
+        for a in adventures:
+            if a.edx_program_file:
+                print("Looking for synonyms in " + folder + "/" + a.edx_program_file)
+                with open(folder + "/" + a.edx_program_file) as mainpgm:
+                    basic_code = mainpgm.read()
+                    regx = r'(((sy\$\s=\s\"[-\w\s]+\"|sy\s=\s[\d]+|GOSUB\sSynonym1):?\s*){2,})'
+                    matches = regex.findall(regx, basic_code)
+                    if matches is None:
+                        print('No match for regex!')
+                        return
+                    else:
+                        for mt in matches:
+                            sy_matches = regex.findall(r'sy\s=\s[\d]+', mt[0])
+                            if len(sy_matches) != 1:
+                                print("WARNING: Could not parse synonym code:")
+                                print(mt[0])
+                            else:
+                                sy_artifact_id = regex.findall(r"[\d]+", sy_matches[0])
+                                print("Synonym artifact ID: " + sy_artifact_id[0])
+                                synonyms = []
+                                sys_matches = regex.findall(r'sy\$\s=\s\"[\w\s]+\"', mt[0])
+                                for sm in sys_matches:
+                                    syn = regex.findall(r'\"(.*?)"', sm)
+                                    # print("Synonym: " + syn[0])
+                                    synonyms.append(syn[0])
+                                synonyms = ','.join(synonyms)
+                                print("Synonyms: " + synonyms)
+                                try:
+                                    sy_artifact = Artifact.objects.get(adventure_id=a.id, artifact_id=sy_artifact_id[0])
+                                    if sy_artifact:
+                                        sy_artifact.synonyms = synonyms
+                                        sy_artifact.save()
+                                except ObjectDoesNotExist:
+                                    print("Can't add synonyms to non-existent artifact #" + sy_artifact_id[0])
+
+        return
 
         # All other files are binary
         with open(folder + '/ROOMS.DAT', 'rb') as datafile:
@@ -368,6 +407,7 @@ class Command(BaseCommand):
                             monster.effect = match.groups()[1]
 
                     monster.save()
+
 
 
 def find_basic_file(dir, adventure_name):
