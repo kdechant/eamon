@@ -343,7 +343,10 @@ class Command(BaseCommand):
                     # also if it should use the "attacks" verb instead of a random verb
                     monster.combat_code = values[5]
                     monster.armor_class = values[6]
-                    monster.weapon_id = values[7]
+                    if values[7] != -1:
+                        monster.weapon_id = values[7]
+                    else:
+                        monster.weapon_id = None
                     monster.weapon_dice = values[8]  # applies to natural weapons only
                     monster.weapon_sides = values[9]  # applies to natural weapons only
                     # friendliness logic

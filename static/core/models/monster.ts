@@ -383,7 +383,6 @@ export class Monster extends GameObject {
     if (this.weapon_id !== null) {
       // up to 5 members of a group can attack per round
       let attacking_member_count = Math.min(this.count, 5);
-      console.log(this.name, attacking_member_count)
       for (let i = 0; i < attacking_member_count; i++) {
         let target = this.chooseTarget();
         if (target) {
