@@ -188,6 +188,13 @@ export class GetCommand implements BaseCommand {
           game.history.write("You don't bother picking up the " + a.name + ".");
           continue;
         }
+
+        // if it's a disguised monster, reveal it
+        if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
+          a.revealDisguisedMonster();
+          continue;
+        }
+
         // weights of >900 and -999 indicate items that can't be gotten.
         if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
           continue;
@@ -258,7 +265,7 @@ export class RemoveCommand implements BaseCommand {
       // look for a container artifact and see if we can remove the item from it
       let container: Artifact = game.artifacts.getByName(container_name);
       if (container && container.isHere()) {
-        if (container.type == Artifact.TYPE_CONTAINER) {
+        if (container.type === Artifact.TYPE_CONTAINER) {
           if (container.is_open) {
             let item: Artifact = container.getContainedArtifact(item_name);
             if (item) {
@@ -598,26 +605,36 @@ export class OpenCommand implements BaseCommand {
   verbs: string[] = ["open"];
   run(verb, arg) {
     let game = Game.getInstance();
-
     let opened_something: boolean = false;
     let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere() && (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR)) {
-      if (!a.is_open) {
-        // not open. open it.
-        if (a.key_id) {
-          if (game.player.hasArtifact(a.key_id)) {
-            let key = game.artifacts.get(a.key_id);
-            game.history.write("You unlock it using the " + key.name + ".");
-          } else {
-            throw new CommandException("It's locked and you don't have the key!");
-          }
-        } else {
-          game.history.write("Opened.");
-        }
-        a.is_open = true;
+    if (a !== null && a.isHere()) {
+
+      if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
+        // if it's a disguised monster, reveal it
+
+        a.revealDisguisedMonster();
         opened_something = true;
-      } else {
-        throw new CommandException("It's already open!");
+
+      } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
+        // normal container or door/gate
+
+        if (!a.is_open) {
+          // not open. open it.
+          if (a.key_id) {
+            if (game.player.hasArtifact(a.key_id)) {
+              let key = game.artifacts.get(a.key_id);
+              game.history.write("You unlock it using the " + key.name + ".");
+            } else {
+              throw new CommandException("It's locked and you don't have the key!");
+            }
+          } else {
+            game.history.write("Opened.");
+          }
+          a.is_open = true;
+          opened_something = true;
+        } else {
+          throw new CommandException("It's already open!");
+        }
       }
     }
 

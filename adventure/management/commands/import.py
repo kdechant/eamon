@@ -238,8 +238,8 @@ class Command(BaseCommand):
                     elif artifact.type == 12:
                         # disguised monster
                         artifact.monster_id = values[4]
-                        artifact.first_effect = values[5]
-                        artifact.number_of_effects = values[6]
+                        artifact.effect_id = values[5]
+                        artifact.num_effects = values[6]
 
                     elif artifact.type == 13:
                         # dead body

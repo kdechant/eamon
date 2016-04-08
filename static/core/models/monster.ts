@@ -606,9 +606,8 @@ export class Monster extends GameObject {
       } else {
         // single monster. drop weapon, etc.
 
-        if (this.weapon_id > 0) {
-          let wpn = game.artifacts.get(this.weapon_id);
-          wpn.room_id = this.room_id;
+        for (let i in this.inventory) {
+          this.inventory[i].room_id = this.room_id;
         }
 
         if (this.dead_body_id) {

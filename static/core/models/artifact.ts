@@ -160,6 +160,35 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Prints the effects associated with the artifact. Used e.g., when revealing a disguised monster
+   * (in future, could also be used for reading READABLE type artifacts.)
+   */
+  public printEffects(): void {
+    let game = Game.getInstance();
+    if (this.effect_id) {
+      for (let i = this.effect_id; i < this.effect_id + this.num_effects; i++) {
+        game.effects.print(i);
+      }
+    }
+  }
+
+  /**
+   * Reveals a disguised monster
+   */
+  public revealDisguisedMonster(): void {
+    let game = Game.getInstance();
+    this.printEffects();
+    let monster = game.monsters.get(this.monster_id);
+    monster.room_id = game.rooms.current_room.id;
+    monster.checkReaction();
+
+    // destroy the artifact, then update the monster's inventory to prevent the artifact from incorrectly
+    // reappearing when the monster dies. (due to using the monster_id field differently for this type.)
+    this.destroy();
+    monster.updateInventory();
+  }
+
+  /**
    * Removes an artifact from the game
    */
   public destroy(): void {
