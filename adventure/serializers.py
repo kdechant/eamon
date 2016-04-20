@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster
+from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact
 
 
 class AdventureSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,3 +44,16 @@ class MonsterSerializer(serializers.ModelSerializer):
         model = Monster
 
 
+class PlayerArtifactSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PlayerArtifact
+        exclude = ('id', )
+
+
+class PlayerSerializer(serializers.ModelSerializer):
+    inventory = PlayerArtifactSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Player
+        # fields = ('id', 'name', 'gender', 'hardiness', 'agility', 'charisma', 'gold', 'gold_in_bank', 'inventory')

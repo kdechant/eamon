@@ -44,8 +44,7 @@ export class GameLoaderService {
           this.http.get("/api/adventures/" + game_id + "/artifacts").map((res: Response) => res.json()),
           this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
           this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
-          // player is still currently loaded from mock data
-          this.http.get("/static/adventures/demo1/mock-data/player.json").map((res: Response) => res.json())
+          this.http.get("/api/players/1").map((res: Response) => res.json())
         ).subscribe(
             data => {
               game.init(data);

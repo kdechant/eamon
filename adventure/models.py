@@ -222,11 +222,17 @@ class PlayerArtifact(models.Model):
         (0, 'Armor'),
         (1, 'Shield'), # different in EDX - see manual
     )
+    HANDS = (
+        (1, 'One-handed'),
+        (2, 'Two-handed')
+    )
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='inventory')
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
     type = models.IntegerField(choices=TYPES)
+    weight = models.IntegerField(default=0)
     weapon_type = models.IntegerField(default=0,choices=WEAPON_TYPES)
+    hands = models.IntegerField(choices=HANDS,default=1)
     odds = models.IntegerField(default=0)
     dice = models.IntegerField(default=1)
     sides = models.IntegerField(default=1)

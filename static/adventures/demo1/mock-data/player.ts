@@ -16,7 +16,7 @@ export var PLAYER: Object = {
     "5": 0
   },
   "armor_expertise": 20,
-  "items": [
+  "inventory": [
     {
       "name": "Mace",
       "type": 2,
@@ -59,10 +59,8 @@ export var PLAYER: Object = {
       "armor_penalty": 5
     }
   ],
-  "spell_abilities": {
-    "blast": 60,
-    "heal": 50,
-    "power": 70,
-    "speed": 75
-  }
+  "spl_blast": 60,
+  "spl_heal": 50,
+  "spl_power": 70,
+  "spl_speed": 75
 };

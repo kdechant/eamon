@@ -13,10 +13,12 @@
     "5": 0
   },
   "armor_expertise": 20,
-  "items": [
+  "inventory": [
     {
       "name": "mace",
+      "description": "You see your mace.",
       "type": 2,
+      "weight": 3,
       "hands": 1,
       "weapon_type": 3,
       "weapon_odds": 10,
@@ -25,7 +27,9 @@
     },
     {
       "name": "firebrand",
+      "description": "You see a flaming sword.",
       "type": 3,
+      "weight": 3,
       "hands": 1,
       "weapon_type": 5,
       "weapon_odds": 25,
@@ -34,7 +38,9 @@
     },
     {
       "name": "battle axe",
+      "description": "You see a large battle axe.",
       "type": 2,
+      "weight": 3,
       "hands": 2,
       "weapon_type": 1,
       "weapon_odds": 25,
@@ -43,23 +49,25 @@
     },
     {
       "name": "chain mail",
+      "description": "You see a set of chain mail.",
       "type": 11,
+      "weight": 10,
       "armor_type": 0,
       "armor_class": 2,
       "armor_penalty": 20
     },
     {
       "name": "shield",
+      "description": "You see a standard shield.",
       "type": 11,
+      "weight": 3,
       "armor_type": 1,
       "armor_class": 1,
       "armor_penalty": 5
     }
   ],
-  "spell_abilities": {
-    "blast": 60,
-    "heal": 50,
-    "power": 70,
-    "speed": 75
-  }
+  "spl_blast": 60,
+  "spl_heal": 50,
+  "spl_power": 70,
+  "spl_speed": 75
 }

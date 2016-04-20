@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
 
 from . import serializers
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster
+from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player
 
 
 def index(request):
@@ -27,8 +27,8 @@ class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = self.queryset
-        user = get_object_or_404(queryset, slug=pk)
-        serializer = serializers.AdventureSerializer(user)
+        adv = get_object_or_404(queryset, slug=pk)
+        serializer = serializers.AdventureSerializer(adv)
         return Response(serializer.data)
 
 
@@ -78,3 +78,11 @@ class MonsterViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
         return self.queryset.filter(adventure__slug=adventure_id)
+
+
+class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lists player data.
+    """
+    queryset = Player.objects.all()
+    serializer_class = serializers.PlayerSerializer
