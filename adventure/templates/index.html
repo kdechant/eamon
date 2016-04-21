@@ -1,26 +1,31 @@
+{% load staticfiles %}
+<!DOCTYPE html>
 <html>
 
   <head>
     <title>The Angular World of Eamon</title>
 
     <!-- 1. Load libraries -->
-    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <script src="node_modules/rxjs/bundles/Rx.js"></script>
-    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
-    <script src="node_modules/angular2/bundles/http.dev.js"></script>
+    <script src="{% static "node_modules/angular2/bundles/angular2-polyfills.js" %}"></script>
+    <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
+    <script src="{% static "node_modules/rxjs/bundles/Rx.js" %}"></script>
+    <script src="{% static "node_modules/angular2/bundles/angular2.dev.js" %}"></script>
+    <script src="{% static "node_modules/angular2/bundles/http.dev.js" %}"></script>
 
     <!-- 2. Configure SystemJS -->
     <script>
-      var game_id = 'demo1';
-
       System.config({
         map: {
-          'rxjs': 'node_modules/rxjs',
-          'adventure': 'adventures/' + game_id
+          'core': '/static/core',
+          'main_hall': '/static/main-hall',
+          'rxjs': '/static/node_modules/rxjs',
         },
         packages: {
-          app: {
+          core: {
+            format: 'register',
+            defaultExtension: 'js'
+          },
+          main_hall: {
             format: 'register',
             defaultExtension: 'js'
           },
@@ -32,22 +37,20 @@
         }
       });
       Promise.all([
-        System.import('app/boot'),
-        System.import('adventure/commands'),
-        System.import('adventure/event-handlers')
+        System.import('main_hall/boot'),
       ]).then(null, console.error.bind(console));
     </script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
   </head>
 
   <!-- 3. Display the application -->
   <body>
-    <game>Loading...</game>
+    <main-hall>Welcome to the Angular World of Eamon...</main-hall>
   </body>
 
 </html>
