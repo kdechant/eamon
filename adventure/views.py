@@ -6,7 +6,10 @@ from . import serializers
 from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player
 
 
-def index(request):
+def index(request, path=''):
+    """
+    For listing or retrieving adventure data.
+    """
     return render(request, 'index.html')
 
 

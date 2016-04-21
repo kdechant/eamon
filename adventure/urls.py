@@ -17,4 +17,8 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^$', views.index, name='index'),
     url(r'^adventure/(?P<adventure_id>[\w-]+)/$', views.adventure, name='adventure'),
+
+    # this route is a catch-all for compatibility with the Angular routes. It must be last in the list.
+    # NOTE: non-existent URLs won't 404 with this in place. They will be sent into the Angular app.
+    url(r'^(?P<path>.*)/$', views.index),
 ]

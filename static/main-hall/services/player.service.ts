@@ -24,6 +24,17 @@ export class PlayerService {
     );
   }
 
+  getPlayer(id: number) {
+    this.http.get('/api/players/' + id).map((res: Response) => res.json()).subscribe(
+      data => {
+        //debugger;
+        this.current_player = new Player();
+        this.current_player.init(data);
+      },
+      err => console.error(err)
+    );
+  }
+
   private setupPlayerList(data: any): void {
     this.players = [];
     for (let i in data) {
