@@ -82,12 +82,14 @@ export class MonsterRepository {
   public addPlayer(player_data: any) {
     let game = Game.getInstance();
 
+    // the player JS model expects spell and weapon abilities to be objects, but they are stored
+    // as regular fields on the Player Django model. Convert them to objects here.
     player_data.weapon_abilities = {
-      "1": player_data.wpn_axe,
-      "2": player_data.wpn_bow,
-      "3": player_data.wpn_club,
-      "4": player_data.wpn_spear,
-      "5": player_data.wpn_sword
+      1: player_data.wpn_axe,
+      2: player_data.wpn_bow,
+      3: player_data.wpn_club,
+      4: player_data.wpn_spear,
+      5: player_data.wpn_sword
     }
     player_data.spell_abilities = {
       "power": player_data.spl_power,
@@ -115,11 +117,6 @@ export class MonsterRepository {
     // create new artifact objects for the weapons and armor the player brought
     for (let i in player_data.inventory) {
       let a: Artifact = player_data.inventory[i];
-      //if (a.type === Artifact.TYPE_WEARABLE && a.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
-      //  a.weight = 10;
-      //} else {
-      //  a.weight = 3;
-      //}
       let art = game.artifacts.add(a);
       game.player.pickUp(art);
     }
