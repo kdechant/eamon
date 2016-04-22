@@ -5,8 +5,7 @@ import {Observable} from "rxjs/Rx";
 import {Player} from "../models/player";
 
 /**
- * Game Loader service. Loads initial adventure, room, artifact, and monster
- * data from the data source.
+ * Player service. Loads player data from the back end.
  */
 @Injectable()
 export class PlayerService {
@@ -27,7 +26,6 @@ export class PlayerService {
   getPlayer(id: number) {
     this.http.get('/api/players/' + id).map((res: Response) => res.json()).subscribe(
       data => {
-        //debugger;
         this.current_player = new Player();
         this.current_player.init(data);
       },

@@ -5,7 +5,7 @@ from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player
 class AdventureSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Adventure
-        fields = ('id', 'name', 'description')
+        fields = ('id', 'name', 'description', 'slug', 'edx')
 
 
 class RoomExitSerializer(serializers.ModelSerializer):

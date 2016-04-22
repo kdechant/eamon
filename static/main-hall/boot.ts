@@ -5,9 +5,11 @@ import "rxjs/add/operator/map";
 import {MainHallComponent} from "./components/main-hall.component";
 
 import {PlayerService} from "./services/player.service";
+import {AdventureService} from "./services/adventure.service";
 
 bootstrap(MainHallComponent, [
   HTTP_PROVIDERS,
   ROUTER_PROVIDERS,
+  AdventureService,
   PlayerService
 ]);

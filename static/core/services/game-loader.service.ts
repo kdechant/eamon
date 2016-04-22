@@ -32,24 +32,26 @@ export class GameLoaderService {
         this.http.get(path + "/monsters.json").map((res: Response) => res.json()),
         this.http.get(path + "/player.json").map((res: Response) => res.json())
       ).subscribe(
-          data => {
-            game.init(data);
-          }
+        data => {
+          game.init(data);
+        }
       );
     } else {
-        // load live data from the back end
-        Observable.forkJoin(
-          this.http.get("/api/adventures/" + game_id).map((res: Response) => res.json()),
-          this.http.get("/api/adventures/" + game_id + "/rooms").map((res: Response) => res.json()),
-          this.http.get("/api/adventures/" + game_id + "/artifacts").map((res: Response) => res.json()),
-          this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
-          this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
-          this.http.get("/api/players/1").map((res: Response) => res.json())
-        ).subscribe(
-            data => {
-              game.init(data);
-            }
-        );
+      let player_id = window.localStorage.getItem('player_id');
+
+      // load live data from the back end
+      Observable.forkJoin(
+        this.http.get("/api/adventures/" + game_id).map((res: Response) => res.json()),
+        this.http.get("/api/adventures/" + game_id + "/rooms").map((res: Response) => res.json()),
+        this.http.get("/api/adventures/" + game_id + "/artifacts").map((res: Response) => res.json()),
+        this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
+        this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
+        this.http.get("/api/players/" + player_id).map((res: Response) => res.json())
+      ).subscribe(
+        data => {
+          game.init(data);
+        }
+      );
     }
   }
 
