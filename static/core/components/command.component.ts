@@ -1,16 +1,23 @@
 import {Component, Input} from "angular2/core";
 
+import {Game} from "../models/game";
+
 @Component({
   selector: "command-prompt",
   template: `
-    <div class="command-prompt">
+    <div class="command-prompt" *ngIf="game.active">
       <span class="prompt">Your Command: </span>
       <input #cmd (keyup)="onKeyPress($event, cmd.value)"
        type="text"
        [(ngModel)]="command"
        placeholder="{{lastCommand}}"
-       [disabled]="game.ended"
        />
+    </div>
+    <div class="return-button-container" *ngIf="game.won">
+      <button class="btn btn-success" id="return" (click)="exit()">Return to Main Hall</button>
+    </div>
+    <div class="return-button-container" *ngIf="game.died">
+      <button class="btn btn-success" id="return" (click)="restart()">Start Over</button>
     </div>
     `,
 })
@@ -67,4 +74,11 @@ export class CommandPromptComponent {
     }
   }
 
+  exit(): void {
+    this.game.player.sellItems();
+  }
+
+  restart(): void {
+    window.location.reload();
+  }
 }

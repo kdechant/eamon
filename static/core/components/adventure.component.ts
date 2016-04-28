@@ -8,6 +8,7 @@ import {Room, RoomExit} from "../models/room";
 import {HistoryComponent} from "../components/history.component";
 import {CommandPromptComponent} from "../components/command.component";
 import {StatusComponent} from "../components/status.component";
+import {SellItemsComponent} from "../components/sell-items.component";
 
 @Component({
   selector: "adventure",
@@ -16,9 +17,12 @@ import {StatusComponent} from "../components/status.component";
   <h1>{{game_title}}</h1>
   <h2>{{game.name}}</h2>
   <div class="row">
-    <div class="command col-sm-6">
+    <div class="command col-sm-6" *ngIf="!game.selling">
       <history [history]="game?.history"></history>
       <command-prompt [game]="game"></command-prompt>
+    </div>
+    <div class="command col-sm-6" *ngIf="game.selling">
+      <sell-items [game]="game"></sell-items>
     </div>
     <div class="status col-sm-6">
       <status [game]="game"></status>
@@ -26,7 +30,7 @@ import {StatusComponent} from "../components/status.component";
   </div>
 </div>
   `,
-  directives: [CommandPromptComponent, HistoryComponent, StatusComponent]
+  directives: [CommandPromptComponent, HistoryComponent, StatusComponent, SellItemsComponent]
 })
 export class AdventureComponent {
 

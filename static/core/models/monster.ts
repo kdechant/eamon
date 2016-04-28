@@ -63,6 +63,7 @@ export class Monster extends GameObject {
   speed_time: number = 0; // time remaining on speed spell
   speed_multiplier: number = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
+  profit: number = 0; // the money the player makes for selling items when they leave the adventure
 
   /**
    * Moves the monster to a specific room.
@@ -711,4 +712,31 @@ export class Monster extends GameObject {
       }
     }
   }
+
+  /**
+   * Sells the player's items when they return to the main hall
+   */
+  public sellItems(): void {
+    Game.getInstance().selling = true;
+    for (let i in this.inventory) {
+      let a = this.inventory[i];
+      if (a.type === Artifact.TYPE_MAGIC_WEAPON || a.type === Artifact.TYPE_WEAPON) {
+        // currently the player doesn't have to sell any weapons, so keep them all.
+        continue;
+      } else if (a.type === Artifact.TYPE_WEARABLE) {
+        // also keep armor and shields, for now
+        if (a.armor_type === Artifact.ARMOR_TYPE_ARMOR || a.armor_type === Artifact.ARMOR_TYPE_SHIELD) {
+          continue;
+        }
+        this.profit += a.value;
+        a.monster_id = 0;
+      } else {
+        // TODO: also look for items in containers
+        this.profit += a.value;
+        a.monster_id = 0;
+      }
+    }
+    this.gold += this.profit;
+  }
+
 }

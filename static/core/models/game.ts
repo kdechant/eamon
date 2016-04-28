@@ -17,6 +17,12 @@ import {event_handlers} from "adventure/event-handlers";
  */
 export class Game {
 
+  // constants
+  static STATUS_ACTIVE: number = 0;
+  static STATUS_WON: number = 1;
+  static STATUS_DIED: number = 2;
+  static STATUS_SELLING: number = 3;
+
   private static _instance: Game = new Game();
 
   /**
@@ -91,10 +97,27 @@ export class Game {
    */
   skip_battle_actions: boolean = false;
 
+  // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
+
   /**
-   * "Game over" flag
+   * Flag to indicate that the game is active (i.e., the player can still enter commands)
    */
-  ended: boolean = false;
+  active: boolean = true;
+
+  /**
+   * Flag to indicate that the player exited the adventure successfully
+   */
+  won: boolean = false;
+
+  /**
+   * Flag to indicate that the player died
+   */
+  died: boolean = false;
+
+  /**
+   * Flag to indicate that the selling items phase is running
+   */
+  selling: boolean = false;
 
   constructor() {
     if (Game._instance) {
@@ -274,7 +297,8 @@ export class Game {
    * Handles successful game exit.
    */
   public exit() {
-    this.ended = true;
+    this.active = false;
+    this.won = true;
   }
 
   /**
@@ -283,7 +307,8 @@ export class Game {
   public die() {
     this.player.damage = this.player.hardiness;
     this.player.showHealth();
-    this.ended = true;
+    this.active = false;
+    this.died = true;
   }
 
 }
