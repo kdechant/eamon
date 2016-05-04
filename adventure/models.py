@@ -189,8 +189,8 @@ class Player(models.Model):
     """
     name = models.CharField(max_length=255)
     gender = models.CharField(max_length=6, choices=(
-        ('male', 'Male'),
-        ('female', 'Female')
+        ('m', 'Male'),
+        ('f', 'Female')
     ))
     hardiness = models.IntegerField(default=12)
     agility = models.IntegerField(default=12)
@@ -231,11 +231,11 @@ class PlayerArtifact(models.Model):
     description = models.TextField(max_length=1000)
     type = models.IntegerField(choices=TYPES)
     weight = models.IntegerField(default=0)
-    weapon_type = models.IntegerField(default=0,choices=WEAPON_TYPES)
+    weapon_type = models.IntegerField(default=0,choices=WEAPON_TYPES,null=True)
     hands = models.IntegerField(choices=HANDS,default=1)
-    odds = models.IntegerField(default=0)
-    dice = models.IntegerField(default=1)
-    sides = models.IntegerField(default=1)
+    weapon_odds = models.IntegerField(default=0,null=True)
+    dice = models.IntegerField(default=1,null=True)
+    sides = models.IntegerField(default=1,null=True)
     armor_type = models.IntegerField(default=0,choices=ARMOR_TYPES)
     armor_class = models.IntegerField(default=0)
     armor_penalty = models.IntegerField(default=0)

@@ -1,4 +1,6 @@
 import {Component, Input, AfterViewChecked} from "angular2/core";
+import {Game} from "../models/game";
+import {GameLoaderService} from "../services/game-loader.service";
 
 @Component({
   selector: "sell-items",
@@ -12,8 +14,17 @@ import {Component, Input, AfterViewChecked} from "angular2/core";
 export class SellItemsComponent {
   @Input() game;
 
+  constructor(private _gameLoaderService: GameLoaderService) { }
+
   public savePlayer(): void {
-    alert("Not implemented yet!")
+    let game = Game.getInstance();
+    this._gameLoaderService.savePlayer(game.player).subscribe(
+       data => {
+         console.log("Saved player!");
+         window.location.href = "/";
+       },
+       error => console.error("Error saving player!")
+    );
   }
 
 }

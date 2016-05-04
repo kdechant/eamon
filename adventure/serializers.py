@@ -52,7 +52,21 @@ class PlayerArtifactSerializer(serializers.ModelSerializer):
 
 
 class PlayerSerializer(serializers.ModelSerializer):
-    inventory = PlayerArtifactSerializer(many=True, read_only=True)
+    inventory = PlayerArtifactSerializer(many=True, read_only=False)
+
+    def update(self, instance, validated_data):
+
+        inventory_data = validated_data.pop('inventory')
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        PlayerArtifact.objects.filter(player=instance.id).delete()
+        for item in inventory_data:
+            item['player'] = instance
+            PlayerArtifact.objects.create(**item)
+
+        return instance
 
     class Meta:
         model = Player

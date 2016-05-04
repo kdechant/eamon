@@ -718,8 +718,10 @@ export class Monster extends GameObject {
    */
   public sellItems(): void {
     Game.getInstance().selling = true;
-    for (let i in this.inventory) {
-      let a = this.inventory[i];
+    // a copy of inventory, needed to prevent looping errors when we destroy artifacts
+    let inv = this.inventory;
+    for (let i in inv) {
+      let a = inv[i];
       if (a.type === Artifact.TYPE_MAGIC_WEAPON || a.type === Artifact.TYPE_WEAPON) {
         // currently the player doesn't have to sell any weapons, so keep them all.
         continue;
@@ -729,11 +731,11 @@ export class Monster extends GameObject {
           continue;
         }
         this.profit += a.value;
-        a.monster_id = 0;
+        a.destroy();
       } else {
         // TODO: also look for items in containers
         this.profit += a.value;
-        a.monster_id = 0;
+        a.destroy();
       }
     }
     this.gold += this.profit;

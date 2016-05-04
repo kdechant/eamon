@@ -1,8 +1,9 @@
 import {Injectable} from "angular2/core";
-import {HTTP_PROVIDERS, Http, Response} from "angular2/http";
+import {HTTP_PROVIDERS, Http, Response, Headers, RequestOptions} from "angular2/http";
 import {Observable} from "rxjs/Rx";
 
 import {Game} from "../models/game";
+import {Monster} from "../models/monster";
 
 // game_id is passed in from the back-end and written in index.html
 declare var game_id: string;
@@ -52,6 +53,23 @@ export class GameLoaderService {
           game.init(data);
         }
       );
+    }
+  }
+
+  public savePlayer(player: Monster) {
+    if (game_id === 'demo1') {
+      // can't save the demo player.
+      console.log("The demo player is read-only.")
+      return;
+    } else {
+      let player_id = window.localStorage.getItem('player_id');
+
+      let headers = new Headers({ 'Content-Type': 'application/json' });
+      let options = new RequestOptions({ headers: headers });
+
+      let body = JSON.stringify(player);
+
+      return this.http.put("/api/players/" + player_id, body, options);
     }
   }
 
