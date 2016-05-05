@@ -4,14 +4,21 @@ import {RouteParams, Router} from 'angular2/router';
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
 import {AdventureService} from '../services/adventure.service';
+import {StatusComponent} from "../components/status.component";
 
 @Component({
   template: `
   <p>You are the mighty {{ _playerService.current_player?.name }}</p>
-  <p>Go on an adventure:</p>
-  <p class="adventure"
-    *ngFor="#adv of _adventureService.adventures"><a href="/adventure/{{adv.slug}}">{{adv.name}}</a></p>
+  <div class="col-sm-4">
+    <p>Go on an adventure:</p>
+    <p class="adventure"
+      *ngFor="#adv of _adventureService.adventures"><a href="/adventure/{{adv.slug}}">{{adv.name}}</a></p>
+  </div>
+  <div class="col-sm-8">
+    <status [player]="_playerService.current_player"></status>
+  </div>
   `,
+  directives: [StatusComponent]
 })
 export class PlayerDetailComponent implements OnInit  {
 

@@ -223,4 +223,16 @@ export class Artifact extends GameObject {
     }
   }
 
+  /**
+   * Returns the name of the armor type
+   */
+  public getArmorTypeName(): string {
+    switch (this.armor_type) {
+      case Artifact.ARMOR_TYPE_ARMOR:
+        return "armor";
+      case Artifact.ARMOR_TYPE_SHIELD:
+        return "shield";
+    }
+  }
+
 }

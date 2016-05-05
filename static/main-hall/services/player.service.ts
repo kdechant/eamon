@@ -28,6 +28,8 @@ export class PlayerService {
       data => {
         this.current_player = new Player();
         this.current_player.init(data);
+
+        this.current_player.update();
       },
       err => console.error(err)
     );

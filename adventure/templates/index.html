@@ -22,6 +22,7 @@
           'core': '/static/core',
           'main_hall': '/static/main-hall',
           'rxjs': '/static/node_modules/rxjs',
+          'adventure': "/static/adventures/demo1"
         },
         packages: {
           core: {
@@ -39,8 +40,11 @@
           rxjs: {defaultExtension: 'js'}
         }
       });
+      // NOTE: need to inject the demo adventure here to avoid errors when creating the Game object.
       Promise.all([
         System.import('main_hall/boot'),
+        System.import('adventure/commands'),
+        System.import('adventure/event-handlers')
       ]).then(null, console.error.bind(console));
     </script>
 
