@@ -43,7 +43,7 @@
                 <th>Damage</th>
                 <th>Chance to hit</th>
             </tr>
-            <tbody *ngFor="#artifact of player?.inventory">
+            <tbody *ngFor="let artifact of player?.inventory">
                 <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
                     <td>{{ artifact.name }}</td>
                     <td>{{ artifact.getWeaponTypeName() }}</td>
@@ -64,7 +64,7 @@
                 <th>Armor Class</th>
                 <th>Armor Penalty</th>
             </tr>
-            <tbody *ngFor="#artifact of player?.inventory">
+            <tbody *ngFor="let artifact of player?.inventory">
                 <tr class="artifact" *ngIf="artifact.type != 2 && artifact.type != 3">
                     <td>{{ artifact.name }}</td>
                     <td>{{ artifact.getArmorTypeName() }}</td>

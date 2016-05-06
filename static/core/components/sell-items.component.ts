@@ -1,4 +1,4 @@
-import {Component, Input, AfterViewChecked} from "angular2/core";
+import {Component, Input, AfterViewChecked} from "@angular/core";
 import {Game} from "../models/game";
 import {GameLoaderService} from "../services/game-loader.service";
 

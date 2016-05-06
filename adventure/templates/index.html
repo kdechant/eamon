@@ -8,38 +8,16 @@
     <base href="/">
 
     <!-- 1. Load libraries -->
-    <script src="{% static "node_modules/angular2/bundles/angular2-polyfills.js" %}"></script>
+     <!-- Polyfill(s) for older browsers -->
+    <script src="{% static "node_modules/es6-shim/es6-shim.min.js" %}"></script>
+
+    <script src="{% static "node_modules/zone.js/dist/zone.js" %}"></script>
+    <script src="{% static "node_modules/reflect-metadata/Reflect.js" %}"></script>
     <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
-    <script src="{% static "node_modules/rxjs/bundles/Rx.js" %}"></script>
-    <script src="{% static "node_modules/angular2/bundles/angular2.dev.js" %}"></script>
-    <script src="{% static "node_modules/angular2/bundles/router.dev.js" %}"></script>
-    <script src="{% static "node_modules/angular2/bundles/http.dev.js" %}"></script>
 
     <!-- 2. Configure SystemJS -->
+    <script src="{% static 'main-hall/systemjs.config.js' %}"></script>
     <script>
-      System.config({
-        map: {
-          'core': '/static/core',
-          'main_hall': '/static/main-hall',
-          'rxjs': '/static/node_modules/rxjs',
-          'adventure': "/static/adventures/demo1"
-        },
-        packages: {
-          core: {
-            format: 'register',
-            defaultExtension: 'js'
-          },
-          main_hall: {
-            format: 'register',
-            defaultExtension: 'js'
-          },
-          adventure: {
-            format: 'register',
-            defaultExtension: 'js'
-          },
-          rxjs: {defaultExtension: 'js'}
-        }
-      });
       // NOTE: need to inject the demo adventure here to avoid errors when creating the Game object.
       Promise.all([
         System.import('main_hall/boot'),

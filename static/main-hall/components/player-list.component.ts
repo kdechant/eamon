@@ -1,5 +1,5 @@
-import {Component,  OnInit}  from 'angular2/core';
-import {RouteParams, Router} from 'angular2/router';
+import {Component,  OnInit}  from '@angular/core';
+import {RouteParams, Router} from '@angular/router-deprecated';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
@@ -10,7 +10,7 @@ import {PlayerService} from '../services/player.service';
   <p>On the north side of the chamber is a cubbyhole with a desk. Over the desk is a sign which says: <strong>&quot;REGISTER HERE OR ELSE!&quot;</strong></p>
   <p>The guest book on the desk lists the following players:</p>
   <p class="player"
-    *ngFor="#player of _playerService.players"
+    *ngFor="let player of _playerService.players"
     (click)="gotoPlayer(player)">{{player.name}}</p>
   `,
 })

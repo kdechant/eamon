@@ -26,7 +26,7 @@
     <div class="weapon none" *ngIf="!game.player.weapon">Ready weapon: none!</div>
 
     <div class="armor" *ngIf="game.player.armor_class">Armor:
-      <span *ngFor="#armor of game.player.armor_worn; #isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
+      <span *ngFor="let armor of game.player.armor_worn; let isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
     ({{game.player.armor_class}})</div>
     <div class="armor none" *ngIf="!game.player.armor_class">Armor: none!</div>
 
@@ -36,14 +36,14 @@
     <p class="room-name">Current Location: {{ game.rooms.current_room.name }}</p>
     <p class="room-description">{{ game.rooms.current_room.description }}</p>
     <div class="room-exits">Visible Exits:
-      <span *ngFor="#exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
+      <span *ngFor="let exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
     </div>
   </div>
 
   <div class="status-widget monsters">
     <p class="heading">Who's here:</p>
     <div class="monsters-list">
-      <span *ngFor="#monster of game.monsters.visible">
+      <span *ngFor="let monster of game.monsters.visible">
         <span class="monster"
           [class.friendly]="monster.reaction == 'friend'"
           [class.hostile]="monster.reaction == 'hostile'"
@@ -56,8 +56,8 @@
   <div class="status-widget artifacts">
     <p class="heading">What's around:</p>
     <div class="artifacts-list">
-      <div class="artifact" *ngFor="#artifact of game.artifacts.visible">{{ artifact.name }}
-        <div class="artifact-contents" *ngFor="#content of artifact.contents">{{ content.name }}</div>
+      <div class="artifact" *ngFor="let artifact of game.artifacts.visible">{{ artifact.name }}
+        <div class="artifact-contents" *ngFor="let content of artifact.contents">{{ content.name }}</div>
       </div>
       <span class="artifact none" *ngIf="game.artifacts.visible.length == 0">nothing<br /></span>
     </div>
@@ -66,7 +66,7 @@
   <div class="status-widget inventory">
     <p class="heading">You are carrying:</p>
     <div class="artifacts-list" *ngIf="game?.player?.inventory">
-      <span class="artifact" *ngFor="#artifact of game.player.inventory">{{ artifact.name }}
+      <span class="artifact" *ngFor="let artifact of game.player.inventory">{{ artifact.name }}
         <span class="lit" *ngIf="artifact.is_lit">(lit)</span>
         <span class="worn" *ngIf="artifact.is_worn">(wearing)</span>
         <span class="ready" *ngIf="artifact.id == game.player.weapon_id">(ready weapon)</span>

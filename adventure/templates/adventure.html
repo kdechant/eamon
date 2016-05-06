@@ -6,34 +6,17 @@
     <title>The Angular World of Eamon</title>
 
     <!-- 1. Load libraries -->
-    <script src="{% static "node_modules/angular2/bundles/angular2-polyfills.js" %}"></script>
+     <!-- Polyfill(s) for older browsers -->
+    <script src="{% static "node_modules/es6-shim/es6-shim.min.js" %}"></script>
+
+    <script src="{% static "node_modules/zone.js/dist/zone.js" %}"></script>
+    <script src="{% static "node_modules/reflect-metadata/Reflect.js" %}"></script>
     <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
-    <script src="{% static "node_modules/rxjs/bundles/Rx.js" %}"></script>
-    <script src="{% static "node_modules/angular2/bundles/angular2.dev.js" %}"></script>
-    <script src="{% static "node_modules/angular2/bundles/http.dev.js" %}"></script>
 
     <!-- 2. Configure SystemJS -->
+    <script src="{% static 'main-hall/systemjs.config.js' %}"></script>
     <script>
       var game_id = "{{ adventure_id }}";
-
-      System.config({
-        map: {
-          'core': '/static/core',
-          'rxjs': '/static/node_modules/rxjs',
-          'adventure': "/static/adventures/" + game_id
-        },
-        packages: {
-          core: {
-            format: 'register',
-            defaultExtension: 'js'
-          },
-          adventure: {
-            format: 'register',
-            defaultExtension: 'js'
-          },
-          rxjs: {defaultExtension: 'js'}
-        }
-      });
       Promise.all([
         System.import('core/boot'),
         System.import('adventure/commands'),

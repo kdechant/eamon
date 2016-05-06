@@ -1,6 +1,9 @@
-import {bootstrap}    from "angular2/platform/browser";
-import {HTTP_PROVIDERS} from "angular2/http";
-import "rxjs/add/operator/map";
+import {bootstrap}        from '@angular/platform-browser-dynamic';
+import { HTTP_PROVIDERS } from '@angular/http';
+
+// Add all operators (map, catch, etc.) to Observable
+import 'rxjs/Rx';
+
 import {AdventureComponent} from "./components/adventure.component";
 
 import {GameLoaderService} from "./services/game-loader.service";

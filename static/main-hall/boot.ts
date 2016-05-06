@@ -1,7 +1,10 @@
-import {bootstrap}    from "angular2/platform/browser";
-import {HTTP_PROVIDERS} from "angular2/http";
-import {ROUTER_PROVIDERS} from 'angular2/router';
-import "rxjs/add/operator/map";
+import {bootstrap}        from '@angular/platform-browser-dynamic';
+import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
+import { HTTP_PROVIDERS } from '@angular/http';
+
+// Add all operators (map, catch, etc.) to Observable
+import 'rxjs/Rx';
+
 import {MainHallComponent} from "./components/main-hall.component";
 
 import {PlayerService} from "./services/player.service";
