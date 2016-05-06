@@ -83,6 +83,17 @@ export class Player extends GameObject {
   }
 
   /**
+   * Returns the appropriate adjective for the player's gender
+   */
+  public getGenderLabel(): string {
+    if (this.gender == 'm') {
+      return "mighty";
+    } else {
+      return "fair";
+    }
+  }
+
+  /**
    * Updates player's calculated stats (best weapon, best armor, armor class and penalty)
    */
   public update(): void {

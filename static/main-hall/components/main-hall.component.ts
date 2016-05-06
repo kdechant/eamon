@@ -19,7 +19,7 @@ import {Player} from "../models/player";
 })
 @RouteConfig([
   {path: '/', name: 'PlayerList', component: PlayerListComponent},
-  {path: '/player/:id', name: 'PlayerDetail', component: PlayerDetailComponent}
+  {path: '/player/:id/...', name: 'PlayerDetail', component: PlayerDetailComponent},
 ])
 export class MainHallComponent {
 

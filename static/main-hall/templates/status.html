@@ -1,7 +1,7 @@
 <div *ngIf="player">
 
     <div class="status-widget player">
-        <p class="heading">{{ player.name }}</p>
+        <p class="heading">You are the {{ player.getGenderLabel() }} {{ player.name }}</p>
 
         <div class="stats">
             <span class="hardiness">HD: {{ player.hardiness }}</span>
