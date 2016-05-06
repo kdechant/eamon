@@ -121,16 +121,9 @@ export class MonsterRepository {
       game.player.pickUp(art);
     }
 
-    // ready the player's best weapon
+    // ready the player's best weapon, armor, and shield
     game.player.readyBestWeapon();
-
-    // wear armor and shield if carrying (and don't ready shield if using a 2-handed weapon)
-    for (let i in game.player.inventory) {
-      let art = game.player.inventory[i];
-      if (art.armor_type === Artifact.ARMOR_TYPE_ARMOR || (art.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 1)) {
-        game.player.wear(art);
-      }
-    }
+    game.player.wearBestArmor();
 
     return game.player;
   }

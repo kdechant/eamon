@@ -294,6 +294,34 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Puts on the best armor the monster is carrying, and a shield if using a 1-handed weapon
+   */
+  public wearBestArmor(): void {
+    let best_armor = null;
+    let best_shield = null;
+    for (let i in this.inventory) {
+      let art = this.inventory[i];
+      if (art.type === Artifact.TYPE_WEARABLE) {
+        if (art.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
+          if (best_armor === null || art.armor_class > best_armor.armor_class) {
+            best_armor = art;
+          }
+        } else {
+          if (best_shield === null || art.armor_class > best_shield.armor_class) {
+            best_shield = art;
+          }
+        }
+      }
+    }
+    if (best_armor) {
+      this.wear(best_armor);
+    }
+    if (best_shield && this.weapon && this.weapon.hands === 1) {
+      this.wear(best_shield);
+    }
+  }
+
+  /**
    * Wears an armor, shield, or article of clothing
    */
   public wear(artifact: Artifact): void {
