@@ -156,6 +156,24 @@ export class MonsterRepository {
   }
 
   /**
+   * Gets a random monster.
+   * @param {boolean} include_player
+   *   Whether or not to include the player in the random selection (default false)
+   * @return Monster
+   */
+  public getRandom(include_player: boolean = false) {
+    let nm = this.all.length;
+    if (!include_player) {
+      nm--;
+    }
+    let roll = Game.getInstance().diceRoll(1, nm);
+    if (include_player) {
+      roll--;
+    }
+    return this.get(roll);
+  }
+
+  /**
    * Updates the list of monsters in the current room, that are visible to the player
    * @return Monster[]
    */
