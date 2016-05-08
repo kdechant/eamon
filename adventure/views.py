@@ -22,7 +22,7 @@ class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
     """
     For listing or retrieving adventure data.
     """
-    queryset = Adventure.objects.all()
+    queryset = Adventure.objects.filter(active=True)
     serializer_class = serializers.AdventureSerializer
 
     def get_queryset(self):

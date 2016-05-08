@@ -14,9 +14,11 @@
     <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
 
     <!-- 2. Configure SystemJS -->
-    <script src="{% static 'main-hall/systemjs.config.js' %}"></script>
     <script>
       var game_id = "{{ adventure_id }}";
+    </script>
+    <script src="{% static 'core/systemjs.config.js' %}"></script>
+    <script>
       Promise.all([
         System.import('core/boot'),
         System.import('adventure/commands'),

@@ -50,6 +50,7 @@ class Adventure(models.Model):
     edx_monster_offset = models.IntegerField(default=0,null=True)
     edx_program_file = models.CharField(null=True,max_length=50)
     directions = models.IntegerField(default=6)
+    active = models.BooleanField(default=0)
 
 
 class Room(models.Model):
