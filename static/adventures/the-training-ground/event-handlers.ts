@@ -22,11 +22,22 @@ export var event_handlers = {
     game.data["jacques_shouts"] = false;
     game.data["kobolds_appear"] = false;
     game.data["sylvani_speaks"] = false;
-    game.data["thors_hammer"] = false;
+    game.data["thors_hammer_found"] = false;
+    game.data["thors_hammer_courage"] = [];
     game.data["secret_library"] = false;
     game.data["sounds_room_26"] = false;
     game.data["sex_change_counter"] = 0;
     game.data["charisma_boost"] = false;
+
+    // set the "seen" flag on kobold6 and the dummy obsidian scroll case
+    game.monsters.get(11).seen = true;
+    game.artifacts.get(51).seen = true;
+    game.artifacts.get(51).name = game.artifacts.get(30).name;
+
+    // rename the "graffiti" artifacts
+    for (let a = 46; a <= 50; a++) {
+      game.artifacts.get(a).name = game.artifacts.get(46).name;
+    }
 
   },
 
@@ -78,20 +89,96 @@ export var event_handlers = {
     }
   },
 
-  // TODO: "give" command (giving rapier to jacques, buying potions)
+  "beforeGet": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    // special handling for the obsidian scroll case, which is a concealed monster and is replaced with a
+    // dummy artifact when you try to get it.
+    // (#30 is the "concealed monster" version which summons the emerald warrior. #51 is the dummy version.)
+    if (artifact && artifact.id === 30) {
+      game.artifacts.get(51).room_id = game.player.room_id;
+    }
+    return true;
+  },
+
+  "afterGet": function (arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    // Taking Purple book reveals secret passage
+    if (artifact && artifact.id === 27 && game.player.room_id === 24 && !game.data["secret_library"]) {
+      game.effects.print(12, "special");
+      game.rooms.getRoomById(24).getExit("e").room_to = 25;
+      game.rooms.getRoomById(24).name = "You are in the library. (E/W)";
+      game.data["secret_library"] = true;
+    }
+  },
+
+  "read": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    // Plain scroll increases BLAST ability
+    if (artifact && artifact.id === 29) {
+      game.player.spell_abilities["blast"] += 250;  // big boost to current spell ability
+      game.player.spell_abilities_original["blast"] += 10;  // smaller boost to permanent spell ability
+      artifact.destroy();
+    }
+  },
+
+  "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact) {
+    let game = Game.getInstance();
+    // player tries to ready the Hammer of Thor
+    if (new_wpn.id === 24) {
+      game.history.write("Only Thor himself could do that!", "special");
+      return false;
+    }
+    return true;
+  },
+
+  "use": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    // use the thor's hammer
+    if (artifact && artifact.id === 24) {
+      game.command_parser.run('say thor');
+    }
+  },
+
+  "give": function(arg: string, artifact: Artifact, monster: Monster) {
+    let game = Game.getInstance();
+    // Give obsidian scroll case to Emerald Warrior
+    if (monster.id === 14 && artifact.id === 51) {
+      game.effects.print(14);
+      game.monsters.get(14).room_id = null;
+    }
+    // giving the rapier to Jacques
+    if (monster.id === 5 && artifact.id === 8) {
+      game.effects.print(22);
+    }
+    return true;
+  },
+
+  "say": function(arg: string) {
+    let game = Game.getInstance();
+    if (arg === 'thor' && game.artifacts.get(24).isHere()) {
+      game.effects.print(32);
+      for (let i in game.monsters.visible) {
+        let m = game.monsters.visible[i];
+        if (game.data["thors_hammer_courage"].indexOf(m.id) !== -1 && m.reaction === Monster.RX_HOSTILE) {
+          m.courage /= 4;
+          // this effect can only happen once per monster
+          game.data["thors_hammer_courage"].push(m.id);
+        }
+      }
+    }
+
+  },
 
   // TODO: attack/blast bozworth
-
-  // TODO: reading scrolls
 
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
     let game = Game.getInstance();
-    if (!game.data["thors_hammer"] && game.player.room_id === 22 && !game.artifacts.get(24).seen) {
+    if (!game.data["thors_hammer_found"] && game.player.room_id === 22 && !game.artifacts.get(24).seen) {
       game.effects.print(7, "special");
       game.artifacts.get(24).room_id = game.player.room_id;
-      game.data["thors_hammer"] = true;
+      game.data["thors_hammer_found"] = true;
       return;
     }
 
@@ -99,7 +186,7 @@ export var event_handlers = {
     if (roll < 21 && game.data["sex_change_counter"] < 2) {
       game.data["sex_change_counter"]++;
       let word = game.player.gender === "m" ? "feminine" : "masculine";
-      game.history.print("You feel different...more " + word + ".");
+      game.history.write("You feel different...more " + word + ".");
       game.player.gender = game.player.gender === "m" ? "f" : "m";
       return;
     }

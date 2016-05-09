@@ -195,27 +195,28 @@ export class GetCommand implements BaseCommand {
           continue;
         }
 
-        // if it's a disguised monster, reveal it
-        if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
-          a.revealDisguisedMonster();
-          continue;
-        }
-
-        // weights of >900 and -999 indicate items that can't be gotten.
-        if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
-          continue;
-        }
-        if (a.weight > 900) {
-          throw new CommandException("Don't be absurd.");
-        }
-        if (a.weight === -999) {
-          throw new CommandException("You can't get that.");
-        }
-        if (a.type === Artifact.TYPE_BOUND_MONSTER) {
-          throw new CommandException("You can't get that.");
-        }
-
         if (game.triggerEvent("beforeGet", arg, a)) {
+
+          // if it's a disguised monster, reveal it
+          if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
+            a.revealDisguisedMonster();
+            continue;
+          }
+
+          // weights of >900 and -999 indicate items that can't be gotten.
+          if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
+            continue;
+          }
+          if (a.weight > 900) {
+            throw new CommandException("Don't be absurd.");
+          }
+          if (a.weight === -999) {
+            throw new CommandException("You can't get that.");
+          }
+          if (a.type === Artifact.TYPE_BOUND_MONSTER) {
+            throw new CommandException("You can't get that.");
+          }
+
           if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
             game.player.pickUp(a);
             if (arg === "all") {
@@ -356,12 +357,16 @@ export class ReadyCommand implements BaseCommand {
     let old_wpn = game.player.weapon;
     let wpn = game.player.findInInventory(arg);
     if (wpn) {
-      if (wpn.hands === 2 && game.player.isUsingShield()) {
-        throw new CommandException("That is a two-handed weapon. Try removing your shield first.");
-      } else {
-        game.player.ready(wpn);
-        game.history.write(wpn.name + " readied.");
-        game.triggerEvent("ready", arg, old_wpn, wpn);
+      if (game.triggerEvent("ready", arg, old_wpn, wpn)) {
+        if (!wpn.is_weapon) {
+          throw new CommandException("That is not a weapon!");
+        }
+        if (wpn.hands === 2 && game.player.isUsingShield()) {
+          throw new CommandException("That is a two-handed weapon. Try removing your shield first.");
+        } else {
+          game.player.ready(wpn);
+          game.history.write(wpn.name + " readied.");
+        }
       }
     } else {
       throw new CommandException("You aren't carrying a " + arg + "!");
