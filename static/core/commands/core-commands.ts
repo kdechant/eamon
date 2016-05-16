@@ -139,9 +139,9 @@ export class LookCommand implements BaseCommand {
       }
       // see if there is a matching monster.
       for (let i in game.monsters.all) {
-        match = true;
         let m = game.monsters.all[i];
         if (m.match(arg) && m.room_id === game.rooms.current_room.id) {
+          match = true;
           game.history.write(m.description);
         }
       }
