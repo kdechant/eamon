@@ -14,6 +14,10 @@
   height: 400px;
   overflow-y: auto;
   padding: 12px; }
+  .history p {
+    margin: 10px 0 0; }
+    .history p.no-space {
+      margin-top: 0; }
   .history .history-command {
     color: #009;
     font-weight: bold; }

@@ -442,7 +442,7 @@ export class Monster extends GameObject {
       let ignore_armor = false;
       // regular or critical hit
       if (hit_roll <= 5) {
-        game.history.write("--a critical hit!", "success");
+        game.history.write("--a critical hit!", "success no-space");
         // roll another die to determine the effect of the critical hit
         let critical_roll = game.diceRoll(1, 100);
         if (critical_roll <= 50) {
@@ -457,7 +457,7 @@ export class Monster extends GameObject {
           multiplier = 1000;	// instant kill
         }
       } else {
-        game.history.write("--a hit!", "success");
+        game.history.write("--a hit!", "success no-space");
       }
       // deal the damage
       target.injure(Math.floor(damage * multiplier), ignore_armor);
@@ -492,22 +492,22 @@ export class Monster extends GameObject {
       if (hit_roll < 97) {
         game.history.write("--a miss!");
       } else {
-        game.history.write("--a fumble!", "warning");
+        game.history.write("--a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
         let fumble_roll = game.diceRoll(1, 100);
         if (fumble_roll <= 40 || (this.weapon_id === 0 && fumble_roll <= 80)) {
 
-          game.history.write("--fumble recovered!");
+          game.history.write("--fumble recovered!", "no-space");
 
         } else if (fumble_roll <= 80) {
 
-          game.history.write("--weapon dropped!", "warning");
+          game.history.write("--weapon dropped!", "warning no-space");
           this.drop(wpn);
 
         } else if (fumble_roll <= 85) {
 
           // not broken, user just injured self
-          game.history.write("--weapon hits user!", "danger");
+          game.history.write("--weapon hits user!", "danger no-space");
           this.injure(game.diceRoll(wpn.dice, wpn.sides));
 
         } else {
@@ -516,23 +516,23 @@ export class Monster extends GameObject {
           if (wpn.type === Artifact.TYPE_MAGIC_WEAPON) {
 
             // magic weapons don't break or get damaged
-            game.history.write("--sparks fly from " + wpn.name + "!", "warning");
+            game.history.write("--sparks fly from " + wpn.name + "!", "warning no-space");
 
           } else {
 
             if (fumble_roll <= 95 && wpn.sides > 2) {
               // weapon damaged - decrease its damage potential
-              game.history.write("--weapon damaged!", "warning");
+              game.history.write("--weapon damaged!", "warning no-space");
               wpn.sides -= 2;
             } else {
-              game.history.write("--weapon broken!", "danger");
+              game.history.write("--weapon broken!", "danger no-space");
               this.weapon_id = null;
               this.weapon = null;
               wpn.destroy();
               this.courage /= 2;
               // broken weapon can hurt user
               if (game.diceRoll(1, 10) > 5) {
-                game.history.write("--broken weapon hurts user!", "danger");
+                game.history.write("--broken weapon hurts user!", "danger no-space");
                 let dice = wpn.dice;
                 if (fumble_roll === 100) dice++;  // worst case - extra damage
                 this.injure(game.diceRoll(dice, wpn.sides));

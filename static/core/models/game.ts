@@ -223,6 +223,7 @@ export class Game {
 
     // show monster and artifact descriptions
     if (light || !this.rooms.current_room.is_dark) {
+      this.history.write(""); // blank line for white space
       for (let i in this.monsters.visible) {
         let m = this.monsters.visible[i];
         if (!m.seen) {
@@ -231,9 +232,9 @@ export class Game {
           this.triggerEvent("see_monster", m);
         } else {
           if (m.count > 1) {
-            this.history.write(m.count + " " + m.name + "s are here.");
+            this.history.write(m.count + " " + m.name + "s are here.", "no-space");
           } else {
-            this.history.write(m.name + " is here.");
+            this.history.write(m.name + " is here.", "no-space");
           }
         }
       }
@@ -245,7 +246,7 @@ export class Game {
           this.triggerEvent("see_artifact", a);
           a.seen = true;
         } else {
-          this.history.write("You see " + a.name);
+          this.history.write("You see " + a.name, "no-space");
         }
       }
     }

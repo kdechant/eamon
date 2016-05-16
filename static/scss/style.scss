@@ -22,6 +22,14 @@
   overflow-y: auto;
   padding: 12px;
 
+  // by default, the history paragraphs have the white space at the top. (see also .no-space below.)
+  p {
+    margin: 10px 0 0;
+    &.no-space {
+      margin-top: 0;
+    }
+  }
+
   .history-command {
     color: #009;
     font-weight: bold;

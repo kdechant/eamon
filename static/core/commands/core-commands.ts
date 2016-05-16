@@ -220,7 +220,7 @@ export class GetCommand implements BaseCommand {
           if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
             game.player.pickUp(a);
             if (arg === "all") {
-              game.history.write(a.name + " taken.");
+              game.history.write(a.name + " taken.", "no-space");
             } else {
               game.history.write("Got it.");
             }
@@ -335,7 +335,7 @@ export class DropCommand implements BaseCommand {
           continue;
         }
         game.player.drop(inventory[i]);
-        game.history.write(inventory[i].name + " dropped.");
+        game.history.write(inventory[i].name + " dropped.", "no-space");
       }
     }
 

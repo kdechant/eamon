@@ -6,7 +6,7 @@ import {Component, Input, AfterViewChecked} from "@angular/core";
     <div class="history">
       <div *ngFor="let entry of history?.history">
         <p class="history-command">{{entry.command}}</p>
-        <p class="history-results" *ngFor="let line of entry.results"><span [ngClass]="line.type">{{line.text}}</span></p>
+        <p class="history-results" *ngFor="let line of entry.results" [ngClass]="line.type">{{line.text}}</p>
       </div>
     </div>
     `,
