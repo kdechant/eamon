@@ -67,13 +67,27 @@ export class EffectRepository {
   /**
    * Prints a numbered effect.
    * @param {number} id The ID of the effect
-   * @param {string} type The display type, e.g., "normal", "special", "warning", "danger"
+   * @param {string} style The display type, e.g., "normal", "special", "warning", "danger"  - omit this argument
+   * to use the style specified in the effect object
    */
-  public print(id: number, type: string = "normal"): void {
-    for (let i in this.all) {
-      if (this.all[i].id === id) {
-        Game.getInstance().history.write(this.all[i].text, type);
+  public print(id: number, style: string = null, inline: boolean = false): void {
+    let ef = this.get(id);
+    if (inline) {
+      // print on the same line as the last effect
+      Game.getInstance().history.append(ef.text);
+    } else {
+      // print as a new paragraph
+      let final_style = style;
+      if (final_style === null) {
+        final_style = ef.style;
       }
+      Game.getInstance().history.write(ef.text, final_style);
+    }
+    if (ef.next !== null) {
+      this.print(ef.next, style);
+    }
+    if (ef.next_inline !== null) {
+      this.print(ef.next_inline, style, true);
     }
   }
 

@@ -5,7 +5,7 @@
 export class HistoryEntry {
 
   public command: string;
-  public results: Object[] = [];
+  public results: any[] = [];
 
   constructor(command) {
     this.command = command;
@@ -13,5 +13,9 @@ export class HistoryEntry {
 
   public push(text: string, type: string) {
     this.results.push({ text: text, type: type });
+  }
+
+  public append(text: string) {
+    this.results[this.results.length - 1].text += text;
   }
 }

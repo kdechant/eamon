@@ -30,6 +30,17 @@ export class HistoryManager {
   }
 
   /**
+   * Appends some output text onto the last item in the history. Use this to print multiple strings without a paragraph
+   * break between. The style of the new text will match the style of the existing text.
+   * e.g.:
+   * game.history.write("This is");
+   * game.history.append(" all one line");
+   */
+  append(text: string) {
+    this.history[this.index - 1].append(text);
+  }
+
+  /**
    * Gets the most recent command the user entered
    */
   getLastCommand() {

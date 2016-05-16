@@ -572,6 +572,11 @@ export class ReadCommand implements BaseCommand {
     let markings_read = false;
     let event_success = false;
 
+    // can't read anything if it's dark
+    if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
+      return;
+    }
+
     // see if we're reading an artifact that has markings
     let a = game.artifacts.getByName(arg);
     if (a !== null && a.isHere()) {

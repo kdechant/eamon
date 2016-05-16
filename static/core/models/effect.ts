@@ -1,7 +1,4 @@
 import {GameObject} from "./game-object";
-import {Game} from "./game";
-import {Monster} from "./monster";
-import {CommandException} from "../utils/command.exception";
 
 /**
  * Effect class. Represents special effect text that can be displayed
@@ -11,5 +8,8 @@ export class Effect extends GameObject {
 
   id: number;
   text: string;
+  style: string;
+  next: number;  // another effect chained onto this one
+  next_inline: number;  // a chained effect that is printed without a paragraph break
 
 }
