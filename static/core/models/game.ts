@@ -216,6 +216,11 @@ export class Game {
     }
     this.skip_battle_actions = false;
 
+    // end turn event triggers here, so we can see any artifacts or monsters that have appeared,
+    // but any monsters that have just entered the room won't be able to attack.
+    this.triggerEvent("endTurn");
+    this.monsters.updateVisible();
+
     // show monster and artifact descriptions
     if (light || !this.rooms.current_room.is_dark) {
       for (let i in this.monsters.visible) {
@@ -255,8 +260,6 @@ export class Game {
         this.player.speed_multiplier = 1;
       }
     }
-
-    this.triggerEvent("endTurn");
 
   }
 
