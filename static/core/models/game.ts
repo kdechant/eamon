@@ -216,7 +216,7 @@ export class Game {
     }
     this.skip_battle_actions = false;
 
-    // end turn event triggers here, so we can see any artifacts or monsters that have appeared,
+    // the first end turn event triggers here, so we can see any artifacts or monsters that have appeared,
     // but any monsters that have just entered the room won't be able to attack.
     this.triggerEvent("endTurn");
     this.monsters.updateVisible();
@@ -262,6 +262,9 @@ export class Game {
       }
     }
 
+    // the second end turn event triggers here, so things can happen after we have seen the artifact
+    // and monster descriptions (e.g., some monsters may speak when you see them)
+    this.triggerEvent("endTurn2");
   }
 
   /**

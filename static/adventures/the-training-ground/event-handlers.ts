@@ -41,14 +41,8 @@ export var event_handlers = {
 
   },
 
-  // add your custom event handlers here
   "endTurn": function() {
     let game = Game.getInstance();
-    // red sun's opening remarks
-    if (game.monsters.get(1).isHere() && !game.data["red_sun_speaks"]) {
-      game.effects.print(4);
-      game.data["red_sun_speaks"] = true;
-    }
     // jacques shouts at you from the room he's locked in
     if (game.rooms.current_room.id === 8 && !game.data["jacques_shouts"]) {
       game.effects.print(5);
@@ -63,11 +57,6 @@ export var event_handlers = {
         }
         game.data['kobolds_appear'] = true;
       }
-    }
-    // Sylvani speaks
-    if (game.monsters.get(12).isHere() && !game.data["sylvani_speaks"]) {
-      game.effects.print(6);
-      game.data["sylvani_speaks"] = true;
     }
     // You hear sounds...
     if (game.player.room_id === 26 && !game.data["sounds_room_26"]) {
@@ -86,6 +75,23 @@ export var event_handlers = {
           m.room_id = game.player.room_id;
         }
       }
+    }
+  },
+
+  "endTurn2": function() {
+    let game = Game.getInstance();
+    // some monsters speak when you first see them. this happens in the "endTurn2" event because their words should
+    // appear after their descriptions.
+
+    // red sun's opening remarks
+    if (game.monsters.get(1).isHere() && !game.data["red_sun_speaks"]) {
+      game.effects.print(4);
+      game.data["red_sun_speaks"] = true;
+    }
+    // Sylvani speaks
+    if (game.monsters.get(12).isHere() && !game.data["sylvani_speaks"]) {
+      game.effects.print(6);
+      game.data["sylvani_speaks"] = true;
     }
   },
 
