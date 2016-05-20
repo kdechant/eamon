@@ -1,5 +1,3 @@
-import {describe, it, beforeEach, expect} from 'angular2/testing';
-
 import {HistoryEntry} from "./history-entry";
 
 describe("History entry class", function() {

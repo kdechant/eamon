@@ -156,6 +156,21 @@ export class MonsterRepository {
   }
 
   /**
+   * Gets an artifact in the local area (current room) by name.
+   * @param {string} name
+   * @return Monster
+   */
+  getLocalByName(name: string) {
+    for (let i in this.all) {
+      let m = this.all[i];
+      if (m.isHere() && m.match(name)) {
+        return m;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Gets a random monster.
    * @param {boolean} include_player
    *   Whether or not to include the player in the random selection (default false)

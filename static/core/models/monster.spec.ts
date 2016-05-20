@@ -1,41 +1,48 @@
-import {describe, it, beforeEach, expect} from 'angular2/testing';
-
 import {Game} from "../models/game";
+import {initMockGame} from "../utils/testing";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
-import {ArtifactRepository} from "../repositories/artifact.repo";
-import {MonsterRepository} from "../repositories/monster.repo";
-
-import {ARTIFACTS} from "../../adventures/demo1/mock-data/artifacts";
-import {MONSTERS} from "../../adventures/demo1/mock-data/monsters";
 
 describe("Monster", function() {
 
   // initialize the test with the full repository of artifacts
-  let repo: MonsterRepository;
   beforeEach(() => {
-    let game = Game.getInstance();
-    game.artifacts = new ArtifactRepository(ARTIFACTS);
-    repo = new MonsterRepository(MONSTERS);
+    initMockGame();
   });
 
   it("should know its carrying capacity", function() {
-    expect(repo.get(1).maxWeight()).toEqual(400);
-    expect(repo.get(2).maxWeight()).toEqual(100);
+    let game = Game.getInstance();
+    expect(game.monsters.get(1).maxWeight()).toEqual(400);
+    expect(game.monsters.get(2).maxWeight()).toEqual(100);
   });
 
   it("should match synonyms", function() {
-    expect(repo.get(3).match('alfred')).toBeTruthy(); // real name, but lowercase
-    expect(repo.get(3).match('al')).toBeTruthy(); // alias
-    expect(repo.get(3).match('albert')).toBeFalsy(); // alias
+    let game = Game.getInstance();
+    expect(game.monsters.get(3).match('alfred')).toBeTruthy(); // real name, but lowercase
+    expect(game.monsters.get(3).match('al')).toBeTruthy(); // alias
+    expect(game.monsters.get(3).match('albert')).toBeFalsy(); // alias
 
     // a multi-word alias
-    expect(repo.get(4).match('bad guy')).toBeTruthy(); // alias
+    expect(game.monsters.get(4).match('bad guy')).toBeTruthy(); // alias
 
-    // item with no aliases
-    let king = repo.get(2);
+    // monster with no aliases
+    let king = game.monsters.get(2);
     expect(king.match('king')).toBeTruthy();
     expect(king.match('grand duke')).toBeFalsy();
   });
 
+  it("should know if it is in the same room as the player", function() {
+    let game = Game.getInstance();
+    expect(game.player.room_id).toEqual(1, "FAILURE TO SETUP FOR TEST: player should be in room 1 at test start");
+
+    let guard = game.monsters.get(1);
+    expect(guard.isHere()).toBeTruthy();
+
+    let king = game.monsters.get(2);
+    expect(king.isHere()).toBeFalsy();
+    king.moveToRoom(1);
+    expect(king.isHere()).toBeTruthy();
+    // put things back the way they were so this test doesn't contaminate other tests
+    // king.moveToRoom(3);
+  });
 });

@@ -6,12 +6,11 @@
   <script src="node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
   <script src="node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
 
-  <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+  <!-- 1. Load libraries -->
+  <script src="node_modules/zone.js/dist/zone.js"></script>
+  <script src="node_modules/reflect-metadata/Reflect.js"></script>
   <script src="node_modules/systemjs/dist/system.src.js"></script>
-  <script src="node_modules/rxjs/bundles/Rx.js"></script>
-  <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
-  <!-- Import ng2 testing -->
-  <script src="node_modules/angular2/bundles/testing.dev.js"></script>
+
 </head>
 <body>
   <script>
@@ -32,6 +31,7 @@
       System.import('core/models/room.spec'),
       System.import('core/models/artifact.spec'),
       System.import('core/models/monster.spec'),
+      System.import('core/repositories/artifact-repo.spec'),
       System.import('core/repositories/monster-repo.spec'),
       System.import('core/models/history-entry.spec'),
       System.import('core/models/history-manager.spec')

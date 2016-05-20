@@ -1,5 +1,3 @@
-import {describe, it, beforeEach, expect} from 'angular2/testing';
-
 import {Game} from "../models/game";
 import {Artifact} from "../models/artifact";
 import {ArtifactRepository} from "../repositories/artifact.repo";

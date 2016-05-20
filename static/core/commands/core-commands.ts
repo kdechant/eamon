@@ -102,6 +102,7 @@ export class LookCommand implements BaseCommand {
       let match = false;
 
       // see if there is a matching artifact.
+      // Note: not using game.artifacts.getLocalByName() here because we need to query embedded artifacts too
       for (let i in game.artifacts.all) {
         let a = game.artifacts.all[i];
         if (a.match(arg) && a.isHere()) {
@@ -138,12 +139,10 @@ export class LookCommand implements BaseCommand {
         }
       }
       // see if there is a matching monster.
-      for (let i in game.monsters.all) {
-        let m = game.monsters.all[i];
-        if (m.match(arg) && m.room_id === game.rooms.current_room.id) {
-          match = true;
-          game.history.write(m.description);
-        }
+      let m = game.monsters.getLocalByName(arg);
+      if (m) {
+        match = true;
+        game.history.write(m.description);
       }
 
       // error message if nothing matched
@@ -270,8 +269,8 @@ export class RemoveCommand implements BaseCommand {
       }
 
       // look for a container artifact and see if we can remove the item from it
-      let container: Artifact = game.artifacts.getByName(container_name);
-      if (container && container.isHere()) {
+      let container: Artifact = game.artifacts.getLocalByName(container_name);
+      if (container) {
         if (container.type === Artifact.TYPE_CONTAINER) {
           if (container.is_open) {
             let item: Artifact = container.getContainedArtifact(item_name);
@@ -384,17 +383,17 @@ export class WearCommand implements BaseCommand {
     let game = Game.getInstance();
     let artifact = game.player.findInInventory(arg);
     if (artifact) {
-      if (artifact.type == Artifact.TYPE_WEARABLE) {
+      if (artifact.type === Artifact.TYPE_WEARABLE) {
         if (artifact.is_worn) {
           throw new CommandException("You're already wearing it!");
         }
-        if (artifact.armor_type == Artifact.ARMOR_TYPE_ARMOR && game.player.isWearingArmor()) {
+        if (artifact.armor_type === Artifact.ARMOR_TYPE_ARMOR && game.player.isWearingArmor()) {
           throw new CommandException("Try removing your other armor first.");
         }
-        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.player.isUsingShield()) {
+        if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.isUsingShield()) {
           throw new CommandException("Try removing your other shield first.");
         }
-        if (artifact.armor_type == Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 2) {
+        if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 2) {
           throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
         }
         game.player.wear(artifact);
@@ -622,8 +621,8 @@ export class OpenCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
     let opened_something: boolean = false;
-    let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere()) {
+    let a = game.artifacts.getLocalByName(arg);
+    if (a !== null) {
 
       if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
         // if it's a disguised monster, reveal it
@@ -774,8 +773,8 @@ export class FreeCommand implements BaseCommand {
     let message: string = "";
 
     // see if we're reading an artifact that has markings
-    let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere()) {
+    let a = game.artifacts.getLocalByName(arg);
+    if (a !== null) {
       if (a.type !== Artifact.TYPE_BOUND_MONSTER) {
         throw new CommandException("You can't free that!");
       }

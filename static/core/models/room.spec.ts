@@ -1,5 +1,3 @@
-import {describe, it, beforeEach, expect} from 'angular2/testing';
-
 import {Room} from "./room";
 import {RoomExit} from "./room";
 

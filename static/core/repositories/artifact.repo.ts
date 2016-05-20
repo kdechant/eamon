@@ -1,5 +1,6 @@
 import {Artifact} from "../models/artifact";
 import {Game} from "../models/game";
+import {Monster} from "../models/monster";
 
 /**
  * Class ArtifactRepository.
@@ -84,7 +85,8 @@ export class ArtifactRepository {
   }
 
   /**
-   * Gets an artifact by name.
+   * Gets an artifact by name. This does not take into account where the artifact is.
+   * This is known to not work reliably if there are two artifacts with the same name or alias.
    * @param {string} name
    * @return Artifact
    */
@@ -92,6 +94,21 @@ export class ArtifactRepository {
     for (let i in this.all) {
       if (this.all[i].match(name)) {
         return this.all[i];
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Gets an artifact in the local area (current room or player inventory) by name.
+   * @param {string} name
+   * @return Artifact
+   */
+  getLocalByName(name: string) {
+    for (let i in this.all) {
+      let a = this.all[i];
+      if (a.isHere() && a.match(name) && !a.embedded) {
+        return a;
       }
     }
     return null;

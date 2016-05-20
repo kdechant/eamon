@@ -80,7 +80,7 @@ export class Artifact extends GameObject {
    * @returns boolean
    */
   public isHere(): boolean {
-    return (this.room_id === Game.getInstance().rooms.current_room.id || this.monster_id === Monster.PLAYER);
+    return (this.room_id === Game.getInstance().player.room_id || this.monster_id === Monster.PLAYER);
   }
 
   /**
@@ -207,19 +207,14 @@ export class Artifact extends GameObject {
     switch (this.weapon_type) {
       case 1:
         return "axe";
-        break;
       case 2:
         return "bow";
-        break;
       case 3:
         return "club";
-        break;
       case 4:
         return "spear";
-        break;
       case 5:
         return "sword";
-        break;
     }
   }
 

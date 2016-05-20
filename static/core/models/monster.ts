@@ -237,7 +237,7 @@ export class Monster extends GameObject {
    * @returns boolean
    */
   public isHere(): boolean {
-    return (this.room_id === Game.getInstance().rooms.current_room.id);
+    return (this.room_id === Game.getInstance().player.room_id);
   }
 
   /**
