@@ -622,9 +622,9 @@ core_commands.push(new ReadCommand());
 export class OpenCommand implements BaseCommand {
   name: string = "open";
   verbs: string[] = ["open"];
+  opened_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    let opened_something: boolean = false;
     let a = game.artifacts.getLocalByName(arg);
     if (a !== null) {
 
@@ -632,7 +632,7 @@ export class OpenCommand implements BaseCommand {
         // if it's a disguised monster, reveal it
 
         a.revealDisguisedMonster();
-        opened_something = true;
+        this.opened_something = true;
 
       } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
         // normal container or door/gate
@@ -650,7 +650,7 @@ export class OpenCommand implements BaseCommand {
             game.history.write("Opened.");
           }
           a.is_open = true;
-          opened_something = true;
+          this.opened_something = true;
         } else {
           throw new CommandException("It's already open!");
         }
@@ -658,10 +658,10 @@ export class OpenCommand implements BaseCommand {
     }
 
     // other effects are custom to the adventure
-    let success = game.triggerEvent("open", arg);
+    game.triggerEvent("open", arg, this);
 
     // otherwise, nothing happens
-    if ((!success || success === undefined) && !opened_something) {
+    if (!this.opened_something) {
       if (arg === "door") {
         game.history.write("The door will open when you pass through it.");
       } else {
