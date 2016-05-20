@@ -3,6 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
+import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -19,11 +20,11 @@ export var event_handlers = {
 
   // the 'read' event handler should return true if the handler did something,
   // otherwise the "there are no markings to read" message will appear.
-  "read": function(arg: string, artifact: Artifact) {
+  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
     let game = Game.getInstance();
     if (artifact !== null && artifact.id === 11) {
       game.effects.print(10);
-      return true;
+      command.markings_read = true;
     }
   },
 

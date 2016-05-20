@@ -566,10 +566,10 @@ core_commands.push(new LightCommand());
 export class ReadCommand implements BaseCommand {
   name: string = "read";
   verbs: string[] = ["read"];
+  markings_read: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    let markings_read = false;
-    let event_success = false;
+    this.markings_read = false;
 
     // can't read anything if it's dark
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
@@ -577,15 +577,15 @@ export class ReadCommand implements BaseCommand {
     }
 
     // see if we're reading an artifact that has markings
-    let a = game.artifacts.getByName(arg);
-    if (a !== null && a.isHere()) {
+    let a = game.artifacts.getLocalByName(arg);
+    if (a !== null) {
 
       // "readable" type artifacts have built-in markings logic
       // (this is the new version, which displays one marking per use of the "read" command.)
       // NOTE: This is not implemented on most adventures yet.
       if (a.markings) {
         game.history.write("It reads: \"" + a.markings[a.markings_index] + "\"");
-        markings_read = true;
+        this.markings_read = true;
         a.markings_index++;
         if (a.markings_index >= a.markings.length) {
           a.markings_index = 0;
@@ -598,17 +598,21 @@ export class ReadCommand implements BaseCommand {
         for (let i = 0; i < a.num_effects; i++) {
           game.effects.print(a.effect_id + i);
         }
-        markings_read = true;
+        this.markings_read = true;
       }
 
       // also call the event handler to allow reading custom markings on other artifact types
       // (or doing special things when reading something)
-      event_success = game.triggerEvent("read", arg, a);
+      game.triggerEvent("read", arg, a, this);
     }
 
     // otherwise, nothing happens
-    if ((!event_success || event_success === undefined) && !markings_read) {
-      game.history.write("There are no markings to read!");
+    if (!this.markings_read) {
+      if (a || arg === 'wall' || arg === 'door' || arg === 'floor' || arg === 'ceiling') {
+        game.history.write("There are no markings to read!");
+      } else {
+        game.history.write("There is no " + arg + " here!");
+      }
     }
   }
 }

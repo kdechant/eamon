@@ -3,6 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
+import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -39,14 +40,14 @@ export var event_handlers = {
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact) {
+  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
     let game = Game.getInstance();
 
     if (artifact !== null) {
       if (artifact.id === 3) {
         game.history.write('It says "HEALING POTION"');
         artifact.name = "healing potion";
-        return true;
+        command.markings_read = true;
       } else if (artifact.id === 9) {
         game.effects.print(7, "special");
         if (game.rooms.current_room.id === 26) {
@@ -55,7 +56,7 @@ export var event_handlers = {
           game.history.write("You flop three times and die.", "danger");
         }
         game.die();
-        return true;
+        command.markings_read = true;
       }
     }
   },
