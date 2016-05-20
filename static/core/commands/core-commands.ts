@@ -327,12 +327,12 @@ export class DropCommand implements BaseCommand {
 
     let inventory = game.player.inventory;
     for (let i in inventory) {
-      match = true;
       if (inventory[i].match(arg) || arg === "all") {
         // "drop all" doesn't drop items the player is wearing
         if (arg === "all" && inventory[i].is_worn) {
           continue;
         }
+        match = true;
         game.player.drop(inventory[i]);
         game.history.write(inventory[i].name + " dropped.", "no-space");
       }
