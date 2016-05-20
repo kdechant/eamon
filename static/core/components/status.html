@@ -57,6 +57,10 @@
     <p class="heading">What's around:</p>
     <div class="artifacts-list">
       <div class="artifact" *ngFor="let artifact of game.artifacts.visible">{{ artifact.name }}
+        <span class="artifact-status" *ngIf="artifact.type == 4 || artifact.type == 8">
+            <span *ngIf="artifact.is_open">(open)</span>
+            <span *ngIf="!artifact.is_open">(closed)</span>
+        </span>
         <div class="artifact-contents" *ngFor="let content of artifact.contents">{{ content.name }}</div>
       </div>
       <span class="artifact none" *ngIf="game.artifacts.visible.length == 0">nothing<br /></span>
