@@ -689,39 +689,62 @@ export class GiveCommand implements BaseCommand {
     let item_name: string = regex_result[1];
     let monster_name: string = regex_result[2];
 
-    let item = game.player.findInInventory(item_name);
-    if (!item) {
-      throw new CommandException("You're not carrying it!");
-    }
-
-    let monster = game.monsters.getByName(monster_name);
-    if (!monster || monster.room_id !== game.rooms.current_room.id) {
+    let recipient = game.monsters.getByName(monster_name);
+    if (!recipient || recipient.room_id !== game.rooms.current_room.id) {
       throw new CommandException(monster_name + " is not here!");
     }
 
-    if (game.triggerEvent("give", arg, item, monster)) {
+    let gold_amount = Number(item_name);
+    if (!isNaN(gold_amount)) {
+      // giving money
 
-      if (item.is_worn) {
-        game.player.remove(item);
+      if (gold_amount > game.player.gold) {
+        throw new CommandException("You only have " + game.player.gold + " gold pieces!");
       }
-      item.monster_id = monster.id;
-      if ((item.type === Artifact.TYPE_EDIBLE || item.type === Artifact.TYPE_DRINKABLE) && item.is_healing) {
-        let v: string = item.type === Artifact.TYPE_EDIBLE ? "eats" : "drinks";
-        game.history.write(monster.name + " " + v + " the " + item.name + " and hands it back.");
-        item.use();
-        item.monster_id = game.player.id;
-      } else {
-        monster.updateInventory();
-        game.history.write(monster.name + " takes the " + item.name + ".");
-      }
-      game.player.updateInventory();
 
-      if (item.is_weapon && monster.weapon_id === null) {
-        game.history.write(monster.name + " readies the " + item.name + ".");
-        monster.ready(item);
+      // TODO: show confirmation dialog to player
+
+      if (game.triggerEvent("giveGold", arg, gold_amount, recipient)) {
+        game.player.gold -= gold_amount;
+        game.history.write(recipient.name + " takes the money...");
+        if (recipient.reaction === Monster.RX_NEUTRAL && gold_amount >= 5000) {
+          game.history.write(recipient.name + " agrees to join your cause.");
+          recipient.reaction = Monster.RX_FRIEND;
+        }
+      }
+
+    } else {
+
+      // giving item
+      let item = game.player.findInInventory(item_name);
+      if (!item) {
+        throw new CommandException("You're not carrying it!");
+      }
+
+      if (game.triggerEvent("give", arg, item, recipient)) {
+
+        if (item.is_worn) {
+          game.player.remove(item);
+        }
+        item.monster_id = recipient.id;
+        if ((item.type === Artifact.TYPE_EDIBLE || item.type === Artifact.TYPE_DRINKABLE) && item.is_healing) {
+          let v: string = item.type === Artifact.TYPE_EDIBLE ? "eats" : "drinks";
+          game.history.write(recipient.name + " " + v + " the " + item.name + " and hands it back.");
+          item.use();
+          item.monster_id = game.player.id;
+        } else {
+          recipient.updateInventory();
+          game.history.write(recipient.name + " takes the " + item.name + ".");
+        }
+        game.player.updateInventory();
+
+        // if you give a weapon to a monster who doesn't have one, they will ready it
+        if (item.is_weapon && recipient.weapon_id === null) {
+          game.history.write(recipient.name + " readies the " + item.name + ".");
+          recipient.ready(item);
+        }
       }
     }
-
   }
 }
 core_commands.push(new GiveCommand());

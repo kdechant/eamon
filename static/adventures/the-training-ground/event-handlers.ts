@@ -147,16 +147,47 @@ export var event_handlers = {
     }
   },
 
-  "give": function(arg: string, artifact: Artifact, monster: Monster) {
+  "give": function(arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
     // Give obsidian scroll case to Emerald Warrior
-    if (monster.id === 14 && artifact.id === 51) {
+    if (recipient.id === 14 && artifact.id === 51) {
       game.effects.print(14);
       game.monsters.get(14).room_id = null;
     }
     // giving the rapier to Jacques
-    if (monster.id === 5 && artifact.id === 8) {
+    if (recipient.id === 5 && artifact.id === 8) {
       game.effects.print(22);
+    }
+    return true;
+  },
+
+  "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
+    let game = Game.getInstance();
+    // buy options from Bozworth the gnome
+    if (recipient.id === 20) {
+      if (gold_amount < 100) {
+        game.effects.print(28);
+      } else {
+        if (recipient.hasArtifact(40)) {
+          let p = game.artifacts.get(40);
+        } else if (recipient.hasArtifact(41)) {
+          let p = game.artifacts.get(41);
+        }
+        if (p !== undefined) {
+          game.player.gold -= gold_amount;
+          p.monster_id = null;
+          p.room_id = game.player.room_id;
+          game.effects.print(31);
+          if (gold_amount > 100) {
+            game.effects.print(30);
+          }
+          recipient.updateInventory();
+        } else {
+          // out of potions
+          game.effects.print(29);
+        }
+      }
+      return false; // bypass normal "give money" logic
     }
     return true;
   },
