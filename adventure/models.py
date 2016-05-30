@@ -32,9 +32,18 @@ WEAPON_TYPES = (
     (SPEAR, 'Spear'),
     (SWORD, 'Sword')
 )
+CLOTHING_TYPES = (
+    (0, 'Clothes or Armor/Shield'),
+    (1, 'Coats, Capes, etc.'),
+    (2, 'Shoes, boots'),
+    (3, 'Gloves'),
+    (4, 'Hats, headwear'),
+    (5, 'Jewelry'),
+    (6, 'Undergarments'),
+)
 ARMOR_TYPES = (
     (0, 'Armor'),
-    (1, 'Shield'), # different in EDX - see manual
+    (1, 'Shield'),
 )
 
 
@@ -107,7 +116,9 @@ class Artifact(models.Model):
     weapon_odds = models.IntegerField(null=True)
     dice = models.IntegerField(null=True)
     sides = models.IntegerField(null=True)
+    clothing_type = models.IntegerField(null=True,choices=CLOTHING_TYPES)
     armor_class = models.IntegerField(default=0)
+    armor_type = models.IntegerField(null=True,choices=ARMOR_TYPES)
     get_all = models.BooleanField(default=True,
         help_text="Will the 'get all' command pick up this item?"
     )

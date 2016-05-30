@@ -200,6 +200,11 @@ class Command(BaseCommand):
                         # container
                         artifact.key_id = values[4]
                         artifact.is_open = values[5]
+                        # items inside = values[6]
+                        # items it can hold = values[7]
+                        # (in some EDX versions, they have hit points which are stored in values[7] when the number is
+                        # > 1000 (see TGROUND.BAS line 874-891)
+                        artifact.quantity = values[7]
                     elif artifact.type == 5:
                         # light source
                         artifact.quantity = values[4]
@@ -217,8 +222,11 @@ class Command(BaseCommand):
                     elif artifact.type == 8:
                         # door/gate
                         room_beyond = RoomExit.objects.filter(room_from__adventure_id=adventure_id, door_id=new_artifact_id)
+                        print("Door logic: Trying to update exit on adventure " + str(adventure_id) + " door " +
+                              str(new_artifact_id) + " to " + str(values[4]))
                         if len(room_beyond):
                             # update the room_to field on the RoomExit object
+                            print("Updating room_exit #" + str(room_beyond[0].id))
                             room_beyond[0].room_to = values[4]
                             room_beyond[0].save()
                         artifact.key_id = values[5]
@@ -232,8 +240,24 @@ class Command(BaseCommand):
 
                     elif artifact.type == 11:
                         # wearable
+                        artifact.clothing_type = values[5]
+                        # convert AC to new formula (see player's manual for the AC values for each armor type)
                         artifact.armor_class = values[4]
-                        artifact.armor_type = values[5]  # armor or shield?
+                        if artifact.armor_class == 1:  # shield
+                            artifact.armor_type = 1
+                            artifact.armor_class = 1
+                        if artifact.armor_class == 2:  # leather
+                            artifact.armor_type = 0
+                            artifact.armor_class = 1
+                        elif artifact.armor_class == 4:  # chain
+                            artifact.armor_type = 0
+                            artifact.armor_class = 3
+                        elif artifact.armor_class == 6:  # plate
+                            artifact.armor_type = 0
+                            artifact.armor_class = 5
+                        elif artifact.armor_class == 8 or artifact.armor_class == 10:  # magic
+                            artifact.armor_type = 0
+                            artifact.armor_class = 7
 
                     elif artifact.type == 12:
                         # disguised monster
