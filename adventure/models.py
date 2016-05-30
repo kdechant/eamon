@@ -123,6 +123,7 @@ class Artifact(models.Model):
         help_text="Will the 'get all' command pick up this item?"
     )
     embedded = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False)
     quantity = models.IntegerField(null=True,
         help_text="Drinks or bites, fuel for light source, etc."
     )

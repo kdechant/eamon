@@ -31,10 +31,14 @@ export class MoveCommand implements BaseCommand {
     if (exit.door_id) {
       let door = game.artifacts.get(exit.door_id);
 
-      // if it's a hidden or secret door. the exit is blocked even if the door's "open" flag is set.
+      // if it's a hidden or secret door, the exit is blocked even if the door's "open" flag is set.
       // show the normal "you can't go that way" message here, to avoid giving away secret door locations
-      if (door.embedded) {
+      if (door.embedded && door.hidden) {
         throw new CommandException("You can't go that way!");
+      }
+
+      if (door.embedded) {
+        door.reveal();
       }
 
       // try to unlock the door using a key the player is carrying
@@ -102,42 +106,39 @@ export class LookCommand implements BaseCommand {
       let match = false;
 
       // see if there is a matching artifact.
-      // Note: not using game.artifacts.getLocalByName() here because we need to query embedded artifacts too
-      for (let i in game.artifacts.all) {
-        let a = game.artifacts.all[i];
-        if (a.match(arg) && a.isHere()) {
-          match = true;
-          // if it's an embedded artifact, reveal it
-          if (a.embedded) {
-            a.embedded = false;
-            a.seen = true; // description will be shown here. don't show it again in game clock tick.
-          }
-          game.history.write(a.description);
+      let a = game.artifacts.getLocalByName(arg, true);
+      if (a) {
+        match = true;
 
-          // display quantity for food, drinks, and light sources
-          if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
-            let noun = a.type === Artifact.TYPE_EDIBLE ? "bite" : "swallow";
-            if (a.quantity === 1) {
-              verb = "is";
-            } else {
-              verb = "are";
-              noun += "s";
-            }
-            game.history.write("There " + verb + " " + a.quantity + " " + noun + " remaining.");
+        // if it's an embedded artifact, reveal it
+        if (a.embedded) {
+          a.reveal();
+        }
+
+        // display quantity for food, drinks, and light sources
+        if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
+          let noun = a.type === Artifact.TYPE_EDIBLE ? "bite" : "swallow";
+          if (a.quantity === 1) {
+            verb = "is";
+          } else {
+            verb = "are";
+            noun += "s";
           }
-          if (a.type === Artifact.TYPE_LIGHT_SOURCE) {
-            if (a.quantity >= 25) {
-              game.history.write("It has a lot of fuel left.");
-            } else if (a.quantity >= 10) {
-              game.history.write("It has some fuel left.");
-            } else if (a.quantity > 0) {
-              game.history.write("It is low on fuel.");
-            } else {
-              game.history.write("It is out of fuel.");
-            }
+          game.history.write("There " + verb + " " + a.quantity + " " + noun + " remaining.");
+        }
+        if (a.type === Artifact.TYPE_LIGHT_SOURCE) {
+          if (a.quantity >= 25) {
+            game.history.write("It has a lot of fuel left.");
+          } else if (a.quantity >= 10) {
+            game.history.write("It has some fuel left.");
+          } else if (a.quantity > 0) {
+            game.history.write("It is low on fuel.");
+          } else {
+            game.history.write("It is out of fuel.");
           }
         }
       }
+
       // see if there is a matching monster.
       let m = game.monsters.getLocalByName(arg);
       if (m) {
@@ -443,8 +444,13 @@ export class DrinkCommand implements BaseCommand {
   verbs: string[] = ["drink"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.player.findInInventory(arg);
+    let item = game.artifacts.getLocalByName(arg, true);
     if (item) {
+
+      if (item.embedded) {
+        item.reveal();
+      }
+
       if (item.type === Artifact.TYPE_DRINKABLE) {
         if (item.quantity > 0) {
           game.history.write("You drink the " + item.name + ".");
@@ -455,10 +461,7 @@ export class DrinkCommand implements BaseCommand {
       } else {
         throw new CommandException("You can't drink that!");
       }
-    } else {
-      throw new CommandException("You aren't carrying it!");
     }
-
   }
 }
 core_commands.push(new DrinkCommand());
@@ -469,9 +472,14 @@ export class EatCommand implements BaseCommand {
   verbs: string[] = ["eat"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.player.findInInventory(arg);
+    let item = game.artifacts.getLocalByName(arg, true);
     if (item) {
-        if (item.type === Artifact.TYPE_EDIBLE) {
+
+      if (item.embedded) {
+        item.reveal();
+      }
+
+      if (item.type === Artifact.TYPE_EDIBLE) {
         if (item.quantity > 0) {
           game.history.write("You eat the " + item.name + ".");
           item.use();
@@ -481,10 +489,7 @@ export class EatCommand implements BaseCommand {
       } else {
         throw new CommandException("You can't eat that!");
       }
-    } else {
-      throw new CommandException("You aren't carrying it!");
     }
-
   }
 }
 core_commands.push(new EatCommand());
@@ -522,7 +527,7 @@ export class AttackCommand implements BaseCommand {
     }
 
     let monster_target = game.monsters.getLocalByName(arg);
-    let artifact_target = game.artifacts.getLocalByName(arg);
+    let artifact_target = game.artifacts.getLocalByName(arg, true);
     if (monster_target) {
 
       if (game.triggerEvent('attackMonster', arg, monster_target)) {
@@ -539,6 +544,11 @@ export class AttackCommand implements BaseCommand {
 
       if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
 
+        // if it's an embedded artifact, reveal it
+        if (artifact_target.embedded) {
+          artifact_target.reveal();
+        }
+
         if (artifact_target.type === Artifact.TYPE_DEAD_BODY) {
           // if it's a dead body, hack it to bits
           game.history.write("You hack it to bits.");
@@ -546,17 +556,21 @@ export class AttackCommand implements BaseCommand {
 
         } else if (artifact_target.type === Artifact.TYPE_CONTAINER || artifact_target.type === Artifact.TYPE_DOOR) {
           // if it's a door or container, break it open.
-          // TODO: EDX contains some kind of hit points logic for doors and containers.
-          // Need to reimplement this. Or, are there some doors/containers that can't be smashed open?
-          game.history.write("The " + artifact_target.name + " smashes to pieces!");
-          if (artifact_target.type === Artifact.TYPE_CONTAINER) {
-            for (let i in artifact_target.contents) {
-              artifact_target.contents[i].room_id = game.player.room_id;
-              artifact_target.contents[i].container_id = null;
-            }
-            artifact_target.destroy();
+          if (artifact_target.key_id > 0 && artifact_target.key_id <= game.artifacts.initial_count) {
+            // can't smash open things that have a key
+            game.history.write("Nothing happens.");
           } else {
-            artifact_target.is_open = true;
+            // TODO: EDX contains some kind of hit points logic for doors and containers. Need to reimplement this.
+            game.history.write("The " + artifact_target.name + " smashes to pieces!");
+            if (artifact_target.type === Artifact.TYPE_CONTAINER) {
+              for (let i in artifact_target.contents) {
+                artifact_target.contents[i].room_id = game.player.room_id;
+                artifact_target.contents[i].container_id = null;
+              }
+              artifact_target.destroy();
+            } else {
+              artifact_target.is_open = true;
+            }
           }
 
         } else {
@@ -666,8 +680,13 @@ export class OpenCommand implements BaseCommand {
   opened_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    let a = game.artifacts.getLocalByName(arg);
+    let a = game.artifacts.getLocalByName(arg, true);
     if (a !== null) {
+
+      // if it's an embedded artifact, reveal it
+      if (a.embedded) {
+        a.reveal();
+      }
 
       if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
         // if it's a disguised monster, reveal it
@@ -679,8 +698,13 @@ export class OpenCommand implements BaseCommand {
         // normal container or door/gate
 
         if (!a.is_open) {
-          // not open. open it.
-          if (a.key_id) {
+          // not open. try to open it.
+          if (a.key_id === -1) {
+            game.history.write("It won't open.");
+          } else if (a.key_id > game.artifacts.initial_count) {
+            // EDX uses key_id > 1000 to indicate things that must be smashed open
+            game.history.write("You'll have to force it open.");
+          } else if (a.key_id > 0) {
             if (game.player.hasArtifact(a.key_id)) {
               let key = game.artifacts.get(a.key_id);
               game.history.write("You unlock it using the " + key.name + ".");

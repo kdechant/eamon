@@ -231,7 +231,7 @@ class Command(BaseCommand):
                             room_beyond[0].save()
                         artifact.key_id = values[5]
                         artifact.is_open = 1 if values[6] == 0 else 0  # closed = 1 for this type
-                        artifact.embedded = values[7]
+                        artifact.hidden = values[7]  # Hidden flag - for secret doors
                     elif artifact.type == 10:
                         # bound monster
                         artifact.monster_id = values[4]

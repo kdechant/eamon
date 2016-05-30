@@ -19,6 +19,11 @@ export class ArtifactRepository {
   visible: Artifact[] = [];
 
   /**
+   * The count of artifacts before player weapons/armor are added
+   */
+  initial_count: number = 0;
+
+  /**
    * The highest ID in the system
    */
   index: number = 0;
@@ -27,6 +32,7 @@ export class ArtifactRepository {
     for (let i in artifact_data) {
       this.add(artifact_data[i]);
     }
+    this.initial_count = this.all.length;
   }
 
   /**
@@ -104,11 +110,13 @@ export class ArtifactRepository {
    * @param {string} name
    * @return Artifact
    */
-  getLocalByName(name: string) {
+  getLocalByName(name: string, include_embedded: boolean = false) {
     for (let i in this.all) {
       let a = this.all[i];
-      if (a.isHere() && a.match(name) && !a.embedded) {
-        return a;
+      if (a.isHere() && a.match(name)) {
+        if (!a.embedded || include_embedded) {
+          return a;
+        }
       }
     }
     return null;

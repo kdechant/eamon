@@ -54,7 +54,8 @@ export class Artifact extends GameObject {
   armor_class: number;
   armor_penalty: number; // the amount of armor expertise needed to avoid to-hit penalty
   get_all: boolean;
-  embedded: boolean;
+  embedded: boolean;  // does not appear in the artifacts list until the player finds it
+  hidden: boolean;  // for secret doors - don't explain why you can't go that way until the player reveals the secret
   quantity: number;
   effect_id: number; // for readable artifacts, the ID of the marking in the effects table
   num_effects: number; // for readable artifacts, the number of markings in the effects table
@@ -190,6 +191,18 @@ export class Artifact extends GameObject {
         game.effects.print(i);
       }
     }
+  }
+
+  /**
+   * Reveals an embedded artifact
+   */
+  public reveal(): void {
+    let game = Game.getInstance();
+    this.embedded = false;
+    this.hidden = false; // display
+    this.seen = true; // description will be shown here. don't show it again in game clock tick.
+    game.artifacts.updateVisible();
+    game.history.write(this.description);
   }
 
   /**
