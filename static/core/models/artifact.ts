@@ -2,6 +2,7 @@ import {GameObject} from "./game-object";
 import {Game} from "./game";
 import {Monster} from "./monster";
 import {CommandException} from "../utils/command.exception";
+import {ArtifactRepository} from "../repositories/artifact.repo";
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -102,16 +103,35 @@ export class Artifact extends GameObject {
     let game = Game.getInstance();
     let container: Artifact = game.artifacts.get(this.container_id);
     if (container) {
-      if (container.room_id) {
-        this.room_id = container.room_id;
-      } else if (container.monster_id) {
-        this.monster_id = container.monster_id;
-      }
       this.container_id = null;
+      if (container.room_id !== null) {
+        this.room_id = container.room_id;
+        game.artifacts.updateVisible();
+      } else if (container.monster_id !== null) {
+        this.monster_id = container.monster_id;
+        game.monsters.get(this.monster_id).updateInventory();
+      }
       game.artifacts.updateVisible();
     } else {
       throw new CommandException("I couldn't find that container!");
     }
+  }
+
+  /**
+   * If the artifact is a container, build the list of contents
+   */
+  public updateContents(): void {
+
+    this.contents = [];
+    if (this.type === Artifact.TYPE_CONTAINER) {
+      let artifacts_repo: ArtifactRepository = Game.getInstance().artifacts;
+      for (let i in artifacts_repo.all) {
+        if (artifacts_repo.all[i].container_id === this.id) {
+          this.contents.push(artifacts_repo.all[i]);
+        }
+      }
+    }
+
   }
 
   /**

@@ -123,17 +123,7 @@ export class ArtifactRepository {
     for (let i in this.all) {
       let a: Artifact = this.all[i];
       if (a.room_id === Game.getInstance().rooms.current_room.id && !a.embedded) {
-
-        // if the artifact is an open container, build the list of contents
-        if (a.type == Artifact.TYPE_CONTAINER && a.is_open) {
-          a.contents = [];
-          for (let i in this.all) {
-            if (this.all[i].container_id === a.id) {
-              a.contents.push(this.all[i]);
-            }
-          }
-        }
-
+        a.updateContents();
         artifacts.push(a);
       }
     }

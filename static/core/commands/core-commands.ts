@@ -382,27 +382,29 @@ export class WearCommand implements BaseCommand {
 
     let game = Game.getInstance();
     let artifact = game.player.findInInventory(arg);
-    if (artifact) {
-      if (artifact.type === Artifact.TYPE_WEARABLE) {
-        if (artifact.is_worn) {
-          throw new CommandException("You're already wearing it!");
+    if (game.triggerEvent('wear', arg, artifact)) {
+      if (artifact) {
+        if (artifact.type === Artifact.TYPE_WEARABLE) {
+          if (artifact.is_worn) {
+            throw new CommandException("You're already wearing it!");
+          }
+          if (artifact.armor_type === Artifact.ARMOR_TYPE_ARMOR && game.player.isWearingArmor()) {
+            throw new CommandException("Try removing your other armor first.");
+          }
+          if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.isUsingShield()) {
+            throw new CommandException("Try removing your other shield first.");
+          }
+          if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 2) {
+            throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
+          }
+          game.player.wear(artifact);
+          game.history.write("You put on the " + artifact.name + ".");
+        } else {
+          throw new CommandException("You can't wear that!");
         }
-        if (artifact.armor_type === Artifact.ARMOR_TYPE_ARMOR && game.player.isWearingArmor()) {
-          throw new CommandException("Try removing your other armor first.");
-        }
-        if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.isUsingShield()) {
-          throw new CommandException("Try removing your other shield first.");
-        }
-        if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 2) {
-          throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
-        }
-        game.player.wear(artifact);
-        game.history.write("You put on the " + artifact.name + ".");
       } else {
-        throw new CommandException("You can't wear that!");
+        throw new CommandException("You aren't carrying a " + arg + "!");
       }
-    } else {
-      throw new CommandException("You aren't carrying a " + arg + "!");
     }
   }
 }
@@ -515,14 +517,51 @@ export class AttackCommand implements BaseCommand {
       throw new CommandException("You don't have a weapon ready!");
     }
 
-    let target = game.monsters.getByName(arg);
-    if (target && target.room_id === game.player.room_id) {
+    let monster_target = game.monsters.getLocalByName(arg);
+    let artifact_target = game.artifacts.getLocalByName(arg);
+    if (monster_target) {
 
-      // halve the target's friendliness and reset target's reaction.
-      // this will allow friendly/neutral monsters to fight back if you anger them.
-      target.hurtFeelings();
+      if (game.triggerEvent('attackMonster', arg, monster_target)) {
 
-      game.player.attack(target);
+        // halve the target's friendliness and reset target's reaction.
+        // this will allow friendly/neutral monsters to fight back if you anger them.
+        monster_target.hurtFeelings();
+
+        game.player.attack(monster_target);
+      }
+
+    } else if (artifact_target) {
+      // attacking an artifact
+
+      if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
+
+        if (artifact_target.type === Artifact.TYPE_DEAD_BODY) {
+          // if it's a dead body, hack it to bits
+          game.history.write("You hack it to bits.");
+          artifact_target.room_id = null;
+
+        } else if (artifact_target.type === Artifact.TYPE_CONTAINER || artifact_target.type === Artifact.TYPE_DOOR) {
+          // if it's a door or container, break it open.
+          // TODO: EDX contains some kind of hit points logic for doors and containers.
+          // Need to reimplement this. Or, are there some doors/containers that can't be smashed open?
+          game.history.write("The " + artifact_target.name + " smashes to pieces!");
+          if (artifact_target.type === Artifact.TYPE_CONTAINER) {
+            for (let i in artifact_target.contents) {
+              artifact_target.contents[i].room_id = game.player.room_id;
+              artifact_target.contents[i].container_id = null;
+            }
+            artifact_target.destroy();
+          } else {
+            artifact_target.is_open = true;
+          }
+
+        } else {
+          throw new CommandException("Why would you attack a " + arg + "?");
+        }
+
+        game.player.attack(monster_target);
+      }
+
     } else {
       throw new CommandException("Attack whom?");
     }
@@ -890,14 +929,15 @@ export class BlastCommand implements BaseCommand {
     let game = Game.getInstance();
 
     if (game.player.spellCast(verb)) {
-      game.triggerEvent("blast", arg);
-      // heal a monster
-      let m = game.monsters.getByName(arg);
-      if (m.room_id = game.rooms.current_room.id) {
-        game.history.write("--a direct hit!", "success");
-        let damage = game.diceRoll(2, 5);
-        m.injure(damage);
-        m.hurtFeelings();
+      // blast a monster
+      let target = game.monsters.getLocalByName(arg);
+      if (target) {
+        if (game.triggerEvent("blast", arg, target)) {
+          game.history.write("--a direct hit!", "success");
+          let damage = game.diceRoll(2, 5);
+          target.injure(damage);
+          target.hurtFeelings();
+        }
       } else {
         throw new CommandException("Blast whom?");
       }

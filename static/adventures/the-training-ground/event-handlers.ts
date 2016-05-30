@@ -246,6 +246,42 @@ export var event_handlers = {
     game.history.write("You hear a loud sonic boom which echoes all around you!");
   },
 
+  "attackMonster": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // bozworth disappears if attacked/blasted
+    if (target.id === 20) {
+      game.effects.print(21);
+      game.monsters.get(20).room_id = null;
+    }
+  },
+
+  "blast": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // bozworth disappears if attacked/blasted
+    if (target.id === 20) {
+      game.effects.print(21);
+      game.monsters.get(20).room_id = null;
+    }
+  },
+
+  "attackArtifact": function(arg: string, target: Artifact) {
+    let game = Game.getInstance();
+    // can't attack or wear backpack
+    if (target.id === 13) {
+      game.history.write("You don't need to.");
+      return false;
+    }
+  },
+  
+  "wear": function(arg: string, target: Artifact) {
+    let game = Game.getInstance();
+    // can't attack or wear backpack
+    if (target.id === 13) {
+      game.history.write("You don't need to. Just carry it.");
+      return false;
+    }
+  },
+
 }; // end event handlers
 
 

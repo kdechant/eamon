@@ -229,6 +229,7 @@ export class Monster extends GameObject {
           }
         }
       }
+      a.updateContents();
     }
   }
 
