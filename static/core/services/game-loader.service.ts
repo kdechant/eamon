@@ -69,7 +69,7 @@ export class GameLoaderService {
 
       let body = JSON.stringify(player);
 
-      return this.http.put("/api/players/" + player_id, body, options);
+      return this.http.put("http://localhost:8000/api/players/" + player_id, body, options);
     }
   }
 
