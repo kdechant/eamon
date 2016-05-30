@@ -253,6 +253,7 @@ export var event_handlers = {
       game.effects.print(21);
       game.monsters.get(20).room_id = null;
     }
+    return true;
   },
 
   "blast": function(arg: string, target: Monster) {
@@ -262,6 +263,7 @@ export var event_handlers = {
       game.effects.print(21);
       game.monsters.get(20).room_id = null;
     }
+    return true;
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -271,8 +273,9 @@ export var event_handlers = {
       game.history.write("You don't need to.");
       return false;
     }
+    return true;
   },
-  
+
   "wear": function(arg: string, target: Artifact) {
     let game = Game.getInstance();
     // can't attack or wear backpack
@@ -280,6 +283,7 @@ export var event_handlers = {
       game.history.write("You don't need to. Just carry it.");
       return false;
     }
+    return true;
   },
 
 }; // end event handlers

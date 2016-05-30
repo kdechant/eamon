@@ -279,6 +279,10 @@ export class RemoveCommand implements BaseCommand {
                 game.history.write(item.name + " removed from " + container.name + ".");
                 match = true;
                 item.removeFromContainer();
+                if (!item.seen) {
+                  game.history.write(item.description);
+                  item.seen = true;
+                }
                 game.triggerEvent("afterRemove", arg, item);
               }
             } else {
@@ -558,8 +562,6 @@ export class AttackCommand implements BaseCommand {
         } else {
           throw new CommandException("Why would you attack a " + arg + "?");
         }
-
-        game.player.attack(monster_target);
       }
 
     } else {
@@ -687,6 +689,14 @@ export class OpenCommand implements BaseCommand {
             }
           } else {
             game.history.write("Opened.");
+
+            if (a.type === Artifact.TYPE_CONTAINER) {
+              game.history.write("It contains:");
+              for (let i in a.contents) {
+                game.history.write(" - " + a.contents[i].name, "no-space");
+              }
+            }
+
           }
           a.is_open = true;
           this.opened_something = true;
