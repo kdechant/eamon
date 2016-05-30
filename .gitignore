@@ -4,3 +4,4 @@
 **/**/*.js.map
 **/__pycache__/
 /.idea/
+venv

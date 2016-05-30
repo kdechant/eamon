@@ -2,8 +2,9 @@
   "name": "eamon",
   "version": "0.1.0",
   "scripts": {
-    "start": "tsc && concurrently \"npm run tsc:w\" \"npm run build-css:w\" \"npm run browser-sync\" ",
-    "browser-sync": "browser-sync start --files \"myapp/static/css/*.css\" --proxy 127.0.0.1:8000 --serveStatic: static",
+    "start": "concurrently \"npm run build-css:w\" \"npm run browser-sync\" ",
+    "start-all": "tsc && concurrently \"npm run tsc:w\" \"npm run build-css:w\" \"npm run browser-sync\" ",
+    "browser-sync": "browser-sync start --files \"static/css/*.css\" --proxy 127.0.0.1:8000 --serveStatic: static",
     "lite": "lite-server",
     "test": "live-server --open=unit-tests.html",
     "postinstall": "typings install",
