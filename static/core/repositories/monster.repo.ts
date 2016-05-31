@@ -55,6 +55,7 @@ export class MonsterRepository {
 
     this.all.push(m);
     m.updateInventory();
+    m.readyBestWeapon(); // this initializes the monster.weapon object, to show the correct combat verbs
 
     // add the dead body artifact
     let body = {

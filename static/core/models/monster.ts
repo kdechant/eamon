@@ -28,6 +28,24 @@ export class Monster extends GameObject {
   static COMBAT_CODE_NORMAL: number = 0;  // uses a weapon, or natural weapons if defined in database
   static COMBAT_CODE_WEAPON_IF_AVAILABLE: number = -1;  // uses a weapon if there is one available; otherwise natural
   static COMBAT_CODE_NEVER_FIGHT: number = -2;
+  // attack verbs (indexed by weapon type, first index (0) is for natural weapons)
+  static COMBAT_VERBS_ATTACK = [
+    ['lunges', 'tears', 'claws'],
+    ['swings', 'chops', 'swings'],
+    ['shoots'],
+    ['swings'],
+    ['stabs', 'lunges', 'jabs'],
+    ['swings', 'chops', 'stabs'],
+  ];
+  // miss verbs (indexed by weapon type, first index (0) is for natural weapons)
+  static COMBAT_VERBS_MISS = [
+    ['missed', 'missed'],
+    ['dodged', 'missed'],
+    ['missed', 'missed'],
+    ['dodged', 'missed'],
+    ['dodged', 'missed'],
+    ['parried', 'missed'],
+  ];
 
   // data properties for all monsters
   // don't use default values here because they won't be overwritten when loading the data object.
@@ -477,7 +495,15 @@ export class Monster extends GameObject {
    */
   public attack(target: Monster): void {
     let game = Game.getInstance();
-    game.history.write(this.name + " attacks " + target.name);
+
+    let weapon_type = this.weapon ? this.weapon.weapon_type : 0;
+    if (this.combat_code === 1) {
+      game.history.write(this.name + " attacks " + target.name);
+    } else {
+      let attack_verbs = Monster.COMBAT_VERBS_ATTACK[weapon_type];
+      let attack_verb = attack_verbs[Math.floor(Math.random() * attack_verbs.length)];
+      game.history.write(this.name + " " + attack_verb + " at " + target.name);
+    }
 
     let wpn = Game.getInstance().artifacts.get(this.weapon_id);
     let odds = this.getBaseToHit();
@@ -492,7 +518,7 @@ export class Monster extends GameObject {
       let ignore_armor = false;
       // regular or critical hit
       if (hit_roll <= 5) {
-        game.history.write("--a critical hit!", "success no-space");
+        game.history.write("-- a critical hit!", "success no-space");
         // roll another die to determine the effect of the critical hit
         let critical_roll = game.diceRoll(1, 100);
         if (critical_roll <= 50) {
@@ -507,7 +533,7 @@ export class Monster extends GameObject {
           multiplier = 1000;	// instant kill
         }
       } else {
-        game.history.write("--a hit!", "success no-space");
+        game.history.write("-- a hit!", "success no-space");
       }
       // deal the damage
       target.injure(Math.floor(damage * multiplier), ignore_armor);
@@ -540,9 +566,11 @@ export class Monster extends GameObject {
 
       // miss or fumble
       if (hit_roll < 97) {
-        game.history.write("--a miss!");
+        let miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type];
+        let miss_verb = miss_verbs[Math.floor(Math.random() * miss_verbs.length)];
+        game.history.write("-- " + miss_verb + "!");
       } else {
-        game.history.write("--a fumble!", "warning no-space");
+        game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
         let fumble_roll = game.diceRoll(1, 100);
         if (fumble_roll <= 40 || (this.weapon_id === 0 && fumble_roll <= 80)) {
