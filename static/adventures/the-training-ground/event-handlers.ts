@@ -19,16 +19,15 @@ export var event_handlers = {
     game.history.write('"OK, let\'s be careful in there, ' + a + '", he says, as he walks away.');
 
     // set up game data
-    game.data["red_sun_speaks"] = false;
     game.data["jacques_shouts"] = false;
     game.data["kobolds_appear"] = false;
-    game.data["sylvani_speaks"] = false;
     game.data["thors_hammer_found"] = false;
     game.data["thors_hammer_courage"] = [];
     game.data["secret_library"] = false;
     game.data["sounds_room_26"] = false;
     game.data["sex_change_counter"] = 0;
     game.data["charisma_boost"] = false;
+    // old variables from EDX no longer used: sylvani_speaks, red_sun_speaks
 
     // set the "seen" flag on kobold6 and the dummy obsidian scroll case
     game.monsters.get(11).seen = true;
@@ -40,6 +39,20 @@ export var event_handlers = {
       game.artifacts.get(a).name = game.artifacts.get(46).name;
     }
 
+  },
+
+  "see_monster": function(monster: Monster): void {
+    let game = Game.getInstance();
+    // some monsters speak when you first see them.
+
+    // red sun's opening remarks
+    if (monster.id === 1) {
+      game.effects.print(4);
+    }
+    // Sylvani speaks (ID 13 is Don Jonson. In EDX, Sylvani speaks after both descriptions are shown.)
+    if (monster.id === 13) {
+      game.effects.print(6);
+    }
   },
 
   "endTurn": function() {
@@ -76,23 +89,6 @@ export var event_handlers = {
           m.room_id = game.player.room_id;
         }
       }
-    }
-  },
-
-  "endTurn2": function() {
-    let game = Game.getInstance();
-    // some monsters speak when you first see them. this happens in the "endTurn2" event because their words should
-    // appear after their descriptions.
-
-    // red sun's opening remarks
-    if (game.monsters.get(1).isHere() && !game.data["red_sun_speaks"]) {
-      game.effects.print(4);
-      game.data["red_sun_speaks"] = true;
-    }
-    // Sylvani speaks
-    if (game.monsters.get(12).isHere() && !game.data["sylvani_speaks"]) {
-      game.effects.print(6);
-      game.data["sylvani_speaks"] = true;
     }
   },
 
