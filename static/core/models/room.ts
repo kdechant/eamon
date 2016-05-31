@@ -69,4 +69,10 @@ export class Room extends Loadable {
     return null;
   }
 
+  /**
+   * Creates a new exit from the room in a given direction
+   */
+  public addExit(exit: RoomExit): void {
+    this.exits.push(exit);
+  }
 }

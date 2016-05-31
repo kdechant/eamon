@@ -110,7 +110,10 @@ export var event_handlers = {
     // Taking Purple book reveals secret passage
     if (artifact && artifact.id === 27 && game.player.room_id === 24 && !game.data["secret_library"]) {
       game.effects.print(12, "special");
-      game.rooms.getRoomById(24).getExit("e").room_to = 25;
+      let exit = new RoomExit();
+      exit.direction = 'e';
+      exit.room_to = 25;
+      game.rooms.getRoomById(24).addExit(exit);
       game.rooms.getRoomById(24).name = "You are in the library. (E/W)";
       game.data["secret_library"] = true;
     }
