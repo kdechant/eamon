@@ -78,13 +78,15 @@ export var event_handlers = {
       game.data["sounds_room_26"] = true;
     }
     // Zapf the Conjurer brings in strangers (15% Chance)
-    if (game.monsters.get(15).isHere()) {
+    let zapf = game.monsters.get(15);
+    if (zapf.isHere() && zapf.hasArtifact(33)) {
       let roll = game.diceRoll(1, 100);
+      console.log("zapf roll", roll)
       if (roll <= 15) {
         game.effects.print(16, "special");
         let m = game.monsters.getRandom();
         // Zapf's spell only brings in monsters the player has already seen
-        if (!m.isHere() && !m.seen) {
+        if (!m.isHere() && m.seen) {
           game.history.write("<<POOF!!>>  " + m.name + " appears!", "special");
           m.room_id = game.player.room_id;
         }
