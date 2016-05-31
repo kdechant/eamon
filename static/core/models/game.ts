@@ -197,9 +197,12 @@ export class Game {
     // if the player is seeing the room for the first time, show the description
     if (this.rooms.current_room.is_dark && !light) {
       this.history.write("It's too dark to see anything.");
-    } else if (!this.rooms.current_room.seen) {
-      this.history.write(this.rooms.current_room.description);
-      this.rooms.current_room.seen = true;
+    } else {
+      this.history.write(this.rooms.current_room.name);
+      if (!this.rooms.current_room.seen) {
+        this.history.write(this.rooms.current_room.description);
+        this.rooms.current_room.seen = true;
+      }
     }
 
     this.artifacts.updateVisible();

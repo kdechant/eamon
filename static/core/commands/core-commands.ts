@@ -64,7 +64,6 @@ export class MoveCommand implements BaseCommand {
         return;
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
-        game.history.write("Entering " + room_to.name);
         game.player.moveToRoom(room_to.id);
 
         // move friendly monsters
@@ -1012,7 +1011,6 @@ export class GotoCommand implements BaseCommand {
     if (!room_to) {
       throw new CommandException("There is no room " + arg);
     }
-    game.history.write("Entering " + room_to.name);
     game.skip_battle_actions = true;
     game.player.moveToRoom(room_to.id);
   }
