@@ -84,4 +84,21 @@ export class HistoryManager {
     }
   }
 
+  /**
+   * Gets the most recent output entry added to the history.
+   * Used for unit tests.
+   */
+  getLastOutput() {
+    if (this.history.length > 0) {
+      let res = this.history[this.history.length - 1]["results"];
+      if (res.length > 0) {
+        return res[res.length - 1];
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }

@@ -210,13 +210,15 @@ export class Game {
 
     // non-player monster actions
     if (this.in_battle && !this.skip_battle_actions) {
-      for (let i in this.monsters.visible) {
-        let m = this.monsters.visible[i];
-        m.doBattleActions();
+      for (let i in this.monsters.all) {
+        if (this.monsters.all[i].id !== Monster.PLAYER && this.monsters.all[i].isHere()) {
+          this.monsters.all[i].doBattleActions();
+        }
+        this.artifacts.updateVisible();
+        this.monsters.updateVisible();
       }
-      this.artifacts.updateVisible();
-      this.monsters.updateVisible();
     }
+    // clear the "skip battle" flag if it was set
     this.skip_battle_actions = false;
 
     // the first end turn event triggers here, so we can see any artifacts or monsters that have appeared,

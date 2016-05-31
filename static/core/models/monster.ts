@@ -23,6 +23,11 @@ export class Monster extends GameObject {
   // status
   static STATUS_ALIVE: number = 1;
   static STATUS_DEAD: number = 2;
+  // combat codes
+  static COMBAT_CODE_SPECIAL: number = 1;  // uses generic combat verbs like "attacks"
+  static COMBAT_CODE_NORMAL: number = 0;  // uses a weapon, or natural weapons if defined in database
+  static COMBAT_CODE_WEAPON_IF_AVAILABLE: number = -1;  // uses a weapon if there is one available; otherwise natural
+  static COMBAT_CODE_NEVER_FIGHT: number = -2;
 
   // data properties for all monsters
   // don't use default values here because they won't be overwritten when loading the data object.
@@ -34,6 +39,7 @@ export class Monster extends GameObject {
   count: number;
   friendliness: string;
   friend_odds: number;
+  combat_code: number;
   courage: number;
   gold: number;
   weapon_id: number;
@@ -365,13 +371,46 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Determines if the monster wants to pick up a weapon
+   */
+  public wantsToPickUpWeapon(): boolean {
+    if (this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
+      return false;
+    }
+    // negative weapon ID for a monster indicates that it has no weapon to start with, but wants to pick one up.
+    // (in-game, a weapon ID of null means the same thing)
+    if (this.weapon_id === null || this.weapon_id < 0) {
+      return true;
+    }
+    if (this.weapon_id === 0 && this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Picks up a weapon during combat
+   */
+  public pickUpWeapon(wpn: Artifact): boolean {
+    let game = Game.getInstance();
+    game.history.write(this.name + " picks up " + wpn.name + ".");
+    this.pickUp(wpn);
+    this.ready(wpn);
+  }
+
+  /**
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
   public doBattleActions(): void {
     let game = Game.getInstance();
 
     // if the monster managed to die or somehow disappear before its turn, do nothing
-    if (this.status === Monster.STATUS_DEAD || this.room_id !== game.rooms.current_room.id) return;
+    // if (!this.isHere()) return;
+
+    if (this.reaction === Monster.RX_NEUTRAL || this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
+      // neutral and never-fight monsters do nothing here.
+      return;
+    }
 
     // check if the monster should flee
     let fear = game.diceRoll(1, 100);
@@ -386,9 +425,9 @@ export class Monster extends GameObject {
       let room_to = this.chooseRandomExit();
       if (room_to) {
         if (this.count > 1) {
-          game.history.write(this.count + " " + this.name + "s flee out an exit");
+          game.history.write(this.count + " " + this.name + "s flee out an exit", "warning");
         } else {
-          game.history.write(this.name + " flees out an exit");
+          game.history.write(this.name + " flees out an exit", "warning");
         }
         this.moveToRoom(room_to.id);
         return;
@@ -397,12 +436,22 @@ export class Monster extends GameObject {
     }
 
     // pick up weapon
-    if (this.reaction !== Monster.RX_NEUTRAL && this.weapon_id === null) {
+    if (this.wantsToPickUpWeapon()) {
+      if (this.weapon_id < -1) {
+        // this monster wants a specific weapon
+        // defined in EDX as -1 - the artifact number (e.g., Zapf has a weapon id of -34, and his staff is artifact 33)
+        let wpn_id = Math.abs(this.weapon_id) - 1;
+        let wpn = game.artifacts.get(wpn_id);
+        if (wpn.isHere()) {
+          this.pickUpWeapon(wpn);
+          return;
+        }
+      }
+      // if the monster's desired weapon isn't here, or the monster doesn't care which weapon it uses,
+      // pick up the first available weapon
       for (let i in game.artifacts.visible) {
         if (game.artifacts.visible[i].is_weapon) {
-          game.history.write(this.name + " picks up " + game.artifacts.visible[i].name + ".");
-          this.pickUp(game.artifacts.visible[i]);
-          this.ready(game.artifacts.visible[i]);
+          this.pickUpWeapon(game.artifacts.visible[i]);
           return;
         }
       }
@@ -410,7 +459,7 @@ export class Monster extends GameObject {
     // NOTE: weapon logic doesn't work well for group monsters. best to give them natural weapons
 
     // attack!
-    if (this.weapon_id !== null) {
+    if (this.weapon_id !== null && this.weapon_id >= 0) {
       // up to 5 members of a group can attack per round
       let attacking_member_count = Math.min(this.count, 5);
       for (let i = 0; i < attacking_member_count; i++) {

@@ -45,4 +45,52 @@ describe("Monster", function() {
     // put things back the way they were so this test doesn't contaminate other tests
     // king.moveToRoom(3);
   });
+
+  it("should decide if it wants to pick up a weapon", function () {
+    let m = new Monster();
+
+    // "special" combat code
+    m.combat_code = Monster.COMBAT_CODE_SPECIAL;
+    m.weapon_id = 0;
+    expect(m.wantsToPickUpWeapon()).toBe(false);
+    m.weapon_id = null;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+    m.weapon_id = 3;
+    expect(m.wantsToPickUpWeapon()).toBe(false);
+    m.weapon_id = -1;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+
+    // "normal" combat code
+    m.combat_code = Monster.COMBAT_CODE_NORMAL;
+    m.weapon_id = 0;
+    expect(m.wantsToPickUpWeapon()).toBe(false);
+    m.weapon_id = null;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+    m.weapon_id = 3;
+    expect(m.wantsToPickUpWeapon()).toBe(false);
+    m.weapon_id = -1;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+
+    // "weapon if available" combat code
+    m.combat_code = Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE;
+    // if this type is using natural weapons, it will pick up a weapon if available
+    m.weapon_id = 0;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+    m.weapon_id = null;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+    m.weapon_id = 3;
+    expect(m.wantsToPickUpWeapon()).toBe(false);
+    m.weapon_id = -1;
+    expect(m.wantsToPickUpWeapon()).toBe(true);
+
+  });
+
+  it("should know how to pick up and ready a weapon", function () {
+    let game = Game.getInstance();
+    let m = game.monsters.get(1);
+    m.pickUpWeapon(game.artifacts.get(3));
+    expect(m.hasArtifact(3)).toBe(true);
+    expect(m.weapon_id).toBe(3);
+    expect(game.history.getLastOutput().text).toBe("guard picks up magic sword.");
+  });
 });
