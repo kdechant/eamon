@@ -300,8 +300,6 @@ export class Monster extends GameObject {
   public ready(weapon: Artifact): void {
     this.weapon = weapon;
     this.weapon_id = weapon.id;
-    this.weapon_dice = weapon.dice;
-    this.weapon_sides = weapon.sides;
   }
 
   /**
@@ -513,7 +511,7 @@ export class Monster extends GameObject {
 
     if (hit_roll <= odds || hit_roll <= 5) {
       // hit
-      let damage = game.diceRoll(this.weapon_dice, this.weapon_sides);
+      let damage = this.rollAttackDamage();
       let multiplier = 1;
       let ignore_armor = false;
       // regular or critical hit
@@ -661,6 +659,19 @@ export class Monster extends GameObject {
     ae_max -= this.armor_expertise;
     if (ae_max < 0) ae_max = 0;
     return ae_max;
+  }
+
+  /**
+   * Rolls the dice for damage this monster does while attacking
+   * (using weapon stats if using a weapon, and monster stats if natural weapons)
+   */
+  public rollAttackDamage() {
+    if (this.weapon_id) {
+      return Game.getInstance().diceRoll(this.weapon.dice, this.weapon.sides);
+    } else {
+      // natural weapons
+      return Game.getInstance().diceRoll(this.weapon_dice, this.weapon_sides);
+    }
   }
 
   /**

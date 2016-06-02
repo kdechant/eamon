@@ -93,4 +93,27 @@ describe("Monster", function() {
     expect(m.weapon_id).toBe(3);
     expect(game.history.getLastOutput().text).toBe("guard picks up magic sword.");
   });
+
+  it("should calculate its attack damage", function () {
+    let game = Game.getInstance();
+    let m = new Monster();
+
+    // natural weapons - using a silly value of 6 d 1 to make testing easier
+    m.weapon_dice = 6;
+    m.weapon_sides = 1;
+    expect(m.rollAttackDamage()).toBe(6);
+
+    // using a weapon
+    let spear = game.artifacts.get(4);
+    m.pickUpWeapon(spear);
+    m.ready(spear);
+    // readying does not change the monster's built-in dice/sides
+    expect(m.weapon_dice).toBe(6);
+    expect(m.weapon_sides).toBe(1);
+    expect(m.rollAttackDamage()).toBeLessThan(6); // spear is 1 d 5
+
+    // drop the weapon and use natural weapons again
+    m.drop(spear);
+    expect(m.rollAttackDamage()).toBe(6);
+  });
 });
