@@ -97,9 +97,6 @@ class Artifact(models.Model):
     container_id = models.IntegerField(null=True,
         help_text="If in a container, the container ID"
     )
-    key_id = models.IntegerField(null=True,
-        help_text="If a container, door, or bound monster, the artifact ID of the key that opens it"
-    )
     guard_id = models.IntegerField(null=True,
         help_text="If a bound monster, the ID of a monster that prevents the player from freeing it"
     )
@@ -108,6 +105,11 @@ class Artifact(models.Model):
     type = models.IntegerField(null=True,choices=ARTIFACT_TYPES)
     is_worn = models.BooleanField(default=False)
     is_open = models.BooleanField(default=False)
+    key_id = models.IntegerField(null=True,
+        help_text="If a container, door, or bound monster, the artifact ID of the key that opens it"
+    )
+    hardiness = models.IntegerField(null=True,
+        help_text="If a door or container that must be smashed open, how much damage does it take to open it?")
     weapon_type = models.IntegerField(null=True,choices=WEAPON_TYPES)
     hands = models.IntegerField(default=1,choices=(
       (1, 'One-handed'),

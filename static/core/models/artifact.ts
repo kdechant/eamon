@@ -42,6 +42,7 @@ export class Artifact extends GameObject {
   fixed_value: boolean;
   type: number;
   is_open: boolean;
+  hardiness: number;  // for doors/containers that must be smashed open - how much damage is required to open it
   is_healing: boolean; // for simple healing potions, etc. - healing amount based on dice and sides
   is_weapon: boolean;
   hands: number;  // 1 or 2 = one-handed or two-handed weapon

@@ -554,22 +554,27 @@ export class AttackCommand implements BaseCommand {
           artifact_target.room_id = null;
 
         } else if (artifact_target.type === Artifact.TYPE_CONTAINER || artifact_target.type === Artifact.TYPE_DOOR) {
-          // if it's a door or container, break it open.
-          if (artifact_target.key_id > 0 && artifact_target.key_id <= game.artifacts.initial_count) {
-            // can't smash open things that have a key
-            game.history.write("Nothing happens.");
-          } else {
-            // TODO: EDX contains some kind of hit points logic for doors and containers. Need to reimplement this.
-            game.history.write("The " + artifact_target.name + " smashes to pieces!");
-            if (artifact_target.type === Artifact.TYPE_CONTAINER) {
-              for (let i in artifact_target.contents) {
-                artifact_target.contents[i].room_id = game.player.room_id;
-                artifact_target.contents[i].container_id = null;
+          // if it's a door or container, try to break it open.
+          if (artifact_target.key_id === 0) {
+            let damage = game.player.rollAttackDamage();
+            game.history.write("Wham! You hit the " + artifact_target.name + "!");
+            artifact_target.hardiness -= damage;
+            console.log(artifact_target.hardiness);
+            if (artifact_target.hardiness <= 0) {
+              game.history.write("The " + artifact_target.name + " smashes to pieces!");
+              if (artifact_target.type === Artifact.TYPE_CONTAINER) {
+                for (let i in artifact_target.contents) {
+                  artifact_target.contents[i].room_id = game.player.room_id;
+                  artifact_target.contents[i].container_id = null;
+                }
+                artifact_target.destroy();
+              } else {
+                artifact_target.is_open = true;
               }
-              artifact_target.destroy();
-            } else {
-              artifact_target.is_open = true;
             }
+          } else {
+            // can't smash open things that have a key, or that are otherwise prevented from opening
+            game.history.write("Nothing happens.");
           }
 
         } else {
@@ -700,8 +705,7 @@ export class OpenCommand implements BaseCommand {
           // not open. try to open it.
           if (a.key_id === -1) {
             game.history.write("It won't open.");
-          } else if (a.key_id > game.artifacts.initial_count) {
-            // EDX uses key_id > 1000 to indicate things that must be smashed open
+          } else if (a.key_id === 0 && a.hardiness) {
             game.history.write("You'll have to force it open.");
           } else if (a.key_id > 0) {
             if (game.player.hasArtifact(a.key_id)) {

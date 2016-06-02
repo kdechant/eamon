@@ -199,7 +199,15 @@ class Command(BaseCommand):
                     elif artifact.type == 4:
                         # container
                         artifact.key_id = values[4]
-                        artifact.is_open = values[5]
+                        if values[5] > 100:
+                            artifact.is_open = False
+                            # values[5] values other than 1 or 0 indicate an item that must be smashed open
+                            if values[5] < 1000:
+                                artifact.hardiness = values[5] - 100  # old EDX
+                            else:
+                                artifact.hardiness = values[5] - 1000  # new EDX
+                        else:
+                            artifact.is_open = values[5]
                         # items inside = values[6]
                         # items it can hold = values[7]
                         # (in some EDX versions, they have hit points which are stored in values[7] when the number is
