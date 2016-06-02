@@ -5,10 +5,11 @@ import {Game} from "../models/game";
 @Component({
   selector: "command-prompt",
   template: `
-    <div class="command-prompt" *ngIf="game.active">
+    <form class="form-inline">
+    <div class="command-prompt form-group" *ngIf="game.active">
       <span class="prompt">Your Command: </span>
       <input #cmd (keyup)="onKeyPress($event, cmd.value)"
-       type="text"
+       type="text" class="form-control"
        [(ngModel)]="command"
        placeholder="{{lastCommand}}"
        />
@@ -19,6 +20,7 @@ import {Game} from "../models/game";
     <div class="return-button-container" *ngIf="game.died">
       <button class="btn btn-success" id="return" (click)="restart()">Start Over</button>
     </div>
+    </form>
     `,
 })
 export class CommandPromptComponent {

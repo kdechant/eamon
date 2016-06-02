@@ -39,7 +39,10 @@
   font-weight: bold; }
 
 .command-prompt {
-  padding-top: 12px; }
+  padding-top: 12px;
+  width: 100%; }
+  .command-prompt .form-control {
+    width: 69%; }
 
 .friendly {
   color: green; }

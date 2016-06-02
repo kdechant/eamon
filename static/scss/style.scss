@@ -55,6 +55,11 @@
 
 .command-prompt {
   padding-top: 12px;
+  width: 100%;
+
+  .form-control {
+    width: 69%;
+  }
 }
 
 .friendly {
