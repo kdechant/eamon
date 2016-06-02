@@ -632,6 +632,7 @@ export class ReadCommand implements BaseCommand {
 
     // can't read anything if it's dark
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
+      game.history.write("You can't read in the dark!");
       return;
     }
 
