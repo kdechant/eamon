@@ -185,11 +185,11 @@ export class Artifact extends GameObject {
    * Prints the effects associated with the artifact. Used e.g., when revealing a disguised monster
    * (in future, could also be used for reading READABLE type artifacts.)
    */
-  public printEffects(): void {
+  public printEffects(style: string = "normal"): void {
     let game = Game.getInstance();
     if (this.effect_id) {
       for (let i = this.effect_id; i < this.effect_id + this.num_effects; i++) {
-        game.effects.print(i);
+        game.effects.print(i, style);
       }
     }
   }
@@ -211,7 +211,7 @@ export class Artifact extends GameObject {
    */
   public revealDisguisedMonster(): void {
     let game = Game.getInstance();
-    this.printEffects();
+    this.printEffects("special");
     let monster = game.monsters.get(this.monster_id);
     monster.room_id = game.rooms.current_room.id;
     monster.checkReaction();

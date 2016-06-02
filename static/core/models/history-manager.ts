@@ -6,6 +6,7 @@ import {HistoryEntry} from "../models/history-entry";
 export class HistoryManager {
   history: HistoryEntry[];
   index: number;
+  suppressNextMessage: boolean = false;
 
   constructor() {
     this.history = [];
@@ -26,7 +27,10 @@ export class HistoryManager {
    * Pushes some output text onto the history
    */
   write(text: string, type: string = "normal") {
-    this.history[this.index - 1].push(text, type);
+    if (!this.suppressNextMessage) {
+      this.history[this.index - 1].push(text, type);
+    }
+    this.suppressNextMessage = false;
   }
 
   /**

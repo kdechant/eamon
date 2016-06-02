@@ -152,8 +152,9 @@ export var event_handlers = {
     let game = Game.getInstance();
     // Give obsidian scroll case to Emerald Warrior
     if (recipient.id === 14 && artifact.id === 51) {
-      game.effects.print(14);
+      game.effects.print(14, "special");
       game.monsters.get(14).room_id = null;
+      game.history.suppressNextMessage = true;  // don't print the standard "monster takes item" message
     }
     // giving the rapier to Jacques
     if (recipient.id === 5 && artifact.id === 8) {
