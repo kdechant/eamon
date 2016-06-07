@@ -26,15 +26,21 @@ export abstract class GameObject {
    * a name "healing potion" and alias "bottle"
    */
   public match(str: string): boolean {
+    let name: string = this.name.toLocaleLowerCase();
+    str = str.toLocaleLowerCase();
     // attempt exact match by name
-    if (str.toLowerCase() === this.name.toLowerCase()) {
+    if (str === name) {
       return true;
     }
     // attempt match by alias
     for (let i in this.aliases) {
-      if (str.toLowerCase() === this.aliases[i].toLowerCase()) {
+      if (str === this.aliases[i].toLocaleLowerCase()) {
         return true;
       }
+    }
+    // attempt match by beginning/end of name
+    if (name.startsWith(str) || name.endsWith(str)) {
+      return true;
     }
     return false;
   }

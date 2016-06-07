@@ -16,13 +16,16 @@ describe("Monster", function() {
     expect(game.monsters.get(2).maxWeight()).toEqual(100);
   });
 
-  it("should match synonyms", function() {
+  it("should match synonyms and partial names", function() {
     let game = Game.getInstance();
     expect(game.monsters.get(3).match('alfred')).toBeTruthy(); // real name, but lowercase
-    expect(game.monsters.get(3).match('al')).toBeTruthy(); // alias
+    expect(game.monsters.get(3).match('al')).toBeTruthy(); // partial match
+    expect(game.monsters.get(3).match('fred')).toBeTruthy(); // partial match
+    expect(game.monsters.get(3).match('freddy')).toBeTruthy(); // alias
     expect(game.monsters.get(3).match('albert')).toBeFalsy(); // alias
 
     // a multi-word alias
+    expect(game.monsters.get(4).match('bandit')).toBeTruthy(); // alias
     expect(game.monsters.get(4).match('bad guy')).toBeTruthy(); // alias
 
     // monster with no aliases

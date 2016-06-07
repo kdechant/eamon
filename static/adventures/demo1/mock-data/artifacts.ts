@@ -53,7 +53,6 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 5,
     "name": "gold key",
-    "synonyms": "key",
     "description": "You see a gold key sitting next to the throne.",
     "type": 1,
     "room_id": 3,
@@ -64,7 +63,6 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 6,
     "name": "healing potion",
-    "synonyms": "potion",
     "description": "You see a bottle of healing potion.",
     "type": 6,
     "room_id": 3,
@@ -139,6 +137,7 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 12,
     "name": "chest",
+    "synonyms": "box",
     "description": "You see a big treasure chest. It's too heavy to carry.",
     "type": 4,
     "room_id": 4,
@@ -158,7 +157,6 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 14,
     "name": "magic wand",
-    "synonyms": "wand",
     "description": "You see a magic wand. The tip glows blue with a mystical energy.",
     "type": 1,
     "room_id": null,
@@ -168,8 +166,7 @@ export var ARTIFACTS: Object[] = [
   },
   {
     "id": 15,
-    "name": "Plate armor",
-    "synonyms": "plate,armor",
+    "name": "plate armor",
     "description": "You see a suit of well-worn plate armor.",
     "type": 11,
     "room_id": 7,
@@ -181,7 +178,7 @@ export var ARTIFACTS: Object[] = [
   },
   {
     "id": 16,
-    "name": "Halberd",
+    "name": "halberd",
     "description": "You see a very large halberd. It looks dangerous but too big to wield comfortably.",
     "type": 2,
     "room_id": 7,
@@ -195,7 +192,7 @@ export var ARTIFACTS: Object[] = [
   },
   {
     "id": 17,
-    "name": "Magic shield",
+    "name": "magic shield",
     "description": "You see a glowing shield with strange runes carved into it.",
     "type": 11,
     "room_id": 7,
@@ -208,7 +205,6 @@ export var ARTIFACTS: Object[] = [
   {
     "id": 18,
     "name": "vault door",
-    "synonyms": "vault,door",
     "description": "You see a big, heavy vault door with a keyhole in it.",
     "type": 8,
     "room_id": 3,
