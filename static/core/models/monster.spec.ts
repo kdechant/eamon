@@ -115,5 +115,12 @@ describe("Monster", function() {
     // drop the weapon and use natural weapons again
     m.drop(spear);
     expect(m.rollAttackDamage()).toBe(6);
+
+    // test group monsters
+    let kobolds = game.monsters.get(5);
+    kobolds.group_monster_index = 0;
+    expect(kobolds.rollAttackDamage()).toBe(1);
+    kobolds.group_monster_index = 1;
+    expect(kobolds.rollAttackDamage()).toBe(2);  // the second group member should be using wpn #20
   });
 });

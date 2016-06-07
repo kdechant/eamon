@@ -88,6 +88,7 @@ export class Monster extends GameObject {
   speed_multiplier: number = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
   profit: number = 0; // the money the player makes for selling items when they leave the adventure
+  group_monster_index: number = 0;  // for combat logic involving group monsters, which group member is active
 
   /**
    * Moves the monster to a specific room.
@@ -479,6 +480,7 @@ export class Monster extends GameObject {
       // up to 5 members of a group can attack per round
       let attacking_member_count = Math.min(this.count, 5);
       for (let i = 0; i < attacking_member_count; i++) {
+        this.group_monster_index = i;  // this lets them each have a different weapon
         let target = this.chooseTarget();
         if (target) {
           this.attack(target);
@@ -666,11 +668,25 @@ export class Monster extends GameObject {
    * (using weapon stats if using a weapon, and monster stats if natural weapons)
    */
   public rollAttackDamage() {
+    let game = Game.getInstance();
     if (this.weapon_id) {
-      return Game.getInstance().diceRoll(this.weapon.dice, this.weapon.sides);
+      if (this.count === 1) {
+        return game.diceRoll(this.weapon.dice, this.weapon.sides);
+      } else {
+        // for multiple monsters, we use the index number plus the weapon ID to get the weapon they're using
+        // (this assumes that the weapons are ordered sequentially in the database)
+        let wpn_id = this.weapon_id + this.group_monster_index;
+        let w = game.artifacts.get(wpn_id);
+        if (this.hasArtifact(wpn_id) && w.is_weapon) {
+          return game.diceRoll(w.dice, w.sides);
+        } else {
+          // todo: find some way to signal to the attack subroutine that this group member has no weapon and shouldn't attack.
+          return null;
+        }
+      }
     } else {
       // natural weapons
-      return Game.getInstance().diceRoll(this.weapon_dice, this.weapon_sides);
+      return game.diceRoll(this.weapon_dice, this.weapon_sides);
     }
   }
 

@@ -58,5 +58,19 @@ export var MONSTERS: Array<Object> = [
     "attack_odds": 30,
     "weapon_id": null,
     "armor_class": 1
+  },
+  {
+    "id": 5,
+    "name": "kobold",
+    "description": "You see some kobolds.",
+    "room_id": 2,
+    "count": 2,
+    "hardiness": 5,
+    "agility": 5,
+    "courage": 100,
+    "friendliness": "hostile",
+    "attack_odds": 30,
+    "weapon_id": 19,
+    "armor_class": 1
   }
 ];

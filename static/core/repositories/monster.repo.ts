@@ -55,7 +55,10 @@ export class MonsterRepository {
 
     this.all.push(m);
     m.updateInventory();
-    m.readyBestWeapon(); // this initializes the monster.weapon object, to show the correct combat verbs
+    if (m.count === 1) {
+      m.readyBestWeapon(); // this initializes the monster.weapon object, to show the correct combat verbs
+      // group monsters skip this step. they must use the exact weapon ID in the database
+    }
 
     // add the dead body artifact
     let body = {
