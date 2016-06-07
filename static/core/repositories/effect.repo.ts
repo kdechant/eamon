@@ -72,22 +72,26 @@ export class EffectRepository {
    */
   public print(id: number, style: string = null, inline: boolean = false): void {
     let ef = this.get(id);
-    if (inline) {
-      // print on the same line as the last effect
-      Game.getInstance().history.append(ef.text);
-    } else {
-      // print as a new paragraph
-      let final_style = style;
-      if (final_style === null) {
-        final_style = ef.style;
+    if (ef) {
+      if (inline) {
+        // print on the same line as the last effect
+        Game.getInstance().history.append(ef.text);
+      } else {
+        // print as a new paragraph
+        let final_style = style;
+        if (final_style === null) {
+          final_style = ef.style;
+        }
+        Game.getInstance().history.write(ef.text, final_style);
       }
-      Game.getInstance().history.write(ef.text, final_style);
-    }
-    if (ef.next !== null) {
-      this.print(ef.next, style);
-    }
-    if (ef.next_inline !== null) {
-      this.print(ef.next_inline, style, true);
+      if (ef.next !== null) {
+        this.print(ef.next, style);
+      }
+      if (ef.next_inline !== null) {
+        this.print(ef.next_inline, style, true);
+      }
+    } else {
+      Game.getInstance().history.write("Effect #" + id + " not found!");
     }
   }
 

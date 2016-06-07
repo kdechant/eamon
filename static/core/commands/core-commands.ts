@@ -555,7 +555,7 @@ export class AttackCommand implements BaseCommand {
 
         } else if (artifact_target.type === Artifact.TYPE_CONTAINER || artifact_target.type === Artifact.TYPE_DOOR) {
           // if it's a door or container, try to break it open.
-          if (artifact_target.key_id === 0) {
+          if (artifact_target.hardiness !== null) {
             let damage = game.player.rollAttackDamage();
             game.history.write("Wham! You hit the " + artifact_target.name + "!");
             artifact_target.hardiness -= damage;
@@ -829,7 +829,7 @@ core_commands.push(new GiveCommand());
 
 export class TakeCommand implements BaseCommand {
   name: string = "take";
-  verbs: string[] = ["take"];
+  verbs: string[] = ["take", "request"];
   run(verb: string, arg: string) {
 
     let game: Game = Game.getInstance();
@@ -856,7 +856,12 @@ export class TakeCommand implements BaseCommand {
     if (game.triggerEvent("take", arg, item, monster)) {
 
       item.monster_id = game.player.id;
+      let ready_weapon_id = monster.weapon_id;
       monster.updateInventory();
+      if (item.id === ready_weapon_id) {
+        // took NPC's ready weapon. NPC should ready another weapon if they have one
+        monster.readyBestWeapon();
+      }
       game.history.write(monster.name + " gives you the " + item.name + ".");
       game.player.updateInventory();
 
