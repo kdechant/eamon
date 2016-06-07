@@ -236,14 +236,15 @@ export class Monster extends GameObject {
    * Refreshes the inventory of artifacts carried by the monster
    */
   public updateInventory(): void {
+    let game = Game.getInstance();
     this.inventory = [];
     if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
       this.armor_worn = [];
       this.armor_class = 0;
     }
     this.weight_carried = 0;
-    for (let i in Game.getInstance().artifacts.all) {
-      let a = Game.getInstance().artifacts.all[i];
+    for (let i in game.artifacts.all) {
+      let a = game.artifacts.all[i];
       if (a.monster_id === this.id) {
         this.inventory.push(a);
         this.weight_carried += a.weight;
@@ -255,6 +256,11 @@ export class Monster extends GameObject {
         }
       }
       a.updateContents();
+    }
+    // if no longer carrying its weapon, set the weapon object to null
+    if (this.weapon_id && game.artifacts.get(this.weapon_id).monster_id !== this.id) {
+      this.weapon = null;
+      this.weapon_id = null;
     }
   }
 
@@ -309,7 +315,7 @@ export class Monster extends GameObject {
   public readyBestWeapon(): void {
     for (let a in this.inventory) {
       if (this.inventory[a].is_weapon) {
-        if (this.weapon === undefined ||
+        if (this.weapon === undefined || this.weapon === null ||
           this.inventory[a].maxDamage() > this.weapon.maxDamage()) {
           this.ready(this.inventory[a]);
         }

@@ -97,6 +97,23 @@ describe("Monster", function() {
     expect(game.history.getLastOutput().text).toBe("guard picks up magic sword.");
   });
 
+  it("should know how to ready its best weapon", function () {
+    let game = Game.getInstance();
+    let m = game.monsters.get(1);
+    m.weapon = null;
+    m.weapon_id = null;
+    m.readyBestWeapon();
+    expect(m.weapon_id).toBe(4);
+    expect(m.weapon.name).toBe('spear');
+    game.artifacts.get(4).monster_id = null;  // no longer carrying spear
+    m.updateInventory();
+    expect(m.weapon_id).toBe(null);
+    expect(m.weapon).toBe(null);
+    m.readyBestWeapon();
+    expect(m.weapon_id).toBe(null);
+    expect(m.weapon).toBe(null);
+  });
+
   it("should calculate its attack damage", function () {
     let game = Game.getInstance();
     let m = new Monster();

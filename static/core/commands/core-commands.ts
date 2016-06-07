@@ -858,11 +858,15 @@ export class TakeCommand implements BaseCommand {
       item.monster_id = game.player.id;
       let ready_weapon_id = monster.weapon_id;
       monster.updateInventory();
+      game.history.write(monster.name + " gives you the " + item.name + ".");
       if (item.id === ready_weapon_id) {
         // took NPC's ready weapon. NPC should ready another weapon if they have one
+        monster.weapon = null;
         monster.readyBestWeapon();
+        if (monster.weapon_id) {
+          game.history.write(monster.name + " readies the " + monster.weapon.name + ".");
+        }
       }
-      game.history.write(monster.name + " gives you the " + item.name + ".");
       game.player.updateInventory();
 
     }
