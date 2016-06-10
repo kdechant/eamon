@@ -109,6 +109,7 @@ export class CommandParser {
         if (ex instanceof CommandException) {
           // illegal command. show in game but not in console.
           game.history.write(ex.message);
+          game.endTurn();
         } else {
           // an actual JS error occurred. Throw again so error appears in console.
           throw (ex); // for debugging

@@ -26,12 +26,12 @@ export class Game {
   private static _instance: Game = new Game();
 
   /**
-   * @var string The current adventure's name
+   * @var {string} The current adventure's name
    */
   name: string;
 
   /**
-   * @var string The current adventure's description
+   * @var {string} The current adventure's description
    */
   description: string;
 
@@ -177,6 +177,17 @@ export class Game {
   tick() {
     this.timer++;
 
+    this.player.rechargeSpellAbilities();
+
+    // if speed spell is active, decrease its time remaining
+    if (this.player.speed_time > 0) {
+      this.player.speed_time--;
+      if (this.player.speed_time === 0) {
+        this.history.write("You speed spell just expired!");
+        this.player.speed_multiplier = 1;
+      }
+    }
+
     // check if there is a light source; decrement its fuel count
     let light = this.artifacts.isLightSource();
     for (let i in this.artifacts.all) {
@@ -215,6 +226,16 @@ export class Game {
     this.triggerEvent("endTurn");
     this.monsters.updateVisible();
 
+    this.endTurn();
+  }
+
+  /**
+   * Shows the room, artifact, and monster descriptions. Normally called right after tick() unless there
+   * was a command exception, in which case the tick is bypassed.
+   */
+  public endTurn(): void {
+
+    let light = this.artifacts.isLightSource();
     // show room name and description
     if (this.rooms.current_room.is_dark && !light) {
       this.history.write("It's too dark to see anything.");
@@ -253,17 +274,6 @@ export class Game {
         } else {
           this.history.write("You see " + a.name, "no-space");
         }
-      }
-    }
-
-    this.player.rechargeSpellAbilities();
-
-    // if speed spell is active, decrease its time remaining
-    if (this.player.speed_time > 0) {
-      this.player.speed_time--;
-      if (this.player.speed_time === 0) {
-        this.history.write("You speed spell just expired!");
-        this.player.speed_multiplier = 1;
       }
     }
 
