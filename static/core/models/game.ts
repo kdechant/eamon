@@ -194,17 +194,6 @@ export class Game {
       }
     }
 
-    // if the player is seeing the room for the first time, show the description
-    if (this.rooms.current_room.is_dark && !light) {
-      this.history.write("It's too dark to see anything.");
-    } else {
-      this.history.write(this.rooms.current_room.name);
-      if (!this.rooms.current_room.seen) {
-        this.history.write(this.rooms.current_room.description);
-        this.rooms.current_room.seen = true;
-      }
-    }
-
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
 
@@ -226,13 +215,24 @@ export class Game {
     this.triggerEvent("endTurn");
     this.monsters.updateVisible();
 
+    // show room name and description
+    if (this.rooms.current_room.is_dark && !light) {
+      this.history.write("It's too dark to see anything.");
+    } else {
+      this.history.write(this.rooms.current_room.name);
+      if (!this.rooms.current_room.seen) {
+        this.history.write(this.rooms.current_room.description);
+        this.rooms.current_room.seen = true;
+      }
+    }
+
     // show monster and artifact descriptions
     if (light || !this.rooms.current_room.is_dark) {
       this.history.write(""); // blank line for white space
       for (let i in this.monsters.visible) {
         let m = this.monsters.visible[i];
         if (!m.seen) {
-          this.history.write(m.description);
+          m.showDescription();
           m.seen = true;
           this.triggerEvent("see_monster", m);
         } else {
@@ -247,7 +247,7 @@ export class Game {
       for (let i in this.artifacts.visible) {
         let a = this.artifacts.visible[i];
         if (!a.seen) {
-          this.history.write(a.description);
+          a.showDescription();
           this.triggerEvent("see_artifact", a);
           a.seen = true;
         } else {

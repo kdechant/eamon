@@ -31,7 +31,6 @@ export class Artifact extends GameObject {
   static ARMOR_TYPE_SHIELD: number = 1;
 
   // data properties
-  description: string;
   room_id: number; // if on the ground, which room
   monster_id: number; // if in inventory, who is carrying it
   container_id: number; // if inside a container, the artifact id of the container

@@ -1,5 +1,4 @@
 import {Game} from "./game";
-import {Loadable} from "./loadable";
 
 /**
  * GameObject class. Parent class for monsters and artifacts.
@@ -8,7 +7,10 @@ export abstract class GameObject {
 
   id: number;
   name: string;
+  description: string;
   aliases: string[];
+  effect: number;  // for extended descriptions
+  effect_inline: number;  // for extended descriptions
 
   /**
    * Loads data from JSON source into the object properties.
@@ -44,4 +46,19 @@ export abstract class GameObject {
     }
     return false;
   }
+
+  /**
+   * Shows the description, including any chained effects
+   */
+  public showDescription() {
+    let game = Game.getInstance();
+    game.history.write(this.description + " ");  // pad with space in case of chained effects
+    if (this.effect) {
+      game.effects.print(this.effect);
+    }
+    if (this.effect_inline) {
+      game.effects.print(this.effect_inline, null, true);
+    }
+  }
+
 }
