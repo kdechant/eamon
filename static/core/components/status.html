@@ -47,7 +47,10 @@
         <span class="monster"
           [class.friendly]="monster.reaction == 'friend'"
           [class.hostile]="monster.reaction == 'hostile'"
-          >{{ monster.name }} - {{monster.reaction}}</span><br />
+          >
+            <span *ngIf="monster.count > 1">{{ monster.count }} {{ monster.name }}s</span>
+            <span *ngIf="monster.count == 1">{{ monster.name }}</span>
+            - {{monster.reaction}}</span><br />
       </span>
       <span class="monster none" *ngIf="game.monsters.visible.length == 0">no one<br /></span>
     </div>

@@ -225,13 +225,13 @@ export var ARTIFACTS: Object[] = [
     "hands": 1,
     "weapon_type": 3,
     "weapon_odds": 10,
-    "dice": 1,
+    "dice": 3,
     "sides": 1
   },
   {
     "id": 20,
-    "name": "dagger",
-    "description": "One of the kobolds dropped a dagger.",
+    "name": "short sword",
+    "description": "One of the kobolds dropped a short sword.",
     "type": 2,
     "room_id": null,
     "monster_id": 5,
@@ -241,6 +241,21 @@ export var ARTIFACTS: Object[] = [
     "weapon_type": 4,
     "weapon_odds": 10,
     "dice": 2,
+    "sides": 1
+  },
+  {
+    "id": 21,
+    "name": "dagger",
+    "description": "One of the kobolds dropped a rusty dagger.",
+    "type": 2,
+    "room_id": null,
+    "monster_id": 5,
+    "weight": 2,
+    "value": 10,
+    "hands": 1,
+    "weapon_type": 4,
+    "weapon_odds": 0,
+    "dice": 1,
     "sides": 1
   }
 ];

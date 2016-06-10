@@ -258,7 +258,7 @@ export class Monster extends GameObject {
       a.updateContents();
     }
     // if no longer carrying its weapon, set the weapon object to null
-    if (this.weapon_id && game.artifacts.get(this.weapon_id).monster_id !== this.id) {
+    if (this.weapon_id > 0 && game.artifacts.get(this.weapon_id).monster_id !== this.id) {
       this.weapon = null;
       this.weapon_id = null;
     }
@@ -479,14 +479,12 @@ export class Monster extends GameObject {
         }
       }
     }
-    // NOTE: weapon logic doesn't work well for group monsters. best to give them natural weapons
 
     // attack!
-    if (this.weapon_id !== null && this.weapon_id >= 0) {
-      // up to 5 members of a group can attack per round
-      let attacking_member_count = Math.min(this.count, 5);
-      for (let i = 0; i < attacking_member_count; i++) {
-        this.group_monster_index = i;  // this lets them each have a different weapon
+    let attacking_member_count = Math.min(this.count, 5); // up to 5 members of a group can attack per round
+    for (let i = 0; i < attacking_member_count; i++) {
+      this.group_monster_index = i;  // this lets them each have a different weapon
+      if (this.canAttack()) {
         let target = this.chooseTarget();
         if (target) {
           this.attack(target);
@@ -670,29 +668,59 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Determines if the monster can attack
+   */
+  public canAttack() {
+
+    if (this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
+      return false;
+    }
+
+    let w = this.getWeapon();
+    if (w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Rolls the dice for damage this monster does while attacking
    * (using weapon stats if using a weapon, and monster stats if natural weapons)
    */
   public rollAttackDamage() {
     let game = Game.getInstance();
-    if (this.weapon_id) {
-      if (this.count === 1) {
-        return game.diceRoll(this.weapon.dice, this.weapon.sides);
-      } else {
-        // for multiple monsters, we use the index number plus the weapon ID to get the weapon they're using
-        // (this assumes that the weapons are ordered sequentially in the database)
-        let wpn_id = this.weapon_id + this.group_monster_index;
-        let w = game.artifacts.get(wpn_id);
-        if (this.hasArtifact(wpn_id) && w.is_weapon) {
-          return game.diceRoll(w.dice, w.sides);
-        } else {
-          // todo: find some way to signal to the attack subroutine that this group member has no weapon and shouldn't attack.
-          return null;
-        }
-      }
+    let w = this.getWeapon();
+    if (w) {
+      // using a weapon
+      return game.diceRoll(w.dice, w.sides);
     } else {
       // natural weapons
       return game.diceRoll(this.weapon_dice, this.weapon_sides);
+    }
+  }
+
+  /**
+   * Gets the weapon a monster is currently using. For group monsters, the return value will depend on the
+   * value of this.group_monster_index.
+   * @returns Artifact
+   */
+  public getWeapon(): Artifact {
+    let game = Game.getInstance();
+    if (this.count === 1) {
+      // single monster, or last surviving member of a group
+      return game.artifacts.get(this.weapon_id);
+    } else {
+      // for multiple monsters, we use the index number plus the weapon ID to get the weapon they're using
+      // (this assumes that the weapons are ordered sequentially in the database)
+      // note: they're ordered in reverse, to prevent errors when some group members have died.
+      let wpn_id = this.weapon_id + this.count - this.group_monster_index - 1;
+      let w = game.artifacts.get(wpn_id);
+      if (this.hasArtifact(wpn_id) && w.is_weapon) {
+        return w;
+      } else {
+        return null;
+      }
     }
   }
 
@@ -739,7 +767,13 @@ export class Monster extends GameObject {
     if (this.damage >= this.hardiness) {
 
       if (this.count > 1) {
-        // group monster - reduce count
+        // group monster - reduce count and drop weapon
+        this.group_monster_index = 0;
+        let w = this.getWeapon();
+        if (w) {
+          this.drop(w);
+          this.updateInventory();
+        }
         this.damage = 0;
         this.count--;
       } else {

@@ -11,7 +11,7 @@ describe("Monster Repo", function() {
   it("should read the monster data", function() {
     let game = Game.getInstance();
     expect(game.monsters.all.length).toEqual(6, "There should be 6 monsters including the player.");
-    expect(game.artifacts.all.length).toEqual(30, "There should be 30 artifacts (incl. 4 dead bodies and 5 player artifacts) after setting up the player's items.");
+    expect(game.artifacts.all.length).toEqual(31, "There should be 31 artifacts (incl. 5 dead bodies and 5 player artifacts) after setting up the player's items.");
 
     expect(game.monsters.get(1).id).toEqual(1);
     expect(game.monsters.get(1).name).toEqual("guard");
@@ -36,18 +36,11 @@ describe("Monster Repo", function() {
     // special case where there are 2 monsters with the same name, in different rooms
     let king = game.monsters.get(2);
     king.name = 'alfred';
-    console.log(king);
     let someone = game.monsters.getLocalByName('alfred');
     expect(someone.id).toBe(3);
     game.player.moveToRoom(3);
-    console.log(game.player);
     let someone2 = game.monsters.getLocalByName('alfred');
-    console.log(someone2);
     expect(someone2.id).toBe(2);
-
-    // put things back the way they were so this test doesn't contaminate other tests
-    // game.player.moveToRoom(1);
-    // king.name = 'king';
 
   });
 
