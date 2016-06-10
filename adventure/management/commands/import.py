@@ -238,7 +238,14 @@ class Command(BaseCommand):
                             room_beyond[0].room_to = values[4]
                             room_beyond[0].save()
                         artifact.key_id = values[5]
-                        artifact.is_open = 1 if values[6] == 0 else 0  # closed = 1 for this type
+                        # values[6] is the open/closed flag.
+                        # values other than 1 or 0 indicate an item that must be smashed open
+                        if values[6] < 100:
+                            artifact.is_open = 1 if values[6] == 0 else 0  # closed = 1 for this type
+                        else:
+                            artifact.is_open = 0
+                            artifact.hardiness = values[6] - 100
+
                         artifact.hidden = values[7]  # Hidden flag - for secret doors
                     elif artifact.type == 10:
                         # bound monster
