@@ -319,6 +319,62 @@ export class RemoveCommand implements BaseCommand {
 core_commands.push(new RemoveCommand());
 
 
+export class PutCommand implements BaseCommand {
+  name: string = "put";
+  verbs: string[] = ["put"];
+  run(verb: string, arg: string) {
+
+    let game = Game.getInstance();
+    let match = false;
+
+    // check if we're putting something into a container
+    let regex_result = /(.+) in(to)? (.*)/.exec(arg);
+    if (regex_result !== null) {
+      let item_name: string = regex_result[1];
+      let container_name: string = regex_result[3];
+
+      // catch user mischief
+      let m: Monster = game.monsters.getLocalByName(item_name);
+      if (m) {
+        throw new CommandException("I can't put " + container_name + " into something!");
+      }
+      m = game.monsters.getLocalByName(container_name);
+      if (m) {
+        throw new CommandException("I can't put something into " + container_name + "!");
+      }
+
+      let item: Artifact = game.artifacts.getLocalByName(item_name);
+      if (!item) {
+        throw new CommandException("I see no " + item_name + " here!");
+      }
+      let container: Artifact = game.artifacts.getLocalByName(container_name);
+      if (!container) {
+        throw new CommandException("I see no " + container_name + " here!");
+      }
+      if (container.type === Artifact.TYPE_CONTAINER) {
+        if (container.is_open) {
+          if (game.triggerEvent("beforePut", arg, item)) {
+            game.history.write("Done.");
+            match = true;
+            item.putIntoContainer(container);
+            game.triggerEvent("afterPut", arg, item);
+          }
+        } else {
+          throw new CommandException("Try opening the " + container_name + " first.");
+        }
+      } else {
+        throw new CommandException("I can't put things into the " + container_name + "!");
+      }
+
+    } else {
+      throw new CommandException("Try putting (SOMETHING) into (SOMETHING ELSE).");
+    }
+
+  }
+}
+core_commands.push(new PutCommand());
+
+
 export class DropCommand implements BaseCommand {
   name: string = "drop";
   verbs: string[] = ["drop"];

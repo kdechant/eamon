@@ -5,19 +5,18 @@ import {Monster} from "../models/monster";
 
 describe("Monster", function() {
 
-  // initialize the test with the full repository of artifacts
+  // initialize the test with the full mock game data
+  let game = Game.getInstance();
   beforeEach(() => {
     initMockGame();
   });
 
   it("should know its carrying capacity", function() {
-    let game = Game.getInstance();
     expect(game.monsters.get(1).maxWeight()).toEqual(400);
     expect(game.monsters.get(2).maxWeight()).toEqual(100);
   });
 
   it("should match synonyms and partial names", function() {
-    let game = Game.getInstance();
     expect(game.monsters.get(3).match('alfred')).toBeTruthy(); // real name, but lowercase
     expect(game.monsters.get(3).match('al')).toBeTruthy(); // partial match
     expect(game.monsters.get(3).match('fred')).toBeTruthy(); // partial match
@@ -35,7 +34,6 @@ describe("Monster", function() {
   });
 
   it("should know if it is in the same room as the player", function() {
-    let game = Game.getInstance();
     expect(game.player.room_id).toEqual(1, "FAILURE TO SETUP FOR TEST: player should be in room 1 at test start");
 
     let guard = game.monsters.get(1);
@@ -89,7 +87,6 @@ describe("Monster", function() {
   });
 
   it("should know how to pick up and ready a weapon", function () {
-    let game = Game.getInstance();
     let m = game.monsters.get(1);
     m.pickUpWeapon(game.artifacts.get(3));
     expect(m.hasArtifact(3)).toBe(true);
@@ -98,7 +95,6 @@ describe("Monster", function() {
   });
 
   it("should know how to ready its best weapon", function () {
-    let game = Game.getInstance();
     let m = game.monsters.get(1);
     m.weapon = null;
     m.weapon_id = null;
@@ -116,7 +112,6 @@ describe("Monster", function() {
 
 
   it("should get its current weapon (single monster)", function () {
-    let game = Game.getInstance();
     let guard = game.monsters.get(1);
     let w = guard.getWeapon();
     expect(w.id).toBe(4);
@@ -138,7 +133,6 @@ describe("Monster", function() {
   });
 
   it("should get its current weapon (group monster)", function () {
-    let game = Game.getInstance();
     let kobolds = game.monsters.get(5);
     kobolds.group_monster_index = 0;
     let w = kobolds.getWeapon();
@@ -177,7 +171,6 @@ describe("Monster", function() {
 
 
   it("should know if it's able to attack (single monster)", function () {
-    let game = Game.getInstance();
     let guard = game.monsters.get(1);
     let spear = game.artifacts.get(4);
     expect(guard.weapon_id).toBe(4, "monster data is dirty - test fails");
@@ -226,7 +219,6 @@ describe("Monster", function() {
   });
 
   it("should know if it's able to attack (group monster)", function () {
-    let game = Game.getInstance();
     let kobolds = game.monsters.get(5);
     expect(kobolds.weapon_id).toBe(19, "FAIL: monster data is dirty");
     expect(kobolds.hasArtifact(19)).toBeTruthy("FAIL: artifact data is dirty");
@@ -275,7 +267,6 @@ describe("Monster", function() {
   });
 
   it("should calculate its armor factor", function() {
-    let game = Game.getInstance();
     expect(game.player.getArmorFactor()).toBe(2);
     // with lower ae
     game.player.armor_expertise = 0;
@@ -292,7 +283,6 @@ describe("Monster", function() {
   });
 
   it("should know its attack odds", function() {
-    let game = Game.getInstance();
     let guard = game.monsters.get(1);
     let thief = game.monsters.get(4);
 

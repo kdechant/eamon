@@ -108,11 +108,29 @@ export class Artifact extends GameObject {
       this.container_id = null;
       if (container.room_id !== null) {
         this.room_id = container.room_id;
+        this.monster_id = null;
         game.artifacts.updateVisible();
       } else if (container.monster_id !== null) {
         this.monster_id = container.monster_id;
+        this.room_id = null;
         game.monsters.get(this.monster_id).updateInventory();
       }
+      game.artifacts.updateVisible();
+    } else {
+      throw new CommandException("I couldn't find that container!");
+    }
+  }
+
+  /**
+   * Puts an artifact into a container
+   */
+  public putIntoContainer(container: Artifact): void {
+    let game = Game.getInstance();
+    if (container) {
+      this.container_id = container.id;
+      this.room_id = null;
+      this.monster_id = null;
+      game.player.updateInventory();
       game.artifacts.updateVisible();
     } else {
       throw new CommandException("I couldn't find that container!");
