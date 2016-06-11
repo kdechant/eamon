@@ -67,6 +67,7 @@ export class Artifact extends GameObject {
   is_lit: boolean = false;
   markings_index: number = 0; // counter used to keep track of the next marking to read
   is_worn: boolean = false; // if the monster is wearing it
+  is_broken: boolean = false;  // for a doors/containers that has been smashed open
 
   /**
    * Moves the artifact to a specific room.
@@ -133,6 +134,21 @@ export class Artifact extends GameObject {
       }
     }
 
+  }
+
+  /**
+   * Prints the effects associated with the artifact. Used e.g., when revealing a disguised monster
+   * (in future, could also be used for reading READABLE type artifacts.)
+   */
+  public printContents(style: string = "normal"): void {
+    let game = Game.getInstance();
+    game.history.write("It contains:");
+    if (this.contents.length === 0) {
+      game.history.write(" - (nothing)", "no-space");
+    }
+    for (let i in this.contents) {
+      game.history.write(" - " + this.contents[i].name, "no-space");
+    }
   }
 
   /**
@@ -203,6 +219,9 @@ export class Artifact extends GameObject {
     this.seen = true; // description will be shown here. don't show it again in game clock tick.
     game.artifacts.updateVisible();
     game.history.write(this.description);
+    if (this.type === Artifact.TYPE_CONTAINER && this.is_open) {
+      this.printContents();
+    }
   }
 
   /**

@@ -263,7 +263,7 @@ export class RemoveCommand implements BaseCommand {
       let container_name: string = regex_result[2];
 
       // catch user mischief
-      let m: Monster = game.monsters.getByName(container_name);
+      let m: Monster = game.monsters.getLocalByName(container_name);
       if (m) {
         throw new CommandException("I can't remove something from " + container_name + "!");
       }
@@ -561,6 +561,7 @@ export class AttackCommand implements BaseCommand {
             artifact_target.hardiness -= damage;
             console.log(artifact_target.hardiness);
             if (artifact_target.hardiness <= 0) {
+              artifact_target.is_broken = true;
               game.history.write("The " + artifact_target.name + " smashes to pieces!");
               if (artifact_target.type === Artifact.TYPE_CONTAINER) {
                 for (let i in artifact_target.contents) {
@@ -716,16 +717,21 @@ export class OpenCommand implements BaseCommand {
               throw new CommandException("It's locked and you don't have the key!");
             }
           } else {
-            game.history.write("Opened.");
+            game.history.write(a.name + " opened.");
 
             if (a.type === Artifact.TYPE_CONTAINER) {
-              game.history.write("It contains:");
-              for (let i in a.contents) {
-                game.history.write(" - " + a.contents[i].name, "no-space");
-              }
+              a.printContents();
             }
 
           }
+          a.is_open = true;
+          this.opened_something = true;
+        } else {
+          throw new CommandException("It's already open!");
+        }
+      } else if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
+        if (!a.is_open) {
+          game.history.write(a.name + " opened.");
           a.is_open = true;
           this.opened_something = true;
         } else {
@@ -748,6 +754,50 @@ export class OpenCommand implements BaseCommand {
   }
 }
 core_commands.push(new OpenCommand());
+
+
+export class CloseCommand implements BaseCommand {
+  name: string = "close";
+  verbs: string[] = ["close"];
+  closed_something: boolean = false;
+  run(verb, arg) {
+    let game = Game.getInstance();
+    let a = game.artifacts.getLocalByName(arg, true);
+    if (a !== null) {
+      if (a.hidden) {
+        throw new CommandException("I don't follow you.");
+      }
+
+      // if it's an embedded artifact, reveal it
+      if (a.embedded) {
+        a.reveal();
+      }
+
+      if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE || a.key_id === -1) {
+        throw new CommandException("You don't need to.");
+      } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
+        if (!a.is_open) {
+          throw new CommandException("It's not open.");
+        } else if (a.is_broken) {
+          throw new CommandException("You broke it.");
+        } else {
+          a.is_open = false;
+          game.history.write(a.name + " closed.");
+          this.closed_something = true;
+        }
+      }
+    }
+
+    // other effects are custom to the adventure
+    game.triggerEvent("close", arg, this);
+
+    // otherwise, nothing happens
+    if (!this.closed_something) {
+      throw new CommandException("It's not here.");
+    }
+  }
+}
+core_commands.push(new CloseCommand());
 
 
 export class GiveCommand implements BaseCommand {
