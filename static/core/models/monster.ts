@@ -60,10 +60,8 @@ export class Monster extends GameObject {
   courage: number;
   gold: number;
   weapon_id: number;
-  attack_odds: number;
   weapon_dice: number;
   weapon_sides: number;
-  defense_bonus: number; // makes monster harder to hit
   armor_class: number;
 
   // data properties for player only
@@ -413,7 +411,7 @@ export class Monster extends GameObject {
   /**
    * Picks up a weapon during combat
    */
-  public pickUpWeapon(wpn: Artifact): boolean {
+  public pickUpWeapon(wpn: Artifact): void {
     let game = Game.getInstance();
     game.history.write(this.name + " picks up " + wpn.name + ".");
     this.pickUp(wpn);

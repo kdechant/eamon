@@ -170,10 +170,11 @@ export var event_handlers = {
       if (gold_amount < 100) {
         game.effects.print(28);
       } else {
+        let p: Artifact;
         if (recipient.hasArtifact(40)) {
-          let p = game.artifacts.get(40);
+          p = game.artifacts.get(40);
         } else if (recipient.hasArtifact(41)) {
-          let p = game.artifacts.get(41);
+          p = game.artifacts.get(41);
         }
         if (p !== undefined) {
           game.player.gold -= gold_amount;
