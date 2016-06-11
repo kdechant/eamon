@@ -499,7 +499,8 @@ export class Monster extends GameObject {
   public attack(target: Monster): void {
     let game = Game.getInstance();
 
-    let weapon_type = this.weapon ? this.weapon.weapon_type : 0;
+    let wpn = this.getWeapon();
+    let weapon_type = wpn ? wpn.weapon_type : 0;
     if (this.combat_code === 1) {
       game.history.write(this.name + " attacks " + target.name);
     } else {
@@ -508,12 +509,8 @@ export class Monster extends GameObject {
       game.history.write(this.name + " " + attack_verb + " at " + target.name);
     }
 
-    let wpn = Game.getInstance().artifacts.get(this.weapon_id);
-    let odds = this.getBaseToHit();
-    if (target.defense_bonus) odds -= target.defense_bonus;
-
+    let odds = this.getToHitOdds(target);
     let hit_roll = game.diceRoll(1, 100);
-
     if (hit_roll <= odds || hit_roll <= 5) {
       // hit
       let damage = this.rollAttackDamage();
@@ -556,7 +553,7 @@ export class Monster extends GameObject {
         // check for armor expertise increase
         let af = this.getArmorFactor();
         if (af > 0) {
-          let inc_roll = game.diceRoll(1, 100);
+          let inc_roll = game.diceRoll(1, 70);
           // always a 5% chance to increase. this was not present in the original.
           if (Math.max(af, 5) < inc_roll) {
             this.armor_expertise += Math.min(af, 2); // can sometimes increase by only 1
@@ -629,22 +626,26 @@ export class Monster extends GameObject {
   }
 
   /**
-   * Gets the base "to hit" percentage for a monster
+   * Gets the "to hit" percentage for a monster attacking another monster
    */
-  public getBaseToHit(): number {
-    let wpn = Game.getInstance().artifacts.get(this.weapon_id);
-    let to_hit: number;
+  public getToHitOdds(defender: Monster): number {
+    console.log('to hit calc', this.name, defender.name);
+    // attacker's adjusted agility
+    let attacker_ag: number = Math.min(this.agility * this.speed_multiplier, 30) - Math.min(this.armor_class, 7);
+    // defender's adjusted agility
+    let defender_ag: number = Math.min(defender.agility * defender.speed_multiplier, 30) - Math.min(defender.armor_class, 7);
+
+    let to_hit: number = 50 + (attacker_ag - defender_ag) * 2;
+    // add weapon odds (weapon odds are capped at 30%)
+    let wpn = this.getWeapon();
+    if (wpn) {
+      to_hit += Math.min(wpn.weapon_odds, 30) / 2;
+    }
+
+    // for player, adjust by weapon ability and armor factor
     if (this.id === Monster.PLAYER) {
-      // for player, calculate chance to hit based on weapon type, ability, and weapon odds
-      to_hit = this.weapon_abilities[wpn.weapon_type] + wpn.weapon_odds + 2 * this.agility * this.speed_multiplier;
-      // calculate the effect of the armor penalty
       to_hit -= this.getArmorFactor();
-    } else {
-      // other monsters have the same weapon ability for all weapon types
-      to_hit = this.attack_odds + 2 * this.agility;
-      if (this.weapon_id !== 0) {
-        to_hit += wpn.weapon_odds;
-      }
+      to_hit += Math.min(this.weapon_abilities[wpn.weapon_type], 100) / 4;
     }
     return to_hit;
   }

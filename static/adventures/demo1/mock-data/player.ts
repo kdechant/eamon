@@ -8,14 +8,12 @@ export var PLAYER: Object = {
   "agility": 15,
   "charisma": 16,
   "gold": 200,
-  "weapon_abilities": {
-    "1": 5,
-    "2": -10,
-    "3": 20,
-    "4": 10,
-    "5": 0
-  },
-  "armor_expertise": 20,
+  "wpn_axe": 25,
+  "wpn_bow": -10,
+  "wpn_club": 30,
+  "wpn_spear": 10,
+  "wpn_sword": 40,
+  "armor_expertise": 18,
   "inventory": [
     {
       "name": "Mace",

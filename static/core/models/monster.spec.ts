@@ -274,49 +274,53 @@ describe("Monster", function() {
 
   });
 
-  //
-  // it("should calculate its attack damage", function () {
-  //   let game = Game.getInstance();
-  //   let m = new Monster();
-  //
-  //   // natural weapons - using a silly value of 6 d 1 to make testing easier
-  //   m.weapon_dice = 6;
-  //   m.weapon_sides = 1;
-  //   expect(m.rollAttackDamage()).toBe(6);
-  //
-  //   // using a weapon
-  //   let spear = game.artifacts.get(4);
-  //   m.pickUpWeapon(spear);
-  //   m.ready(spear);
-  //   // readying does not change the monster's built-in dice/sides
-  //   expect(m.weapon_dice).toBe(6);
-  //   expect(m.weapon_sides).toBe(1);
-  //   expect(m.rollAttackDamage()).toBeLessThan(6); // spear is 1 d 5
-  //
-  //   // drop the weapon and use natural weapons again
-  //   m.drop(spear);
-  //   expect(m.rollAttackDamage()).toBe(6);
-  //
-  //   // test group monsters
-  //   // these use weapons in a set, beginning with the weapon id in the database and continuing
-  //   // to increment by 1 for each monster, but in reverse order.
-  //   // e.g., if the weapon_id is 19 and group size is 2, the first monster gets #20 and the second gets #19.
-  //   // This is done so the weapons are handled correctly as group members die
-  //   let kobolds = game.monsters.get(5);
-  //   kobolds.group_monster_index = 0;
-  //   expect(kobolds.getWeapon().id).toBe(21);  // the first group member should be using wpn #21
-  //   kobolds.group_monster_index = 1;
-  //   expect(kobolds.getWeapon().id).toBe(20);  // the second group member should be using wpn #20
-  //   kobolds.group_monster_index = 1;
-  //   expect(kobolds.getWeapon().id).toBe(20);  // the second group member should be using wpn #20
-  //
-  //   // test what happens when one of them dies
-  //   kobolds.injure(100);
-  //   expect(kobolds.count).toBe(2);
-  //   expect(kobolds.rollAttackDamage()).toBe(2);  // the only remaining group member should be using wpn #20
-  //   // test what happens when one of them dies
-  //   kobolds.injure(100);
-  //   expect(kobolds.count).toBe(2);
-  //   expect(kobolds.rollAttackDamage()).toBe(2);  // the only remaining group member should be using wpn #20
-  // });
+  it("should calculate its armor factor", function() {
+    let game = Game.getInstance();
+    expect(game.player.getArmorFactor()).toBe(2);
+    // with lower ae
+    game.player.armor_expertise = 0;
+    expect(game.player.getArmorFactor()).toBe(20);
+    // try with ae too high
+    game.player.armor_expertise = 99;
+    expect(game.player.getArmorFactor()).toBe(0);
+    // with a shield
+    game.player.armor_expertise = 20;
+    game.player.ready(game.artifacts.get(27)); // one handed weapon
+    game.player.pickUp(game.artifacts.get(17));
+    game.player.wear(game.artifacts.get(17));  // magic shield, penalty of 2
+    expect(game.player.getArmorFactor()).toBe(2);
+  });
+
+  it("should know its attack odds", function() {
+    let game = Game.getInstance();
+    let guard = game.monsters.get(1);
+    let thief = game.monsters.get(4);
+
+    // this value is getting changed somehow from the fixture data. set it back to 10
+    game.artifacts.get(4).weapon_odds = 10;
+    expect(guard.getToHitOdds(thief)).toBe(41);
+    expect(thief.getToHitOdds(guard)).toBe(64);
+
+    // halberd is -10% to hit
+    thief.pickUpWeapon(game.artifacts.get(16));
+    expect(thief.getToHitOdds(guard)).toBe(59);
+
+    // test the upper limit to wpn odds
+    game.artifacts.get(4).weapon_odds = 42; // capped to 30%
+    expect(guard.getToHitOdds(thief)).toBe(51);
+
+    // test the upper limit to agility
+    guard.agility = 33; // capped to 30
+    expect(guard.getToHitOdds(thief)).toBe(91);
+
+    // test the upper limit to armor
+    guard.armor_class = 10;  // capped to 7
+    expect(guard.getToHitOdds(thief)).toBe(81);
+
+    // player with battle axe (25% odds, 25% ability)
+    expect(game.player.getToHitOdds(thief)).toBe(62.75);
+    // player with club (10% odds, 30% ability)
+    game.player.ready(game.artifacts.get(27));
+    expect(game.player.getToHitOdds(thief)).toBe(56.5);
+  });
 });
