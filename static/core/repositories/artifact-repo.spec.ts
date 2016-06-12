@@ -20,6 +20,17 @@ describe("Artifact Repo", function() {
     expect(bread).not.toBeNull();
     expect(bread.id).toBe(7);
 
+    // an embedded artifact
+    bread.embedded = true;
+    let bread2 = game.artifacts.getLocalByName('bread', false);  // not revealing
+    expect(bread2).not.toBeNull();
+    expect(bread2.id).toBe(7);
+    expect(bread2.embedded).toBe(true);
+    let bread3 = game.artifacts.getLocalByName('bread');  // revealing
+    expect(bread3).not.toBeNull();
+    expect(bread3.id).toBe(7);
+    expect(bread3.embedded).toBe(false);
+
     // something that is elsewhere
     let chest = game.artifacts.getLocalByName('chest');
     expect(chest).toBeNull();

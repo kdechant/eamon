@@ -105,14 +105,9 @@ export class LookCommand implements BaseCommand {
       let match = false;
 
       // see if there is a matching artifact.
-      let a = game.artifacts.getLocalByName(arg, true);
+      let a = game.artifacts.getLocalByName(arg);
       if (a) {
         match = true;
-
-        // if it's an embedded artifact, reveal it
-        if (a.embedded) {
-          a.reveal();
-        }
 
         // display quantity for food, drinks, and light sources
         if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
@@ -499,13 +494,8 @@ export class DrinkCommand implements BaseCommand {
   verbs: string[] = ["drink"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.artifacts.getLocalByName(arg, true);
+    let item = game.artifacts.getLocalByName(arg);
     if (item) {
-
-      if (item.embedded) {
-        item.reveal();
-      }
-
       if (item.type === Artifact.TYPE_DRINKABLE) {
         if (item.quantity > 0) {
           game.history.write("You drink the " + item.name + ".");
@@ -527,13 +517,8 @@ export class EatCommand implements BaseCommand {
   verbs: string[] = ["eat"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.artifacts.getLocalByName(arg, true);
+    let item = game.artifacts.getLocalByName(arg);
     if (item) {
-
-      if (item.embedded) {
-        item.reveal();
-      }
-
       if (item.type === Artifact.TYPE_EDIBLE) {
         if (item.quantity > 0) {
           game.history.write("You eat the " + item.name + ".");
@@ -582,7 +567,7 @@ export class AttackCommand implements BaseCommand {
     }
 
     let monster_target = game.monsters.getLocalByName(arg);
-    let artifact_target = game.artifacts.getLocalByName(arg, true);
+    let artifact_target = game.artifacts.getLocalByName(arg);
     if (monster_target) {
 
       if (game.triggerEvent('attackMonster', arg, monster_target)) {
@@ -598,11 +583,6 @@ export class AttackCommand implements BaseCommand {
       // attacking an artifact
 
       if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
-
-        // if it's an embedded artifact, reveal it
-        if (artifact_target.embedded) {
-          artifact_target.reveal();
-        }
 
         if (artifact_target.type === Artifact.TYPE_DEAD_BODY) {
           // if it's a dead body, hack it to bits
@@ -742,13 +722,8 @@ export class OpenCommand implements BaseCommand {
   opened_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    let a = game.artifacts.getLocalByName(arg, true);
+    let a = game.artifacts.getLocalByName(arg);
     if (a !== null) {
-
-      // if it's an embedded artifact, reveal it
-      if (a.embedded) {
-        a.reveal();
-      }
 
       if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
         // if it's a disguised monster, reveal it
@@ -818,13 +793,14 @@ export class CloseCommand implements BaseCommand {
   closed_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    let a = game.artifacts.getLocalByName(arg, true);
+    let a = game.artifacts.getLocalByName(arg, false);  // not revealing embedded artifacts automatically
     if (a !== null) {
+      // don't reveal secret passages with this command
       if (a.hidden) {
         throw new CommandException("I don't follow you.");
       }
 
-      // if it's an embedded artifact, reveal it
+      // if it's an embedded artifact that is not a hidden secret passage, reveal it
       if (a.embedded) {
         a.reveal();
       }
@@ -991,7 +967,6 @@ export class FreeCommand implements BaseCommand {
     let monster: Monster = null;
     let message: string = "";
 
-    // see if we're reading an artifact that has markings
     let a = game.artifacts.getLocalByName(arg);
     if (a !== null) {
       if (a.type !== Artifact.TYPE_BOUND_MONSTER) {

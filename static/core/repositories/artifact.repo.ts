@@ -108,15 +108,18 @@ export class ArtifactRepository {
   /**
    * Gets an artifact in the local area (current room or player inventory) by name.
    * @param {string} name
+   * @param {boolean} reveal_embedded Whether to automatically reveal any embedded artifacts matched by this method.
+   * Default true.
    * @return Artifact
    */
-  getLocalByName(name: string, include_embedded: boolean = false) {
+  getLocalByName(name: string, reveal_embedded: boolean = true) {
     for (let i in this.all) {
       let a = this.all[i];
       if (a.isHere() && a.match(name)) {
-        if (!a.embedded || include_embedded) {
-          return a;
+        if (a.embedded && reveal_embedded) {
+          a.reveal();
         }
+        return a;
       }
     }
     return null;
