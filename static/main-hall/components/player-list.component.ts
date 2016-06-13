@@ -12,6 +12,7 @@ import {PlayerService} from '../services/player.service';
   <p class="player"
     *ngFor="let player of _playerService.players"
     (click)="gotoPlayer(player)">{{player.name}}</p>
+  <p class="addplayer" (click)="gotoAddPlayer()">New Adventurer</p>
   `,
 })
 export class PlayerListComponent implements OnInit  {
@@ -28,5 +29,9 @@ export class PlayerListComponent implements OnInit  {
   gotoPlayer(player: Player) {
     window.localStorage.setItem('player_id', String(player.id));
     this._router.navigate( ['PlayerDetail', { id: player.id }] );
+  }
+
+  gotoAddPlayer() {
+    this._router.navigate( ['PlayerAdd'] );
   }
 }

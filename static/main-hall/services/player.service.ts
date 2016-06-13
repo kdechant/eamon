@@ -45,4 +45,14 @@ export class PlayerService {
     }
   }
 
+  public save(player: Player) {
+
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    let body = JSON.stringify(player);
+
+    return this.http.post("http://localhost:8000/api/players", body, options).map((res: Response) => res.json());
+  }
+
 }

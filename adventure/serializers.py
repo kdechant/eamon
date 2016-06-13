@@ -54,6 +54,13 @@ class PlayerArtifactSerializer(serializers.ModelSerializer):
 class PlayerSerializer(serializers.ModelSerializer):
     inventory = PlayerArtifactSerializer(many=True, read_only=False)
 
+    def create(self, validated_data):
+        inventory_data = validated_data.pop('inventory') # not used here - causes errors if present
+        validated_data['gold'] = 200;
+        player = Player.objects.create(**validated_data)
+
+        return player
+
     def update(self, instance, validated_data):
 
         inventory_data = validated_data.pop('inventory')

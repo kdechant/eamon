@@ -5,6 +5,7 @@ import {PlayerService} from "../services/player.service";
 
 import {PlayerListComponent}     from './player-list.component';
 import {PlayerDetailComponent}   from './player-detail.component';
+import {PlayerAddComponent}   from './player-add.component';
 import {Player} from "../models/player";
 
 @Component({
@@ -20,6 +21,7 @@ import {Player} from "../models/player";
 @RouteConfig([
   {path: '/', name: 'PlayerList', component: PlayerListComponent},
   {path: '/player/:id/...', name: 'PlayerDetail', component: PlayerDetailComponent},
+  {path: '/player/add', name: 'PlayerAdd', component: PlayerAddComponent},
 ])
 export class MainHallComponent {
 
