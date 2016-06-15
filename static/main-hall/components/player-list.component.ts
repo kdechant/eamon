@@ -1,5 +1,6 @@
 import {Component,  OnInit}  from '@angular/core';
 import {RouteParams, Router} from '@angular/router-deprecated';
+import { Observable }     from 'rxjs/Observable';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
@@ -10,8 +11,10 @@ import {PlayerService} from '../services/player.service';
   <p>On the north side of the chamber is a cubbyhole with a desk. Over the desk is a sign which says: <strong>&quot;REGISTER HERE OR ELSE!&quot;</strong></p>
   <p>The guest book on the desk lists the following players:</p>
   <p class="player"
-    *ngFor="let player of _playerService.players"
-    (click)="gotoPlayer(player)">{{player.name}}</p>
+    *ngFor="let player of _playerService.players">
+    <a (click)="gotoPlayer(player)">{{player.name}}</a>
+    <a (click)="deletePlayer(player)"><span class="glyphicon glyphicon-trash"></span></a>
+    </p>
   <p class="addplayer" (click)="gotoAddPlayer()">New Adventurer</p>
   `,
 })
@@ -29,6 +32,21 @@ export class PlayerListComponent implements OnInit  {
   gotoPlayer(player: Player) {
     window.localStorage.setItem('player_id', String(player.id));
     this._router.navigate( ['PlayerDetail', { id: player.id }] );
+  }
+
+  deletePlayer(player: Player) {
+    if (confirm("Are you sure you want to delete " + player.name + "?")) {
+      window.localStorage.setItem('player_id', null);
+      this._playerService.delete(player).subscribe(
+         data => {
+           this._playerService.getList();
+           return true;
+         },
+         error => {
+           console.error("Error deleting player!");
+           return Observable.throw(error);
+         });
+    }
   }
 
   gotoAddPlayer() {

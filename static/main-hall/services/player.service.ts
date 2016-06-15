@@ -1,7 +1,6 @@
 import { Injectable }     from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import { Observable }     from 'rxjs/Observable';
 
 import {Player} from "../models/player";
 
@@ -45,7 +44,7 @@ export class PlayerService {
     }
   }
 
-  public save(player: Player) {
+  public create(player: Player) {
 
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
@@ -53,6 +52,10 @@ export class PlayerService {
     let body = JSON.stringify(player);
 
     return this.http.post("http://localhost:8000/api/players", body, options).map((res: Response) => res.json());
+  }
+
+  public delete(player: Player) {
+    return this.http.delete("http://localhost:8000/api/players/" + player.id);
   }
 
 }

@@ -105,7 +105,7 @@ export class PlayerAddComponent implements OnInit  {
 
   save(player: Player): void {
     console.log(this.player);
-    this._playerService.save(this.player).subscribe(
+    this._playerService.create(this.player).subscribe(
        data => {
          this.player.id = data['id'];
          // no redirect here. saving the data shows a message and a button on this page.
