@@ -3,8 +3,8 @@
     // map tells the System loader where to look for things
     var map = {
         'rxjs': '/static/node_modules/rxjs',
-        'angular2-in-memory-web-api': '/static/node_modules/angular2-in-memory-web-api',
-        '@angular': '/static/node_modules/@angular',
+        '@angular':                   '/static/node_modules/@angular',
+        '@angular-router':            '/static/node_modules/@angular-router',
         'core': "/static/core",
         'main_hall': "/static/main-hall",
         'adventure': "/static/adventures/demo1"
@@ -27,7 +27,6 @@
         '@angular/platform-browser',
         '@angular/platform-browser-dynamic',
         '@angular/router',
-        '@angular/router-deprecated',
         '@angular/testing',
         '@angular/upgrade',
     ];

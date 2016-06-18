@@ -12,8 +12,6 @@ export class PlayerService {
 
   public players: Player[];
 
-  public current_player: Player;
-
   constructor(private http: Http) { }
 
   getList() {
@@ -24,15 +22,7 @@ export class PlayerService {
   }
 
   getPlayer(id: number) {
-    this.http.get('/api/players/' + id).map((res: Response) => res.json()).subscribe(
-      data => {
-        this.current_player = new Player();
-        this.current_player.init(data);
-
-        this.current_player.update();
-      },
-      err => console.error(err)
-    );
+    return this.http.get('/api/players/' + id).map((res: Response) => res.json());
   }
 
   private setupPlayerList(data: any): void {

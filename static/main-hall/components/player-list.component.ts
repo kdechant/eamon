@@ -1,5 +1,5 @@
 import {Component,  OnInit}  from '@angular/core';
-import {RouteParams, Router} from '@angular/router-deprecated';
+import {Router, ROUTER_DIRECTIVES} from '@angular/router';
 import { Observable }     from 'rxjs/Observable';
 
 import {Player} from '../models/player';
@@ -15,14 +15,14 @@ import {PlayerService} from '../services/player.service';
     <a (click)="gotoPlayer(player)">{{player.name}}</a>
     <a (click)="deletePlayer(player)"><span class="glyphicon glyphicon-trash"></span></a>
     </p>
-  <p class="addplayer" (click)="gotoAddPlayer()">New Adventurer</p>
+  <p class="addplayer"><a [routerLink]="['/player/add']">New Adventurer</a></p>
   `,
+  directives: [ROUTER_DIRECTIVES]
 })
 export class PlayerListComponent implements OnInit  {
 
   constructor(
     private _router: Router,
-    private _routeParams: RouteParams,
     private _playerService: PlayerService){}
 
   public ngOnInit(): void {
@@ -31,7 +31,7 @@ export class PlayerListComponent implements OnInit  {
 
   gotoPlayer(player: Player) {
     window.localStorage.setItem('player_id', String(player.id));
-    this._router.navigate( ['PlayerDetail', { id: player.id }] );
+    this._router.navigate( ['/player', player.id] );
   }
 
   deletePlayer(player: Player) {
@@ -47,9 +47,5 @@ export class PlayerListComponent implements OnInit  {
            return Observable.throw(error);
          });
     }
-  }
-
-  gotoAddPlayer() {
-    this._router.navigate( ['PlayerAdd'] );
   }
 }

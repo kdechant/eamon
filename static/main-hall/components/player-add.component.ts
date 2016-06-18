@@ -1,6 +1,5 @@
 import {Component,  OnInit}  from '@angular/core';
-import {RouteParams, Router} from '@angular/router-deprecated';
-import { RouteConfig, ROUTER_DIRECTIVES } from '@angular/router-deprecated';
+import {Router} from '@angular/router';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
@@ -37,17 +36,16 @@ import {PlayerService} from '../services/player.service';
         <input type="submit" value="Begin Your Adventuring Career" />
         <input type="button" id="cancel" (click)="gotoList()" value="Cancel" />
       </div>
-      <div id="prosper" *ngIf="player.id">
-        <p>The man behind the desk takes back the instructions and says, &quot;It is now time
-        for you to start your life.&quot; He makes an odd sign with his hand and says, &quot;Live"
-        long and prosper.&quot;</p>
-        <p>You now wander into the Main Hall...</p>
-        <button (click)="gotoPlayer(player)">Next</button>
-      </div>
     </form>
+    <div id="prosper" *ngIf="player.id">
+      <p>The man behind the desk takes back the instructions and says, &quot;It is now time
+      for you to start your life.&quot; He makes an odd sign with his hand and says, &quot;Live"
+      long and prosper.&quot;</p>
+      <p>You now wander into the Main Hall...</p>
+      <button (click)="gotoPlayer(player)">Next</button>
+    </div>
   </div>
-  `,
-  directives: [ROUTER_DIRECTIVES]
+  `
 })
 export class PlayerAddComponent implements OnInit  {
 
@@ -55,7 +53,6 @@ export class PlayerAddComponent implements OnInit  {
 
   constructor(
     private _router: Router,
-    private _routeParams: RouteParams,
     private _playerService: PlayerService) {
   }
 
@@ -67,12 +64,12 @@ export class PlayerAddComponent implements OnInit  {
   }
 
   gotoList() {
-    this._router.navigate(['PlayerList']);
+    this._router.navigate(['/']);
   }
 
   gotoPlayer(player: Player) {
     window.localStorage.setItem('player_id', String(player.id));
-    this._router.navigate( ['PlayerDetail', { id: player.id }] );
+    this._router.navigate( ['/player', player.id], { queryParams: { } } );
   }
 
   reroll() {

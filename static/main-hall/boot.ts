@@ -1,5 +1,5 @@
 import {bootstrap}        from '@angular/platform-browser-dynamic';
-import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
+import { APP_ROUTER_PROVIDERS } from './app.routes';
 import { HTTP_PROVIDERS } from '@angular/http';
 
 // Add all operators (map, catch, etc.) to Observable
@@ -12,7 +12,8 @@ import {AdventureService} from "./services/adventure.service";
 
 bootstrap(MainHallComponent, [
   HTTP_PROVIDERS,
-  ROUTER_PROVIDERS,
+  APP_ROUTER_PROVIDERS,
   AdventureService,
   PlayerService
-]);
+])
+.catch(err => console.error(err));
