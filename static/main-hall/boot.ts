@@ -9,11 +9,13 @@ import {MainHallComponent} from "./components/main-hall.component";
 
 import {PlayerService} from "./services/player.service";
 import {AdventureService} from "./services/adventure.service";
+import {ShopService} from "./services/shop.service";
 
 bootstrap(MainHallComponent, [
   HTTP_PROVIDERS,
   APP_ROUTER_PROVIDERS,
   AdventureService,
-  PlayerService
+  PlayerService,
+  ShopService
 ])
 .catch(err => console.error(err));

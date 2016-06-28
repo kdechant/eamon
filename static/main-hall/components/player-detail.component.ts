@@ -12,12 +12,12 @@ import {StatusComponent} from "../components/status.component";
     <nav>
       <p><a (click)="gotoAdventures()">Go on an adventure</a></p>
       <p><a (click)="gotoMarcos()">Visit the weapons shop</a></p>
-      <p><a [routerLink]="['/']">Temporarily leave the universe</a></p>
+      <p><a (click)="leaveTheUniverse()">Temporarily leave the universe</a></p>
     </nav>
     <router-outlet></router-outlet>
   </div>
   <div class="col-sm-8">
-    <status [player]="player"></status>
+    <status [player]="_playerService.player"></status>
   </div>
   `,
   directives: [StatusComponent, ROUTER_DIRECTIVES]
@@ -32,21 +32,23 @@ export class PlayerDetailComponent implements OnInit {
 
   ngOnInit() {
     let id = Number(this._route.snapshot.params['id']);
-    this._playerService.getPlayer(id).subscribe(
-      data => {
-        this.player = new Player();
-        this.player.init(data);
-        this.player.update();
-      }
-    );
+    this._playerService.getPlayer(id);
   }
 
   gotoAdventures() {
-    this._router.navigate( ['/player', this.player.id, '/adventure'] );
+    this._router.navigate( ['/player', this._playerService.player.id, '/adventure'] );
   }
 
   gotoMarcos() {
-    this._router.navigate( ['/player', this.player.id, '/shop'] );
+    this._router.navigate( ['/player', this._playerService.player.id, '/shop'] );
   }
 
+  leaveTheUniverse() {
+    this._playerService.update().subscribe(
+      data => {
+        this._router.navigate( ['/'] );
+      }
+    );
+  }
+  
 }

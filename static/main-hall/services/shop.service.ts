@@ -42,6 +42,7 @@ export class ShopService {
       } else {
         item.name = item.getWeaponTypeName();
       }
+      item.description = "You see a standard " + item.name + ".";
       switch (t) {
         case 1:
           item.sides = 6;
@@ -76,10 +77,12 @@ export class ShopService {
       item.type = Artifact.TYPE_WEAPON;
       item.weapon_type = Game.getInstance().diceRoll(1, 5);
       item.name = artifact_names[item.weapon_type][Math.floor(Math.random() * artifact_names[item.weapon_type].length)];
+      item.description = "You see a " + item.getWeaponTypeName() + " named " + item.name + ".";
       item.weapon_odds = Game.getInstance().diceRoll(1, 12) * 2;
+      item.hands = item.weapon_type === 2 ? 2 : 1;
       item.dice = 2;
       item.sides = 4 + Game.getInstance().diceRoll(1, 5) * 2;
-      item.value = 200 + 50 * item.sides + 2 * item.weapon_odds + Game.getInstance().diceRoll(5, 20);
+      item.value = (20 + 5 * item.sides + 2 * item.weapon_odds + Game.getInstance().diceRoll(2, 5)) * 10;
       this.weapons.push(item);
     }
 
@@ -90,6 +93,7 @@ export class ShopService {
       item.type = Artifact.TYPE_WEARABLE;
       item.armor_type = Artifact.ARMOR_TYPE_ARMOR;
       item.name = armor_types[t] + " armor";
+      item.description = "You see a standard set of " + item.name + ".";
       item.value = 42;
       item.armor_class = 1;
       item.armor_penalty = 10;
@@ -100,6 +104,7 @@ export class ShopService {
     item.type = Artifact.TYPE_WEARABLE;
     item.armor_type = Artifact.ARMOR_TYPE_SHIELD;
     item.name = "shield";
+    item.description = "You see a standard shield.";
     item.value = 21;
     item.armor_class = 1;
     item.armor_penalty = 5;

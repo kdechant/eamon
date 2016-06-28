@@ -10,9 +10,15 @@ import {Player} from "../models/player";
 @Injectable()
 export class PlayerService {
 
+  // the list of players
   public players: Player[];
 
-  constructor(private http: Http) { }
+  // the current player
+  public player: Player;
+
+  constructor(private http: Http) {
+    console.log('construct player service')
+  }
 
   getList() {
     this.http.get('/api/players').map((res: Response) => res.json()).subscribe(
@@ -22,7 +28,15 @@ export class PlayerService {
   }
 
   getPlayer(id: number) {
-    return this.http.get('/api/players/' + id).map((res: Response) => res.json());
+    if (!this.player) {
+      this.http.get('/api/players/' + id).map((res:Response) => res.json()).subscribe(
+        data => {
+          this.player = new Player();
+          this.player.init(data);
+          this.player.update();
+        }
+      );
+    }
   }
 
   private setupPlayerList(data: any): void {
@@ -42,6 +56,16 @@ export class PlayerService {
     let body = JSON.stringify(player);
 
     return this.http.post("http://localhost:8000/api/players", body, options).map((res: Response) => res.json());
+  }
+
+  public update() {
+
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    let body = JSON.stringify(this.player);
+
+    return this.http.put("http://localhost:8000/api/players/" + this.player.id, body, options).map((res: Response) => res.json());
   }
 
   public delete(player: Player) {

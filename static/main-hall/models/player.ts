@@ -18,10 +18,12 @@ export class Player extends GameObject {
   wpn_club: number;
   wpn_spear: number;
   wpn_sword: number;
-  spell_blast: number;
-  spell_heal: number;
-  spell_power: number;
-  spell_speed: number;
+  weapon_abilities: { [key: number]: number; };
+  spl_blast: number;
+  spl_heal: number;
+  spl_power: number;
+  spl_speed: number;
+  spell_abilities_original: any;
   armor_expertise: number;
 
   inventory: Artifact[] = [];
@@ -50,6 +52,20 @@ export class Player extends GameObject {
         this[prop] = source[prop];
       }
     }
+    this.weapon_abilities = {
+      1: this.wpn_axe,
+      2: this.wpn_bow,
+      3: this.wpn_club,
+      4: this.wpn_spear,
+      5: this.wpn_sword
+    };
+    // spell_abilities_original is the variable name expected by the API, because that's what the dungeon returns
+    this.spell_abilities_original = {
+      "power": this.spl_power,
+      "heal": this.spl_heal,
+      "blast": this.spl_blast,
+      "speed": this.spl_speed
+    };
   }
 
   /**
@@ -86,7 +102,7 @@ export class Player extends GameObject {
    * Returns the appropriate adjective for the player's gender
    */
   public getGenderLabel(): string {
-    if (this.gender == 'm') {
+    if (this.gender === 'm') {
       return "mighty";
     } else {
       return "fair";
