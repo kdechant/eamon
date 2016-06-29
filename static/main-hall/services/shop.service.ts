@@ -46,21 +46,25 @@ export class ShopService {
       switch (t) {
         case 1:
           item.sides = 6;
+          item.value = 25;
           break;
         case 2:
           item.sides = 6;
+          item.value = 40;
           break;
         case 3:
           item.sides = 4;
+          item.value = 20;
           break;
         case 4:
           item.sides = 5;
+          item.value = 25;
           break;
         case 5:
           item.sides = 8;
+          item.value = 30;
           break;
       }
-      item.value = 42;
       this.weapons.push(item);
     }
 
@@ -72,7 +76,7 @@ export class ShopService {
       4: ["Centuri", "Widower"],
       5: ["Slasher", "Freedom"]
     };
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       item = new Artifact();
       item.type = Artifact.TYPE_WEAPON;
       item.weapon_type = Game.getInstance().diceRoll(1, 5);
@@ -80,9 +84,10 @@ export class ShopService {
       item.description = "You see a " + item.getWeaponTypeName() + " named " + item.name + ".";
       item.weapon_odds = Game.getInstance().diceRoll(1, 12) * 2;
       item.hands = item.weapon_type === 2 ? 2 : 1;
-      item.dice = 2;
-      item.sides = 4 + Game.getInstance().diceRoll(1, 5) * 2;
-      item.value = (20 + 5 * item.sides + 2 * item.weapon_odds + Game.getInstance().diceRoll(2, 5)) * 10;
+      item.dice = i < 3 ? 2 : 3;  // always generate 3 2d* weapons and 2 3d* weapons
+      item.sides = 4 + Game.getInstance().diceRoll(1, 4) * 2;
+      item.value = (item.maxDamage() - 6) ** 2 * 5
+        + (item.weapon_odds - 10) * 5;
       this.weapons.push(item);
     }
 
@@ -94,10 +99,23 @@ export class ShopService {
       item.armor_type = Artifact.ARMOR_TYPE_ARMOR;
       item.name = armor_types[t] + " armor";
       item.description = "You see a standard set of " + item.name + ".";
-      item.value = 42;
-      item.armor_class = 1;
-      item.armor_penalty = 10;
-      // item.armor_class = t * 3 - 1;
+      switch (armor_types[t]) {
+        case "leather":
+          item.value = 100;
+          item.armor_class = 1;
+          item.armor_penalty = 10;
+          break;
+        case "chain":
+          item.value = 250;
+          item.armor_class = 3;
+          item.armor_penalty = 20;
+          break;
+        case "plate":
+          item.value = 500;
+          item.armor_class = 5;
+          item.armor_penalty = 60;
+          break;
+      }
       this.armors.push(item);
     }
     item = new Artifact;
@@ -105,7 +123,7 @@ export class ShopService {
     item.armor_type = Artifact.ARMOR_TYPE_SHIELD;
     item.name = "shield";
     item.description = "You see a standard shield.";
-    item.value = 21;
+    item.value = 50;
     item.armor_class = 1;
     item.armor_penalty = 5;
     this.armors.push(item);
