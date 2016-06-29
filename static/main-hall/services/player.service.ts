@@ -17,7 +17,6 @@ export class PlayerService {
   public player: Player;
 
   constructor(private http: Http) {
-    console.log('construct player service')
   }
 
   getList() {

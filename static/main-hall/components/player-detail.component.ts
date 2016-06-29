@@ -12,6 +12,7 @@ import {StatusComponent} from "../components/status.component";
     <nav>
       <p><a (click)="gotoAdventures()">Go on an adventure</a></p>
       <p><a (click)="gotoMarcos()">Visit the weapons shop</a></p>
+      <p><a (click)="gotoHokas()">Find a wizard to teach you some spells</a></p>
       <p><a (click)="leaveTheUniverse()">Temporarily leave the universe</a></p>
     </nav>
     <router-outlet></router-outlet>
@@ -43,12 +44,17 @@ export class PlayerDetailComponent implements OnInit {
     this._router.navigate( ['/player', this._playerService.player.id, '/shop'] );
   }
 
+  gotoHokas() {
+    this._router.navigate( ['/player', this._playerService.player.id, '/wizard'] );
+  }
+
   leaveTheUniverse() {
     this._playerService.update().subscribe(
       data => {
+        this._playerService.player = null;
         this._router.navigate( ['/'] );
       }
     );
   }
-  
+
 }
