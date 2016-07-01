@@ -627,7 +627,6 @@ export class Monster extends GameObject {
    * Gets the "to hit" percentage for a monster attacking another monster
    */
   public getToHitOdds(defender: Monster): number {
-    console.log('to hit calc', this.name, defender.name);
     // attacker's adjusted agility
     let attacker_ag: number = Math.min(this.agility * this.speed_multiplier, 30) - Math.min(this.armor_class, 7);
     // defender's adjusted agility

@@ -1,5 +1,3 @@
-import {Inject} from "angular2/core";
-
 import {RoomRepository} from "../repositories/room.repo";
 import {ArtifactRepository} from "../repositories/artifact.repo";
 import {EffectRepository} from "../repositories/effect.repo";

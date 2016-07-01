@@ -14,13 +14,13 @@ import {Game} from "../models/game";
        placeholder="{{lastCommand}}"
        />
     </div>
+    </form>
     <div class="return-button-container" *ngIf="game.won">
       <button class="btn btn-success" id="return" (click)="exit()">Return to Main Hall</button>
     </div>
     <div class="return-button-container" *ngIf="game.died">
       <button class="btn btn-success" id="return" (click)="restart()">Start Over</button>
     </div>
-    </form>
     `,
 })
 export class CommandPromptComponent {

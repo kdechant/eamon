@@ -16,7 +16,6 @@ import {PlayerService} from "../services/player.service";
   directives: [StatusComponent]
 })
 export class AdventureListComponent implements OnInit {
-  player: Player;
 
   constructor(private _router: Router,
               private _route: ActivatedRoute,
@@ -28,13 +27,7 @@ export class AdventureListComponent implements OnInit {
     this._adventureService.getList();
 
     let id = Number(this._route.snapshot.params['id']);
-    this._playerService.getPlayer(id).subscribe(
-      data => {
-        this.player = new Player();
-        this.player.init(data);
-        this.player.update();
-      }
-    );
+    this._playerService.getPlayer(id);
 
   }
 

@@ -342,6 +342,10 @@ export class PutCommand implements BaseCommand {
       if (!item) {
         throw new CommandException("I see no " + item_name + " here!");
       }
+      if (item.monster_id !== Monster.PLAYER) {
+        game.history.write("Taking it first...");
+        game.command_parser.run('get ' + item.name);
+      }
       let container: Artifact = game.artifacts.getLocalByName(container_name);
       if (!container) {
         throw new CommandException("I see no " + container_name + " here!");
@@ -540,7 +544,7 @@ export class UseCommand implements BaseCommand {
   verbs: string[] = ["use"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.player.findInInventory(arg);
+    let item = game.artifacts.getByName(arg);
     if (item) {
       if (item.quantity === null || item.quantity > 0) {
         item.use();

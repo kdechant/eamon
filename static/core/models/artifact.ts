@@ -202,15 +202,17 @@ export class Artifact extends GameObject {
     }
 
     // the real logic for this is done in an event handler defined in the adventure.
-    game.triggerEvent("use", this);
+    game.triggerEvent("use", this.name, this);
 
     // reduce quantity/number of charges remaining
-    if (this.quantity !== null && this.quantity > 0) {
-      this.quantity--;
-    }
-    if (this.quantity <= 0) {
-      game.history.write("The " + this.name + " is all gone!");
-      this.destroy();
+    if (this.quantity !== null) {
+      if (this.quantity > 0) {
+        this.quantity--;
+      }
+      if (this.quantity <= 0) {
+        game.history.write("The " + this.name + " is all gone!");
+        this.destroy();
+      }
     }
   }
 
