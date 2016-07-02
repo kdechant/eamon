@@ -282,11 +282,23 @@ export class Game {
 
   /**
    * Rolls a set of dice
+   * @param {number} dice
+   *   The number of dice
+   * @param (number} sides
+   *   The number of sides on each dice. Normally a positive integer but zero and negative numbers are also supported.
    */
   diceRoll(dice, sides) {
+    if (sides === 0) {
+      return 0;
+    }
     let result = 0;
     for (let i = 0; i < dice; i++) {
-      result += Math.floor(Math.random() * sides + 1);
+      if (sides > 0) {
+        result += Math.floor(Math.random() * sides + 1);
+      } else {
+        // this supports a negative number of sides to produce a random negative number
+        result += Math.ceil(Math.random() * sides - 1);
+      }
     }
     return result;
   }
