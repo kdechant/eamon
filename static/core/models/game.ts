@@ -173,6 +173,10 @@ export class Game {
    * torch fuel will happen here.
    */
   tick() {
+    if (!this.active) {
+      return;
+    }
+
     this.timer++;
 
     this.player.rechargeSpellAbilities();
