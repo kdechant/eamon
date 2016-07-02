@@ -8,6 +8,7 @@ import {GameLoaderService} from "../services/game-loader.service";
     <p>When you reach the main hall, you deliver your goods to Sam Slicker, the local buyer for such things.
     He examines your items and pays you what they are worth...</p>
     <p>He pays you {{game.player.profit}} gold pieces total.</p>
+    <p *ngFor="let msg of game.exit_message">{{msg}}</p>
     <button (click)="savePlayer()">Save and go to main hall</button>
     `,
 })

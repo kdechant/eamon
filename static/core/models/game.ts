@@ -115,6 +115,11 @@ export class Game {
   /**
    * Flag to indicate that the selling items phase is running
    */
+  exit_message: string[] = [];
+
+  /**
+   * Flag to indicate that the selling items phase is running
+   */
   selling: boolean = false;
 
   constructor() {

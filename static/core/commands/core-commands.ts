@@ -16,6 +16,7 @@ export class MoveCommand implements BaseCommand {
     let game = Game.getInstance();
 
     // TODO: turn "north" into "n"
+    let room_from = game.rooms.current_room;
     let exit = game.rooms.current_room.getExit(verb);
     let msg: string;
     if (exit === null) {
@@ -73,7 +74,7 @@ export class MoveCommand implements BaseCommand {
           }
         }
 
-        game.triggerEvent("afterMove", arg, exit, room_to);
+        game.triggerEvent("afterMove", arg, room_from, room_to);
 
       }
     }
@@ -976,7 +977,8 @@ export class FreeCommand implements BaseCommand {
       if (a.type !== Artifact.TYPE_BOUND_MONSTER) {
         throw new CommandException("You can't free that!");
       }
-      if (a.guard_id !== null) {
+      // some adventures use guard_id of 0 to indicate no guard
+      if (a.guard_id !== null || a.guard_id === 0) {
         let guard = game.monsters.get(a.guard_id);
         if (guard.isHere()) {
           throw new CommandException(guard.name + " won't let you!");

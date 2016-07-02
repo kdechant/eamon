@@ -909,6 +909,9 @@ export class Monster extends GameObject {
       }
     }
     this.gold += this.profit;
+
+    Game.getInstance().triggerEvent("afterSell");
+    
   }
 
 }

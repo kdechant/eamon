@@ -98,6 +98,20 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Gets the Monster object for the monster that is carrying the artifact, or the player if the artifact is in the room.
+   */
+  public getOwner(): Monster {
+    let game = Game.getInstance();
+    let owner: Monster;
+    if (this.monster_id !== null) {
+      owner = game.monsters.get(this.monster_id);
+    } else if (this.room_id === game.player.room_id) {
+      owner = game.player;
+    }
+    return owner;
+  }
+
+  /**
    * Removes an artifact from a container and
    * places it in the room where the container is.
    */
@@ -187,18 +201,15 @@ export class Artifact extends GameObject {
     let game = Game.getInstance();
 
     // logic for simple healing potions, healing by eating food, etc.
-    if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice * this.sides > 0) {
+    if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice > 0) {
       let heal_amount = game.diceRoll(this.dice, this.sides);
 
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
-      let owner = game.monsters.get(this.monster_id);
+      let owner = this.getOwner();
       if (owner) {
         game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
-      } else {
-        owner = game.player;
-        game.history.write("It heals you " + heal_amount + " hit points.");
+        owner.heal(heal_amount);
       }
-      owner.heal(heal_amount);
     }
 
     // the real logic for this is done in an event handler defined in the adventure.
