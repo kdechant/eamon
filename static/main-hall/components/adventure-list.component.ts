@@ -32,6 +32,6 @@ export class AdventureListComponent implements OnInit {
   }
 
   gotoDetail() {
-    this._router.navigate(['/player', this.player.id]);
+    this._router.navigate(['/player', this._playerService.player.id]);
   }
 }

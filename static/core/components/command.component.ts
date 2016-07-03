@@ -1,20 +1,21 @@
 import {Component, Input} from "@angular/core";
-
-import {Game} from "../models/game";
+import { NgForm }    from '@angular/common';
 
 @Component({
   selector: "command-prompt",
   template: `
-    <form class="form-inline">
+    <div class="form-inline">
     <div class="command-prompt form-group" *ngIf="game.active">
       <span class="prompt">Your Command: </span>
       <input #cmd (keyup)="onKeyPress($event, cmd.value)"
        type="text" class="form-control"
        [(ngModel)]="command"
-       placeholder="{{lastCommand}}"
+       name="command"
+       placeholder="{{last_command}}"
+       autocomplete="off"
        />
     </div>
-    </form>
+    </div>
     <div class="return-button-container" *ngIf="game.won">
       <button class="btn btn-success" id="return" (click)="exit()">Return to Main Hall</button>
     </div>
@@ -31,6 +32,7 @@ export class CommandPromptComponent {
   static KEYCODE_ENTER: number = 13;
 
   public command: string;
+  public last_command: string;
 
   /**
    * Handle keypresses, looking for special keys like enter and arrows.
@@ -41,7 +43,7 @@ export class CommandPromptComponent {
     switch (event.keyCode) {
 
       case CommandPromptComponent.KEYCODE_ENTER:  // enter key runs the command
-        // if the user didn"t type a new command, run the last command
+        // if the user didn't type a new command, run the last command
         if (value.length === 0) {
           value = this.game.history.getLastCommand();
         }
@@ -54,6 +56,7 @@ export class CommandPromptComponent {
 
         // clear the input box
         this.command = "";
+        this.last_command = value;
 
         break;
 

@@ -13,7 +13,7 @@ import {PlayerService} from '../services/player.service';
     <form (ngSubmit)="save()">
       <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" [(ngModel)]="player.name">
+        <input type="text" class="form-control" id="name" [(ngModel)]="player.name" name="name">
       </div>
       <div>
           <label>

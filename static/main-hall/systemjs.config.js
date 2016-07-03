@@ -23,12 +23,12 @@
         '@angular/common',
         '@angular/compiler',
         '@angular/core',
+        '@angular/forms',
         '@angular/http',
         '@angular/platform-browser',
         '@angular/platform-browser-dynamic',
         '@angular/router',
-        '@angular/testing',
-        '@angular/upgrade',
+        '@angular/testing'
     ];
 
     // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }

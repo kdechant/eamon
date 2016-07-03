@@ -20,7 +20,7 @@ export class PlayerService {
   }
 
   getList() {
-    this.http.get('/api/players').map((res: Response) => res.json()).subscribe(
+    this.http.get('/api/players.json').map((res: Response) => res.json()).subscribe(
       data => this.setupPlayerList(data),
       err => console.error(err)
     );
@@ -28,7 +28,7 @@ export class PlayerService {
 
   getPlayer(id: number) {
     if (!this.player) {
-      this.http.get('/api/players/' + id).map((res:Response) => res.json()).subscribe(
+      this.http.get('/api/players/' + id + '.json').map((res:Response) => res.json()).subscribe(
         data => {
           this.player = new Player();
           this.player.init(data);
