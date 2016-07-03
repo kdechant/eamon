@@ -79,9 +79,10 @@ export var event_handlers = {
 
   "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact): void {
     // if unreadying trollsfire, put it out
-    if (old_wpn.id === 10 && new_wpn.id !== 10) {
+    if (old_wpn && old_wpn.id === 10 && new_wpn.id !== 10) {
       put_out_trollsfire();
     }
+    return true;
   },
 
   "drop": function(arg: string, artifact: Artifact): void {
@@ -113,6 +114,18 @@ export var event_handlers = {
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
+    }
+  },
+
+  // event handler that happens at the very end, after the player has sold their treasure to sam slicker
+  "afterSell": function() {
+    let game = Game.getInstance();
+    let cynthia = game.monsters.get(3);
+    // Duke Luxom's Reward
+    if (cynthia.isHere() && cynthia.reaction !== Monster.RX_HOSTILE) {
+      let reward = game.player.charisma * 10;
+      game.exit_message.push("Additionally, you receive " + reward + " gold pieces for the safe return of Cynthia.");
+      game.player.profit += reward;
     }
   },
 
