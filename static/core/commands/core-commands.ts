@@ -1110,3 +1110,14 @@ export class GotoCommand implements BaseCommand {
   }
 }
 core_commands.push(new GotoCommand());
+
+// a cheat command used for debugging. opens the javascript debugger
+export class DebuggerCommand implements BaseCommand {
+  name: string = "debugger";
+  verbs: string[] = ["debugger"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    debugger;
+  }
+}
+core_commands.push(new DebuggerCommand());
