@@ -22,7 +22,7 @@ export class SellItemsComponent {
     this._gameLoaderService.savePlayer(game.player).subscribe(
        data => {
          console.log("Saved player!");
-         window.location.href = "/";
+         window.location.href = "/player/" + window.localStorage.getItem('player_id');
        },
        error => console.error("Error saving player!")
     );

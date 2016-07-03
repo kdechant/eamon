@@ -471,7 +471,7 @@ export class FleeCommand implements BaseCommand {
     let game = Game.getInstance();
 
     if (!game.in_battle) {
-      throw new CommandException("There is nothing to flee from!");
+      throw new CommandException("Calm down. There is no danger here.");
     }
 
     let room_to = game.player.chooseRandomExit();
