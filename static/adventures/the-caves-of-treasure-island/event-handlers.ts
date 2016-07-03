@@ -3,6 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
+import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -34,6 +35,7 @@ export var event_handlers = {
     ];
     game.data["found_trapdoor"] = false;
     game.data["found_book"] = false;
+    game.data["read"] = {};  // flag for whether various artifacts have been read before
 
     // rename the locked door artifacts
     for (let a = 49; a <= 53; a++) {
@@ -83,7 +85,7 @@ export var event_handlers = {
         if (game.player.room_id === 14 && !game.data["found_trapdoor"]) {
           game.history.write("Found something!");
           game.data["found_trapdoor"] = true;
-          game.artifacts.get(54).room_id = 14;
+          game.artifacts.get(54).reveal();
         } else if (game.player.room_id === 51 && !game.data["found_book"]) {
           game.history.write("Found something!");
           game.data["found_book"] = true;
@@ -116,11 +118,31 @@ export var event_handlers = {
     }
   },
 
+  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    let game = Game.getInstance();
+    // some readable artifacts have their text contained in the artifact description
+    if (artifact !== null) {
+      if (artifact.id === 34 || artifact.id === 39 || artifact.id === 42 || artifact.id === 44) {
+        if (game.data["read"][artifact.id]) {
+          // the first time, the game will show the description automatically as the artifact is revealed.
+          // subsequent readings require the description to be shown again.
+          game.history.write(artifact.description);
+        } else {
+          game.data["read"][artifact.id] = true;
+        }
+        command.markings_read = true;  // suppresses the "no markings to read" message
+      } else if (artifact.id === 15) {
+        // the book teleports you (and friendly NPCs)
+        game.player.moveToRoom(22);
+      }
+    }
+  },
+
   "give": function(arg: string, artifact: Artifact, monster: Monster) {
     let game = Game.getInstance();
 
     if (artifact.id === 2) {
-      // give the pass to the guard
+      // potion only works for the player
       game.history.write(monster.name + " doesn't want to try that strange potion.");
       return false;
     }
@@ -161,7 +183,6 @@ export var event_handlers = {
         let action_no = Math.floor(Math.random() * game.data["terry_actions"].length);
         game.history.write(game.data["terry_actions"][action_no]);
         game.data["terry_actions"].splice(action_no, 1);
-        console.log(game.data["terry_actions"]);
       }
     }
   },

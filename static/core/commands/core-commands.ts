@@ -65,14 +65,7 @@ export class MoveCommand implements BaseCommand {
         return;
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
-        game.player.moveToRoom(room_to.id);
-
-        // move friendly monsters
-        for (let i in game.monsters.visible) {
-          if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
-            game.monsters.visible[i].moveToRoom(room_to.id);
-          }
-        }
+        game.player.moveToRoom(room_to.id, true);
 
         game.triggerEvent("afterMove", arg, room_from, room_to);
 
@@ -978,7 +971,7 @@ export class FreeCommand implements BaseCommand {
         throw new CommandException("You can't free that!");
       }
       // some adventures use guard_id of 0 to indicate no guard
-      if (a.guard_id !== null || a.guard_id === 0) {
+      if (a.guard_id !== null && a.guard_id !== 0) {
         let guard = game.monsters.get(a.guard_id);
         if (guard.isHere()) {
           throw new CommandException(guard.name + " won't let you!");

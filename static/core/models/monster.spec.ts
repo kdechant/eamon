@@ -313,4 +313,15 @@ describe("Monster", function() {
     game.player.ready(game.artifacts.get(27));
     expect(game.player.getToHitOdds(thief)).toBe(56.5);
   });
+
+  it("should move", function() {
+    let alfred = game.monsters.get(3);
+    let guard = game.monsters.get(1);
+    expect(alfred.room_id).toBe(1);
+    game.player.moveToRoom(2);
+    expect(alfred.room_id).toBe(2);
+    expect(guard.room_id).toBe(1);  // neutral; does not follow
+    game.player.moveToRoom(3, false);
+    expect(alfred.room_id).toBe(2);  // follow flag not set
+  });
 });

@@ -90,13 +90,22 @@ export class Monster extends GameObject {
   /**
    * Moves the monster to a specific room.
    */
-  public moveToRoom(room_id): void {
+  public moveToRoom(room_id: number, monsters_follow: boolean = true): void {
     this.room_id = room_id;
 
     // when the player moves, set the current room reference
     if (this.id === Monster.PLAYER) {
       let game = Game.getInstance();
       game.rooms.current_room = game.rooms.getRoomById(room_id);
+
+      // if player is moving, also move friendly monsters
+      if (monsters_follow) {
+        for (let i in game.monsters.visible) {
+          if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
+            game.monsters.visible[i].moveToRoom(room_id);
+          }
+        }
+      }
     }
   }
 
@@ -911,7 +920,7 @@ export class Monster extends GameObject {
     this.gold += this.profit;
 
     Game.getInstance().triggerEvent("afterSell");
-    
+
   }
 
 }
