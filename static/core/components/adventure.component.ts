@@ -13,6 +13,7 @@ import {SellItemsComponent} from "../components/sell-items.component";
 @Component({
   selector: "adventure",
   template: `
+<div class="page-border">&nbsp;</div>
 <div class="container" *ngIf="game">
   <h1>{{game_title}}</h1>
   <h2>{{game.name}}</h2>
@@ -29,6 +30,7 @@ import {SellItemsComponent} from "../components/sell-items.component";
     </div>
   </div>
 </div>
+<div class="page-border">&nbsp;</div>
   `,
   directives: [CommandPromptComponent, HistoryComponent, StatusComponent, SellItemsComponent]
 })
