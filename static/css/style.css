@@ -1,3 +1,22 @@
+@import url(https://fonts.googleapis.com/css?family=Mirza:400,500,700&subset=latin,latin-ext);
+body {
+  background-image: url(/static/images/sf_dustywall02.jpg);
+  background-size: cover;
+  font-family: 'Mirza', serif;
+  font-weight: 400;
+  font-size: 20px; }
+
+h1 {
+  font-size: 44px;
+  margin-top: 15px;
+  margin-bottom: 15px; }
+
+.container {
+  margin-top: 80px;
+  background-image: url(/static/images/parchment_alpha.png);
+  background-size: 100% 100%;
+  padding: 30px 45px; }
+
 .status-widget {
   border: 1px solid #999;
   margin-bottom: 10px;
@@ -5,7 +24,13 @@
   .status-widget .heading {
     font-weight: bold; }
   .status-widget .none {
-    color: #999; }
+    color: #666; }
+  .status-widget .artifacts-list th {
+    border-top: none; }
+  .status-widget .table > tbody + tbody {
+    border-top: 1px solid #999; }
+  .status-widget .table > tbody > tr > td, .status-widget .table > tbody > tr > th, .status-widget .table > tfoot > tr > td, .status-widget .table > tfoot > tr > th, .status-widget .table > thead > tr > td, .status-widget .table > thead > tr > th {
+    border-top: none; }
   .status-widget .artifact-contents {
     padding-left: 15px; }
 
@@ -21,6 +46,15 @@
   .history .history-command {
     color: #009;
     font-weight: bold; }
+
+command-prompt .form-inline .form-control {
+  vertical-align: baseline; }
+
+command-prompt .form-control {
+  font-size: 20px; }
+
+.btn {
+  font-size: 20px; }
 
 .special {
   color: dodgerblue;

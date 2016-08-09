@@ -7,7 +7,7 @@ import {StatusComponent} from "../components/status.component";
 
 @Component({
   template: `
-  <div class="col-sm-4">
+  <div class="col-sm-6">
     <p>You are in the main hall of the Guild of Free Adventurers. You can do the following:</p>
     <nav>
       <p><a (click)="gotoAdventures()">Go on an adventure</a></p>
@@ -17,7 +17,7 @@ import {StatusComponent} from "../components/status.component";
     </nav>
     <router-outlet></router-outlet>
   </div>
-  <div class="col-sm-8">
+  <div class="col-sm-6">
     <status [player]="_playerService.player"></status>
   </div>
   `,

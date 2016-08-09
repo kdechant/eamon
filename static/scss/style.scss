@@ -1,3 +1,26 @@
+@import url(https://fonts.googleapis.com/css?family=Mirza:400,500,700&subset=latin,latin-ext);
+
+body {
+  background-image: url(/static/images/sf_dustywall02.jpg);
+  background-size: cover;
+  font-family: 'Mirza', serif;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+h1 {
+  font-size: 44px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.container {
+  margin-top: 80px;
+  background-image: url(/static/images/parchment_alpha.png);
+  background-size: 100% 100%;
+  padding: 30px 45px;
+}
+
 .status-widget {
   border: 1px solid #999;
   margin-bottom: 10px;
@@ -7,7 +30,17 @@
     font-weight: bold;
   }
   .none {
-    color: #999;
+    color: #666;
+  }
+
+  .artifacts-list th {
+    border-top: none;
+  }
+  .table>tbody+tbody {
+    border-top: 1px solid #999;
+  }
+  .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    border-top: none;
   }
 
   .artifact-contents {
@@ -34,6 +67,19 @@
     color: #009;
     font-weight: bold;
   }
+}
+
+command-prompt {
+  .form-inline .form-control {
+    vertical-align: baseline;
+  }
+  .form-control {
+    font-size: 20px;
+  }
+}
+
+.btn {
+  font-size: 20px;
 }
 
 .special {
