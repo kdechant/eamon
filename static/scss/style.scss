@@ -5,7 +5,7 @@ body {
   font-family: 'Mirza', serif;
   font-weight: 400;
   font-size: 20px;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 h1 {
@@ -122,4 +122,17 @@ command-prompt {
 }
 .hostile {
   color: red;
+}
+
+// Main Hall
+
+.icon-nav {
+  p {
+    text-align: center;
+    a {
+      img {
+        width: 96px;
+      }
+    }
+  }
 }

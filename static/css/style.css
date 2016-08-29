@@ -4,7 +4,7 @@ body {
   font-family: 'Mirza', serif;
   font-weight: 400;
   font-size: 20px;
-  line-height: 1.25; }
+  line-height: 1.2; }
 
 h1 {
   font-size: 44px;
@@ -90,3 +90,8 @@ command-prompt .form-control {
 
 .hostile {
   color: red; }
+
+.icon-nav p {
+  text-align: center; }
+  .icon-nav p a img {
+    width: 96px; }

@@ -9,11 +9,12 @@ import {StatusComponent} from "../components/status.component";
   template: `
   <div class="col-sm-6">
     <p>You are in the main hall of the Guild of Free Adventurers. You can do the following:</p>
-    <nav>
-      <p><a (click)="gotoAdventures()">Go on an adventure</a></p>
-      <p><a (click)="gotoMarcos()">Visit the weapons shop</a></p>
-      <p><a (click)="gotoHokas()">Find a wizard to teach you some spells</a></p>
-      <p><a (click)="leaveTheUniverse()">Temporarily leave the universe</a></p>
+    <nav class="row icon-nav">
+      <p class="col-sm-4"><a (click)="gotoAdventures()"><img src="/static/images/ravenmore/128/map.png"> Go on an adventure</a></p>
+      <p class="col-sm-4"><a (click)="gotoMarcos()"><img src="/static/images/ravenmore/128/axe2.png"> Visit the weapons shop</a></p>
+      <p class="col-sm-4"><a (click)="gotoHokas()"><img src="/static/images/ravenmore/128/upg_wand.png"> Find a wizard to teach you some spells</a></p>
+      <p class="col-sm-4"><a (click)="gotoBank()"><img src="/static/images/ravenmore/128/coin.png"> Find the banker to deposit or withdraw some gold</a></p>
+      <p class="col-sm-4"><a (click)="leaveTheUniverse()"><img src="/static/images/ravenmore/128/x.png"> Temporarily leave the universe</a></p>
     </nav>
     <router-outlet></router-outlet>
   </div>
@@ -46,6 +47,10 @@ export class PlayerDetailComponent implements OnInit {
 
   gotoHokas() {
     this._router.navigate( ['/player', this._playerService.player.id, '/wizard'] );
+  }
+
+  gotoBank() {
+    this._router.navigate( ['/player', this._playerService.player.id, '/bank'] );
   }
 
   leaveTheUniverse() {
