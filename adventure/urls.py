@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^adventure/(?P<adventure_id>[\w-]+)/$', views.adventure, name='adventure'),
 
     # this route is a catch-all for compatibility with the Angular routes. It must be last in the list.
+    # NOTE: this currently matches URLs without a . in them, so .js files and broken images will still 404.
     # NOTE: non-existent URLs won't 404 with this in place. They will be sent into the Angular app.
-    url(r'^(?P<path>.*)/$', views.index),
+    url(r'^(?P<path>[^\.]*)/$', views.index),
 ]
