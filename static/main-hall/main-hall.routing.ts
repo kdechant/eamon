@@ -1,4 +1,5 @@
-import { provideRouter }  from '@angular/router';
+import { ModuleWithProviders }  from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
 import {PlayerListComponent} from './components/player-list.component';
 import {PlayerDetailComponent} from './components/player-detail.component';
@@ -8,7 +9,7 @@ import {ShopComponent} from "./components/shop.component";
 import {WizardComponent} from "./components/wizard.component";
 import {BankComponent} from "./components/bank.component";
 
-export const routes = [
+const appRoutes: Routes = [
   {path: '', component: PlayerListComponent},
   {path: 'player/add', component: PlayerAddComponent},
   {path: 'player/:id', component: PlayerDetailComponent},
@@ -19,6 +20,4 @@ export const routes = [
   {path: '**', component: PlayerListComponent},
 ];
 
-export const APP_ROUTER_PROVIDERS = [
-  provideRouter(routes),
-];
+export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);

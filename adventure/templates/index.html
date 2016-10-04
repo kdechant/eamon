@@ -20,7 +20,7 @@
     <script>
       // NOTE: need to inject the demo adventure here to avoid errors when creating the Game object.
       Promise.all([
-        System.import('main_hall/boot'),
+        System.import('main_hall/main'),
         System.import('adventure/commands'),
         System.import('adventure/event-handlers')
       ]).then(null, console.error.bind(console));

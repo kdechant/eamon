@@ -1,5 +1,5 @@
 import {Component,  OnInit}  from '@angular/core';
-import {Router, ROUTER_DIRECTIVES} from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable }     from 'rxjs/Observable';
 
 import {Player} from '../models/player';
@@ -16,8 +16,7 @@ import {PlayerService} from '../services/player.service';
     <a (click)="deletePlayer(player)"><span class="glyphicon glyphicon-trash"></span></a>
     </p>
   <p class="addplayer"><a [routerLink]="['/player/add']">New Adventurer</a></p>
-  `,
-  directives: [ROUTER_DIRECTIVES]
+  `
 })
 export class PlayerListComponent implements OnInit  {
 

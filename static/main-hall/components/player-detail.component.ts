@@ -1,5 +1,5 @@
 import {Component, OnInit}  from '@angular/core';
-import {Router, ActivatedRoute, ROUTER_DIRECTIVES} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
@@ -21,8 +21,7 @@ import {StatusComponent} from "../components/status.component";
   <div class="col-sm-6">
     <status [player]="_playerService.player"></status>
   </div>
-  `,
-  directives: [StatusComponent, ROUTER_DIRECTIVES]
+  `
 })
 export class PlayerDetailComponent implements OnInit {
   player: Player;
@@ -38,19 +37,19 @@ export class PlayerDetailComponent implements OnInit {
   }
 
   gotoAdventures() {
-    this._router.navigate( ['/player', this._playerService.player.id, '/adventure'] );
+    this._router.navigate( ['/player', this._playerService.player.id, 'adventure'] );
   }
 
   gotoMarcos() {
-    this._router.navigate( ['/player', this._playerService.player.id, '/shop'] );
+    this._router.navigate( ['/player', this._playerService.player.id, 'shop'] );
   }
 
   gotoHokas() {
-    this._router.navigate( ['/player', this._playerService.player.id, '/wizard'] );
+    this._router.navigate( ['/player', this._playerService.player.id, 'wizard'] );
   }
 
   gotoBank() {
-    this._router.navigate( ['/player', this._playerService.player.id, '/bank'] );
+    this._router.navigate( ['/player', this._playerService.player.id, 'bank'] );
   }
 
   leaveTheUniverse() {

@@ -1,5 +1,8 @@
 import {Component} from "@angular/core";
-import { ROUTER_DIRECTIVES }  from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
+
+// Add the RxJS Observable operators we need in this app.
+import '../rxjs-operators';
 
 @Component({
   selector: "main-hall",
@@ -10,8 +13,7 @@ import { ROUTER_DIRECTIVES }  from '@angular/router';
   <router-outlet></router-outlet>
 </div>
 <div class="page-border">&nbsp;</div>
-  `,
-  directives: [ROUTER_DIRECTIVES]
+  `
 })
 export class MainHallComponent {
 

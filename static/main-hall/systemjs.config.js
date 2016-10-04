@@ -1,50 +1,50 @@
 (function (global) {
 
     // map tells the System loader where to look for things
-    var map = {
-        'rxjs': '/static/node_modules/rxjs',
-        '@angular':                   '/static/node_modules/@angular',
-        '@angular-router':            '/static/node_modules/@angular-router',
-        'core': "/static/core",
-        'main_hall': "/static/main-hall",
-        'adventure': "/static/adventures/demo1"
-    };
+    System.config({
+        paths: {
+            // paths serve as alias
+            'npm:': '/static/node_modules/'
+        },
+        map: {
+            // angular bundles
+            '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
+            '@angular/common': 'npm:@angular/common/bundles/common.umd.js',
+            '@angular/compiler': 'npm:@angular/compiler/bundles/compiler.umd.js',
+            '@angular/platform-browser': 'npm:@angular/platform-browser/bundles/platform-browser.umd.js',
+            '@angular/platform-browser-dynamic': 'npm:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+            '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
+            '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
+            '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
+            '@angular/upgrade': 'npm:@angular/upgrade/bundles/upgrade.umd.js',
 
-    // packages tells the System loader how to load when no filename and/or no extension
-    var packages = {
-        'rxjs': {defaultExtension: 'js'},
-        'core': { defaultExtension: 'js' },
-        'main_hall': { defaultExtension: 'js' },
-        'adventure': { defaultExtension: 'js' },
-    };
+            // other libraries
+            'rxjs': 'npm:rxjs',
 
-    var packageNames = [
-        '@angular/common',
-        '@angular/compiler',
-        '@angular/core',
-        '@angular/forms',
-        '@angular/http',
-        '@angular/platform-browser',
-        '@angular/platform-browser-dynamic',
-        '@angular/router',
-        '@angular/testing'
-    ];
+            // the app itself
+            'core': "/static/core",
+            'main_hall': "/static/main-hall",
+            'adventure': "/static/adventures/demo1"
+        },
 
-    // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }
-    packageNames.forEach(function (pkgName) {
-        packages[pkgName] = {main: 'index.js', defaultExtension: 'js'};
+        // packages tells the System loader how to load when no filename and/or no extension
+        packages: {
+            'main_hall': {
+                main: './main.js',
+                defaultExtension: 'js'
+            },
+            'core': {
+                main: './main.js',
+                defaultExtension: 'js'
+            },
+            'adventure': {
+                main: './main.js',
+                defaultExtension: 'js'
+            },
+            rxjs: {
+                defaultExtension: 'js'
+            }
+        }
     });
-
-    var config = {
-        map: map,
-        packages: packages
-    }
-
-    // filterSystemConfig - index.html's chance to modify config before we register it.
-    if (global.filterSystemConfig) {
-        global.filterSystemConfig(config);
-    }
-
-    System.config(config);
 
 })(this);
