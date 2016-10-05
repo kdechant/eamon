@@ -31,8 +31,7 @@ import {SellItemsComponent} from "../components/sell-items.component";
   </div>
 </div>
 <div class="page-border">&nbsp;</div>
-  `,
-  directives: [CommandPromptComponent, HistoryComponent, StatusComponent, SellItemsComponent]
+  `
 })
 export class AdventureComponent {
 

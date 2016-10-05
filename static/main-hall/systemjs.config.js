@@ -1,11 +1,11 @@
 (function (global) {
 
-    // map tells the System loader where to look for things
     System.config({
         paths: {
             // paths serve as alias
             'npm:': '/static/node_modules/'
         },
+        // map tells the System loader where to look for things
         map: {
             // angular bundles
             '@angular/core': 'npm:@angular/core/bundles/core.umd.js',

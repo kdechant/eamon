@@ -1,5 +1,4 @@
 import {Component, Input} from "@angular/core";
-import { NgForm }    from '@angular/common';
 
 @Component({
   selector: "command-prompt",

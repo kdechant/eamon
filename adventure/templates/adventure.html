@@ -20,7 +20,7 @@
     <script src="{% static 'core/systemjs.config.js' %}"></script>
     <script>
       Promise.all([
-        System.import('core/boot'),
+        System.import('core/main'),
         System.import('adventure/commands'),
         System.import('adventure/event-handlers')
       ]).then(null, console.error.bind(console));
