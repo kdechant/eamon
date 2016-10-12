@@ -112,6 +112,7 @@ class Command(BaseCommand):
 
                     room.is_dark = True if values[10] == 0 else False
                     room.save()
+                    # print("Saved with ID #" + str(room.id))
 
                     # the connections
                     DIRECTIONS = {
@@ -318,7 +319,10 @@ class Command(BaseCommand):
                     effect_id=new_effect_id
                 )[0]
                 effect.text = bytes.strip()
-                print("Effect: " + effect.text[0:20] + "...")
+                try:
+                    print("Effect: " + effect.text[0:40] + "...")
+                except UnicodeEncodeError:
+                    print("Invalid character in string!")
 
                 # {nn} in the text indicates a color to display the effect in
                 match = re.search(r'{(\d{2})}', effect.text)
