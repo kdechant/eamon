@@ -198,6 +198,25 @@ class Monster(models.Model):
     armor_class = models.IntegerField(default=0)
 
 
+class Hint(models.Model):
+    """
+    Represents a hint for the adventure hints system
+    """
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='hints', null=True)
+    index = models.IntegerField(null=True)
+    edx = models.CharField(null=True,max_length=50)
+    question = models.CharField(max_length=255)
+
+
+class HintAnswer(models.Model):
+    """
+    Represents an answer to a hint. Each hint may have more than one answer.
+    """
+    hint = models.ForeignKey(Hint, on_delete=models.CASCADE, related_name='answers')
+    index = models.IntegerField(null=True)
+    answer = models.TextField(max_length=1000)
+
+
 class Player(models.Model):
     """
     Represents the player saved in the main hall.
