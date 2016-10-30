@@ -3,8 +3,8 @@
   "description": "A rewrite of the classic text adventure game, The Wonderful World of Eamon.",
   "version": "0.1.0",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/kdechant/eamon.git"
+    "type": "git",
+    "url": "https://github.com/kdechant/eamon.git"
   },
   "scripts": {
     "start": "concurrently \"npm run build-css:w\" \"npm run browser-sync\" ",
@@ -31,7 +31,6 @@
     "@angular/platform-browser-dynamic": "~2.0.1",
     "@angular/router": "~3.0.1",
     "@angular/upgrade": "~2.0.1",
-
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "reflect-metadata": "^0.1.8",
@@ -44,6 +43,7 @@
     "jasmine-core": "*",
     "lite-server": "*",
     "node-sass": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typings": "^1.5.0"
   }
 }
