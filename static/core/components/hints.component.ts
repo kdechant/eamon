@@ -4,7 +4,7 @@ import {Component, Input} from "@angular/core";
   selector: "hints",
   template: `
     <button class="hints-button" (click)="openHints()">Hints</button>
-    <div class="hints" [class.hidden]="hidden == true">
+    <div class="hints" [class.hidden]="hidden">
       <div class="hint" *ngFor="let h of game.hints?.all">
         <p (click)="showAnswer(h)">
           <span class="glyphicon"

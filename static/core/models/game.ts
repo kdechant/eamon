@@ -152,7 +152,6 @@ export class Game {
     this.effects = new EffectRepository(data[3]);
     this.monsters = new MonsterRepository(data[4]);
     this.hints = new HintRepository(data[5]);
-    console.log(this.hints);
 
     this.monsters.addPlayer(data[6]);
 

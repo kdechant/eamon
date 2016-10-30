@@ -556,7 +556,7 @@ core_commands.push(new UseCommand());
 
 export class AttackCommand implements BaseCommand {
   name: string = "attack";
-  verbs: string[] = ["attack", "a"];
+  verbs: string[] = ["attack"];
   run(verb, arg) {
     let game = Game.getInstance();
 

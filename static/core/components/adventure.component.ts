@@ -17,6 +17,7 @@ import {Room, RoomExit} from "../models/room";
       <history [history]="game?.history"></history>
       <command-prompt [game]="game"></command-prompt>
       <hints [game]="game"></hints>
+      <command-list [game]="game"></command-list>
     </div>
     <div class="command col-sm-6" *ngIf="game.selling">
       <sell-items [game]="game"></sell-items>

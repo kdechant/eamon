@@ -11,6 +11,7 @@ import {HistoryComponent} from "./components/history.component";
 import {ArtifactComponent} from "./components/artifact.component";
 import {SellItemsComponent} from "./components/sell-items.component";
 import {HintsComponent} from "./components/hints.component";
+import {CommandListComponent} from "./components/command-list.component";
 import {StatusComponent} from "./components/status.component";
 
 @NgModule({
@@ -22,6 +23,7 @@ import {StatusComponent} from "./components/status.component";
     HistoryComponent,
     SellItemsComponent,
     HintsComponent,
+    CommandListComponent,
     StatusComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
