@@ -60,7 +60,9 @@ class Adventure(models.Model):
     edx_program_file = models.CharField(null=True,max_length=50)
     directions = models.IntegerField(default=6)
     active = models.BooleanField(default=0)
-
+    # the first and last index of hints read from the hints file - used with the import_hints management command
+    first_hint = models.IntegerField(null=True)
+    last_hint = models.IntegerField(null=True)
 
 class Room(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='rooms')

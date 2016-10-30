@@ -39,7 +39,8 @@ class Command(BaseCommand):
                     edx=edx,
                     index=h+1
                 )[0]
-                hint.question = hintdir.readline().strip()
+                # the questions may have leading .... and also space padding. strip it.
+                hint.question = hintdir.readline().strip().lstrip('.')
                 print("Found hint: " + hint.question)
                 hint.save()
                 # the hint answers. there can be multiple of these
@@ -63,31 +64,24 @@ class Command(BaseCommand):
             if a.edx_program_file:
                 first_hint = 0
                 last_hint = 0
-                # special handling for a few adventures
-                if a.name == "The Beginner's Cave":
-                    first_hint = 2
-                    last_hint = 3
-                elif a.name == "Enhanced Beginner's Cave":
-                    first_hint = 9
-                    last_hint = 11
-                elif a.name == "Eamon Deluxe 5.0 Demo Adventure":
-                    first_hint = 19
-                    last_hint = 19
-                else:
-                    # look in the .BAS file for the hard-coded hint numbers
-                    print("Looking for hint range in " + folder + "/" + a.edx_program_file)
-                    with open(folder + "/" + a.edx_program_file, "r", encoding="cp437") as mainpgm:
-                        basic_code = mainpgm.read()
-                        regx = r'IF nh > 1 THEN a = (\d+): m = (\d+)'
-                        matches = regex.findall(regx, basic_code)
-                        if matches is None or len(matches) == 0:
-                            print('No match for regex!')
-                        else:
-                            first_hint = int(matches[0][0])
-                            last_hint = int(matches[0][1])
+                # look in the .BAS file for the hard-coded hint numbers
+                print("Looking for hint range in " + folder + "/" + a.edx_program_file)
+                with open(folder + "/" + a.edx_program_file, "r", encoding="cp437") as mainpgm:
+                    basic_code = mainpgm.read()
+                    regx = r'IF nh > 1 THEN a = (\d+): m = (\d+)'
+                    matches = regex.findall(regx, basic_code)
+                    if matches is None or len(matches) == 0:
+                        print('No match for regex. Input hint indices manually in adventure_adventure table.')
+                        # if this happens, you need to inspect the program file (or the hint data) and figure out the
+                        # first and last hint index. then populate the first_hint and last_hint in the
+                        # adventures table and run the import_hints command again.
+                    else:
+                        a.first_hint = int(matches[0][0])
+                        a.last_hint = int(matches[0][1])
+                        a.save()
 
-                if (first_hint != 0 and last_hint != 0):
-                    hints = Hint.objects.filter(edx=edx, index__gte=first_hint, index__lte=last_hint)
+                if a.first_hint and a.last_hint:
+                    hints = Hint.objects.filter(edx=edx, index__gte=a.first_hint, index__lte=a.last_hint)
                     for h in hints:
                         print("Hint " + h.question + " maps to adventure " + str(a.id))
                         h.adventure_id = a.id

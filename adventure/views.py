@@ -94,7 +94,7 @@ class HintViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
-        return self.queryset.filter(Q(adventure__slug=adventure_id) | Q(question="EAMON DELUXE 5.0 GENERAL HELP.")).order_by('index')
+        return self.queryset.filter(Q(adventure__slug=adventure_id) | Q(question="EAMON DELUXE 5.0 GENERAL HELP.", edx="E001")).order_by('index')
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
