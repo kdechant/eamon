@@ -2,6 +2,7 @@ import {RoomRepository} from "../repositories/room.repo";
 import {ArtifactRepository} from "../repositories/artifact.repo";
 import {EffectRepository} from "../repositories/effect.repo";
 import {MonsterRepository} from "../repositories/monster.repo";
+import {HintRepository} from "../repositories/hint.repo";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
@@ -52,6 +53,11 @@ export class Game {
    * A container for all the Monster objects
    */
   monsters: MonsterRepository;
+
+  /**
+   * A container for all the Hint objects
+   */
+  hints: HintRepository;
 
   /**
    * A Monster object representing the player.
@@ -145,8 +151,10 @@ export class Game {
     this.artifacts = new ArtifactRepository(data[2]);
     this.effects = new EffectRepository(data[3]);
     this.monsters = new MonsterRepository(data[4]);
+    this.hints = new HintRepository(data[5]);
+    console.log(this.hints);
 
-    this.monsters.addPlayer(data[5]);
+    this.monsters.addPlayer(data[6]);
 
     this.history = new HistoryManager;
     this.command_parser = new CommandParser();

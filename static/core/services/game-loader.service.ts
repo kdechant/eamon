@@ -47,6 +47,7 @@ export class GameLoaderService {
         this.http.get("/api/adventures/" + game_id + "/artifacts").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
+        this.http.get("/api/adventures/" + game_id + "/hints").map((res: Response) => res.json()),
         this.http.get("/api/players/" + player_id).map((res: Response) => res.json())
       ).subscribe(
         data => {

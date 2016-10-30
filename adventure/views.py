@@ -2,9 +2,10 @@ from rest_framework import viewsets, filters, permissions, mixins, generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 
 from . import serializers
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player
+from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, Hint, HintAnswer
 
 
 def index(request, path=''):
@@ -82,6 +83,18 @@ class MonsterViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
         return self.queryset.filter(adventure__slug=adventure_id)
+
+
+class HintViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lists hints for an adventure.
+    """
+    queryset = Hint.objects.all()
+    serializer_class = serializers.HintSerializer
+
+    def get_queryset(self):
+        adventure_id = self.kwargs['adventure_id']
+        return self.queryset.filter(Q(adventure__slug=adventure_id) | Q(question="EAMON DELUXE 5.0 GENERAL HELP.")).order_by('index')
 
 
 class PlayerViewSet(viewsets.ModelViewSet):

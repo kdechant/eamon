@@ -14,7 +14,6 @@ import {Adventure} from "../models/adventure";
     *ngFor="let adv of _adventureService.adventures"><a (click)="gotoAdventure(adv)">{{adv.name}}</a></p>
   <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>
   `,
-  directives: [StatusComponent]
 })
 export class AdventureListComponent implements OnInit {
 

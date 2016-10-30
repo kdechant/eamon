@@ -10,6 +10,7 @@ import {CommandPromptComponent} from "./components/command.component";
 import {HistoryComponent} from "./components/history.component";
 import {ArtifactComponent} from "./components/artifact.component";
 import {SellItemsComponent} from "./components/sell-items.component";
+import {HintsComponent} from "./components/hints.component";
 import {StatusComponent} from "./components/status.component";
 
 @NgModule({
@@ -20,6 +21,7 @@ import {StatusComponent} from "./components/status.component";
     CommandPromptComponent,
     HistoryComponent,
     SellItemsComponent,
+    HintsComponent,
     StatusComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

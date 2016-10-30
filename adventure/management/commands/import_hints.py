@@ -27,7 +27,7 @@ class Command(BaseCommand):
             while True:
                 bytes = hintdata.read(255)
                 if not bytes: break
-                hint_raw.append(bytes)
+                hint_raw.append(bytes.strip())
 
         # read the hint questions and sizes from HINTDIR.DAT and save the rows
         with open(folder + "/HINTDIR.DAT", "r", encoding="cp437") as hintdir:
@@ -39,7 +39,7 @@ class Command(BaseCommand):
                     edx=edx,
                     index=h+1
                 )[0]
-                hint.question = hintdir.readline()
+                hint.question = hintdir.readline().strip()
                 print("Found hint: " + hint.question)
                 hint.save()
                 # the hint answers. there can be multiple of these
@@ -57,7 +57,6 @@ class Command(BaseCommand):
                     )[0]
                     ha.answer = an
                     ha.save()
-
 
         # figure out which hints go with each adventure
         for a in adventures:

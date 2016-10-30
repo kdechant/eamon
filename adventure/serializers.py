@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact
+from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact, Hint, HintAnswer
 
 
 class AdventureSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,6 +42,21 @@ class MonsterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Monster
+
+
+class HintAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HintAnswer
+        fields = ('index', 'answer')
+
+
+class HintSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='hint_id', read_only=True)
+    answers = HintAnswerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Hint
+        fields = ('id', 'index', 'edx', 'question', 'answers')
 
 
 class PlayerArtifactSerializer(serializers.ModelSerializer):

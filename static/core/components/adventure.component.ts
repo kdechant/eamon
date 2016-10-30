@@ -5,11 +5,6 @@ import {GameLoaderService} from "../services/game-loader.service";
 import {Game} from "../models/game";
 import {Room, RoomExit} from "../models/room";
 
-import {HistoryComponent} from "../components/history.component";
-import {CommandPromptComponent} from "../components/command.component";
-import {StatusComponent} from "../components/status.component";
-import {SellItemsComponent} from "../components/sell-items.component";
-
 @Component({
   selector: "adventure",
   template: `
@@ -21,6 +16,7 @@ import {SellItemsComponent} from "../components/sell-items.component";
     <div class="command col-sm-6" *ngIf="!game.selling">
       <history [history]="game?.history"></history>
       <command-prompt [game]="game"></command-prompt>
+      <hints [game]="game"></hints>
     </div>
     <div class="command col-sm-6" *ngIf="game.selling">
       <sell-items [game]="game"></sell-items>
