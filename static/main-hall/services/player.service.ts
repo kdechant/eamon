@@ -43,6 +43,7 @@ export class PlayerService {
     for (let i in data) {
       let p = new Player();
       p.init(data[i]);
+      p.update();
       this.players.push(p);
     }
   }

@@ -142,3 +142,15 @@ command-prompt {
     }
   }
 }
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .name {
+    // this should fill up all available space. other divs in this box should not expand.
+    flex-grow: 1;
+  }
+  .glyphicon {
+    font-size: 12px;
+  }
+}

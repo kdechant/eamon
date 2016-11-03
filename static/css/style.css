@@ -98,3 +98,12 @@ command-prompt .form-control {
   text-align: center; }
   .icon-nav p a img {
     width: 96px; }
+
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; }
+  .player .name {
+    flex-grow: 1; }
+  .player .glyphicon {
+    font-size: 12px; }

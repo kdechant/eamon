@@ -32,6 +32,7 @@ export class Player extends GameObject {
   best_weapon: Artifact;
   best_armor: Artifact;
   best_shield: Artifact;
+  icon: string = 'upg_helmet.png';
   armor_class: number;
   armor_penalty: number;
   armor_factor: number;  // total armor penalty - armor expertise
@@ -120,19 +121,40 @@ export class Player extends GameObject {
     this.best_shield = null;
 
     for (let a in this.inventory) {
-      if (this.inventory[a].is_weapon) {
+      if (this.inventory[a].type === 2 || this.inventory[a].type === 3) {
         if (this.best_weapon === null || this.inventory[a].maxDamage() > this.best_weapon.maxDamage()) {
           this.best_weapon = this.inventory[a];
         }
-      } else if (this.inventory[a].is_wearable) {
+      } else if (this.inventory[a].type === 11) {
         if (this.inventory[a].armor_type === Artifact.ARMOR_TYPE_ARMOR) {
-          if (this.best_weapon === null || this.inventory[a].armor_class > this.best_weapon.armor_class) {
-            this.best_weapon = this.inventory[a];
+          if (this.best_armor === null || this.inventory[a].armor_class > this.best_armor.armor_class) {
+            this.best_armor = this.inventory[a];
           }
         } else {
           // shield is only used if best weapon is 1-handed
           // TODO
         }
+      }
+    }
+
+    // set an icon based on the best weapon the player has
+    if (this.best_weapon) {
+      switch (this.best_weapon.weapon_type) {
+        case 1:
+          this.icon = 'upg_axe.png';
+          break;
+        case 2:
+          this.icon = 'upg_bow.png';
+          break;
+        case 3:
+          this.icon = 'upg_hammer.png';
+          break;
+        case 4:
+          this.icon = 'upg_spear.png';
+          break;
+        case 5:
+          this.icon = 'upg_sword.png';
+          break;
       }
     }
 
