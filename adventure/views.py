@@ -105,7 +105,32 @@ class PlayerViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PlayerSerializer
     permission_classes = (AllowAny,)
 
+    """
+    Override the default query set to filter by the UUID which is passed in the query string.
+    This prevents people from seeing each other's adventurers.
+    """
+    def get_queryset(self):
+        uuid = self.request.query_params.get('uuid', None)
+        if uuid is None:
+            # in a PUT request the uuid is in the body rather than the query string
+            uuid = self.request.data.get('uuid', None)
+        queryset = self.queryset
+        if uuid is not None:
+            # filter the list by the UUID provided in the query string
+            queryset = queryset.filter(uuid=uuid)
+        else:
+            # prevent showing all players if no UUID was passed
+            queryset = queryset.filter(uuid='This will match nothing')
+        return queryset.order_by('name')
+
+    """
+    API URL to update a player. Overrides the parent class.
+    """
     def update(self, request, pk=None):
+        # uuid = self.request.query_params.get('uuid', None)
+        # if uuid is not None:
+        #     raise PermissionError
+
         data = request.data
         instance = self.get_object()
 

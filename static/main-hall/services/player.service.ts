@@ -16,11 +16,15 @@ export class PlayerService {
   // the current player
   public player: Player;
 
+  // the current user's UUID
+  private uuid: string;
+
   constructor(private http: Http) {
+      this.uuid = window.localStorage.getItem('eamon_uuid');
   }
 
   getList() {
-    this.http.get('/api/players.json').map((res: Response) => res.json()).subscribe(
+    this.http.get('/api/players.json?uuid=' + this.uuid).map((res: Response) => res.json()).subscribe(
       data => this.setupPlayerList(data),
       err => console.error(err)
     );
@@ -28,7 +32,7 @@ export class PlayerService {
 
   getPlayer(id: number) {
     if (!this.player) {
-      this.http.get('/api/players/' + id + '.json').map((res:Response) => res.json()).subscribe(
+      this.http.get('/api/players/' + id + '.json?uuid=' + this.uuid).map((res:Response) => res.json()).subscribe(
         data => {
           this.player = new Player();
           this.player.init(data);
@@ -53,6 +57,7 @@ export class PlayerService {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
+    player.uuid = this.uuid;
     let body = JSON.stringify(player);
 
     return this.http.post("http://localhost:8000/api/players", body, options).map((res: Response) => res.json());

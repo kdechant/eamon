@@ -243,6 +243,7 @@ class Player(models.Model):
     spl_heal = models.IntegerField("Heal ability", default=0)
     spl_power = models.IntegerField("Power ability", default=0)
     spl_speed = models.IntegerField("Speed ability", default=0)
+    uuid = models.CharField(max_length=255, null=True)
 
 
 class PlayerArtifact(models.Model):

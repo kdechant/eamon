@@ -20,6 +20,7 @@
 
             // other libraries
             'rxjs': 'npm:rxjs',
+            'angular2-uuid': 'npm:angular2-uuid/index.js',
 
             // the app itself
             'core': "/static/core",

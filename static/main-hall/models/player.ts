@@ -37,6 +37,8 @@ export class Player extends GameObject {
   armor_penalty: number;
   armor_factor: number;  // total armor penalty - armor expertise
 
+  uuid: string;
+
   /**
    * Loads data from JSON source into the object properties.
    * @param {Object} source an object, e.g., from JSON.
