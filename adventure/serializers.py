@@ -28,6 +28,7 @@ class ArtifactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Artifact
+        fields = '__all__'
 
 
 class EffectSerializer(serializers.ModelSerializer):
@@ -35,6 +36,7 @@ class EffectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Effect
+        fields = '__all__'
 
 
 class MonsterSerializer(serializers.ModelSerializer):
@@ -42,6 +44,7 @@ class MonsterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Monster
+        fields = '__all__'
 
 
 class HintAnswerSerializer(serializers.ModelSerializer):
@@ -92,4 +95,4 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        # fields = ('id', 'name', 'gender', 'hardiness', 'agility', 'charisma', 'gold', 'gold_in_bank', 'inventory')
+        fields = '__all__'
