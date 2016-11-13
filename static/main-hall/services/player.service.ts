@@ -60,7 +60,7 @@ export class PlayerService {
     player.uuid = this.uuid;
     let body = JSON.stringify(player);
 
-    return this.http.post("http://localhost:8000/api/players", body, options).map((res: Response) => res.json());
+    return this.http.post("/api/players", body, options).map((res: Response) => res.json());
   }
 
   public update() {
@@ -70,11 +70,11 @@ export class PlayerService {
 
     let body = JSON.stringify(this.player);
 
-    return this.http.put("http://localhost:8000/api/players/" + this.player.id, body, options).map((res: Response) => res.json());
+    return this.http.put("/api/players/" + this.player.id, body, options).map((res: Response) => res.json());
   }
 
   public delete(player: Player) {
-    return this.http.delete("http://localhost:8000/api/players/" + player.id);
+    return this.http.delete("/api/players/" + player.id);
   }
 
 }
