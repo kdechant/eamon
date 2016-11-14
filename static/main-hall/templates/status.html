@@ -72,7 +72,8 @@
             <tbody *ngFor="let artifact of player?.inventory">
                 <tr class="artifact" *ngIf="artifact.type != 2 && artifact.type != 3">
                     <td>{{ artifact.name }}</td>
-                    <td>{{ artifact.getArmorTypeName() }}</td>
+                    <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
+                             title="{{ artifact.getArmorTypeName() }}"></td>
                     <td>{{ artifact.armor_class }}</td>
                     <td>{{ artifact.armor_penalty }}</td>
                 </tr>
