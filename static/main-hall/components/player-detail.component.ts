@@ -10,11 +10,11 @@ import {StatusComponent} from "../components/status.component";
   <div class="col-sm-6">
     <p>You are in the main hall of the Guild of Free Adventurers. You can do the following:</p>
     <nav class="row icon-nav">
-      <p class="col-sm-4"><a (click)="gotoAdventures()"><img src="/static/images/ravenmore/128/map.png"> Go on an adventure</a></p>
-      <p class="col-sm-4"><a (click)="gotoMarcos()"><img src="/static/images/ravenmore/128/axe2.png"> Visit the weapons shop</a></p>
-      <p class="col-sm-4"><a (click)="gotoHokas()"><img src="/static/images/ravenmore/128/upg_wand.png"> Find a wizard to teach you some spells</a></p>
-      <p class="col-sm-4"><a (click)="gotoBank()"><img src="/static/images/ravenmore/128/coin.png"> Find the banker to deposit or withdraw some gold</a></p>
-      <p class="col-sm-4"><a (click)="leaveTheUniverse()"><img src="/static/images/ravenmore/128/x.png"> Temporarily leave the universe</a></p>
+      <p class="col-xs-6 col-md-4"><a (click)="gotoAdventures()"><img src="/static/images/ravenmore/128/map.png"><br /> Go on an adventure</a></p>
+      <p class="col-xs-6 col-md-4"><a (click)="gotoMarcos()"><img src="/static/images/ravenmore/128/axe2.png"><br /> Visit the weapons shop</a></p>
+      <p class="col-xs-6 col-md-4"><a (click)="gotoHokas()"><img src="/static/images/ravenmore/128/upg_wand.png"><br /> Find a wizard to teach you some spells</a></p>
+      <p class="col-xs-6 col-md-4"><a (click)="gotoBank()"><img src="/static/images/ravenmore/128/coin.png"><br /> Find the banker to deposit or withdraw some gold</a></p>
+      <p class="col-xs-6 col-md-4"><a (click)="leaveTheUniverse()"><img src="/static/images/ravenmore/128/x.png"><br /> Temporarily leave the universe</a></p>
     </nav>
     <router-outlet></router-outlet>
   </div>

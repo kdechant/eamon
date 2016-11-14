@@ -14,7 +14,7 @@ h1 {
 h2 {
   margin-top: 10px; }
 
-.container {
+.parchment {
   background-image: url(/static/images/parchment_alpha.png);
   background-size: 100% 100%;
   padding: 40px 60px; }
@@ -32,6 +32,8 @@ h2 {
     font-weight: bold; }
   .status-widget .none {
     color: #666; }
+  .status-widget .spell-abilities, .status-widget .weapon-abilities {
+    margin-bottom: 10px; }
   .status-widget .artifacts-list th {
     border-top: none; }
   .status-widget .table > tbody + tbody {

@@ -18,7 +18,7 @@ h2 {
   margin-top: 10px;
 }
 
-.container {
+.parchment {
   background-image: url(/static/images/parchment_alpha.png);
   background-size: 100% 100%;
   padding: 40px 60px;
@@ -40,6 +40,10 @@ h2 {
   }
   .none {
     color: #666;
+  }
+
+  .spell-abilities, .weapon-abilities {
+    margin-bottom: 10px;
   }
 
   .artifacts-list th {
