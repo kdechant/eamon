@@ -46,8 +46,13 @@ h2 {
     margin-bottom: 10px;
   }
 
-  .artifacts-list th {
-    border-top: none;
+  .artifacts-list {
+    th {
+      border-top: none;
+    }
+    .weapon-icon img {
+      width: 32px;
+    }
   }
   .table>tbody+tbody {
     border-top: 1px solid #999;

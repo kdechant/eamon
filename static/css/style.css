@@ -36,6 +36,8 @@ h2 {
     margin-bottom: 10px; }
   .status-widget .artifacts-list th {
     border-top: none; }
+  .status-widget .artifacts-list .weapon-icon img {
+    width: 32px; }
   .status-widget .table > tbody + tbody {
     border-top: 1px solid #999; }
   .status-widget .table > tbody > tr > td, .status-widget .table > tbody > tr > th, .status-widget .table > tfoot > tr > td, .status-widget .table > tfoot > tr > th, .status-widget .table > thead > tr > td, .status-widget .table > thead > tr > th {

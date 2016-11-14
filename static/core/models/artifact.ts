@@ -302,6 +302,35 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Returns the name of the weapon type
+   */
+  public getWeaponIcon(): string {
+    let t: string = "";
+    switch (this.weapon_type) {
+      case 1:
+        t = "axe";
+        break;
+      case 2:
+        t = "bow";
+        break;
+      case 3:
+        t = "hammer";
+        break;
+      case 4:
+        t = "upg_spear";  // there is no default spear in the icon set
+        break;
+      case 5:
+        t = "sword";
+        break;
+    }
+
+    if (this.type === Artifact.TYPE_MAGIC_WEAPON && this.weapon_type !== 4) {
+      t = 'upg_' + t;
+    }
+    return t;
+  }
+
+  /**
    * Returns the name of the armor type
    */
   public getArmorTypeName(): string {
