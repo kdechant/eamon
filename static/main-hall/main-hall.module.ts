@@ -5,6 +5,7 @@ import {HttpModule} from '@angular/http';
 
 import {MainHallComponent} from "./components/main-hall.component";
 import {AdventureListComponent} from "./components/adventure-list.component";
+import {IntroComponent} from "./components/intro.component";
 import {PlayerListComponent} from "./components/player-list.component";
 import {PlayerAddComponent} from "./components/player-add.component";
 import {PlayerDetailComponent} from "./components/player-detail.component";
@@ -22,6 +23,7 @@ import {routing} from './main-hall.routing';
   imports: [BrowserModule, FormsModule, HttpModule, routing],
   declarations: [
     MainHallComponent,
+    IntroComponent,
     AdventureListComponent,
     PlayerListComponent,
     PlayerAddComponent,

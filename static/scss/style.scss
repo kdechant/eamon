@@ -155,6 +155,7 @@ command-prompt {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 20px;
   .name {
     // this should fill up all available space. other divs in this box should not expand.
     flex-grow: 1;

@@ -106,7 +106,8 @@ command-prompt .form-control {
 .player {
   display: flex;
   align-items: center;
-  justify-content: space-between; }
+  justify-content: space-between;
+  margin-bottom: 20px; }
   .player .name {
     flex-grow: 1; }
   .player .glyphicon {

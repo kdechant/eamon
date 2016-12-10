@@ -17,6 +17,6 @@ import '../rxjs-operators';
 })
 export class MainHallComponent {
 
-  public game_title = "The Angular World of Eamon";
+  public game_title = "The Wonderful World of Eamon";
 
 }

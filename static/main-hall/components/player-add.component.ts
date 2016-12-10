@@ -7,7 +7,7 @@ import {PlayerService} from '../services/player.service';
 @Component({
   template: `
   <div class="col-sm-12">
-    <p>The burly irishman hits his forehead and says, &quot;Ah, ye must be new here! Well, wait just a minute and I'll bring someone out to take care of ye.&quot;</p>
+    <p>The burly Irishman hits his forehead and says, &quot;Ah, ye must be new here! Well, wait just a minute and I'll bring someone out to take care of ye.&quot;</p>
     <p>The Irishman walks away and in walks a man of possibly Elfish descent.</p>
     <p>He studies you for a moment and says, &quot;Please enter your name and gender.&quot;</p>
     <form (ngSubmit)="save()">
