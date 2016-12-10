@@ -15,7 +15,12 @@ declare var game_id: string;
 @Injectable()
 export class GameLoaderService {
 
-  constructor(private http: Http) { }
+  // the current user's UUID
+  private uuid: string;
+
+  constructor(private http: Http) {
+      this.uuid = window.localStorage.getItem('eamon_uuid');
+  }
 
   setupGameData() {
 
@@ -48,7 +53,7 @@ export class GameLoaderService {
         this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/hints").map((res: Response) => res.json()),
-        this.http.get("/api/players/" + player_id).map((res: Response) => res.json())
+        this.http.get("/api/players/" + player_id + '.json?uuid=' + this.uuid).map((res: Response) => res.json())
       ).subscribe(
         data => {
           game.init(data);
