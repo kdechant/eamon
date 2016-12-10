@@ -1,40 +1,48 @@
 <div *ngIf="game?.rooms?.current_room">
 
   <div class="status-widget player">
-    <p class="heading">{{ game.player.name }}</p>
+    <div class="container">
+      <div class="row">
+        <p class="heading">{{ game.player.name }}</p>
+      </div>
 
-    <div class="stats">
-      <span class="hardiness">HD: {{game.player.hardiness}}</span>
-      <span class="agility">AG: <span [class.success]="game.player.speed_multiplier > 1">{{game.player.agility * game.player.speed_multiplier}}</span></span>
-      <span class="charisma">CH: {{game.player.charisma}}</span>
+      <div class="stats row">
+        <span class="hardiness">HD: {{ game.player.hardiness }}</span>
+        <span class="agility">AG: <span
+            [class.success]="game.player.speed_multiplier > 1">{{ game.player.agility * game.player.speed_multiplier}}</span></span>
+        <span class="charisma">CH: {{ game.player.charisma }}</span>
+      </div>
+
+      <div class="health row">
+        HP: {{ game.player.hardiness - game.player.damage }}/{{ game.player.hardiness }}
+      </div>
+
+      <div class="weapon-abilities row">
+        <div class="axe col-sm-2">Axe: {{ game.player.weapon_abilities[1]}}%</div>
+        <div class="bow col-sm-2">Bow: {{ game.player.weapon_abilities[2]}}%</div>
+        <div class="club col-sm-2">Club: {{ game.player.weapon_abilities[3]}}%</div>
+        <div class="spear col-sm-2">Spear: {{ game.player.weapon_abilities[4]}}%</div>
+        <div class="sword col-sm-2">Sword: {{ game.player.weapon_abilities[5]}}%</div>
+      </div>
+
+      <div class="weapon row" *ngIf="game.player.weapon">Ready weapon: {{ game.player.weapon.name }}
+        ({{ game.player.weapon.dice }}d{{ game.player.weapon.sides }})
+      </div>
+      <div class="weapon none row" *ngIf="!game.player.weapon">Ready weapon: none!</div>
+
+      <div class="armor row" *ngIf="game.player.armor_class">Armor:
+        <span
+            *ngFor="let armor of game.player.armor_worn; let isLast=last">{{ armor.name }}{{ isLast ? '' : ' and '}}</span>
+        ({{ game.player.armor_class }})
+      </div>
+      <div class="armor none row" *ngIf="!game.player.armor_class">Armor: none!</div>
+
     </div>
-
-    <div class="health">
-      HP: {{ game.player.hardiness - game.player.damage }}/{{ game.player.hardiness }}
-    </div>
-
-    <div class="weapon-abilities row">
-      <div class="axe col-sm-2">Axe: {{game.player.weapon_abilities[1]}}%</div>
-      <div class="bow col-sm-2">Bow: {{game.player.weapon_abilities[2]}}%</div>
-      <div class="club col-sm-2">Club: {{game.player.weapon_abilities[3]}}%</div>
-      <div class="spear col-sm-2">Spear: {{game.player.weapon_abilities[4]}}%</div>
-      <div class="sword col-sm-2">Sword: {{game.player.weapon_abilities[5]}}%</div>
-    </div>
-
-    <div class="weapon" *ngIf="game.player.weapon">Ready weapon: {{game.player.weapon.name}}
-     ({{game.player.weapon.dice}}d{{game.player.weapon.sides}})</div>
-    <div class="weapon none" *ngIf="!game.player.weapon">Ready weapon: none!</div>
-
-    <div class="armor" *ngIf="game.player.armor_class">Armor:
-      <span *ngFor="let armor of game.player.armor_worn; let isLast=last">{{armor.name}}{{isLast ? '' : ' and '}}</span>
-    ({{game.player.armor_class}})</div>
-    <div class="armor none" *ngIf="!game.player.armor_class">Armor: none!</div>
-
   </div>
 
   <div class="status-widget room">
-    <p class="room-name">Current Location: {{ game.rooms.current_room.name }}</p>
-    <p class="room-description">{{ game.rooms.current_room.description }}</p>
+    <p class="room-name" (click)="toggleDesc()">Current Location: {{ game.rooms.current_room.name }}</p>
+    <p class="room-description" [class.hidden]="hiddenDesc">{{ game.rooms.current_room.description }}</p>
     <div class="room-exits">Visible Exits:
       <span *ngFor="let exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
     </div>
@@ -45,14 +53,14 @@
     <div class="monsters-list">
       <span *ngFor="let monster of game.monsters.visible">
         <span class="monster"
-          [class.friendly]="monster.reaction == 'friend'"
-          [class.hostile]="monster.reaction == 'hostile'"
-          >
+              [class.friendly]="monster.reaction == 'friend'"
+              [class.hostile]="monster.reaction == 'hostile'"
+        >
             <span *ngIf="monster.count > 1">{{ monster.count }} {{ monster.name }}s</span>
             <span *ngIf="monster.count == 1">{{ monster.name }}</span>
-            - {{monster.reaction}}</span><br />
+            - {{ monster.reaction }}</span><br/>
       </span>
-      <span class="monster none" *ngIf="game.monsters.visible.length == 0">no one<br /></span>
+      <span class="monster none" *ngIf="game.monsters.visible.length == 0">no one<br/></span>
     </div>
   </div>
 
@@ -60,9 +68,9 @@
     <p class="heading">What's around:</p>
     <div class="artifacts-list">
       <div class="artifact" *ngFor="let artifact of game.artifacts.visible">
-          <artifact [game]="game" [artifact]="artifact"></artifact>
+        <artifact [game]="game" [artifact]="artifact"></artifact>
       </div>
-      <span class="artifact none" *ngIf="game.artifacts.visible.length == 0">nothing<br /></span>
+      <span class="artifact none" *ngIf="game.artifacts.visible.length == 0">nothing<br/></span>
     </div>
   </div>
 
@@ -70,11 +78,11 @@
     <p class="heading">You are carrying:</p>
     <div class="artifacts-list" *ngIf="game?.player?.inventory">
       <div class="artifact" *ngFor="let artifact of game.player.inventory">
-          <artifact [game]="game" [artifact]="artifact"></artifact>
+        <artifact [game]="game" [artifact]="artifact"></artifact>
       </div>
-      <span class="artifact none" *ngIf="game.player.inventory.length == 0">nothing<br /></span>
+      <span class="artifact none" *ngIf="game.player.inventory.length == 0">nothing<br/></span>
     </div>
-    <p class="weight">Weight carried: {{game.player.weight_carried}}/{{ game.player.hardiness * 10 }}</p>
-    <p class="gold">Gold: {{game.player.gold}}</p>
+    <p class="weight">Weight carried: {{ game.player.weight_carried }}/{{ game.player.hardiness * 10 }}</p>
+    <p class="gold">Gold: {{ game.player.gold }}</p>
   </div>
 </div>

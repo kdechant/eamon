@@ -1,86 +1,86 @@
 <div *ngIf="player">
 
-    <div class="status-widget player">
-        <div class="container">
-            <div class="row">
-                <p class="heading">You are the {{ player.getGenderLabel() }} {{ player.name }}</p>
-            </div>
+  <div class="status-widget player">
+    <div class="container">
+      <div class="row">
+        <p class="heading">You are the {{ player.getGenderLabel() }} {{ player.name }}</p>
+      </div>
 
-            <div class="stats row">
-                <span class="hardiness">HD: {{ player.hardiness }}</span>
-                <span class="agility">AG: {{ player.agility}}</span>
-                <span class="charisma">CH: {{ player.charisma }}</span>
-            </div>
+      <div class="stats row">
+        <span class="hardiness">HD: {{ player.hardiness }}</span>
+        <span class="agility">AG: {{ player.agility }}</span>
+        <span class="charisma">CH: {{ player.charisma }}</span>
+      </div>
 
-            <div class="spell-abilities row">
-                <div class="axe col-sm-3">Blast:<br /> {{ player.spell_abilities_original.blast}}%</div>
-                <div class="bow col-sm-3">Heal:<br /> {{ player.spell_abilities_original.heal}}%</div>
-                <div class="club col-sm-3">Power:<br /> {{ player.spell_abilities_original.power}}%</div>
-                <div class="spear col-sm-3">Speed:<br /> {{ player.spell_abilities_original.speed}}%</div>
-            </div>
+      <div class="spell-abilities row">
+        <div class="axe col-sm-3">Blast:<br/> {{ player.spell_abilities_original.blast }}%</div>
+        <div class="bow col-sm-3">Heal:<br/> {{ player.spell_abilities_original.heal }}%</div>
+        <div class="club col-sm-3">Power:<br/> {{ player.spell_abilities_original.power }}%</div>
+        <div class="spear col-sm-3">Speed:<br/> {{ player.spell_abilities_original.speed }}%</div>
+      </div>
 
-            <div class="weapon-abilities row">
-                <div class="axe col-sm-2">Axe: {{ player.wpn_axe }}%</div>
-                <div class="bow col-sm-2">Bow: {{ player.wpn_bow }}%</div>
-                <div class="club col-sm-2">Club: {{ player.wpn_club }}%</div>
-                <div class="spear col-sm-2">Spear: {{ player.wpn_spear }}%</div>
-                <div class="sword col-sm-2">Sword: {{ player.wpn_sword }}%</div>
-            </div>
+      <div class="weapon-abilities row">
+        <div class="axe col-sm-2">Axe: {{ player.wpn_axe }}%</div>
+        <div class="bow col-sm-2">Bow: {{ player.wpn_bow }}%</div>
+        <div class="club col-sm-2">Club: {{ player.wpn_club }}%</div>
+        <div class="spear col-sm-2">Spear: {{ player.wpn_spear }}%</div>
+        <div class="sword col-sm-2">Sword: {{ player.wpn_sword }}%</div>
+      </div>
 
-            <div class="gold row">
-                <div class="col-sm-6">Gold in hand: {{ player.gold }}</div>
-                <div class="col-sm-6">Gold in bank: {{ player.gold_in_bank }}</div>
-            </div>
-        </div>
-
-        <div class="weapon" *ngIf="player.weapon">Armor Expertise: {{ player.armor_expertise }}</div>
-
+      <div class="gold row">
+        <div class="col-sm-6">Gold in hand: {{ player.gold }}</div>
+        <div class="col-sm-6">Gold in bank: {{ player.gold_in_bank }}</div>
+      </div>
     </div>
 
-    <div class="status-widget inventory">
-        <p class="heading">Weapons:</p>
-        <table class="table artifacts-list" *ngIf="player?.inventory">
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Odds</th>
-                <th>Damage</th>
-                <th>Chance to hit</th>
-            </tr>
-            <tbody *ngFor="let artifact of player?.inventory">
-                <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
-                    <td>{{ artifact.name }}</td>
-                    <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                                 title="{{ artifact.getWeaponTypeName() }}"></td>
-                    <td>{{ artifact.weapon_odds }}%</td>
-                    <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
-                    <td>{{ player.getBaseToHit(artifact) }}%</td>
-                </tr>
-            </tbody>
-            <tr class="artifact none" *ngIf="player.inventory.length == 0">
-                <td colspan="5">none</td>
-            </tr>
-        </table>
-        <p class="heading">Armor and Shields:</p>
-        <table class="table artifacts-list" *ngIf="player?.inventory">
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Armor Class</th>
-                <th>Armor Penalty</th>
-            </tr>
-            <tbody *ngFor="let artifact of player?.inventory">
-                <tr class="artifact" *ngIf="artifact.type != 2 && artifact.type != 3">
-                    <td>{{ artifact.name }}</td>
-                    <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
-                             title="{{ artifact.getArmorTypeName() }}"></td>
-                    <td>{{ artifact.armor_class }}</td>
-                    <td>{{ artifact.armor_penalty }}</td>
-                </tr>
-            </tbody>
-            <tr class="artifact none" *ngIf="player.inventory.length == 0">
-                <td colspan="5">none</td>
-            </tr>
-        </table>
-    </div>
+    <div class="weapon" *ngIf="player.weapon">Armor Expertise: {{ player.armor_expertise }}</div>
+
+  </div>
+
+  <div class="status-widget inventory">
+    <p class="heading">Weapons:</p>
+    <table class="table artifacts-list" *ngIf="player?.inventory">
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Odds</th>
+        <th>Damage</th>
+        <th>Chance to hit</th>
+      </tr>
+      <tbody *ngFor="let artifact of player?.inventory">
+      <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
+        <td>{{ artifact.name }}</td>
+        <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
+                                     title="{{ artifact.getWeaponTypeName() }}"></td>
+        <td>{{ artifact.weapon_odds }}%</td>
+        <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
+        <td>{{ player.getBaseToHit(artifact) }}%</td>
+      </tr>
+      </tbody>
+      <tr class="artifact none" *ngIf="player.inventory.length == 0">
+        <td colspan="5">none</td>
+      </tr>
+    </table>
+    <p class="heading">Armor and Shields:</p>
+    <table class="table artifacts-list" *ngIf="player?.inventory">
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Armor Class</th>
+        <th>Armor Penalty</th>
+      </tr>
+      <tbody *ngFor="let artifact of player?.inventory">
+      <tr class="artifact" *ngIf="artifact.type != 2 && artifact.type != 3">
+        <td>{{ artifact.name }}</td>
+        <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
+                                     title="{{ artifact.getArmorTypeName() }}"></td>
+        <td>{{ artifact.armor_class }}</td>
+        <td>{{ artifact.armor_penalty }}</td>
+      </tr>
+      </tbody>
+      <tr class="artifact none" *ngIf="player.inventory.length == 0">
+        <td colspan="5">none</td>
+      </tr>
+    </table>
+  </div>
 </div>

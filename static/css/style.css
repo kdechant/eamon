@@ -24,8 +24,15 @@ h2 {
   background-repeat: repeat-x;
   height: 48px; }
 
+.status {
+  margin: 25px 0; }
+
 .status-widget {
-  border: 1px solid #999;
+  background-color: #dc9;
+  border: 3px dotted #b97;
+  border-radius: 5px;
+  box-shadow: inset 0 -1px 0 0 #b97, inset 0 1px 0 0 #b97, 0 1px 0 0 #b97, 0 -1px 0 0 #b97, inset -1px 0 0 0 #b97, inset 1px 0 0 0 #b97, 1px 0 0 0 #b97, -1px 0 0 0 #b97;
+  margin-bottom: 1px;
   margin-bottom: 10px;
   padding: 6px; }
   .status-widget .heading {
@@ -46,10 +53,9 @@ h2 {
     padding-left: 15px; }
 
 .history {
-  border: 1px solid #999;
-  height: 500px;
+  height: 480px;
   overflow-y: auto;
-  padding: 12px; }
+  margin: 20px 5px 0; }
   .history p {
     margin: 10px 0 0; }
     .history p.no-space {

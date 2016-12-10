@@ -6,4 +6,9 @@ import {Component, Input} from "@angular/core";
 })
 export class StatusComponent {
   @Input() game;
+  hiddenDesc = true;
+
+  public toggleDesc() {
+    this.hiddenDesc = !this.hiddenDesc;
+  }
 }

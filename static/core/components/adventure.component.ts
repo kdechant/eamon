@@ -10,19 +10,18 @@ import {Room, RoomExit} from "../models/room";
   template: `
 <div class="page-border">&nbsp;</div>
 <div class="container" *ngIf="game">
-  <h1>{{game_title}}</h1>
-  <h2>{{game.name}}</h2>
+  <h1>{{game.name}}</h1>
   <div class="row">
-    <div class="command col-sm-6" *ngIf="!game.selling">
+    <div class="command col-sm-7 parchment" *ngIf="!game.selling">
       <history [history]="game?.history"></history>
       <command-prompt [game]="game"></command-prompt>
       <hints [game]="game"></hints>
       <command-list [game]="game"></command-list>
     </div>
-    <div class="command col-sm-6" *ngIf="game.selling">
+    <div class="command col-sm-7 parchment" *ngIf="game.selling">
       <sell-items [game]="game"></sell-items>
     </div>
-    <div class="status col-sm-6">
+    <div class="status col-sm-5">
       <status [game]="game"></status>
     </div>
   </div>
