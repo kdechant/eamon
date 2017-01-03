@@ -12,7 +12,14 @@ export class HistoryEntry {
   }
 
   public push(text: string, type: string) {
-    this.results.push({ text: text, type: type });
+    if (text === null) {
+      text = "";
+    }
+    let split_text = text.split(/\n/g);
+    for (let i in split_text) {
+      this.results.push({ text: split_text[i], type: type });
+    }
+
   }
 
   public append(text: string) {

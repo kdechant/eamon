@@ -12,6 +12,40 @@ export var event_handlers = {
 
     // add your custom game start code here
 
+    game.modal.show("How much do you give him?", function(value) {
+
+      // prevent user mischief
+      value = parseInt(value);
+      if (value < 0 || isNaN(value)) {
+        value = 0;
+      }
+
+      // dwarf's reaction depends on the amount of gold you give him
+      if (value < 25) {
+        game.history.write("Angry and hurt, the dwarf violently pushes you into the hole and slams the door shut above you!", "danger");
+        game.rooms.getRoomById(1).getExit("u").room_to = -1; // blocks exit from starting room
+      } else if (value < 50) {
+        game.history.write("The dwarf looks disgustedly at the small payment in his hand, sniffs once, and turns and walks away.", "warning");
+      } else {
+        let adr = game.player.gender === "m" ? "sir" : "ma'am";
+        game.history.write("The little man's face lights up...  He leans over to whisper to you as you climb into the hole, \"Thank you, " + adr + ", and keep a sharp eye out for secret doors down there!", "success");
+      }
+      game.player.gold -= value;
+      game.start();
+    });
+
+  },
+
+  "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
+    let game = Game.getInstance();
+
+    switch (exit.room_to) {
+      case -1:
+        // the blocked door - didn't pay the dwarf enough
+        game.history.write("The dwarf has blocked the exit!");
+        return false;
+    }
+    return true;
   },
 
   "read": function(arg: string, artifact: Artifact, command: ReadCommand) {

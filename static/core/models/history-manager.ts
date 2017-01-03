@@ -25,6 +25,10 @@ export class HistoryManager {
 
   /**
    * Pushes some output text onto the history
+   * @param {string} text
+   *   The text to output
+   * @param {string} type
+   *   The style of text: "normal" (default), "special", "success", "warning", "danger"
    */
   write(text: string, type: string = "normal") {
     if (!this.suppressNextMessage) {

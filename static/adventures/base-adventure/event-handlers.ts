@@ -11,6 +11,9 @@ export var event_handlers = {
 
     // add your custom game start code here
 
+    // always run game.start() somewhere within this method.
+    // if you need to ask the player for something, this can be called from within a callback function instead of here.
+    game.start();
   },
 
   // add your custom event handlers here

@@ -14,9 +14,16 @@ import {Room, RoomExit} from "../models/room";
   <div class="row">
     <div class="command col-sm-7 parchment" *ngIf="!game.selling">
       <history [history]="game?.history"></history>
-      <command-prompt [game]="game"></command-prompt>
-      <hints [game]="game"></hints>
-      <command-list [game]="game"></command-list>
+      <div *ngIf="!game?.modal?.visible">
+        <command-prompt [game]="game"></command-prompt>
+        <hints [game]="game"></hints>
+        <command-list [game]="game"></command-list>
+      </div>
+      <div class="game-modal" *ngIf="game?.modal?.visible">
+        <p>{{game.modal?.text}}</p>
+        <p><input type="text" [(ngModel)]="game.modal.value"></p>
+        <p><button class="btn btn-success" id="return" (click)="game.modal.submit()">Go</button></p>
+      </div>
     </div>
     <div class="command col-sm-7 parchment" *ngIf="game.selling">
       <sell-items [game]="game"></sell-items>

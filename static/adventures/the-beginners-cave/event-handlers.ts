@@ -30,6 +30,7 @@ export var event_handlers = {
       game.effects.print(11);
     }
 
+    game.start();
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {

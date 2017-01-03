@@ -3,6 +3,7 @@ import {ArtifactRepository} from "../repositories/artifact.repo";
 import {EffectRepository} from "../repositories/effect.repo";
 import {MonsterRepository} from "../repositories/monster.repo";
 import {HintRepository} from "../repositories/hint.repo";
+import {Modal} from "../models/modal";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
@@ -10,6 +11,7 @@ import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
+import {isNull} from "util";
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -128,6 +130,11 @@ export class Game {
    */
   selling: boolean = false;
 
+  /**
+   * A container for the modal object
+   */
+  modal: Modal;
+
   constructor() {
     if (Game._instance) {
       throw new Error("Error: Instantiation failed: Use Game.getInstance() instead of new.");
@@ -153,6 +160,8 @@ export class Game {
     this.monsters = new MonsterRepository(data[4]);
     this.hints = new HintRepository(data[5]);
 
+    this.modal = new Modal;
+
     this.monsters.addPlayer(data[6]);
 
     this.history = new HistoryManager;
@@ -174,6 +183,11 @@ export class Game {
     this.player.moveToRoom(1);
 
     this.triggerEvent("start", "");
+
+  }
+
+  // puts the player in room 1 and gets things started
+  start() {
 
     // Tick the game clock. This builds the list of monsters/items in the first room.
     this.tick();

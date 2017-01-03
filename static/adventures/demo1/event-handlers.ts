@@ -5,6 +5,11 @@ import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
+  "start": function(arg: string) {
+    let game = Game.getInstance();
+    game.start();
+  },
+
   "beforeGet": function(arg, artifact) {
     let game = Game.getInstance();
     // special message when the player tries to pick up the throne
