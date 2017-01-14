@@ -18,6 +18,11 @@ h1 {
 
 h2 {
   margin-top: 10px;
+  // default size for the icon images in any heading
+  img {
+    width: 64px;
+    height: 64px;
+  }
 }
 
 .parchment {

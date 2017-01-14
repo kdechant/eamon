@@ -8,7 +8,7 @@ import {ShopService} from "../services/shop.service";
 
 @Component({
   template: `
-  <h4>Marcos Cavielli's Weapons and Armour Shoppe</h4>
+  <h2><img src="/static/images/ravenmore/128/axe2.png">Marcos Cavielli's Weapons and Armour Shoppe</h2>
   <p>As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back room and says, &quot;Well, as I live and breathe, if it isn't my old pal, {{_playerService.player?.name}}!&quot;</p>
   <p>So, whatta you need? I just happen to have the following weapons and armor in stock:</p>
   <p>You have {{_playerService.player?.gold}} gold pieces.</p>

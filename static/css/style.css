@@ -13,6 +13,9 @@ h1 {
 
 h2 {
   margin-top: 10px; }
+  h2 img {
+    width: 64px;
+    height: 64px; }
 
 .parchment {
   background-image: url(/static/images/parchment_alpha.png);

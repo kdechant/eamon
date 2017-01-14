@@ -6,7 +6,7 @@ import {Game} from "../../core/models/game";
 
 @Component({
   template: `
-  <h4>Hokas Tokas' School of Magick</h4>
+  <h2><img src="/static/images/ravenmore/128/upg_wand.png">Hokas Tokas' School of Magick</h2>
   <p>After a few minutes diligent searching, you find Hokas Tokas, the old Mage. He looks at you and says, &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you. My fees are:</p>
   <p>Blast...1000 GP<br />
   Heal.....500 GP<br />
