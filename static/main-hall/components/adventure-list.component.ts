@@ -9,10 +9,16 @@ import {Adventure} from "../models/adventure";
 
 @Component({
   template: `
-  <p class="adventure"
-    *ngFor="let adv of _adventureService.adventures"><a (click)="gotoAdventure(adv)">{{adv.name}}</a></p>
   <h2><img src="/static/images/ravenmore/128/map.png"> Go on an adventure</h2>
   <p>Eamon contains many different adventures of many different styles. Some are fantasy or sci-fi, contain a quest or just hack-and-slash. Some are aimed at beginners and others are for veteran adventurers only. Choose your fate and perish (or profit)...</p>
+  <div class="row">
+    <div class="adventure-list-item col-sm-4"
+      *ngFor="let adv of _adventureService.adventures">
+      <p><a (click)="gotoAdventure(adv)">{{adv.name}}</a></p>
+      <p>{{adv.description}}</p>
+      <p *ngIf="adv.tags.length > 0">Tags: {{adv.tags}}</p>
+    </div>
+  </div>
   <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>
   `,
 })

@@ -6,7 +6,9 @@ import {GameObject} from "../../core/models/game-object";
 export class Adventure extends GameObject {
 
   description: string;
+  full_description: string;
   slug: string;
   edx: string;
+  tags: string[];
 
 }

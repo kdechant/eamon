@@ -121,3 +121,6 @@ command-prompt .form-control {
     flex-grow: 1; }
   .player .glyphicon {
     font-size: 12px; }
+
+.adventure-list-item {
+  min-height: 250px; }

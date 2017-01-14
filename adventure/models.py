@@ -1,4 +1,5 @@
 from django.db import models
+from taggit.managers import TaggableManager
 
 
 ARTIFACT_TYPES = (
@@ -49,7 +50,9 @@ ARMOR_TYPES = (
 
 class Adventure(models.Model):
     name = models.CharField(max_length=50)
-    description = models.TextField(null=True)
+    description = models.TextField(default='', blank=True)
+    full_description = models.TextField(default='', blank=True)
+    intro_text = models.TextField(default='', blank=True)
     slug = models.SlugField(null=True)
     edx = models.CharField(null=True,max_length=50)
     edx_version = models.FloatField(default=0, blank=True, null=True)
@@ -63,6 +66,14 @@ class Adventure(models.Model):
     # the first and last index of hints read from the hints file - used with the import_hints management command
     first_hint = models.IntegerField(null=True)
     last_hint = models.IntegerField(null=True)
+    tags = TaggableManager(blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
 
 class Room(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='rooms')
@@ -73,6 +84,9 @@ class Room(models.Model):
     effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.
     is_dark = models.BooleanField(default=0)
 
+    def __str__(self):
+        return self.name
+
 
 class RoomExit(models.Model):
     direction = models.CharField(max_length=2)
@@ -80,6 +94,9 @@ class RoomExit(models.Model):
     room_to = models.IntegerField(default=0) # Not a real foreign key. Yet.
     door_id = models.IntegerField(null=True)
     message = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.room_from + " " + self.direction
 
 
 class Artifact(models.Model):
@@ -138,6 +155,9 @@ class Artifact(models.Model):
         help_text="Number of effects for Readable artifacts (legacy)"
     )
 
+    def __str__(self):
+        return self.name
+
 
 class ArtifactMarking(models.Model):
     """
@@ -154,6 +174,9 @@ class Effect(models.Model):
     style = models.TextField(max_length=20, null=True) # used by EDX to display effect text in color
     next = models.IntegerField(null=True) # The next chained effect
     next_inline = models.IntegerField(null=True) # The next chained effect, without a paragraph break.
+
+    def __str__(self):
+        return self.text[0:50]
 
 
 class Monster(models.Model):
@@ -199,6 +222,9 @@ class Monster(models.Model):
     )
     armor_class = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
 
 class Hint(models.Model):
     """
@@ -208,6 +234,9 @@ class Hint(models.Model):
     index = models.IntegerField(null=True)
     edx = models.CharField(null=True,max_length=50)
     question = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.question
 
 
 class HintAnswer(models.Model):
@@ -245,6 +274,9 @@ class Player(models.Model):
     spl_speed = models.IntegerField("Speed ability", default=0)
     uuid = models.CharField(max_length=255, null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class PlayerArtifact(models.Model):
     """
@@ -276,3 +308,6 @@ class PlayerArtifact(models.Model):
     armor_type = models.IntegerField(default=0,choices=ARMOR_TYPES,null=True)
     armor_class = models.IntegerField(default=0,null=True)
     armor_penalty = models.IntegerField(default=0,null=True)
+
+    def __str__(self):
+        return self.player + " " + self.name

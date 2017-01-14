@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # third-party apps from pypi
     'rest_framework',
     'corsheaders',
+    'taggit',       # django-taggit package for model tagging
+    'taggit_serializer',  # rest framework serializer for django-taggit tag field
+
+    # custom code
     'adventure',
 ]
 
