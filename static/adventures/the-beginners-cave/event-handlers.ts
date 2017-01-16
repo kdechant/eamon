@@ -82,7 +82,6 @@ export var event_handlers = {
     if (old_wpn && old_wpn.id === 10 && new_wpn.id !== 10) {
       put_out_trollsfire();
     }
-    return true;
   },
 
   "drop": function(arg: string, artifact: Artifact): void {
@@ -125,7 +124,7 @@ export var event_handlers = {
     if (cynthia.isHere() && cynthia.reaction !== Monster.RX_HOSTILE) {
       let reward = game.player.charisma * 10;
       game.exit_message.push("Additionally, you receive " + reward + " gold pieces for the safe return of Cynthia.");
-      game.player.profit += reward;
+      game.player.gold += reward;
     }
   },
 

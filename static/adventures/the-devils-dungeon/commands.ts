@@ -29,7 +29,7 @@ custom_commands.push({
         }
       } else if (artifact.id === 12) {
         // sleeping beauty
-        game.history.write("As you kiss " + artifact.name + ", the SLEEP spell bounces back, and you too fall asleep, forever forgotten in the Devil's Dungeon!");
+        game.history.write("As you kiss " + artifact.name + ", the SLEEP spell bounces back, and you too fall asleep, forever forgotten in the Devil's Dungeon!", "special");
         game.die();
       } else {
         throw new CommandException("Why would you want to kiss that?");

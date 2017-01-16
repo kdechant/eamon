@@ -76,6 +76,18 @@ export var event_handlers = {
 
   },
 
+  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+    let game = Game.getInstance();
+    if (artifact !== null) {
+      if (artifact.id === 23) {
+        // the grain sack
+        command.opened_something = true;
+        game.effects.print(3, "danger");
+        game.die();
+      }
+    }
+  },
+
   "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
     let game = Game.getInstance();
 
@@ -94,8 +106,22 @@ export var event_handlers = {
     let game = Game.getInstance();
     if (arg === 'pickle' && game.artifacts.get(19).isHere()) {
       game.history.write("  S H A Z A M ! !  ", "special");
-      game.artifacts.get(19).room_id = 0;
+      game.artifacts.get(19).destroy();
       game.artifacts.get(41).room_id = game.player.room_id;
+    }
+  },
+
+  "use": function(artifact_name, artifact) {
+    let game = Game.getInstance();
+    if (artifact.id === 17) {
+      // mad scientist's potion
+      game.effects.print(5);
+      let roll = game.diceRoll(1, 5);
+      if (roll > 3) {
+        roll = -1;
+      }
+      game.player.hardiness += roll;
+      game.history.write("It tastes awful!", "emphasis");
     }
   },
 
@@ -115,6 +141,24 @@ export var event_handlers = {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
     }
+  },
+
+  // event handler that happens at the very end, after the player has sold their treasure to sam slicker
+  "afterSell": function() {
+    let game = Game.getInstance();
+    // reward for saving leia
+    let leia = game.monsters.get(13);
+    if (leia.isHere() && leia.reaction !== Monster.RX_HOSTILE) {
+      game.exit_message.push(game.effects.get(1).text);
+      game.player.gold += 2500;
+    }
+    // reward for killing vader
+    let vader = game.monsters.get(12);
+    if (vader.room_id === null) {
+      game.exit_message.push(game.effects.get(2).text);
+      game.player.gold += 1000;
+    }
+
   },
 
 }; // end event handlers

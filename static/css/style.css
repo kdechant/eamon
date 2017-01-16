@@ -76,6 +76,9 @@ command-prompt .form-control {
 .btn {
   font-size: 20px; }
 
+.emphasis {
+  font-weight: bold; }
+
 .special {
   color: dodgerblue;
   font-weight: bold; }

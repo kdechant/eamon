@@ -770,7 +770,7 @@ export class OpenCommand implements BaseCommand {
     }
 
     // other effects are custom to the adventure
-    game.triggerEvent("open", arg, this);
+    game.triggerEvent("open", arg, a, this);
 
     // otherwise, nothing happens
     if (!this.opened_something) {
