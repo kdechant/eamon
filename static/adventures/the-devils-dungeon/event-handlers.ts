@@ -12,6 +12,7 @@ export var event_handlers = {
 
     // add your custom game start code here
 
+    // the dwarf's question
     game.modal.show("How much do you give him?", function(value) {
 
       // prevent user mischief
@@ -31,7 +32,6 @@ export var event_handlers = {
         game.history.write("The little man's face lights up...  He leans over to whisper to you as you climb into the hole, \"Thank you, " + adr + ", and keep a sharp eye out for secret doors down there!", "success");
       }
       game.player.gold -= value;
-      game.start();
     });
 
   },
@@ -45,7 +45,35 @@ export var event_handlers = {
         game.history.write("The dwarf has blocked the exit!");
         return false;
     }
-    return true;
+
+    // if player is carrying the crystal ball, look for possible hostile monsters in the next room
+    if (game.player.hasArtifact(10)) {
+      let monsters = game.monsters.getByRoom(exit.room_to);
+      let danger = false;
+      for (let i in monsters) {
+        if (!monsters[i].seen) {
+          danger = true;
+        }
+      }
+      if (danger) {
+        game.modal.show("The crystal ball warns of possible danger ahead! Do you wish to proceed?", function(value) {
+          if (value === 'y') {
+            // the actual movement
+            let room_to = game.rooms.getRoomById(exit.room_to);
+            let room_from = game.rooms.current_room;
+            game.player.moveToRoom(room_to.id, true);
+            game.triggerEvent("afterMove", arg, room_from, room_to);
+          }
+        });
+        // always return false here because the actual movement happens in the callback.
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+
   },
 
   "read": function(arg: string, artifact: Artifact, command: ReadCommand) {

@@ -175,6 +175,22 @@ export class MonsterRepository {
   }
 
   /**
+   * Gets a list of all monsters in a given room
+   * @param {number} room_id The ID of the room
+   * @return Monster[]
+   */
+  getByRoom(room_id: number) {
+    let mons: Monster[] = [];
+    for (let i in this.all) {
+      let m = this.all[i];
+      if (m.room_id === room_id) {
+        mons.push(m);
+      }
+    }
+    return mons;
+  }
+
+  /**
    * Gets a random monster.
    * @param {boolean} include_player
    *   Whether or not to include the player in the random selection (default false)

@@ -9,11 +9,6 @@ export var event_handlers = {
   // NOTE: This adventure has no special event handlers (except POWER).
   // This adventure is meant as a test of the core logic.
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-    game.start();
-  },
-
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {

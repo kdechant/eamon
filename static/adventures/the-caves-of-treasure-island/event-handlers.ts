@@ -45,7 +45,6 @@ export var event_handlers = {
     // the potion shouldn't have a built-in heal value; its logic is implemented differently
     game.artifacts.get(2).dice = 0;
 
-    game.start();
   },
 
   // add your custom event handlers here

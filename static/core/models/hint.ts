@@ -1,12 +1,5 @@
 import {Loadable} from "./loadable";
 
-// export class HintAnswer extends Loadable {
-//
-//   public index: string;
-//   public answer: number;
-//
-// }
-
 export class Hint extends Loadable {
 
   public id: number;

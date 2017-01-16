@@ -37,6 +37,11 @@ export class Game {
   description: string;
 
   /**
+   * @var {string} The text to display at the adventure start
+   */
+  intro_text: string;
+
+  /**
    * A container for all the Room objects
    */
   rooms: RoomRepository;
@@ -153,6 +158,7 @@ export class Game {
 
     this.name = data[0].name;
     this.description = data[0].description;
+    this.intro_text = data[0].intro_text;
 
     this.rooms = new RoomRepository(data[1]);
     this.artifacts = new ArtifactRepository(data[2]);
@@ -177,21 +183,14 @@ export class Game {
 
     // Show the adventure description
     this.history.push("");
-    this.history.write(this.description);
+    this.history.write(this.intro_text);
 
     // Place the player in the first room
     this.player.moveToRoom(1);
 
     this.triggerEvent("start", "");
 
-  }
-
-  // puts the player in room 1 and gets things started
-  start() {
-
-    // Tick the game clock. This builds the list of monsters/items in the first room.
     this.tick();
-
   }
 
   /**
@@ -353,6 +352,20 @@ export class Game {
     }
     // if we didn't find a matching event handler, return true to continue executing remaining code
     return true;
+  }
+
+  /**
+   * Pauses the game so the clock won't tick while waiting for something (e.g., a user prompt)
+   */
+  public pause() {
+    this.active = false;
+  }
+
+  /**
+   * Resumes a paused game
+   */
+  public resume() {
+    this.active = true;
   }
 
   /**

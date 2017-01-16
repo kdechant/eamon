@@ -39,7 +39,6 @@ export var event_handlers = {
       game.artifacts.get(a).name = game.artifacts.get(46).name;
     }
 
-    game.start();
   },
 
   "see_monster": function(monster: Monster): void {
