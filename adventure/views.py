@@ -150,8 +150,8 @@ class PlayerViewSet(viewsets.ModelViewSet):
         # to pass validation, need to fix some values on the inventory items
         for key, value in enumerate(data['inventory']):
             data['inventory'][key]['type'] = int(data['inventory'][key]['type'])
-            if data['inventory'][key]['weapon_type'] == 0:
-                data['inventory'][key]['weapon_type'] = None;
+            if 'weapon_type' not in data['inventory'][key] or data['inventory'][key]['weapon_type'] == 0:
+                data['inventory'][key]['weapon_type'] = None
             data['inventory'][key]['player'] = instance.id
 
         serializer = self.get_serializer(instance, data=request.data, partial=False)
