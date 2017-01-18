@@ -22,6 +22,9 @@ export var event_handlers = {
     game.history.write("You feel like you're being teleported!", "warning");
     game.history.write("You wake up in a dark place.", "success");
 
+    // the mind's attack messages
+    game.monsters.get(12).combat_verbs = ["mentally blasts", "shoots a laser at", "swings a spidery arm at"];
+
   },
 
   "afterGet": function(arg, artifact) {
@@ -32,6 +35,19 @@ export var event_handlers = {
       game.effects.print(13, "warning");
       wizard.reaction = Monster.RX_HOSTILE;
     }
+  },
+
+  "attackArtifact": function(arg, artifact) {
+    let game = Game.getInstance();
+    // smashing the mind's life-support equipment
+    if (artifact.id === 27) {
+      game.artifacts.get(28).moveToRoom(artifact.room_id);
+      artifact.destroy();
+      game.effects.print(7, "emphasis");
+      game.monsters.get(12).injure(1000);
+      return false;  // this suppresses a "why would you attack" message
+    }
+    return true;
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
@@ -146,6 +162,7 @@ export var event_handlers = {
                   game.effects.print(6, "special");
                   monster.room_id = null;
                   game.monsters.get(14).moveToRoom(game.player.room_id);
+                  game.artifacts.get(33).moveToRoom(game.player.room_id);
                   game.data["heat ray destroyed"] = true;
                 } else {
                   let reactions = ["does a little dance for your amusement.", "picks its metal nose.", "stands on its head.", "tells a dirty joke."];
@@ -159,9 +176,21 @@ export var event_handlers = {
 
           });
           break;
+        case 16:
+          // potion
+          game.history.write("As you drink the potion, the room gradually fades from view...");
+          game.effects.print(10);
+          game.exit();
+          break;
         case 21:
           // harmonica
-          game.history.write("You make some awful screeching sounds for a bit.");
+          let bridge = game.artifacts.get(24);
+          if (game.player.room_id === 21 && !bridge.room_id) {
+            bridge.room_id = 21;
+            // effect message is in the artifact description
+          } else {
+            game.history.write("You make some awful screeching sounds for a bit.");
+          }
           break;
         case 34:
           // elevator key
@@ -206,7 +235,14 @@ export var event_handlers = {
     if (game.artifacts.get(5).isHere()) {
       game.exit_message.push(game.effects.get(14).text);
     }
-  },
+    // aj and chef messages
+    if (game.monsters.get(7).isHere()) {
+      game.exit_message.push(game.effects.get(11).text);
+    }
+    if (game.monsters.get(11).isHere()) {
+      game.exit_message.push(game.effects.get(12).text);
+    }
+  }
 
 }; // end event handlers
 
