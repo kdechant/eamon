@@ -57,6 +57,7 @@ export class Monster extends GameObject {
   friendliness: string;
   friend_odds: number;
   combat_code: number;
+  combat_verbs: string[] = [];  // custom messages that replace the normal attack messages
   courage: number;
   gold: number;
   weapon_id: number;
@@ -509,8 +510,14 @@ export class Monster extends GameObject {
     let wpn = this.getWeapon();
     let weapon_type = wpn ? wpn.weapon_type : 0;
     if (this.combat_code === 1) {
+      // generic "attacks" message for unusual creatures like blob monsters, etc.
       game.history.write(this.name + " attacks " + target.name);
+    } else if (this.combat_verbs.length) {
+      // custom combat messages for this monster. assign these in the game start event handler.
+      let attack_verb = this.combat_verbs[Math.floor(Math.random() * this.combat_verbs.length)];
+      game.history.write(this.name + " " + attack_verb + " " + target.name);
     } else {
+      // standard attack message based on type of weapon
       let attack_verbs = Monster.COMBAT_VERBS_ATTACK[weapon_type];
       let attack_verb = attack_verbs[Math.floor(Math.random() * attack_verbs.length)];
       game.history.write(this.name + " " + attack_verb + " at " + target.name);
