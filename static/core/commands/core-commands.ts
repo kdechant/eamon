@@ -638,7 +638,7 @@ export class LightCommand implements BaseCommand {
           artifact.is_lit = false;
           game.history.write("You put out the " + artifact.name + ".");
         } else {
-          if (artifact.quantity > 0) {
+          if (artifact.quantity > 0 || artifact.quantity === -1) {
             artifact.is_lit = true;
             game.history.write("You light the " + artifact.name + ".");
           } else {
