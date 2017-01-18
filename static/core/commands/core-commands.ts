@@ -1032,7 +1032,7 @@ export class HealCommand implements BaseCommand {
         // heal a monster
         let m = game.monsters.getByName(arg);
         if (m.room_id = game.rooms.current_room.id) {
-          game.history.write("Some of " + m + "'s wounds seem to clear up.");
+          game.history.write("Some of " + m.name + "'s wounds seem to clear up.");
           m.heal(heal_amount);
 
         } else {
