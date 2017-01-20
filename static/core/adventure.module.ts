@@ -4,6 +4,7 @@ import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {Nl2brPipe} from "./pipes/nl2br.pipe";
+import {GameVarsPipe} from "./pipes/gamevars.pipe";
 
 import {AdventureComponent} from "./components/adventure.component";
 
@@ -20,6 +21,7 @@ import {StatusComponent} from "./components/status.component";
   imports: [BrowserModule, FormsModule, HttpModule],
   declarations: [
     Nl2brPipe,
+    GameVarsPipe,
     AdventureComponent,
     ArtifactComponent,
     CommandPromptComponent,

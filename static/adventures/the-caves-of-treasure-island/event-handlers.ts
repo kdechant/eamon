@@ -10,15 +10,6 @@ export var event_handlers = {
   "start": function(arg: string) {
     let game = Game.getInstance();
 
-    // initial messages
-    game.history.write("Greetings, " + game.player.name + "!");
-    game.history.write("The Free Adventurer's Guild has elected you to rescue a captured adventurer. Recently, somebody found a note in a bottle asking for assistance.  The author, Genzenbraun the Sailor, is a fellow member of the Guild.");
-    game.history.write("He explained that he had been taken captive by pirates on Treasure Island. Unfortunatly the exact location of the unlucky adventurer was destroyed by sea water.  However, in the bottle was the following map...");
-    game.history.write("TODO");
-    game.history.write("A word of caution:  Genzenbraun warns of hidden caverns with one way passages and tunnels under the surface of the island.  Also the waters around it are infested with man-eating sharks.");
-    game.history.write("A ship will drop you off on the west beach of the island, but it has other duties and can't wait for you.  Another is scheduled to land on the south beach soon after you are dropped off.");
-    game.history.write("**** Good luck! ****");
-
     // set up game data
     game.data["hermit_saves"] = false;
     game.data["hermit_speaks"] = false;
