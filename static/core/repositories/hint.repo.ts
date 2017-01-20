@@ -38,8 +38,7 @@ export class HintRepository {
     }
 
     if (this.get(h.id) !== null) {
-      console.log(this.get(h.id));
-      throw new Error("Tried to create a monster #" + h.id + " but that ID is already taken.");
+      throw new Error("Tried to create a hint #" + h.id + " but that ID is already taken.");
     }
 
     this.all.push(h);
@@ -52,13 +51,13 @@ export class HintRepository {
   }
 
   /**
-   * Gets a hint by index.
-   * @param {number} index
+   * Gets a hint by id.
+   * @param {number} id
    * @return Monster
    */
-  public get(index) {
+  public get(id) {
     for (let i in this.all) {
-      if (this.all[i].index === index) {
+      if (this.all[i].id === id) {
         return this.all[i];
       }
     }
