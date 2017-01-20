@@ -42,6 +42,16 @@ export class Game {
   intro_text: string;
 
   /**
+   * @var {string} A question to ask the player during adventure start
+   */
+  intro_question: string;
+
+  /**
+   * What the player answered for the intro question, if there was one.
+   */
+  intro_answer: string;
+
+  /**
    * A container for all the Room objects
    */
   rooms: RoomRepository;
@@ -108,12 +118,23 @@ export class Game {
    */
   skip_battle_actions: boolean = false;
 
+  /**
+   * Messages that are displayed during the exit phase, after the sale of treasure
+   */
+  exit_message: string[] = [];
+
   // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
 
   /**
    * Flag to indicate that the game is active (i.e., the player can still enter commands)
+   * The game object is created in an inactive fashion and is activated during the startup prompt.
    */
-  active: boolean = true;
+  active: boolean = false;
+
+  /**
+   * Flag to indicate whether the game has started.
+   */
+  started: boolean = false;
 
   /**
    * Flag to indicate that the player exited the adventure successfully
@@ -124,11 +145,6 @@ export class Game {
    * Flag to indicate that the player died
    */
   died: boolean = false;
-
-  /**
-   * Flag to indicate that the selling items phase is running
-   */
-  exit_message: string[] = [];
 
   /**
    * Flag to indicate that the selling items phase is running
@@ -159,6 +175,7 @@ export class Game {
     this.name = data[0].name;
     this.description = data[0].description;
     this.intro_text = data[0].intro_text;
+    this.intro_question = data[0].intro_question;
 
     this.rooms = new RoomRepository(data[1]);
     this.artifacts = new ArtifactRepository(data[2]);
@@ -183,10 +200,23 @@ export class Game {
 
     // Show the adventure description
     this.history.push("");
-    this.history.write(this.intro_text);
+
+    // if there is no intro text, just start the game
+    if (this.intro_text === "") {
+      this.start();
+    }
 
     // Place the player in the first room
     this.player.moveToRoom(1);
+
+  }
+
+  /**
+   * Starts the game, after the user clears the intro screen
+   */
+  public start() {
+    this.started = true;
+    this.active = true;
 
     this.triggerEvent("start", "");
 

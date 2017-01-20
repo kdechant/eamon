@@ -83,6 +83,10 @@ command-prompt .form-control {
   color: dodgerblue;
   font-weight: bold; }
 
+.special2 {
+  color: darkviolet;
+  font-weight: bold; }
+
 .success {
   color: green;
   font-weight: bold; }

@@ -3,6 +3,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
+import {Nl2brPipe} from "./pipes/nl2br.pipe";
+
 import {AdventureComponent} from "./components/adventure.component";
 
 import {GameLoaderService} from "./services/game-loader.service";
@@ -17,6 +19,7 @@ import {StatusComponent} from "./components/status.component";
 @NgModule({
   imports: [BrowserModule, FormsModule, HttpModule],
   declarations: [
+    Nl2brPipe,
     AdventureComponent,
     ArtifactComponent,
     CommandPromptComponent,

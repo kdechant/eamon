@@ -18,10 +18,6 @@ export var event_handlers = {
     game.data["aj memory"] = false;
     game.data["chef memory"] = false;
 
-    game.history.write("Your vision is filled with strange lights and colors.", "special");
-    game.history.write("You feel like you're being teleported!", "warning");
-    game.history.write("You wake up in a dark place.", "success");
-
     // the mind's attack messages
     game.monsters.get(12).combat_verbs = ["mentally blasts", "shoots a laser at", "swings a spidery arm at"];
 

@@ -10,9 +10,6 @@ export var event_handlers = {
   "start": function(arg: string) {
     let game = Game.getInstance();
 
-    // add your custom game start code here
-    game.history.write("Recently, a local evil sorcerer was spying on you through his crystal ball. He overheard you talking about him and, having a short temper like most evil sorcerers, he instantly banished you to the Magic Kingdom, thinking you would never return.", "special");
-
     // set up game data
     game.data["boulder_destroyed"] = false;
 

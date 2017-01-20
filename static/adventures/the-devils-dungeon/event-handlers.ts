@@ -10,13 +10,11 @@ export var event_handlers = {
   "start": function(arg: string) {
     let game = Game.getInstance();
 
-    // add your custom game start code here
-
     // the dwarf's question
-    game.modal.show("How much do you give him?", function(value) {
-
+   // game.modal.show("How much do you give him?", function(value) {
+console.log(game.intro_answer)
       // prevent user mischief
-      value = parseInt(value);
+      let value = parseInt(game.intro_answer);
       if (value < 0 || isNaN(value)) {
         value = 0;
       }
@@ -32,7 +30,7 @@ export var event_handlers = {
         game.history.write("The little man's face lights up...  He leans over to whisper to you as you climb into the hole, \"Thank you, " + adr + ", and keep a sharp eye out for secret doors down there!", "success");
       }
       game.player.gold -= value;
-    });
+   // });
 
   },
 

@@ -52,7 +52,15 @@ class Adventure(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(default='', blank=True)
     full_description = models.TextField(default='', blank=True)
-    intro_text = models.TextField(default='', blank=True)
+    intro_text = models.TextField(
+        default='', blank=True,
+        help_text="Text shown to the adventurer when they begin the adventure. Use this to set up the story."
+    )
+    intro_question = models.TextField(
+        default='', blank=True,
+        help_text="If you want to ask the adventurer a question when they start the adventure, put"
+                  " the question text here. The answer will be available in the game object."
+    )
     slug = models.SlugField(null=True)
     edx = models.CharField(null=True,max_length=50)
     edx_version = models.FloatField(default=0, blank=True, null=True)
