@@ -88,11 +88,12 @@ export class ShopService {
       item.sides = 4 + Game.getInstance().diceRoll(1, 4) * 2;
       item.value = (item.maxDamage() - 6) ** 2 * 5
         + (item.weapon_odds - 10) * 5;
+      item.weight = 3;
       this.weapons.push(item);
     }
 
     // some basic armor and shields
-    let armor_types = ["leather", "chain", "plate"];
+    let armor_types = ["leather", "chain", "scale", "plate"];
     for (let t in armor_types) {
       item = new Artifact;
       item.type = Artifact.TYPE_WEARABLE;
@@ -104,16 +105,25 @@ export class ShopService {
           item.value = 100;
           item.armor_class = 1;
           item.armor_penalty = 10;
+          item.weight = 5;
           break;
         case "chain":
           item.value = 250;
           item.armor_class = 3;
           item.armor_penalty = 20;
+          item.weight = 10;
+          break;
+        case "scale":
+          item.value = 350;
+          item.armor_class = 4;
+          item.armor_penalty = 40;
+          item.weight = 12;
           break;
         case "plate":
           item.value = 500;
           item.armor_class = 5;
           item.armor_penalty = 60;
+          item.weight = 15;
           break;
       }
       this.armors.push(item);
