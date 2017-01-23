@@ -157,17 +157,16 @@ export class SayCommand implements BaseCommand {
   name: string = "say";
   verbs: string[] = ["say"];
   run(verb, arg) {
-
-    if (arg === "") {
-      arg = prompt("Say what?");
-    }
-    this.doit(arg);
-
-  }
-  doit(arg) {
     let game = Game.getInstance();
-    game.history.write("Ok... \"" + arg + "\"");
-    game.triggerEvent("say", arg);
+
+    if (arg !== "") {
+      game.history.write("Ok... \"" + arg + "\"");
+      game.triggerEvent("say", arg);
+    } else {
+      game.modal.show("Say what?", function(value) {
+        game.command_parser.run("say " + value);
+      });
+    }
   }
 }
 core_commands.push(new SayCommand());
