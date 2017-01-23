@@ -21,6 +21,8 @@ export var event_handlers = {
     // the mind's attack messages
     game.monsters.get(12).combat_verbs = ["mentally blasts", "shoots a laser at", "swings a spidery arm at"];
 
+    // prevent the description of the inscription from appearing
+    game.artifacts.get(17).seen = true;
   },
 
   "afterGet": function(arg, artifact) {

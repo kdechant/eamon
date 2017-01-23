@@ -98,11 +98,18 @@ export class LookCommand implements BaseCommand {
 
       let match = false;
 
-      // see if there is a matching artifact.
-      let a = game.artifacts.getLocalByName(arg);
+      // see if there is a matching artifact. (don't reveal yet - or we would see the description twice)
+      let a = game.artifacts.getLocalByName(arg, false);
       if (a) {
         match = true;
-        game.history.write(a.description);
+
+        // either reveal or show the description if already known about.
+        // this prevents the description being shown twice when revealing.
+        if (a.embedded) {
+          a.reveal();
+        } else {
+          game.history.write(a.description);
+        }
 
         // display quantity for food, drinks, and light sources
         if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {

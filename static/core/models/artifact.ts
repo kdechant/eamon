@@ -247,9 +247,14 @@ export class Artifact extends GameObject {
     let game = Game.getInstance();
     this.embedded = false;
     this.hidden = false; // display
+    game.triggerEvent("revealArtifact", this);
+    if (!this.seen) {
+      // yes, it's possible for embedded artifacts to already have been seen.
+      // this is used as a trick by authors to do special effects.
+      game.history.write(this.description);
+    }
     this.seen = true; // description will be shown here. don't show it again in game clock tick.
     game.artifacts.updateVisible();
-    game.history.write(this.description);
     if (this.type === Artifact.TYPE_CONTAINER && this.is_open) {
       this.printContents();
     }
