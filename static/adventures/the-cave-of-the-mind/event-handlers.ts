@@ -23,6 +23,8 @@ export var event_handlers = {
 
     // prevent the description of the inscription from appearing
     game.artifacts.get(17).seen = true;
+    game.artifacts.get(17).description = "";
+
   },
 
   "afterGet": function(arg, artifact) {
@@ -95,13 +97,21 @@ export var event_handlers = {
     }
   },
 
-  // the 'read' event handler should set command.markings_read to true if the handler did something,
-  // otherwise the "there are no markings to read" message will appear.
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "look": function(arg: string) {
     let game = Game.getInstance();
+    let artifact = game.artifacts.getLocalByName(arg);
     if (artifact && artifact.id === 17) {
-      // todo: this text will probably appear after the regular effect is printed.
-      game.history.write(" PEACE BEGETS PEACE.  PUT DOWN YOUR WEAPONS AND LEAVE VIOLENCE BEHIND YOU ", "special");
+      game.command_parser.run("read inscription");
+    }
+  },
+
+  // the 'read'/'beforeRead' event handler should set command.markings_read to true if the handler
+  // did something, otherwise the "there are no markings to read" message will appear.
+  "beforeRead": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    if (artifact && artifact.id === 17) {
+      let game = Game.getInstance();
+      game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
+      game.history.write("WEAPONS AND LEAVE VIOLENCE BEHIND YOU ", "special2");
       // teleport all weapons to random rooms
       for (let i in game.player.inventory) {
         let item = game.player.inventory[i];
@@ -109,13 +119,13 @@ export var event_handlers = {
           let dest = game.rooms.getRandom();
           item.monster_id = null;
           item.moveToRoom(dest.id);
-          console.log(item.name + " moved to room " + dest.id);
         }
       }
       game.player.updateInventory();
       game.artifacts.updateVisible();
     }
   },
+
 
   "say": function(arg: string) {
     let game = Game.getInstance();

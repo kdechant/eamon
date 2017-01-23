@@ -698,6 +698,8 @@ export class ReadCommand implements BaseCommand {
     let a = game.artifacts.getLocalByName(arg);
     if (a !== null) {
 
+      game.triggerEvent("beforeRead", arg, a, this);
+
       // "readable" type artifacts have built-in markings logic
       // (this is the new version, which displays one marking per use of the "read" command.)
       // NOTE: This is not implemented on most adventures yet.
