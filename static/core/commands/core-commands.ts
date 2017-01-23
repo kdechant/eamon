@@ -102,6 +102,7 @@ export class LookCommand implements BaseCommand {
       let a = game.artifacts.getLocalByName(arg);
       if (a) {
         match = true;
+        game.history.write(a.description);
 
         // display quantity for food, drinks, and light sources
         if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
@@ -115,7 +116,7 @@ export class LookCommand implements BaseCommand {
           game.history.write("There " + verb + " " + a.quantity + " " + noun + " remaining.");
         }
         if (a.type === Artifact.TYPE_LIGHT_SOURCE) {
-          if (a.quantity >= 25) {
+          if (a.quantity >= 25 || a.quantity === -1) {
             game.history.write("It has a lot of fuel left.");
           } else if (a.quantity >= 10) {
             game.history.write("It has some fuel left.");
