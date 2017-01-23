@@ -99,11 +99,20 @@ export class Monster extends GameObject {
       let game = Game.getInstance();
       game.rooms.current_room = game.rooms.getRoomById(room_id);
 
-      // if player is moving, also move friendly monsters
+      // check if monsters should move
       if (monsters_follow) {
         for (let i in game.monsters.visible) {
-          if (game.monsters.visible[i].reaction === Monster.RX_FRIEND) {
-            game.monsters.visible[i].moveToRoom(room_id);
+          let m = game.monsters.visible[i];
+          if (m.reaction === Monster.RX_UNKNOWN) {
+            m.checkReaction();
+          }
+          // friends always move
+          if (m.reaction === Monster.RX_FRIEND) {
+            m.moveToRoom(room_id);
+          }
+          // enemies move based on courage check (this is used when the player flees)
+          else if (m.reaction === Monster.RX_HOSTILE && m.checkCourage()) {
+            m.moveToRoom(room_id);
           }
         }
       }
@@ -166,6 +175,24 @@ export class Monster extends GameObject {
         }
         break;
     }
+  }
+
+  /**
+   * Executes a courage check on this monster. Typically used to determine
+   * if a monster should flee combat, or follow the player when he/she flees.
+   * @returns {boolean}
+   */
+  public checkCourage(): boolean {
+    let fear = Game.getInstance().diceRoll(1, 100);
+    let effective_courage = this.courage;
+    if (this.damage > this.hardiness * 0.2 || this.count < this.original_group_size) {
+      // wounded, or members of a group have been killed
+      effective_courage *= 0.75;
+    } else if (this.damage > this.hardiness * 0.6) {
+      // badly wounded
+      effective_courage *= 0.5;
+    }
+    return effective_courage >= fear;
   }
 
   /**
@@ -443,15 +470,7 @@ export class Monster extends GameObject {
     }
 
     // check if the monster should flee
-    let fear = game.diceRoll(1, 100);
-    if (this.damage > this.hardiness * 0.2 || this.count < this.original_group_size) {
-      // wounded, or members of a group have been killed
-      fear += 10;
-    } else if (this.damage > this.hardiness * 0.6) {
-      // badly wounded
-      fear += 20;
-    }
-    if (fear > this.courage) {
+    if (!this.checkCourage()) {
       let room_to = this.chooseRandomExit();
       if (room_to) {
         if (this.count > 1) {
