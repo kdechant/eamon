@@ -211,8 +211,6 @@ export var event_handlers = {
 
   },
 
-  // TODO: attack/blast bozworth
-
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {

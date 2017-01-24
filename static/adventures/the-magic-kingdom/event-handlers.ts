@@ -85,7 +85,6 @@ export var event_handlers = {
           game.history.write("The guard won't let you!");
           return false;
         }
-        break;
 
       case -97:
 

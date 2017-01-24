@@ -91,6 +91,7 @@ export var event_handlers = {
     if (artifact !== null) {
       if (artifact.id === 6 && !game.data["open box"]) {
         // the box
+        game.data["open box"] = true;
         game.effects.print(3, "special");
         game.command_parser.run('power', false);
       }
