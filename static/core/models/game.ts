@@ -206,9 +206,6 @@ export class Game {
       this.start();
     }
 
-    // Place the player in the first room
-    this.player.moveToRoom(1);
-
   }
 
   /**
@@ -217,6 +214,9 @@ export class Game {
   public start() {
     this.started = true;
     this.active = true;
+
+    // Place the player in the first room
+    this.player.moveToRoom(1);
 
     this.triggerEvent("start", "");
 
@@ -281,6 +281,7 @@ export class Game {
     // the first end turn event triggers here, so we can see any artifacts or monsters that have appeared,
     // but any monsters that have just entered the room won't be able to attack.
     this.triggerEvent("endTurn");
+    this.artifacts.updateVisible();
     this.monsters.updateVisible();
 
     this.endTurn();

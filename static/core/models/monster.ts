@@ -601,7 +601,7 @@ export class Monster extends GameObject {
       if (hit_roll < 97) {
         let miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type];
         let miss_verb = miss_verbs[Math.floor(Math.random() * miss_verbs.length)];
-        game.history.write("-- " + miss_verb + "!");
+        game.history.write("-- " + miss_verb + "!", "no-space");
       } else {
         game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
