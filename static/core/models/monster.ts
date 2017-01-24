@@ -696,6 +696,7 @@ export class Monster extends GameObject {
     }
     ae_max -= this.armor_expertise;
     if (ae_max < 0) ae_max = 0;
+    if (isNaN(ae_max)) ae_max = 0; // in case of null armor_penalty value or other edge case
     return ae_max;
   }
 

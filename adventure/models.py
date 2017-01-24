@@ -148,6 +148,7 @@ class Artifact(models.Model):
     clothing_type = models.IntegerField(null=True,choices=CLOTHING_TYPES)
     armor_class = models.IntegerField(default=0)
     armor_type = models.IntegerField(null=True,choices=ARMOR_TYPES)
+    armor_penalty = models.IntegerField(default=0,null=True)
     get_all = models.BooleanField(default=True,
         help_text="Will the 'get all' command pick up this item?"
     )
