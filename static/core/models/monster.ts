@@ -822,7 +822,8 @@ export class Monster extends GameObject {
         this.status = Monster.STATUS_DEAD;
         game.triggerEvent("death", this);
         if (this.id === Monster.PLAYER) {
-          game.die();
+          game.die(false);
+          this.room_id = null; // stops monsters from continuing to attack your dead body
         } else {
           this.room_id = null;
         }

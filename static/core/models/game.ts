@@ -292,6 +292,8 @@ export class Game {
    */
   public endTurn(): void {
 
+    if (Game.getInstance().died) return;
+
     let light = this.artifacts.isLightSource();
     // show room name and description
     if (this.rooms.current_room.is_dark && !light) {
@@ -408,10 +410,12 @@ export class Game {
 
   /**
    * Handles player death.
+   * @param boolean show_health whether to show the "player is dead" message. Usually true, except if the player
+   * was killed during combat, when the message will already have been shown.
    */
-  public die() {
+  public die(show_health = true) {
     this.player.damage = this.player.hardiness;
-    this.player.showHealth();
+    if (show_health) this.player.showHealth();
     this.active = false;
     this.died = true;
   }
