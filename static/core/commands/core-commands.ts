@@ -9,7 +9,9 @@ export let core_commands = [];
 
 export class MoveCommand implements BaseCommand {
   name: string = "move";
-  verbs: string[] = ["north", "n", "south", "s", "east", "e", "west", "w", "up", "u", "down", "d"];
+  verbs: string[] = ["north", "n", "south", "s", "east", "e", "west", "w",
+    "up", "u", "down", "d",
+    "ne", "northeast", "se", "southeast", "sw", "southwest", "nw", "northwest"];
 
   run(verb, arg) {
 
