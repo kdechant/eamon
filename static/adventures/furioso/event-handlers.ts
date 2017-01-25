@@ -11,13 +11,22 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     game.data["water level"] = 0;
-    game.data["water artifact"] = 35;
+    game.data["water dropped"] = 0;
     game.data["chest open"] = false;
+    game.data["malagur steal"] = 0;
+
+    // the shark's attack messages
+    game.monsters.get(12).combat_verbs = ["bites at", "chews on"];
 
     // move red face and blue nose to a random place on the second level of the ship
     // (originally they were in the brig, but this makes the beginning too hard.)
     game.monsters.get(12).moveToRoom(18 + game.diceRoll(1, 10));
     game.monsters.get(13).moveToRoom(18 + game.diceRoll(1, 10));
+
+    // hide extra descriptions for some rooms
+    for (let i = 44; i <= 47; i++) {
+      game.rooms.getRoomById(i).seen = true;
+    }
 
     // take away player's weapons and gold
     let storage_rooms: number[] = [15, 30, 29, 34];
@@ -54,23 +63,29 @@ export var event_handlers = {
 
       case -10:
 
-        // the slave ship
+        // the passenger ship
         game.effects.print(5);
-        game.die();
+        game.data["ship"] = "passenger";
+        game.exit();
         break;
 
       case -11:
 
-        // the passenger ship
-        game.effects.print(6);
-        game.data["ship"] = "passenger";
+        // the slave ship
+        if (game.monsters.get(1).isHere()) {
+          game.history.write("Orlando says, \"I've seen that ship before. I think they're slavers. Let's try a different one.\"");
+          return false;
+        } else {
+          game.effects.print(6);
+          game.die();
+        }
         break;
 
       case -999:
 
-        // alternate exit message
+        // fishing trawler
         game.effects.print(4);
-
+        game.exit();
     }
     return true;
   },
@@ -155,39 +170,87 @@ export var event_handlers = {
     // put the "rising water" artifact in the room
     if (game.player.room_id < 15) {
       game.data["water level"]++;
-      if (game.data["water level"] >= 15) {
-        game.artifacts.get(game.data["water artifact"]).destroy();
-        game.data["water artifact"]++;
-        game.data["water level"] = 0;
-        if (game.data["water artifact"] >= 40) {
-          game.history.write("The ship just sank, taking you with it!", "emphasis");
-          game.die();
+      place_water();
+    }
+
+    // malagur
+    let malagur = game.monsters.get(6);
+    if (malagur.isHere() && malagur.reaction === Monster.RX_FRIEND) {
+      let roll = game.diceRoll(1, 10);
+      if (roll >= 7) {
+        let favorite_item = null;
+        for (let i in game.player.inventory) {
+          let item = game.player.inventory[i];
+          if (!item.is_worn && item.id !== game.player.weapon_id && item.id !== 1 && item.id !== 70 && item.value > 10
+            && (favorite_item === null || item.value > favorite_item.value)) {
+            favorite_item = item;
+          }
+        }
+        if (game.data["malagur steal"] < 3) {
+          console.log("malagur steals " + favorite_item.name);
+          favorite_item.monster_id = 6;
+          game.data["malagur steal"]++;
+          game.player.updateInventory();
+        } else {
+          game.history.write("You catch " + malagur.name + " trying to steal your " + favorite_item.name + "!", "warning");
+          malagur.reaction = Monster.RX_NEUTRAL;
         }
       }
-      game.artifacts.get(game.data["water artifact"]).moveToRoom(game.player.room_id);
     }
 
   },
 
   // every adventure should have a "power" event handler.
-  // 'power' event handler takes a 1d100 dice roll as an argument
+  // 'power' event handler takes a 1d100 dice roll as an argument.
+  // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+    if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && !game.artifacts.get(70).isHere()) {
+      game.artifacts.get(70).moveToRoom(game.player.room_id);
     } else {
-      game.history.write("All your wounds are healed!");
-      game.player.heal(1000);
+      let roll = game.diceRoll(1, 3);
+      if (roll === 1 && game.player.damage > 0) {
+        game.history.write("All your wounds are healed!");
+        game.player.damage = 0;
+      } else if (roll === 2 && game.monsters.get(1).isHere() && game.monsters.get(1).damage > 0) {
+        game.history.write("All of " + game.monsters.get(1).name + "'s wounds are healed!");
+        game.monsters.get(1).damage = 0;
+      } else if (roll === 3 && game.player.room_id < 15 && game.data["water level"] > 20 && game.data["water dropped"] < 4) {
+        game.data["water level"] -= 20;
+        game.data["water dropped"]++;
+        for (let i = 35; i <= 39; i++) game.artifacts.get(i).seen = false;
+        game.history.write("The water level dropped slightly!");
+      } else {
+        game.history.write("You hear a loud splash echo through the ship!");
+      }
     }
+  },
+
+  // event handler that happens at the very end, after the player has sold their treasure to sam slicker
+  "afterSell": function() {
+    let game = Game.getInstance();
+
+    if (game.data["ship"] === "passenger") {
+      let taken = Math.floor(game.player.profit / 2);
+      game.exit_message.push("The captain of the passenger ship takes " + taken + " gold pieces for your fare.");
+      game.player.gold -= taken;
+    }
+
   },
 
 }; // end event handlers
 
 
 // declare any functions used by event handlers and custom commands
+function place_water() {
+  let game = Game.getInstance();
+
+  if (game.data["water level"] > 60) {
+    game.history.write("The ship just sank, taking you with it!", "emphasis");
+    game.die();
+  }
+  for (let i = 35; i <= 39; i++) {
+    game.artifacts.get(i).room_id = null;
+  }
+  game.artifacts.get(35 + Math.floor(game.data["water level"] / 15)).moveToRoom(game.player.room_id);
+}
