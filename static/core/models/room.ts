@@ -37,6 +37,8 @@ export class Room extends Loadable {
   public exits: RoomExit[] = [];
   public seen: boolean = false;
   public is_dark: boolean;
+  public effect: number;
+  public effect_inline: number;
 
   /**
    * Loads data from JSON source into the object properties.
@@ -56,6 +58,21 @@ export class Room extends Loadable {
       }
     }
   }
+
+  /**
+   * Shows the room description and any built-in effects.
+   */
+  public show_description() {
+    let game = Game.getInstance();
+    game.history.write(this.description);
+    if (this.effect !== null) {
+      game.effects.print(this.effect);
+    }
+    if (this.effect_inline !== null) {
+      game.effects.print(this.effect_inline, null, true);
+    }
+  }
+
 
   /**
    * Gets the exit from the room in a given direction

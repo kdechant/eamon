@@ -94,7 +94,7 @@ export class LookCommand implements BaseCommand {
 
     if (arg === "") {
       // if not looking at anything in particular, show the room description
-      game.history.write(game.rooms.current_room.description);
+      game.rooms.current_room.show_description();
     } else {
       // looking at a specific thing.
 

@@ -302,7 +302,7 @@ export class Game {
     } else {
       this.history.write(this.rooms.current_room.name);
       if (!this.rooms.current_room.seen) {
-        this.history.write(this.rooms.current_room.description);
+        this.rooms.current_room.show_description();
         this.rooms.current_room.seen = true;
       }
     }

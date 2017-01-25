@@ -24,7 +24,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ('id', 'name', 'description', 'is_dark', 'exits')
+        fields = ('id', 'name', 'description', 'is_dark', 'effect', 'effect_inline', 'exits')
 
 
 class ArtifactSerializer(serializers.ModelSerializer):
