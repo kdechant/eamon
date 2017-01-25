@@ -17,7 +17,8 @@ export var event_handlers = {
   // add your custom event handlers here
 
   // every adventure should have a "power" event handler.
-  // 'power' event handler takes a 1d100 dice roll as an argument
+  // 'power' event handler takes a 1d100 dice roll as an argument.
+  // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
     if (roll <= 50) {

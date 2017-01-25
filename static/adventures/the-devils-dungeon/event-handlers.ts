@@ -11,26 +11,24 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     // the dwarf's question
-   // game.modal.show("How much do you give him?", function(value) {
-console.log(game.intro_answer)
-      // prevent user mischief
-      let value = parseInt(game.intro_answer);
-      if (value < 0 || isNaN(value)) {
-        value = 0;
-      }
 
-      // dwarf's reaction depends on the amount of gold you give him
-      if (value < 25) {
-        game.history.write("Angry and hurt, the dwarf violently pushes you into the hole and slams the door shut above you!", "danger");
-        game.rooms.getRoomById(1).getExit("u").room_to = -1; // blocks exit from starting room
-      } else if (value < 50) {
-        game.history.write("The dwarf looks disgustedly at the small payment in his hand, sniffs once, and turns and walks away.", "warning");
-      } else {
-        let adr = game.player.gender === "m" ? "sir" : "ma'am";
-        game.history.write("The little man's face lights up...  He leans over to whisper to you as you climb into the hole, \"Thank you, " + adr + ", and keep a sharp eye out for secret doors down there!", "success");
-      }
-      game.player.gold -= value;
-   // });
+    // prevent user mischief
+    let value = parseInt(game.intro_answer);
+    if (value < 0 || isNaN(value)) {
+      value = 0;
+    }
+
+    // dwarf's reaction depends on the amount of gold you give him
+    if (value < 25) {
+      game.history.write("Angry and hurt, the dwarf violently pushes you into the hole and slams the door shut above you!", "danger");
+      game.rooms.getRoomById(1).getExit("u").room_to = -1; // blocks exit from starting room
+    } else if (value < 50) {
+      game.history.write("The dwarf looks disgustedly at the small payment in his hand, sniffs once, and turns and walks away.", "warning");
+    } else {
+      let adr = game.player.gender === "m" ? "sir" : "ma'am";
+      game.history.write("The little man's face lights up...  He leans over to whisper to you as you climb into the hole, \"Thank you, " + adr + ", and keep a sharp eye out for secret doors down there!", "success");
+    }
+    game.player.gold -= value;
 
   },
 
