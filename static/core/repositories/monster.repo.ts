@@ -121,6 +121,7 @@ export class MonsterRepository {
     // create new artifact objects for the weapons and armor the player brought
     for (let i in player_data.inventory) {
       let a: Artifact = player_data.inventory[i];
+      a.seen = true;
       let art = game.artifacts.add(a);
       game.player.pickUp(art);
     }

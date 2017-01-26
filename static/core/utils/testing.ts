@@ -17,5 +17,7 @@ import {PLAYER} from "../../adventures/demo1/mock-data/player";
  */
 export function initMockGame() {
   let game = Game.getInstance();
-  game.init([ADVENTURE, ROOMS, ARTIFACTS, EFFECTS, MONSTERS, PLAYER]);
+  let HINTS = [];  // there is no mock data for hints yet
+  game.init([ADVENTURE, ROOMS, ARTIFACTS, EFFECTS, MONSTERS, HINTS, PLAYER]);
+  game.start();
 }

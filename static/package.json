@@ -11,7 +11,7 @@
     "start-all": "tsc && concurrently \"npm run tsc:w\" \"npm run build-css:w\" \"npm run browser-sync\" ",
     "browser-sync": "browser-sync start --files \"static/css/*.css\" --proxy 127.0.0.1:8000 --serveStatic: static",
     "lite": "lite-server",
-    "test": "live-server --open=unit-tests.html",
+    "test": "lite-server --open=unit-tests.html",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "build-css": "node-sass scss -o css",

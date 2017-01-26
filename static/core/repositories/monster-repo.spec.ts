@@ -19,6 +19,7 @@ describe("Monster Repo", function() {
     expect(game.player.id).toEqual(0);
     expect(game.player.room_id).toEqual(1, "Player should start in room 1");
     expect(game.player.weapon.name).toEqual("battle axe", "Player should start with best weapon ready");
+    expect(game.player.weapon.seen).toEqual(true, "Player's weapon should have the seen flag set");
   });
 
   it("should find a monster by name in the current room", function() {
