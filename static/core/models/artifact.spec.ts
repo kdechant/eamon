@@ -56,4 +56,19 @@ describe("Artifact", function() {
     expect(jewels.monster_id).toBeNull();
 
   });
+
+  it("should move to the correct room", function() {
+    let torch = game.artifacts.get(9);
+    expect(torch.room_id).toBeNull();
+    expect(torch.monster_id).toBe(0);
+    torch.moveToRoom(5);
+    expect(torch.room_id).toBe(5);
+    expect(torch.monster_id).toBeNull();
+
+    let jewels = game.artifacts.get(13);
+    jewels.moveToRoom(); // move to player's room
+    expect(jewels.room_id).toBe(1);
+    expect(jewels.monster_id).toBeNull();
+    expect(jewels.container_id).toBeNull();
+  });
 });

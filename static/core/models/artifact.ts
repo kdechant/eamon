@@ -72,8 +72,10 @@ export class Artifact extends GameObject {
   /**
    * Moves the artifact to a specific room.
    */
-  public moveToRoom(room_id): void {
-    this.room_id = room_id;
+  public moveToRoom(room_id: number = null): void {
+    this.room_id = room_id || Game.getInstance().player.room_id;
+    this.monster_id = null;
+    this.container_id = null;
   }
 
   /**
@@ -247,7 +249,6 @@ export class Artifact extends GameObject {
     let game = Game.getInstance();
     this.embedded = false;
     this.hidden = false; // display
-    game.triggerEvent("revealArtifact", this);
     if (!this.seen) {
       // yes, it's possible for embedded artifacts to already have been seen.
       // this is used as a trick by authors to do special effects.
@@ -258,6 +259,7 @@ export class Artifact extends GameObject {
     if (this.type === Artifact.TYPE_CONTAINER && this.is_open) {
       this.printContents();
     }
+    game.triggerEvent("revealArtifact", this);
   }
 
   /**

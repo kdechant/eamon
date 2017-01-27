@@ -14,9 +14,10 @@ export var event_handlers = {
     game.data["water dropped"] = 0;
     game.data["chest open"] = false;
     game.data["malagur steal"] = 0;
+    game.data["artifacts increased"] = [];
 
     // the shark's attack messages
-    game.monsters.get(12).combat_verbs = ["bites at", "chews on"];
+    game.monsters.get(15).combat_verbs = ["bites at", "chews on"];
 
     // move red face and blue nose to a random place on the second level of the ship
     // (originally they were in the brig, but this makes the beginning too hard.)
@@ -29,9 +30,8 @@ export var event_handlers = {
     }
 
     // take away player's weapons and gold
-    let storage_rooms: number[] = [15, 30, 29, 34];
-    for (let i in game.player.inventory) {
-      let item = game.player.inventory[i];
+    let storage_rooms: number[] = [15, 17, 30, 29, 34];
+    for (let item of game.player.inventory) {
       if (item.is_weapon) {
         item.monster_id = null;
         item.moveToRoom(storage_rooms[Math.floor(Math.random() * storage_rooms.length)]);
@@ -149,12 +149,70 @@ export var event_handlers = {
     return true;
   },
 
+  "revealArtifact": function(artifact: Artifact) {
+    let game = Game.getInstance();
+    // two secret doors with the same alias
+    if (artifact.id === 55) {
+      game.artifacts.get(56).reveal();
+    }
+  },
+
   "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
     let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 13 && !game.data["open chest"]) {
         game.data["open chest"] = true;
         game.effects.print(20, "special");
+      }
+    }
+  },
+
+  "use": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if (artifact) {
+      if (artifact.id === 19) {
+        let roll = game.diceRoll(1, 4);
+        switch (roll) {
+          case 1:
+            let a: Artifact = null;
+            for (let i = 51; i <= 59; i++) {
+              let art = game.artifacts.get(i);
+              if (art.isHere() && art.embedded) {
+                a = art;
+              }
+            }
+            if (a) {
+              game.history.write("You get an urge to investigate the room...");
+              a.reveal();
+              return;
+            }
+            break;
+          case 2:
+            let f = 0;
+            for (let a of game.player.inventory) {
+              if (a.value > 0 && game.data["artifacts increased"].indexOf(a.id) == -1) {
+                a.value += 10;
+                game.data["artifacts increased"].push(a.id);
+                f++;
+              }
+            }
+            if (f > 0) {
+              game.effects.print(16, "special");
+              return;
+            }
+          case 3:
+            if (!game.artifacts.get(30).seen) {
+              game.history.write("Something just appeared in front of you...");
+              game.artifacts.get(30).moveToRoom();
+              return;
+            }
+            break;
+          case 4:
+            game.command_parser.run("power", false);
+            return;
+        }
+        // fallback, if other effects were impossible
+        game.history.write("You see a shower of sparks erupt from the deck!");
       }
     }
   },
@@ -181,19 +239,20 @@ export var event_handlers = {
         let favorite_item = null;
         for (let i in game.player.inventory) {
           let item = game.player.inventory[i];
-          if (!item.is_worn && item.id !== game.player.weapon_id && item.id !== 1 && item.id !== 70 && item.value > 10
+          if (!item.is_worn && item.id !== game.player.weapon_id && !item.is_lit && item.value > 10
             && (favorite_item === null || item.value > favorite_item.value)) {
             favorite_item = item;
           }
         }
-        if (game.data["malagur steal"] < 3) {
-          console.log("malagur steals " + favorite_item.name);
-          favorite_item.monster_id = 6;
-          game.data["malagur steal"]++;
-          game.player.updateInventory();
-        } else {
-          game.history.write("You catch " + malagur.name + " trying to steal your " + favorite_item.name + "!", "warning");
-          malagur.reaction = Monster.RX_NEUTRAL;
+        if (favorite_item !== null) {
+          if (game.data["malagur steal"] < 3) {
+            favorite_item.monster_id = 6;
+            game.data["malagur steal"]++;
+            game.player.updateInventory();
+          } else {
+            game.history.write("You catch " + malagur.name + " trying to steal your " + favorite_item.name + "!", "warning");
+            malagur.reaction = Monster.RX_NEUTRAL;
+          }
         }
       }
     }
@@ -206,7 +265,7 @@ export var event_handlers = {
   "power": function(roll) {
     let game = Game.getInstance();
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && !game.artifacts.get(70).isHere()) {
-      game.artifacts.get(70).moveToRoom(game.player.room_id);
+      game.artifacts.get(70).moveToRoom();
     } else {
       let roll = game.diceRoll(1, 3);
       if (roll === 1 && game.player.damage > 0) {
@@ -252,5 +311,5 @@ function place_water() {
   for (let i = 35; i <= 39; i++) {
     game.artifacts.get(i).room_id = null;
   }
-  game.artifacts.get(35 + Math.floor(game.data["water level"] / 15)).moveToRoom(game.player.room_id);
+  game.artifacts.get(35 + Math.floor(game.data["water level"] / 15)).moveToRoom();
 }
