@@ -606,7 +606,7 @@ export class Monster extends GameObject {
         game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
         let fumble_roll = game.diceRoll(1, 100);
-        if (fumble_roll <= 40 || (this.weapon_id === 0 && fumble_roll <= 80)) {
+        if (fumble_roll <= 40 || (this.weapon_id === 0 && fumble_roll <= 85)) {
 
           game.history.write("--fumble recovered!", "no-space");
 
