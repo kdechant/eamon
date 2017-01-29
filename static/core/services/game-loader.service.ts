@@ -22,7 +22,7 @@ export class GameLoaderService {
       this.uuid = window.localStorage.getItem('eamon_uuid');
   }
 
-  setupGameData(): Observable<Object> {
+  setupGameData(mock_player: boolean = false): Observable<Object> {
 
     let game = Game.getInstance();
 
@@ -41,6 +41,12 @@ export class GameLoaderService {
     } else {
       let player_id = window.localStorage.getItem('player_id');
 
+      // check if we're using mock or real player data
+      let player_path = "/api/players/" + player_id + '.json?uuid=' + this.uuid;
+      if (mock_player) {
+        player_path = "/static/adventures/demo1/mock-data/player.json";
+      }
+
       // load live data from the back end
       return Observable.forkJoin(
         this.http.get("/api/adventures/" + game_id).map((res: Response) => res.json()),
@@ -49,7 +55,7 @@ export class GameLoaderService {
         this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/hints").map((res: Response) => res.json()),
-        this.http.get("/api/players/" + player_id + '.json?uuid=' + this.uuid).map((res: Response) => res.json())
+        this.http.get(player_path).map((res: Response) => res.json())
       );
     }
   }

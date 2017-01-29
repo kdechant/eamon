@@ -156,6 +156,13 @@ export class Game {
    */
   modal: Modal;
 
+  // Mock objects for testing
+  /**
+   * Pre-defined random numbers. If you put X numbers into this array, these will be used
+   * as the results of the next X calls to game.diceRoll().
+   */
+  mock_random_numbers: number[] = [];
+
   constructor() {
     if (Game._instance) {
       throw new Error("Error: Instantiation failed: Use Game.getInstance() instead of new.");
@@ -350,6 +357,10 @@ export class Game {
    *   The number of sides on each dice. Normally a positive integer but zero and negative numbers are also supported.
    */
   diceRoll(dice, sides) {
+
+    // for unit testing, it's possible to set mock random numbers
+    if (this.mock_random_numbers.length) return this.mock_random_numbers.shift();
+
     if (sides === 0) {
       return 0;
     }

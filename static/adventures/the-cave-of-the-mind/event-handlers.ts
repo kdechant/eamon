@@ -118,7 +118,6 @@ export var event_handlers = {
         let item = game.player.inventory[i];
         if (item.is_weapon) {
           let dest = game.rooms.getRandom();
-          item.monster_id = null;
           item.moveToRoom(dest.id);
         }
       }

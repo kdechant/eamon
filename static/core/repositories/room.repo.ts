@@ -1,4 +1,5 @@
 import {Room} from "../models/room";
+import {Game} from "../models/game";
 
 /**
  * Class RoomRepository.
@@ -42,6 +43,6 @@ export class RoomRepository {
    * @return Room
    */
   getRandom() {
-    return this.rooms[Math.floor(Math.random() * this.rooms.length)];
+    return this.rooms[Game.getInstance().diceRoll(1, this.rooms.length)-1];
   }
 }
