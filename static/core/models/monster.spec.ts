@@ -324,4 +324,21 @@ describe("Monster", function() {
     game.player.moveToRoom(3, false);
     expect(alfred.room_id).toBe(2);  // follow flag not set
   });
+
+  it("should show its health status", function() {
+    let alfred = game.monsters.get(3);
+    alfred.damage = 5;
+    alfred.showHealth();
+    expect(game.history.getLastOutput().text).toBe("Alfred is hurting.");
+    alfred.health_messages = ["is fine", "says he's ok", "is a bit banged up", "is bleeding a little", "screams in pain", "is barely conscious", "breathes his last"];
+    alfred.showHealth();
+    expect(game.history.getLastOutput().text).toBe("Alfred is a bit banged up");
+    alfred.damage = 10;
+    alfred.showHealth();
+    expect(game.history.getLastOutput().text).toBe("Alfred screams in pain");
+    alfred.damage = 14;
+    alfred.showHealth();
+    expect(game.history.getLastOutput().text).toBe("Alfred is barely conscious");
+  });
+
 });

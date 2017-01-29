@@ -33,6 +33,23 @@ export var event_handlers = {
       game.artifacts.get(a).name = game.artifacts.get(49).name;
     }
 
+    // custom messages for the lava monster
+    game.monsters.get(11).combat_verbs = [
+      "hurls molten rock at",
+      "flings shards of obsidian at",
+      "breathes fire at",
+      "reaches toward"
+    ];
+    game.monsters.get(11).health_messages = [
+      "is in perfect health.",
+      "is lightly chipped.",
+      "is chipped.",
+      "is oozing lava.",
+      "is cracking.",
+      "is crumbling!",
+      "shatters into molten droplets!"
+    ];
+
     // the potion shouldn't have a built-in heal value; its logic is implemented differently
     game.artifacts.get(2).dice = 0;
 

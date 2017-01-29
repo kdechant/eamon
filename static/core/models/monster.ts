@@ -58,6 +58,7 @@ export class Monster extends GameObject {
   friend_odds: number;
   combat_code: number;
   combat_verbs: string[] = [];  // custom messages that replace the normal attack messages
+  health_messages: string[] = [];  // custom messages that replace the normal health status messages
   courage: number;
   gold: number;
   weapon_id: number;
@@ -852,20 +853,34 @@ export class Monster extends GameObject {
     let game = Game.getInstance();
     let status = (this.hardiness - this.damage) / this.hardiness;
     let name = this.count === 1 ? this.name : "One " + this.name;
+
+    let messages: string[] = [
+      "is in perfect health.",
+      "is in good shape.",
+      "is hurting.",
+      "is in pain.",
+      "is badly injured.",
+      "is at death's door!",
+      "is dead!"
+    ];
+    if (this.health_messages.length === 7) {
+      messages = this.health_messages;
+    }
+
     if (status > .99) {
-      game.history.write(name + " is in perfect health.");
+      game.history.write(name + " " + messages[0]);
     } else if (status > .8) {
-      game.history.write(name + " is in good shape.");
+      game.history.write(name + " " + messages[1]);
     } else if (status > .6) {
-      game.history.write(name + " is hurting.");
+      game.history.write(name + " " + messages[2]);
     } else if (status > .4) {
-      game.history.write(name + " is in pain.");
+      game.history.write(name + " " + messages[3]);
     } else if (status > .2) {
-      game.history.write(name + " is badly injured.", "warning");
+      game.history.write(name + " " + messages[4], "warning");
     } else if (status > 0) {
-      game.history.write(name + " is at death's door.", "warning");
+      game.history.write(name + " " + messages[5], "warning");
     } else {
-      game.history.write(name + " is dead!", "danger");
+      game.history.write(name + " " + messages[6], "danger");
     }
   }
 
