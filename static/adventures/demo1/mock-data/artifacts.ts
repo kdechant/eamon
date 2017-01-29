@@ -215,8 +215,8 @@ export var ARTIFACTS: Object[] = [
   },
   {
     "id": 19,
-    "name": "club",
-    "description": "One of the kobolds dropped a club.",
+    "name": "mace",
+    "description": "One of the kobolds dropped a mace.",
     "type": 2,
     "room_id": null,
     "monster_id": 5,

@@ -68,6 +68,7 @@ export class Artifact extends GameObject {
   markings_index: number = 0; // counter used to keep track of the next marking to read
   is_worn: boolean = false; // if the monster is wearing it
   is_broken: boolean = false;  // for a doors/containers that has been smashed open
+  player_brought: boolean = false; // flag to indicate which items the player brought with them
 
   /**
    * Moves the artifact to a specific room.

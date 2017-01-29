@@ -77,6 +77,17 @@ export class ArtifactRepository {
   }
 
   /**
+   * renames weapons and armor so the names aren't duplicates of player artifacts
+   */
+  deduplicate() {
+    for (let item of this.all.filter(i => i.player_brought === true)) {
+      for (let item2 of this.all.filter(i => i.player_brought === false && i.name.toLowerCase() === item.name.toLowerCase())) {
+        item2.name += "#";
+      }
+    }
+  }
+
+  /**
    * Gets a numbered artifact.
    * @param {number} id
    * @return Artifact

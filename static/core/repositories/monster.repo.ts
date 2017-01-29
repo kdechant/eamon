@@ -122,6 +122,7 @@ export class MonsterRepository {
     for (let i in player_data.inventory) {
       let a: Artifact = player_data.inventory[i];
       a.seen = true;
+      a.player_brought = true;
       let art = game.artifacts.add(a);
       game.player.pickUp(art);
     }

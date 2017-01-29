@@ -41,4 +41,9 @@ describe("Artifact Repo", function() {
 
   });
 
+  it("should de-duplicate artifact names on game start", function() {
+    let game = Game.getInstance();
+    expect(game.artifacts.get(19).name).toBe("mace#");  // duplicate name of a player weapon
+    expect(game.artifacts.get(21).name).toBe("dagger");  // not a duplicate
+  });
 });

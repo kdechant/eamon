@@ -194,6 +194,9 @@ export class Game {
 
     this.monsters.addPlayer(data[6]);
 
+    // de-duplicate the artifact names
+    this.artifacts.deduplicate();
+
     this.history = new HistoryManager;
     this.command_parser = new CommandParser();
 
@@ -254,8 +257,7 @@ export class Game {
 
     // check if there is a light source; decrement its fuel count
     let light = this.artifacts.isLightSource();
-    for (let i in this.artifacts.all) {
-      let a = this.artifacts.all[i];
+    for (let a of this.artifacts.all) {
       if (a.type === Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.quantity !== -1) {
         a.quantity--;
         if (a.quantity === 0) {
@@ -274,9 +276,9 @@ export class Game {
 
     // non-player monster actions
     if (this.in_battle && !this.skip_battle_actions) {
-      for (let i in this.monsters.all) {
-        if (this.monsters.all[i].id !== Monster.PLAYER && this.monsters.all[i].isHere()) {
-          this.monsters.all[i].doBattleActions();
+      for (let m of this.monsters.all) {
+        if (m.id !== Monster.PLAYER && m.isHere()) {
+          m.doBattleActions();
         }
         this.artifacts.updateVisible();
         this.monsters.updateVisible();
@@ -317,8 +319,7 @@ export class Game {
     // show monster and artifact descriptions
     if (light || !this.rooms.current_room.is_dark) {
       this.history.write(""); // blank line for white space
-      for (let i in this.monsters.visible) {
-        let m = this.monsters.visible[i];
+      for (let m of this.monsters.visible) {
         if (!m.seen) {
           m.showDescription();
           m.seen = true;
@@ -332,14 +333,17 @@ export class Game {
         }
       }
 
-      for (let i in this.artifacts.visible) {
-        let a = this.artifacts.visible[i];
+      for (let a of this.artifacts.visible) {
         if (!a.seen) {
           a.showDescription();
           this.triggerEvent("see_artifact", a);
           a.seen = true;
         } else {
-          this.history.write("You see " + a.name, "no-space");
+          if (a.player_brought) {
+            this.history.write("Your " + a.name + " is here.", "no-space");
+          } else {
+            this.history.write("You see " + a.name + ".", "no-space");
+          }
         }
       }
     }
@@ -389,9 +393,9 @@ export class Game {
    *   Another argument to the event.
    */
   public triggerEvent(event_name, arg1?: any, arg2?: any, arg3?: any): any {
-    for (let i in this.event_handlers) {
-      if (this.event_handlers[i].name === event_name) {
-        return this.event_handlers[i].run(arg1, arg2, arg3);
+    for (let e of this.event_handlers) {
+      if (e.name === event_name) {
+        return e.run(arg1, arg2, arg3);
       }
     }
     // if we didn't find a matching event handler, return true to continue executing remaining code
