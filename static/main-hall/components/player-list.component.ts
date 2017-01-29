@@ -1,7 +1,6 @@
 import {Component,  OnInit}  from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable }     from 'rxjs/Observable';
-import { UUID } from 'angular2-uuid';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
@@ -32,14 +31,6 @@ export class PlayerListComponent implements OnInit  {
     private _playerService: PlayerService){}
 
   public ngOnInit(): void {
-
-    // set a UUID for this browser. The user will only see players associated with their UUID.
-    let token:string = window.localStorage.getItem('eamon_uuid');
-    if (!token) {
-      token = UUID.UUID();
-      window.localStorage.setItem('eamon_uuid', token);
-    }
-
     this._playerService.getList();
   }
 
