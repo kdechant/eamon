@@ -22,7 +22,7 @@ export class GameLoaderService {
       this.uuid = window.localStorage.getItem('eamon_uuid');
   }
 
-  setupGameData() {
+  setupGameData(): Observable<Object> {
 
     let game = Game.getInstance();
 
@@ -30,23 +30,19 @@ export class GameLoaderService {
     if (game_id === 'demo1') {
       // load mock data
       let path = "/static/adventures/" + game_id + "/mock-data";
-      Observable.forkJoin(
+      return Observable.forkJoin(
         this.http.get(path + "/adventure.json").map((res: Response) => res.json()),
         this.http.get(path + "/rooms.json").map((res: Response) => res.json()),
         this.http.get(path + "/artifacts.json").map((res: Response) => res.json()),
         this.http.get(path + "/effects.json").map((res: Response) => res.json()),
         this.http.get(path + "/monsters.json").map((res: Response) => res.json()),
         this.http.get(path + "/player.json").map((res: Response) => res.json())
-      ).subscribe(
-        data => {
-          game.init(data);
-        }
       );
     } else {
       let player_id = window.localStorage.getItem('player_id');
 
       // load live data from the back end
-      Observable.forkJoin(
+      return Observable.forkJoin(
         this.http.get("/api/adventures/" + game_id).map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/rooms").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/artifacts").map((res: Response) => res.json()),
@@ -54,10 +50,6 @@ export class GameLoaderService {
         this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
         this.http.get("/api/adventures/" + game_id + "/hints").map((res: Response) => res.json()),
         this.http.get("/api/players/" + player_id + '.json?uuid=' + this.uuid).map((res: Response) => res.json())
-      ).subscribe(
-        data => {
-          game.init(data);
-        }
       );
     }
   }

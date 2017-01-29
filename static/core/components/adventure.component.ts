@@ -17,7 +17,11 @@ export class AdventureComponent {
 
   public ngOnInit(): void {
     this.game = Game.getInstance();
-    this._gameLoaderService.setupGameData();
+    this._gameLoaderService.setupGameData().subscribe(
+        data => {
+          this.game.init(data);
+        }
+      );
   }
 
 }

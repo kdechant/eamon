@@ -1,43 +1,41 @@
 <html>
 <head>
-  <title>Jasmine Tests</title>
+  <title>Eamon Core Tests</title>
+</head>
+<body>
+  <script>
+    var game_id = "demo1";
+    var core_path = "core";
+  </script>
+
   <link rel="stylesheet" href="node_modules/jasmine-core/lib/jasmine-core/jasmine.css">
   <script src="node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
   <script src="node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
   <script src="node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
 
-    <!-- 1. Load libraries -->
+  <script src="node_modules/zone.js/dist/zone.js"></script>
+  <script src="node_modules/reflect-metadata/Reflect.js"></script>
+  <script src="node_modules/systemjs/dist/system.src.js"></script>
 
-    <script src="node_modules/zone.js/dist/zone.js"></script>
-    <script src="node_modules/reflect-metadata/Reflect.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
+  <script src="node_modules/zone.js/dist/long-stack-trace-zone.js?main=browser"></script>
+  <script src="node_modules/zone.js/dist/proxy.js?main=browser"></script>
+  <script src="node_modules/zone.js/dist/sync-test.js?main=browser"></script>
+  <script src="node_modules/zone.js/dist/jasmine-patch.js?main=browser"></script>
+  <script src="node_modules/zone.js/dist/async-test.js?main=browser"></script>
+  <script src="node_modules/zone.js/dist/fake-async-test.js?main=browser"></script>
 
-    <!-- 2. Configure SystemJS -->
-    <script>
-      var game_id = "demo1";
-    </script>
-    <script src="core/systemjs.config.js"></script>
-    <script>
-      Promise.all([
-        System.import('core/main'),
-        System.import('adventure/commands'),
-        System.import('adventure/event-handlers'),
-        System.import('core/models/game.spec'),
-        System.import('core/models/room.spec'),
-        System.import('core/models/artifact.spec'),
-        System.import('core/models/monster.spec'),
-        System.import('core/repositories/artifact-repo.spec'),
-        System.import('core/repositories/monster-repo.spec'),
-        System.import('core/models/history-entry.spec'),
-        System.import('core/models/history-manager.spec')
-      ]).then(null, console.error.bind(console));
-    </script>
-
-    <link rel="stylesheet" href="vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-
-</head>
-<body>
+  <script>
+    var __spec_files__ = [
+      'core/models/game.spec',
+      'core/models/room.spec',
+      'core/models/artifact.spec',
+      'core/models/monster.spec',
+      'core/repositories/artifact-repo.spec',
+      'core/repositories/monster-repo.spec',
+      'core/models/history-entry.spec',
+      'core/models/history-manager.spec'
+    ];
+  </script>
+  <script src="browser-test-shim.js"></script>
 </body>
 </html>

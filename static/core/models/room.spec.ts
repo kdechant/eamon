@@ -1,7 +1,7 @@
 import {Room} from "./room";
 import {RoomExit} from "./room";
 
-import {ROOMS} from "../../adventures/demo1/mock-data/rooms";
+import {ROOMS} from "../../adventures/demo1/mock-data/rooms.js";
 
 describe("Room exits", function() {
 

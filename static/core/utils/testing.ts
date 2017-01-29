@@ -5,12 +5,13 @@ import {Game} from "../../core/models/game";
 
 // import the mock data.
 // (still importing these files as typescript files because it's unclear how to read directly from JSON.)
-import {ADVENTURE} from "../../adventures/demo1/mock-data/adventure";
-import {ROOMS} from "../../adventures/demo1/mock-data/rooms";
-import {ARTIFACTS} from "../../adventures/demo1/mock-data/artifacts";
-import {EFFECTS} from "../../adventures/demo1/mock-data/effects";
-import {MONSTERS} from "../../adventures/demo1/mock-data/monsters";
-import {PLAYER} from "../../adventures/demo1/mock-data/player";
+import {ADVENTURE} from "../../adventures/demo1/mock-data/adventure.js";
+import {ROOMS} from "../../adventures/demo1/mock-data/rooms.js";
+import {ARTIFACTS} from "../../adventures/demo1/mock-data/artifacts.js";
+import {EFFECTS} from "../../adventures/demo1/mock-data/effects.js";
+import {MONSTERS} from "../../adventures/demo1/mock-data/monsters.js";
+import {PLAYER} from "../../adventures/demo1/mock-data/player.js";
+
 
 /**
  * Init from the mock data. Used in the unit tests.

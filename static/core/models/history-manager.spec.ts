@@ -7,12 +7,9 @@ describe("Command history", function() {
     hist = new HistoryManager();
   });
 
-  // somehow the tests get run multiple times, and the following test will fail
-  // the second/third time through.
-  //
-  //  it("should start with empty history", function() {
-  //    expect(hist.history.length).toEqual(0);
-  //  });
+   it("should start with empty history", function() {
+     expect(hist.history.length).toEqual(0);
+   });
 
   it("should add entries to the history", function() {
     // to fix a bug, reset the history before running this.
