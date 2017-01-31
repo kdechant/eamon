@@ -309,6 +309,7 @@ class PlayerArtifact(models.Model):
     description = models.TextField(max_length=1000)
     type = models.IntegerField(choices=TYPES)
     weight = models.IntegerField(default=0)
+    value = models.IntegerField(default=0)
     weapon_type = models.IntegerField(default=0,choices=WEAPON_TYPES,null=True)
     hands = models.IntegerField(choices=HANDS,default=1)
     weapon_odds = models.IntegerField(default=0,null=True)

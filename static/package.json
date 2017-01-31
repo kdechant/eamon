@@ -1,7 +1,7 @@
 {
   "name": "eamon",
   "description": "A rewrite of the classic text adventure game, The Wonderful World of Eamon.",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/kdechant/eamon.git"
@@ -36,6 +36,7 @@
     "rxjs": "5.0.1",
     "zone.js": "0.7.2",
 
+    "angular2-notifications": "^0.4.49",
     "angular2-uuid": "^1.1.0",
     "bootstrap": "^3.3.7"
   },

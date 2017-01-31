@@ -3,6 +3,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
+import {DividePipe} from "./pipes/divide.pipe";
+
 import {MainHallComponent} from "./components/main-hall.component";
 import {AdventureListComponent} from "./components/adventure-list.component";
 import {IntroComponent} from "./components/intro.component";
@@ -18,9 +20,10 @@ import {PlayerService} from "./services/player.service";
 import {AdventureService} from "./services/adventure.service";
 import {ShopService} from "./services/shop.service";
 import {routing} from './main-hall.routing';
+import {SimpleNotificationsModule} from "angular2-notifications";
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule, routing],
+  imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule, routing],
   declarations: [
     MainHallComponent,
     IntroComponent,
@@ -31,7 +34,8 @@ import {routing} from './main-hall.routing';
     BankComponent,
     ShopComponent,
     StatusComponent,
-    WizardComponent
+    WizardComponent,
+    DividePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],

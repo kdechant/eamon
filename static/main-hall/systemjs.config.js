@@ -20,6 +20,7 @@
 
             // other libraries
             'rxjs': 'npm:rxjs',
+            'angular2-notifications': 'npm:angular2-notifications',
             'angular2-uuid': 'npm:angular2-uuid/index.js',
 
             // the app itself
@@ -44,7 +45,8 @@
             },
             rxjs: {
                 defaultExtension: 'js'
-            }
+            },
+            'angular2-notifications': { main: 'components.js', defaultExtension: 'js' }
         }
     });
 
