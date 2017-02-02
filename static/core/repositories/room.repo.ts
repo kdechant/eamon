@@ -18,9 +18,9 @@ export class RoomRepository {
   current_room: Room;
 
   constructor(room_data) {
-    for (let i in room_data) {
+    for (let i of room_data) {
       let r = new Room();
-      r.init(room_data[i]);
+      r.init(i);
       this.rooms.push(r);
     }
   }
@@ -31,11 +31,8 @@ export class RoomRepository {
    * @return Room
    */
   getRoomById(room_id: number) {
-    for (let i in this.rooms) {
-      if (this.rooms[i].id === room_id) {
-        return this.rooms[i];
-      }
-    }
+    let r = this.rooms.find(x => x.id === room_id);
+    return r || null;
   }
 
   /**
@@ -43,6 +40,6 @@ export class RoomRepository {
    * @return Room
    */
   getRandom() {
-    return this.rooms[Game.getInstance().diceRoll(1, this.rooms.length)-1];
+    return this.rooms[Game.getInstance().diceRoll(1, this.rooms.length) - 1];
   }
 }

@@ -93,12 +93,8 @@ export class ArtifactRepository {
    * @return Artifact
    */
   get(id) {
-    for (let i in this.all) {
-      if (this.all[i].id === id) {
-        return this.all[i];
-      }
-    }
-    return null;
+    let a = this.all.find(a => a.id === id);
+    return a || null;
   }
 
   /**
@@ -108,12 +104,8 @@ export class ArtifactRepository {
    * @return Artifact
    */
   getByName(name: string) {
-    for (let i in this.all) {
-      if (this.all[i].match(name)) {
-        return this.all[i];
-      }
-    }
-    return null;
+    let a = this.all.find(a => a.match(name));
+    return a || null;
   }
 
   /**
@@ -124,16 +116,14 @@ export class ArtifactRepository {
    * @return Artifact
    */
   getLocalByName(name: string, reveal_embedded: boolean = true) {
-    for (let i in this.all) {
-      let a = this.all[i];
-      if (a.isHere() && a.match(name)) {
-        if (a.embedded && reveal_embedded) {
-          a.reveal();
-        }
-        return a;
-      }
+    // fixme: should this only return the first match? or all matches?
+    let art = this.all.find(a => a.isHere() && a.match(name));
+    if (typeof art === 'undefined') {
+      return null;
+    } else {
+      if (art.embedded && reveal_embedded) art.reveal();
+      return art;
     }
-    return null;
   }
 
   /**
@@ -142,12 +132,9 @@ export class ArtifactRepository {
    */
   updateVisible() {
     let artifacts: Artifact[] = [];
-    for (let i in this.all) {
-      let a: Artifact = this.all[i];
-      if (a.room_id === Game.getInstance().rooms.current_room.id && !a.embedded) {
-        a.updateContents();
-        artifacts.push(a);
-      }
+    for (let a of this.all.filter(a => a.room_id === Game.getInstance().rooms.current_room.id && !a.embedded)) {
+      a.updateContents();
+      artifacts.push(a);
     }
     this.visible = artifacts;
   }
@@ -157,13 +144,8 @@ export class ArtifactRepository {
    * @return boolean
    */
   isLightSource() {
-    for (let i in this.all) {
-      let a = this.all[i];
-      if (a.type === Artifact.TYPE_LIGHT_SOURCE && a.is_lit) {
-        if (a.room_id === Game.getInstance().rooms.current_room.id || a.monster_id === 0) {
-          return true;
-        }
-      }
+    if (this.all.some(a => Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.isHere())) {
+      return true;
     }
     return false;
   }

@@ -24,8 +24,8 @@ export class MonsterRepository {
   index: number = 0;
 
   constructor(monster_data: Array<Object>) {
-    for (let i in monster_data) {
-      this.add(monster_data[i]);
+    for (let m of monster_data) {
+      this.add(m);
     }
   }
 
@@ -119,8 +119,7 @@ export class MonsterRepository {
     this.all.push(game.player);
 
     // create new artifact objects for the weapons and armor the player brought
-    for (let i in player_data.inventory) {
-      let a: Artifact = player_data.inventory[i];
+    for (let a of player_data.inventory) {
       a.seen = true;
       a.player_brought = true;
       let art = game.artifacts.add(a);
@@ -140,12 +139,8 @@ export class MonsterRepository {
    * @return Monster
    */
   public get(id) {
-    for (let i in this.all) {
-      if (this.all[i].id === id) {
-        return this.all[i];
-      }
-    }
-    return null;
+    let m = this.all.find(x => x.id === id);
+    return m || null;
   }
 
   /**
@@ -154,11 +149,8 @@ export class MonsterRepository {
    * @return Monster
    */
   public getByName(name: string) {
-    for (let i in this.all) {
-      if (this.all[i].match(name)) {
-        return this.all[i];
-      }
-    }
+    let m = this.all.filter(x => x.match(name));
+    return m || null;
   }
 
   /**
@@ -167,13 +159,8 @@ export class MonsterRepository {
    * @return Monster
    */
   getLocalByName(name: string) {
-    for (let i in this.all) {
-      let m = this.all[i];
-      if (m.isHere() && m.match(name)) {
-        return m;
-      }
-    }
-    return null;
+    let mon = this.all.find(m => m.isHere() && m.match(name));
+    return mon || null;
   }
 
   /**
@@ -182,14 +169,7 @@ export class MonsterRepository {
    * @return Monster[]
    */
   getByRoom(room_id: number) {
-    let mons: Monster[] = [];
-    for (let i in this.all) {
-      let m = this.all[i];
-      if (m.room_id === room_id) {
-        mons.push(m);
-      }
-    }
-    return mons;
+    return this.all.filter(x => x.room_id = room_id);
   }
 
   /**
@@ -199,15 +179,8 @@ export class MonsterRepository {
    * @return Monster
    */
   public getRandom(include_player: boolean = false) {
-    let nm = this.all.length;
-    if (!include_player) {
-      nm--;
-    }
-    let roll = Game.getInstance().diceRoll(1, nm);
-    if (include_player) {
-      roll--;
-    }
-    return this.get(roll);
+    let mons = this.all.filter(x => x.id !== Monster.PLAYER || include_player);
+    return mons[Game.getInstance().diceRoll(1, mons.length) - 1];
   }
 
   /**
@@ -216,19 +189,15 @@ export class MonsterRepository {
    */
   public updateVisible() {
     let game = Game.getInstance();
-    let monsters: Monster[] = [];
+    let monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id);
     game.in_battle = false;
-    for (let i in this.all) {
-      if (this.all[i].id !== 0 && this.all[i].room_id === game.rooms.current_room.id) {
-        // check monster reactions
-        if (this.all[i].reaction === Monster.RX_UNKNOWN) {
-          this.all[i].checkReaction();
-        }
-        if (this.all[i].reaction === Monster.RX_HOSTILE) {
-          game.in_battle = true;
-        }
-
-        monsters.push(this.all[i]);
+    for (let m of monsters) {
+      // check monster reactions
+      if (m.reaction === Monster.RX_UNKNOWN) {
+        m.checkReaction();
+      }
+      if (m.reaction === Monster.RX_HOSTILE) {
+        game.in_battle = true;
       }
     }
     this.visible = monsters;

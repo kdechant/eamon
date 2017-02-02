@@ -18,8 +18,8 @@ export class EffectRepository {
   index: number = 0;
 
   constructor(effect_data: Array<Object>) {
-    for (let i in effect_data) {
-      this.add(effect_data[i]);
+    for (let e of effect_data) {
+      this.add(e);
     }
   }
 
@@ -56,12 +56,8 @@ export class EffectRepository {
    * @return Effect
    */
   public get(id): Effect {
-    for (let i in this.all) {
-      if (this.all[i].id === id) {
-        return this.all[i];
-      }
-    }
-    return null;
+    let e = this.all.find(x => x.id === id);
+    return e || null;
   }
 
   /**

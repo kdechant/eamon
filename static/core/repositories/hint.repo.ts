@@ -18,8 +18,8 @@ export class HintRepository {
   index: number = 0;
 
   constructor(hint_data: Array<Object>) {
-    for (let i in hint_data) {
-      this.add(hint_data[i]);
+    for (let i of hint_data) {
+      this.add(i);
     }
   }
 
@@ -56,12 +56,8 @@ export class HintRepository {
    * @return Monster
    */
   public get(id) {
-    for (let i in this.all) {
-      if (this.all[i].id === id) {
-        return this.all[i];
-      }
-    }
-    return null;
+    let h = this.all.find(x => x.id === id);
+    return h || null;
   }
 
 }

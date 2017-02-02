@@ -102,13 +102,12 @@ export class Monster extends GameObject {
 
       // check if monsters should move
       if (monsters_follow) {
-        for (let i in game.monsters.visible) {
-          let m = game.monsters.visible[i];
+        for (let m of game.monsters.visible) {
           if (m.reaction === Monster.RX_UNKNOWN) {
             m.checkReaction();
           }
           // friends always move
-          if (m.reaction === Monster.RX_FRIEND) {
+          if (m.reaction === Monster.RX_FRIEND && m.id !== Monster.PLAYER) {
             m.moveToRoom(room_id);
           }
           // enemies move based on courage check (this is used when the player flees)
@@ -127,21 +126,14 @@ export class Monster extends GameObject {
     let game = Game.getInstance();
 
     // choose a random exit
-    let exits: RoomExit[] = game.rooms.current_room.exits;
-    let good_exits: RoomExit[] = [];
-    // exclude any locked exit and the game exit
-    for (let i in exits) {
-      if (exits[i].room_to !== RoomExit.EXIT && exits[i].isOpen()) {
-        good_exits.push(exits[i]);
-      }
-    }
+    // exclude any locked/hidden exits and the game exit
+    let good_exits: RoomExit[] = game.rooms.current_room.exits.filter(x => x.room_to !== RoomExit.EXIT && x.isOpen());
+
     if (good_exits.length === 0) {
       return null;
     } else {
-      let random_exit = good_exits[Math.floor(Math.random() * good_exits.length)];
-
-      let room_to = game.rooms.getRoomById(random_exit.room_to);
-      return room_to;
+      let random_exit = good_exits[Game.getInstance().diceRoll(1, good_exits.length) - 1];
+      return game.rooms.getRoomById(random_exit.room_to);
     }
   }
 
@@ -278,16 +270,13 @@ export class Monster extends GameObject {
       this.armor_class = 0;
     }
     this.weight_carried = 0;
-    for (let i in game.artifacts.all) {
-      let a = game.artifacts.all[i];
-      if (a.monster_id === this.id) {
-        this.inventory.push(a);
-        this.weight_carried += a.weight;
-        if (this.id === Monster.PLAYER) {
-          if (a.is_worn && (a.armor_type === Artifact.ARMOR_TYPE_ARMOR || a.armor_type === Artifact.ARMOR_TYPE_SHIELD)) {
-            this.armor_worn.push(a);
-            this.armor_class += a.armor_class;
-          }
+    for (let a of game.artifacts.all.filter(x => x.monster_id === this.id)) {
+      this.inventory.push(a);
+      this.weight_carried += a.weight;
+      if (this.id === Monster.PLAYER) {
+        if (a.is_worn && (a.armor_type === Artifact.ARMOR_TYPE_ARMOR || a.armor_type === Artifact.ARMOR_TYPE_SHIELD)) {
+          this.armor_worn.push(a);
+          this.armor_class += a.armor_class;
         }
       }
       a.updateContents();
@@ -313,13 +302,7 @@ export class Monster extends GameObject {
    * @return boolean
    */
   public hasArtifact(artifact_id: number): boolean {
-    let has = false;
-    for (let i in this.inventory) {
-      if (this.inventory[i].id === artifact_id) {
-        has = true;
-      }
-    }
-    return has;
+    return this.inventory.some(x => x.id === artifact_id);
   }
 
   /**
@@ -328,12 +311,8 @@ export class Monster extends GameObject {
    * @returns Artifact
    */
   public findInInventory(artifact_name): Artifact {
-    for (let i in this.inventory) {
-      if (this.inventory[i].match(artifact_name)) {
-        return this.inventory[i];
-      }
-    }
-    return null;
+    let a = this.inventory.find(x => x.match(artifact_name));
+    return a || null;
   }
 
   /**
@@ -348,12 +327,10 @@ export class Monster extends GameObject {
    * Readies the best weapon the monster is carrying
    */
   public readyBestWeapon(): void {
-    for (let a in this.inventory) {
-      if (this.inventory[a].is_weapon) {
-        if (this.weapon === undefined || this.weapon === null ||
-          this.inventory[a].maxDamage() > this.weapon.maxDamage()) {
-          this.ready(this.inventory[a]);
-        }
+    for (let a of this.inventory.filter(x => x.is_weapon)) {
+      if (this.weapon === undefined || this.weapon === null ||
+        a.maxDamage() > this.weapon.maxDamage()) {
+        this.ready(a);
       }
     }
   }
@@ -364,17 +341,14 @@ export class Monster extends GameObject {
   public wearBestArmor(): void {
     let best_armor = null;
     let best_shield = null;
-    for (let i in this.inventory) {
-      let art = this.inventory[i];
-      if (art.type === Artifact.TYPE_WEARABLE) {
-        if (art.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
-          if (best_armor === null || art.armor_class > best_armor.armor_class) {
-            best_armor = art;
-          }
-        } else {
-          if (best_shield === null || art.armor_class > best_shield.armor_class) {
-            best_shield = art;
-          }
+    for (let art of this.inventory.filter(x => x.type === Artifact.TYPE_WEARABLE)) {
+      if (art.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
+        if (best_armor === null || art.armor_class > best_armor.armor_class) {
+          best_armor = art;
+        }
+      } else {
+        if (best_shield === null || art.armor_class > best_shield.armor_class) {
+          best_shield = art;
         }
       }
     }
@@ -408,8 +382,8 @@ export class Monster extends GameObject {
    * Determines if the player is wearing armor
    */
   public isWearingArmor(): boolean {
-    for (let i in this.inventory) {
-      if (this.inventory[i].armor_type === Artifact.ARMOR_TYPE_ARMOR && this.inventory[i].is_worn) {
+    for (let i of this.inventory) {
+      if (i.armor_type === Artifact.ARMOR_TYPE_ARMOR && i.is_worn) {
         return true;
       }
     }
@@ -420,8 +394,8 @@ export class Monster extends GameObject {
    * Determines if the player is using a shield
    */
   public isUsingShield(): boolean {
-    for (let i in this.inventory) {
-      if (this.inventory[i].armor_type === Artifact.ARMOR_TYPE_SHIELD && this.inventory[i].is_worn) {
+    for (let i of this.inventory) {
+      if (i.armor_type === Artifact.ARMOR_TYPE_SHIELD && i.is_worn) {
         return true;
       }
     }
@@ -499,12 +473,8 @@ export class Monster extends GameObject {
       }
       // if the monster's desired weapon isn't here, or the monster doesn't care which weapon it uses,
       // pick up the first available weapon
-      for (let i in game.artifacts.visible) {
-        if (game.artifacts.visible[i].is_weapon) {
-          this.pickUpWeapon(game.artifacts.visible[i]);
-          return;
-        }
-      }
+      let i = game.artifacts.visible.find(x => x.is_weapon);
+      if (typeof i !== 'undefined') this.pickUpWeapon(i);
     }
 
     // attack!
@@ -690,10 +660,8 @@ export class Monster extends GameObject {
    */
   public getArmorFactor(): number {
     let ae_max = 0;
-    for (let i in this.inventory) {
-      if (this.inventory[i].is_worn) {
-        ae_max += this.inventory[i].armor_penalty;
-      }
+    for (let i of this.inventory.filter(x => x.is_worn)) {
+      ae_max += i.armor_penalty;
     }
     ae_max -= this.armor_expertise;
     if (ae_max < 0) ae_max = 0;
@@ -766,11 +734,11 @@ export class Monster extends GameObject {
     let game = Game.getInstance();
     let monsters = [game.player].concat(game.monsters.visible);
     let targets: Monster[] = [];
-    for (let i in monsters) {
-      if (this.reaction === Monster.RX_FRIEND && monsters[i].reaction === Monster.RX_HOSTILE) {
-        targets.push(monsters[i]);
-      } else if (this.reaction === Monster.RX_HOSTILE && monsters[i].reaction === Monster.RX_FRIEND) {
-        targets.push(monsters[i]);
+    for (let m of monsters) {
+      if (this.reaction === Monster.RX_FRIEND && m.reaction === Monster.RX_HOSTILE) {
+        targets.push(m);
+      } else if (this.reaction === Monster.RX_HOSTILE && m.reaction === Monster.RX_FRIEND) {
+        targets.push(m);
       }
     }
     if (targets.length) {
@@ -813,8 +781,8 @@ export class Monster extends GameObject {
       } else {
         // single monster. drop weapon, etc.
 
-        for (let i in this.inventory) {
-          this.inventory[i].room_id = this.room_id;
+        for (let i of this.inventory) {
+          i.room_id = this.room_id;
         }
 
         if (this.dead_body_id) {
@@ -946,8 +914,7 @@ export class Monster extends GameObject {
     Game.getInstance().selling = true;
     // a copy of inventory, needed to prevent looping errors when we destroy artifacts
     let inv = this.inventory;
-    for (let i in inv) {
-      let a = inv[i];
+    for (let a of inv) {
       if (a.type === Artifact.TYPE_MAGIC_WEAPON || a.type === Artifact.TYPE_WEAPON) {
         // currently the player doesn't have to sell any weapons, so keep them all.
         continue;
