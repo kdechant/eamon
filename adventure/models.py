@@ -70,6 +70,8 @@ class Adventure(models.Model):
     edx_monster_offset = models.IntegerField(default=0,null=True)
     edx_program_file = models.CharField(null=True,max_length=50)
     directions = models.IntegerField(default=6)
+    dead_body_id = models.IntegerField(default=0,blank=True,null=True,
+        help_text="The artifact ID of the first dead body. Leave blank to not use dead body artifacts.")
     active = models.BooleanField(default=0)
     # the first and last index of hints read from the hints file - used with the import_hints management command
     first_hint = models.IntegerField(null=True)

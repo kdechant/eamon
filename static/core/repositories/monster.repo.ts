@@ -61,16 +61,20 @@ export class MonsterRepository {
     }
 
     // add the dead body artifact
-    let body = {
-      "name": "Dead " + m.name,
-      "description": "You see the dead " + m.name,
-      "room": null,
-      "weight": 100,
-      "value": 0,
-      "get_all": false,
-    };
-    let art: Artifact = Game.getInstance().artifacts.add(body);
-    m.dead_body_id = art.id;
+    if (Game.getInstance().dead_body_id) {
+      m.dead_body_id = Game.getInstance().dead_body_id + m.id - 1;
+    } else {
+      let body = {
+        "name": "Dead " + m.name,
+        "description": "You see the dead " + m.name,
+        "room": null,
+        "weight": 100,
+        "value": 0,
+        "get_all": false,
+      };
+      let art: Artifact = Game.getInstance().artifacts.add(body);
+      m.dead_body_id = art.id;
+    }
 
     // update the autonumber index
     if (m.id > this.index) {

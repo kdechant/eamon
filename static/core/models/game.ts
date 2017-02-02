@@ -72,6 +72,11 @@ export class Game {
   monsters: MonsterRepository;
 
   /**
+   * The ID of the first dead body artifact. Zero or null means don't use dead bodies.
+   */
+  dead_body_id: number = null;
+
+  /**
    * A container for all the Hint objects
    */
   hints: HintRepository;
@@ -183,6 +188,7 @@ export class Game {
     this.description = data[0].description;
     this.intro_text = data[0].intro_text;
     this.intro_question = data[0].intro_question;
+    this.dead_body_id = data[0].dead_body_id;
 
     this.rooms = new RoomRepository(data[1]);
     this.artifacts = new ArtifactRepository(data[2]);
