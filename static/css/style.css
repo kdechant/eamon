@@ -42,6 +42,11 @@ h2 {
     font-weight: bold; }
   .status-widget .none {
     color: #666; }
+  .status-widget .stats {
+    margin-bottom: 5px; }
+    .status-widget .stats div {
+      padding-right: 0;
+      padding-left: 0; }
   .status-widget .spell-abilities, .status-widget .weapon-abilities {
     margin-bottom: 10px; }
   .status-widget .artifacts-list th {

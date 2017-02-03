@@ -58,6 +58,14 @@ h2 {
     color: #666;
   }
 
+  .stats {
+    margin-bottom: 5px;
+    div {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+
   .spell-abilities, .weapon-abilities {
     margin-bottom: 10px;
   }

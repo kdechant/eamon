@@ -7,14 +7,11 @@
       </div>
 
       <div class="stats row">
-        <span class="hardiness">HD: {{ game.player.hardiness }}</span>
-        <span class="agility">AG: <span
-            [class.success]="game.player.speed_multiplier > 1">{{ game.player.agility * game.player.speed_multiplier}}</span></span>
-        <span class="charisma">CH: {{ game.player.charisma }}</span>
-      </div>
-
-      <div class="health row">
-        HP: {{ game.player.hardiness - game.player.damage }}/{{ game.player.hardiness }}
+        <div class="hardiness col-sm-2">HD: {{ game.player.hardiness }}</div>
+        <div class="agility col-sm-2">AG: <span
+            [class.success]="game.player.speed_multiplier > 1">{{ game.player.agility * game.player.speed_multiplier}}</span></div>
+        <div class="charisma col-sm-2">CH: {{ game.player.charisma }}</div>
+        <div class="charisma col-sm-5 text-right">HP: {{ game.player.hardiness - game.player.damage }}/{{ game.player.hardiness }}</div>
       </div>
 
       <div class="weapon-abilities row">
@@ -24,6 +21,8 @@
         <div class="spear col-sm-2">Spear: {{ game.player.weapon_abilities[4]}}%</div>
         <div class="sword col-sm-2">Sword: {{ game.player.weapon_abilities[5]}}%</div>
       </div>
+
+      <div class="ae row">Armor expertise: {{ game.player.armor_expertise }}%</div>
 
       <div class="weapon row" *ngIf="game.player.weapon">Ready weapon: {{ game.player.weapon.name }}
         ({{ game.player.weapon.dice }}d{{ game.player.weapon.sides }})
