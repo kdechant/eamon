@@ -16,8 +16,10 @@ export var PLAYER: Object = {
   "armor_expertise": 18,
   "inventory": [
     {
-      "name": "Mace",
+      "name": "mace",
+      "description": "You see your mace.",
       "type": 2,
+      "weight": 3,
       "hands": 1,
       "weapon_type": 3,
       "weapon_odds": 10,
@@ -25,8 +27,10 @@ export var PLAYER: Object = {
       "sides": 4
     },
     {
-      "name": "Trollsfire",
+      "name": "firebrand",
+      "description": "You see a flaming sword.",
       "type": 3,
+      "weight": 3,
       "hands": 1,
       "weapon_type": 5,
       "weapon_odds": 25,
@@ -35,7 +39,9 @@ export var PLAYER: Object = {
     },
     {
       "name": "battle axe",
+      "description": "You see a large battle axe.",
       "type": 2,
+      "weight": 3,
       "hands": 2,
       "weapon_type": 1,
       "weapon_odds": 25,
@@ -43,15 +49,19 @@ export var PLAYER: Object = {
       "sides": 6
     },
     {
-      "name": "Chain mail",
+      "name": "chain mail",
+      "description": "You see a set of chain mail.",
       "type": 11,
+      "weight": 10,
       "armor_type": 0,
       "armor_class": 2,
       "armor_penalty": 20
     },
     {
-      "name": "Shield",
+      "name": "shield",
+      "description": "You see a standard shield.",
       "type": 11,
+      "weight": 3,
       "armor_type": 1,
       "armor_class": 1,
       "armor_penalty": 5

@@ -61,14 +61,6 @@ export var event_handlers = {
     }
   },
 
-  "see_monster": function(monster: Monster): void {
-    if (monster.id === 8) {
-      // pirate invokes trollsfire when first seen
-      Game.getInstance().effects.print(2);
-      light_trollsfire();
-    }
-  },
-
   "death": function(monster: Monster): void {
     if (monster.id === 8) {
       // trollsfire goes out when pirate dies
@@ -82,6 +74,7 @@ export var event_handlers = {
     if (old_wpn && old_wpn.id === 10 && new_wpn.id !== 10) {
       put_out_trollsfire();
     }
+    return true;
   },
 
   "drop": function(arg: string, artifact: Artifact): void {
