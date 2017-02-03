@@ -606,38 +606,10 @@ export class AttackCommand implements BaseCommand {
       // attacking an artifact
 
       if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
-
-        if (artifact_target.type === Artifact.TYPE_DEAD_BODY) {
-          // if it's a dead body, hack it to bits
-          game.history.write("You hack it to bits.");
-          artifact_target.room_id = null;
-
-        } else if (artifact_target.type === Artifact.TYPE_CONTAINER || artifact_target.type === Artifact.TYPE_DOOR) {
-          // if it's a door or container, try to break it open.
-          if (artifact_target.hardiness !== null) {
-            let damage = game.player.rollAttackDamage();
-            game.history.write("Wham! You hit the " + artifact_target.name + "!");
-            artifact_target.hardiness -= damage;
-            console.log(artifact_target.hardiness);
-            if (artifact_target.hardiness <= 0) {
-              artifact_target.is_broken = true;
-              game.history.write("The " + artifact_target.name + " smashes to pieces!");
-              if (artifact_target.type === Artifact.TYPE_CONTAINER) {
-                for (let i in artifact_target.contents) {
-                  artifact_target.contents[i].room_id = game.player.room_id;
-                  artifact_target.contents[i].container_id = null;
-                }
-                artifact_target.destroy();
-              } else {
-                artifact_target.is_open = true;
-              }
-            }
-          } else {
-            // can't smash open things that have a key, or that are otherwise prevented from opening
-            game.history.write("Nothing happens.");
-          }
-
-        } else {
+        let damage_done = artifact_target.injure(game.player.rollAttackDamage());
+        if (damage_done === 0) {
+          game.history.write("Nothing happens.");
+        } else if (damage_done === -1) {
           throw new CommandException("Why would you attack a " + arg + "?");
         }
       }
@@ -1083,14 +1055,24 @@ export class BlastCommand implements BaseCommand {
     let game = Game.getInstance();
 
     if (game.player.spellCast(verb)) {
-      // blast a monster
-      let target = game.monsters.getLocalByName(arg);
-      if (target) {
-        if (game.triggerEvent("blast", arg, target)) {
+
+      let monster_target = game.monsters.getLocalByName(arg);
+      let artifact_target = game.artifacts.getLocalByName(arg);
+      let damage = game.diceRoll(2, 5);
+      if (monster_target) {
+        if (game.triggerEvent("blast", arg, monster_target)) {
           game.history.write("--a direct hit!", "success");
-          let damage = game.diceRoll(2, 5);
-          target.injure(damage);
-          target.hurtFeelings();
+          monster_target.injure(damage);
+          monster_target.hurtFeelings();
+        }
+      } else if (artifact_target) {
+        if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
+          let damage_done = artifact_target.injure(damage, "blast");
+          if (damage_done === 0) {
+            game.history.write("Nothing happens.");
+          } else if (damage_done === -1) {
+            throw new CommandException("Why would you blast a " + arg + "?");
+          }
         }
       } else {
         throw new CommandException("Blast whom?");

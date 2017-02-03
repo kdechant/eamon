@@ -280,6 +280,52 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Deals damage to an artifact
+   * @param {number} damage - The amount of damage to do.
+   * @param {string} source - Whether a physical ("attack") or magical ("blast") source of damage
+   * @returns number The amount of actual damage done
+   */
+  public injure(damage: number, source: string = "attack"): number {
+    let game = Game.getInstance();
+
+    if (this.type === Artifact.TYPE_DEAD_BODY) {
+      // if it's a dead body, hack it to bits
+      game.history.write("You " + (source === "attack" ? "hack" : "blast") + " it to bits.");
+      this.room_id = null;
+
+    } else if (this.type === Artifact.TYPE_CONTAINER || this.type === Artifact.TYPE_DOOR) {
+      // if it's a door or container, try to break it open.
+      if (this.hardiness !== null) {
+        let damage = game.player.rollAttackDamage();
+        if (source === "attack")
+          game.history.write("Wham! You hit the " + this.name + "!");
+        else
+          game.history.write("Zap! You blast the " + this.name + "!");
+        this.hardiness -= damage;
+        if (this.hardiness <= 0) {
+          this.is_broken = true;
+          game.history.write("The " + this.name + " smashes to pieces!");
+          if (this.type === Artifact.TYPE_CONTAINER) {
+            for (let i in this.contents) {
+              this.contents[i].room_id = game.player.room_id;
+              this.contents[i].container_id = null;
+            }
+            this.destroy();
+          } else {
+            this.is_open = true;
+          }
+        }
+      } else {
+        return 0; // indicates a container that can't be smashed open
+      }
+
+    } else {
+      return -1; // indicates something that makes no sense to attack
+    }
+    return damage;
+  }
+
+  /**
    * Removes an artifact from the game
    */
   public destroy(): void {

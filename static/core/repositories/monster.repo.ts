@@ -153,7 +153,7 @@ export class MonsterRepository {
    * @return Monster
    */
   public getByName(name: string) {
-    let m = this.all.filter(x => x.match(name));
+    let m = this.all.find(x => x.match(name));
     return m || null;
   }
 
