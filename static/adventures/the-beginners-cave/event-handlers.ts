@@ -69,7 +69,7 @@ export var event_handlers = {
     }
   },
 
-  "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact): void {
+  "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact): boolean {
     // if unreadying trollsfire, put it out
     if (old_wpn && old_wpn.id === 10 && new_wpn.id !== 10) {
       put_out_trollsfire();
@@ -90,6 +90,14 @@ export var event_handlers = {
       put_out_trollsfire();
     }
     return true;
+  },
+
+  "say": function(arg) {
+    let game = Game.getInstance();
+    // 'say trollsfire' is the same as running the command 'trollsfire'
+    if (arg === 'trollsfire') {
+      game.command_parser.run('trollsfire', false);
+    }
   },
 
   // 'power' event handler takes a 1d100 dice roll as an argument
