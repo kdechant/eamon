@@ -70,14 +70,6 @@ h2 {
     margin-bottom: 10px;
   }
 
-  .artifacts-list {
-    th {
-      border-top: none;
-    }
-    .weapon-icon img {
-      width: 32px;
-    }
-  }
   .table>tbody+tbody {
     border-top: 1px solid #999;
   }
@@ -89,6 +81,15 @@ h2 {
     padding-left: 15px;
   }
 
+}
+
+.artifacts-list {
+  th {
+    border-top: none;
+  }
+  .weapon-icon img {
+    width: 32px;
+  }
 }
 
 .history {

@@ -88,6 +88,7 @@ export class Monster extends GameObject {
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
   profit: number = 0; // the money the player makes for selling items when they leave the adventure
   group_monster_index: number = 0;  // for combat logic involving group monsters, which group member is active
+  weapons: Artifact[]; // list of weapons, used when selling at game exit
 
   /**
    * Moves the monster to a specific room.
@@ -911,25 +912,23 @@ export class Monster extends GameObject {
    * Sells the player's items when they return to the main hall
    */
   public sellItems(): void {
-    Game.getInstance().selling = true;
-    // a copy of inventory, needed to prevent looping errors when we destroy artifacts
-    let inv = this.inventory;
-    for (let a of inv) {
-      if (a.type === Artifact.TYPE_MAGIC_WEAPON || a.type === Artifact.TYPE_WEAPON) {
-        // currently the player doesn't have to sell any weapons, so keep them all.
-        continue;
-      } else if (a.type === Artifact.TYPE_WEARABLE) {
-        // also keep armor and shields, for now
-        if (a.armor_type === Artifact.ARMOR_TYPE_ARMOR || a.armor_type === Artifact.ARMOR_TYPE_SHIELD) {
-          continue;
-        }
-        this.profit += a.value;
-        a.destroy();
-      } else {
-        // TODO: also look for items in containers
-        this.profit += a.value;
-        a.destroy();
+    let game = Game.getInstance();
+    game.selling = true;
+
+    // remove all items from containers
+    for (let i of game.player.inventory.filter(x => x.type === Artifact.TYPE_CONTAINER)) {
+      for (let j of i.contents) {
+        j.removeFromContainer();
       }
+    }
+
+    this.weapons = this.inventory.filter(x => x.is_weapon);
+    // a copy of inventory, needed to prevent looping errors when we destroy artifacts
+    let treasures = this.inventory.filter(x => !x.is_weapon ||
+      (x.type === Artifact.TYPE_WEARABLE && (x.armor_type === Artifact.ARMOR_TYPE_ARMOR || x.armor_type === Artifact.ARMOR_TYPE_SHIELD)));
+    for (let a of treasures) {
+      this.profit += a.value;
+      a.destroy();
     }
     this.gold += this.profit;
 
