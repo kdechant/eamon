@@ -3,7 +3,7 @@ import {Component, Input} from "@angular/core";
 @Component({
   selector: "command-list",
   template: `
-    <button class="command-list-button" (click)="openCommands()">Commands</button>
+    <button class="btn command-list-button" (click)="openCommands()">Commands</button>
     <div class="command-list row" [class.hidden]="hidden">
       <div class="command-list-item col-sm-3" *ngFor="let cmd of keys">
         {{ cmd }}

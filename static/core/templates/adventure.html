@@ -17,8 +17,10 @@
         <history [history]="game?.history"></history>
         <div *ngIf="!game?.modal?.visible">
           <command-prompt [game]="game"></command-prompt>
-          <hints [game]="game"></hints>
-          <command-list [game]="game"></command-list>
+          <div class="hints-command-list">
+            <hints [game]="game"></hints>
+            <command-list [game]="game"></command-list>
+          </div>
         </div>
         <div class="game-modal" *ngIf="game?.modal?.visible">
           <p>{{game.modal?.text}}</p>

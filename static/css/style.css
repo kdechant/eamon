@@ -80,6 +80,9 @@ command-prompt .form-inline .form-control {
 command-prompt .form-control {
   font-size: 20px; }
 
+.hints-command-list {
+  margin-top: 20px; }
+
 .btn {
   font-size: 20px; }
 

@@ -3,7 +3,7 @@ import {Component, Input} from "@angular/core";
 @Component({
   selector: "hints",
   template: `
-    <button class="hints-button" (click)="openHints()">Hints</button>
+    <button class="btn hints-button" (click)="openHints()">Hints</button>
     <div class="hints" [class.hidden]="hidden">
       <div class="hint" *ngFor="let h of game.hints?.all">
         <p (click)="showAnswer(h)">
