@@ -65,6 +65,7 @@ export class Artifact extends GameObject {
   contents: Artifact[] = [];  // the Artifact objects for the things inside a container
   seen: boolean = false;
   is_lit: boolean = false;
+  inventory_message: string = "";  // replaces the "lit" or "wearing" message if set
   markings_index: number = 0; // counter used to keep track of the next marking to read
   is_worn: boolean = false; // if the monster is wearing it
   is_broken: boolean = false;  // for a doors/containers that has been smashed open

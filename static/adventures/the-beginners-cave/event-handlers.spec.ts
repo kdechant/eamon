@@ -49,8 +49,10 @@ describe("The Beginner's Cave", function() {
         expect(game.player.weapon_id).toBe(10, "player didn't ready trollsfire as expected");
         game.command_parser.run("trollsfire");
         expect(tr.is_lit).toBeTruthy();
+        expect(tr.inventory_message).toBe("glowing");
         game.command_parser.run("ready firebrand");
         expect(tr.is_lit).toBeFalsy();
+        expect(tr.inventory_message).toBe("");
 
       }
     );

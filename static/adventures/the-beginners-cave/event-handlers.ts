@@ -137,12 +137,16 @@ export function light_trollsfire(): void {
   "use strict";
   let trollsfire = Game.getInstance().artifacts.get(10);
   trollsfire.is_lit = true;
+  trollsfire.inventory_message = "glowing";
   trollsfire.sides = 10;
+  console.log(trollsfire);
 }
 
 export function put_out_trollsfire(): void {
   "use strict";
   let trollsfire = Game.getInstance().artifacts.get(10);
   trollsfire.is_lit = false;
+  trollsfire.inventory_message = "";
   trollsfire.sides = 6;
+  console.log(trollsfire);
 }

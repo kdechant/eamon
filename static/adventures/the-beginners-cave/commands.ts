@@ -1,6 +1,6 @@
 import {Game} from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
-import {put_out_trollsfire} from "./event-handlers";
+import {light_trollsfire, put_out_trollsfire} from "./event-handlers";
 
 export var custom_commands = [];
 
@@ -11,20 +11,19 @@ custom_commands.push({
     let game = Game.getInstance();
     let trollsfire = game.artifacts.get(10);
 
-    if (trollsfire.monster_id === Monster.PLAYER) {
+    if (game.player.hasArtifact(trollsfire.id)) {
       if (!trollsfire.is_lit) {
-        game.effects.print(4);
+        game.effects.print(4, "success");
         if (game.player.weapon_id === trollsfire.id) {
           // player has trollsfire ready. increase its stats.
-          trollsfire.is_lit = true;
-          trollsfire.sides = 10;
+          light_trollsfire();
         } else {
           // turned on when carrying but not ready. Ouch.
-          game.effects.print(5);
+          game.effects.print(5, "warning");
           game.player.injure(game.diceRoll(1, 5), true);
         }
       } else {
-        game.effects.print(6);
+        game.effects.print(6, "success");
         put_out_trollsfire();
       }
     } else {
