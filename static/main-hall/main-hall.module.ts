@@ -23,7 +23,7 @@ import {routing} from './main-hall.routing';
 import {SimpleNotificationsModule} from "angular2-notifications";
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule, routing],
+  imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule.forRoot(), routing],
   declarations: [
     MainHallComponent,
     IntroComponent,
