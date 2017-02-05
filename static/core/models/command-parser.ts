@@ -118,8 +118,10 @@ export class CommandParser {
 
     } else if (command_match.length > 1) {
       game.history.write("Did you mean " + command_match.join(" or ") + "?");
+      game.setReady();
     } else {
       game.history.write("I don't know the command '" + verb + "'!");
+      game.setReady();
     }
 
   }

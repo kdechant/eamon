@@ -363,8 +363,15 @@ export class Game {
     // and monster descriptions (e.g., some monsters may speak when you see them)
     this.triggerEvent("endTurn2");
 
+    this.setReady();
+  }
+
+  /**
+   * Resets the "ready" state
+   */
+  public setReady() {
     // set a timeout to activate the command prompt once everything finishes
-    setTimeout(() => { this.ready = true; }, this.history.total_delay);
+    setTimeout(() => { console.log('ready'); this.ready = true; }, this.history.total_delay);
   }
 
   /**

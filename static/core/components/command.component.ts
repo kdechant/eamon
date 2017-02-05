@@ -46,11 +46,11 @@ export class CommandPromptComponent {
    */
   onKeyPress(event: KeyboardEvent, value: string) {
 
-    if (!this.game.ready) return;
-
     switch (event.keyCode) {
 
       case CommandPromptComponent.KEYCODE_ENTER:  // enter key runs the command
+        if (!this.game.ready) return;
+
         // if the user didn't type a new command, run the last command
         if (value.length === 0) {
           value = this.game.history.getLastCommand();
