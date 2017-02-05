@@ -131,6 +131,11 @@ export class Game {
   // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
 
   /**
+   * Flag to indicate that the turn has completed and the player may enter another command.
+   */
+  ready: boolean = true;
+
+  /**
    * Flag to indicate that the game is active (i.e., the player can still enter commands)
    * The game object is created in an inactive fashion and is activated during the startup prompt.
    */
@@ -357,6 +362,9 @@ export class Game {
     // the second end turn event triggers here, so things can happen after we have seen the artifact
     // and monster descriptions (e.g., some monsters may speak when you see them)
     this.triggerEvent("endTurn2");
+
+    // set a timeout to activate the command prompt once everything finishes
+    setTimeout(() => { this.ready = true; }, this.history.total_delay);
   }
 
   /**

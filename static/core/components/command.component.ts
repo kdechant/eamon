@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, ViewChild, ElementRef, Renderer} from "@angular/core";
 
 @Component({
   selector: "command-prompt",
@@ -25,6 +25,7 @@ import {Component, Input} from "@angular/core";
 })
 export class CommandPromptComponent {
   @Input() game;
+  @ViewChild('cmd') input: ElementRef;
 
   static KEYCODE_UP: number = 38;
   static KEYCODE_DOWN: number = 40;
@@ -33,11 +34,19 @@ export class CommandPromptComponent {
   public command: string;
   public last_command: string;
 
+  constructor(private renderer: Renderer) {}
+
+  ngAfterViewInit() {
+    this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
+  }
+
   /**
    * Handle keypresses, looking for special keys like enter and arrows.
    * Other keys like letters, numbers, space, etc. will be ignored.
    */
   onKeyPress(event: KeyboardEvent, value: string) {
+
+    if (!this.game.ready) return;
 
     switch (event.keyCode) {
 
@@ -48,6 +57,7 @@ export class CommandPromptComponent {
         }
 
         // start a new history entry
+        this.game.ready = false;
         this.game.history.push(value);
 
         // run the command

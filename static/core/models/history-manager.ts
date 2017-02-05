@@ -6,6 +6,8 @@ import {HistoryEntry} from "../models/history-entry";
 export class HistoryManager {
   history: HistoryEntry[];
   index: number;
+  delay: number = 100;
+  total_delay: number = 0;
   suppressNextMessage: boolean = false;
 
   constructor() {
@@ -21,6 +23,7 @@ export class HistoryManager {
 
     // reset the counter whenever a command is added.
     this.index = this.history.length;
+    this.total_delay = 0;
   }
 
   /**
@@ -32,7 +35,8 @@ export class HistoryManager {
    */
   write(text: string, type: string = "normal") {
     if (!this.suppressNextMessage) {
-      this.history[this.index - 1].push(text, type);
+      this.total_delay += this.delay;
+      setTimeout(() => { this.history[this.index - 1].push(text, type); }, this.total_delay);
     }
     this.suppressNextMessage = false;
   }
@@ -45,7 +49,7 @@ export class HistoryManager {
    * game.history.append(" all one line");
    */
   append(text: string) {
-    this.history[this.index - 1].append(text);
+    setTimeout(() => { this.history[this.index - 1].append(text); }, this.total_delay + 10);
   }
 
   /**
