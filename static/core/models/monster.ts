@@ -924,8 +924,7 @@ export class Monster extends GameObject {
 
     this.weapons = this.inventory.filter(x => x.is_weapon);
     // a copy of inventory, needed to prevent looping errors when we destroy artifacts
-    let treasures = this.inventory.filter(x => !x.is_weapon ||
-      (x.type === Artifact.TYPE_WEARABLE && (x.armor_type === Artifact.ARMOR_TYPE_ARMOR || x.armor_type === Artifact.ARMOR_TYPE_SHIELD)));
+    let treasures = this.inventory.filter(x => !x.is_weapon && !x.isArmor());
     for (let a of treasures) {
       this.profit += a.value;
       a.destroy();

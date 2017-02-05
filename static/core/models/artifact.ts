@@ -386,6 +386,13 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Returns whether the artifact is armor
+   */
+  public isArmor(): boolean {
+    return (this.type === Artifact.TYPE_WEARABLE && (this.armor_type === Artifact.ARMOR_TYPE_ARMOR || this.armor_type === Artifact.ARMOR_TYPE_SHIELD));
+  }
+
+  /**
    * Returns the name of the armor type
    */
   public getArmorTypeName(): string {
