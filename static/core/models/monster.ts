@@ -112,7 +112,7 @@ export class Monster extends GameObject {
             m.moveToRoom(room_id);
           }
           // enemies move based on courage check (this is used when the player flees)
-          else if (m.reaction === Monster.RX_HOSTILE && m.checkCourage()) {
+          else if (m.reaction === Monster.RX_HOSTILE && m.checkCourage(true)) {
             m.moveToRoom(room_id);
           }
         }
@@ -174,9 +174,11 @@ export class Monster extends GameObject {
   /**
    * Executes a courage check on this monster. Typically used to determine
    * if a monster should flee combat, or follow the player when he/she flees.
+   * @param {following} boolean
+   *   Whether the monster is fleeing (false) or deciding to follow a fleeing player (true)
    * @returns {boolean}
    */
-  public checkCourage(): boolean {
+  public checkCourage(following: boolean = false): boolean {
     let fear = Game.getInstance().diceRoll(1, 100);
     let effective_courage = this.courage;
     if (this.damage > this.hardiness * 0.2 || this.count < this.original_group_size) {
@@ -185,6 +187,11 @@ export class Monster extends GameObject {
     } else if (this.damage > this.hardiness * 0.6) {
       // badly wounded
       effective_courage *= 0.5;
+    }
+    // player always has a 15% chance to get away when fleeing
+    // (new rule - not in EDX. it's really annoying otherwise.)
+    if (following) {
+      effective_courage = Math.min(effective_courage, 85);
     }
     return effective_courage >= fear;
   }
