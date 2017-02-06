@@ -109,6 +109,9 @@ command-prompt .form-control {
   color: red;
   font-weight: bold; }
 
+.small {
+  font-size: 16px; }
+
 .command-prompt {
   padding-top: 12px;
   width: 100%; }

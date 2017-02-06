@@ -5,31 +5,34 @@ import {PlayerService} from '../services/player.service';
 import {Game} from "../../core/models/game";
 
 @Component({
-  template: `
-  <h2><img src="/static/images/ravenmore/128/upg_wand.png">Hokas Tokas' School of Magick</h2>
-  <p>After a few minutes diligent searching, you find Hokas Tokas, the old Mage. He looks at you and says, &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you. My fees are:</p>
-  <p>Blast...1000 GP<br />
-  Heal.....500 GP<br />
-  Speed...4000 GP<br />
-  Power....100 GP</p>
-  <p>Well, which will it be?&quot;</p>
-  <p>You have {{_playerService.player?.gold}} gold pieces.</p>
-  <p>{{message}}</p>
-  <p class="danger">{{error}}</p>
-  <p *ngIf="!message && !error">
-    <button class="btn"><a (click)="buy('blast')">Blast</a></button>
-    <button class="btn"><a (click)="buy('heal')">Heal</a></button>
-    <button class="btn"><a (click)="buy('speed')">Speed</a></button>
-    <button class="btn"><a (click)="buy('power')">Power</a></button>
-  </p>
-  <p>
-    <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>
-  </p>
-  `
+  templateUrl: "/static/main-hall/templates/wizard.html",
 })
 export class WizardComponent implements OnInit  {
   public message: string;
   public error: string;
+
+  public spells: any[] = [
+    {
+      'name': "blast",
+      'description': "Damages one enemy. Can also be used to break open doors and chests.",
+      'price': 1000
+    },
+    {
+      'name': "heal",
+      'description': "Heals you or a friend.",
+      'price': 500
+    },
+    {
+      'name': "power",
+      'description': "Has an unpredictable effect which is different in every adventure.",
+      'price': 100
+    },
+    {
+      'name': "speed",
+      'description': "Doubles your agility for a time, making you a better fighter.",
+      'price': 4000
+    }
+  ];
 
   constructor(private _router: Router,
               private _route: ActivatedRoute,
@@ -45,38 +48,35 @@ export class WizardComponent implements OnInit  {
     this._router.navigate(['/player', this._playerService.player.id]);
   }
 
-  buy(spell: string) {
+  buy(spell_name: string) {
+    let player = this._playerService.player;
     this.error = "";
     this.message = "";
-    try {
-      if (this._playerService.player.spell_abilities_original[spell]) {
-        throw new Error('Hokas says, "I ought to take your gold anyway, but haven\'t you forgotten something? I already taught you that spell!" Shaking his head sadly, he returns to the bar.');
-      }
+    let spell = this.spells.find(x => x.name === spell_name);
+    if (spell.price > player.gold) {
 
-      let price: number;
-      switch (spell) {
-        case 'blast':
-          price = 1000;
-          break;
-        case 'heal':
-          price = 500;
-          break;
-        case 'speed':
-          price = 4000;
-          break;
-        case 'power':
-          price = 100;
-          break;
-      }
-      if (price > this._playerService.player.gold) {
-        throw new Error("When Hokas sees that you don't have enough to pay him, he stalks back to the bar, muttering about youngsters who should be turned into frogs.");
-      }
+      this.error = "When Hokas sees that you don't have enough to pay him, he stalks back to the bar, muttering about youngsters who should be turned into frogs.";
+
+    } else if (player.spell_abilities_original[spell.name] >= 90) {
+
+      this.error = 'Hokas says, "I ought to take your gold anyway, but you already know that spell as well as I can teach it!" Shaking his head sadly, he returns to the bar.';
+
+    } else if (player.spell_abilities_original[spell.name]) {
+      // improving ability
+
+      this.message = 'Hokas says, "Didn\'t learn it well enough the first time, eh? Well, we could all use a little brushing up." He teaches you some new techniques, takes his fee, and returns to his stool on the bar. As you walk away, you hear him order a Double Dragon Blomb.';
+      let possible_increase = 100 - player.spell_abilities_original[spell.name];
+      let inc = Math.floor(possible_increase / 4 + Game.getInstance().diceRoll(1, possible_increase / 2));
+      player.spell_abilities_original[spell.name] += inc;
+
+    } else {
+      // learning for the first time
+
       this.message = "Hokas teaches you your spell, takes his fee, and returns to his stool on the bar. As you walk away, you hear him order a Double Dragon Blomb.";
-      this._playerService.player.gold -= price;
-      this._playerService.player.spell_abilities_original[spell] = Game.getInstance().diceRoll(1, 50) + 25;
-    } catch (e) {
-      this.error = e.message;
+      player.spell_abilities_original[spell.name] = Game.getInstance().diceRoll(1, 50) + 25;
+
     }
+    player.gold -= spell.price;
   }
 
 }

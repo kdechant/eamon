@@ -4,6 +4,8 @@ import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {DividePipe} from "./pipes/divide.pipe";
+import {TitleCasePipe} from "./pipes/title-case.pipe";
+import {PercentOrNonePipe} from "./pipes/percent-or-none.pipe";
 
 import {MainHallComponent} from "./components/main-hall.component";
 import {AdventureListComponent} from "./components/adventure-list.component";
@@ -35,7 +37,9 @@ import {SimpleNotificationsModule} from "angular2-notifications";
     ShopComponent,
     StatusComponent,
     WizardComponent,
-    DividePipe
+    DividePipe,
+    PercentOrNonePipe,
+    TitleCasePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],
