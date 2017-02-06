@@ -27,6 +27,7 @@ export class ShopService {
   }
 
   private setupItems(): void {
+    let game = Game.getInstance();
 
     // always have some standard weapons
     let item: Artifact;
@@ -70,27 +71,35 @@ export class ShopService {
 
     // some special weapons
     let artifact_names = {
-      1: ["Slaymor", "Falcoor"],
-      2: ["Stinger", "Elfkill"],
-      3: ["Scrunch", "Flasher"],
-      4: ["Centuri", "Widower"],
-      5: ["Slasher", "Freedom"]
+      1: ["Slaymor", "Falcoor", "Ironheart", "Blood Claw", "Orenmir", "Shadowfury", "Mooncleaver"],
+      2: ["Stinger", "Meteor", "Featherdraw", "Heartpiercer", "Quintain", "Ashwood", "Arrowsong"],
+      3: ["Scrunch", "Warmace", "Earthshatter", "Spinefall", "Justifier", "Haunted Hammer", "Guiding Star"],
+      4: ["Centuri", "Shiverspine", "Twisted Spike", "Mithril Lance", "Blinkstrike", "Nightbane", "Ebon Halberd"],
+      5: ["Slasher", "Freedom", "Ghost Reaver", "Doombringer", "Malevolent Crusader", "Swiftblade", "Oathkeeper"]
     };
-    for (let i = 0; i < 5; i++) {
+    let magic_weapons: Artifact[] = [];
+    for (let i = 0; i < 4; i++) {
       item = new Artifact();
       item.type = Artifact.TYPE_WEAPON;
-      item.weapon_type = Game.getInstance().diceRoll(1, 5);
-      item.name = artifact_names[item.weapon_type][Math.floor(Math.random() * artifact_names[item.weapon_type].length)];
-      item.description = "You see a " + item.getWeaponTypeName() + " named " + item.name + ".";
-      item.weapon_odds = Game.getInstance().diceRoll(1, 12) * 2;
+      item.weapon_type = game.diceRoll(1, 5);
+
+      // choose a unique name
+      let name_index = game.diceRoll(1, artifact_names[item.weapon_type].length) - 1;
+      item.name = artifact_names[item.weapon_type][name_index];
+      artifact_names[item.weapon_type].splice(name_index, 1);
+
+      item.description = "You see " + (item.weapon_type === 1 ? "an" : "a") +
+        " " + item.getWeaponTypeName() + " named " + item.name + ".";
+      item.weapon_odds = game.diceRoll(1, 7) * 5 - 10;
       item.hands = item.weapon_type === 2 ? 2 : 1;
-      item.dice = i < 3 ? 2 : 3;  // always generate 3 2d* weapons and 2 3d* weapons
-      item.sides = 4 + Game.getInstance().diceRoll(1, 4) * 2;
-      item.value = (item.maxDamage() - 6) ** 2 * 5
-        + (item.weapon_odds - 10) * 5;
+      item.dice = i < 3 ? 2 : 3;  // always generate 3 2d* weapons and 1 3d* weapon
+      item.sides = 2 + game.diceRoll(1, 5) * 2;
+      item.value = Math.floor(item.maxDamage() ** 1.5 + item.weapon_odds) * 5;
       item.weight = 3;
-      this.weapons.push(item);
+      magic_weapons.push(item);
     }
+    magic_weapons.sort((w1, w2) => w1.value - w2.value);
+    this.weapons = this.weapons.concat(magic_weapons);
 
     // some basic armor and shields
     let armor_types = ["leather", "chain", "scale", "plate"];
