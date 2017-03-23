@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact, Hint, HintAnswer
+from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact, Hint, HintAnswer, \
+    ActivityLog
 
 
 class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
@@ -80,7 +81,7 @@ class PlayerSerializer(serializers.ModelSerializer):
         inventory_data = validated_data.pop('inventory') # not used here - causes errors if present
         validated_data['gold'] = 200
         player = Player.objects.create(**validated_data)
-
+        player.log("create")
         return player
 
     def update(self, instance, validated_data):
@@ -99,4 +100,10 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
+        fields = '__all__'
+
+
+class ActivityLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActivityLog
         fields = '__all__'

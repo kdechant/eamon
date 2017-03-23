@@ -288,6 +288,10 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+    def log(self, type, adventure_id = None):
+        l = ActivityLog(player=self, type=type, adventure_id=adventure_id)
+        l.save()
+
 
 class PlayerArtifact(models.Model):
     """
@@ -323,3 +327,13 @@ class PlayerArtifact(models.Model):
 
     def __str__(self):
         return self.player + " " + self.name
+
+
+class ActivityLog(models.Model):
+    """
+    Used to track player activity (going on adventures, etc.)
+    """
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='activity_log')
+    type = models.CharField(max_length=255)
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='activity_log', null=True)
+    created = models.DateTimeField(auto_now_add=True,null=True)

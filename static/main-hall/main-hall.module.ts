@@ -23,6 +23,7 @@ import {AdventureService} from "./services/adventure.service";
 import {ShopService} from "./services/shop.service";
 import {routing} from './main-hall.routing';
 import {SimpleNotificationsModule} from "angular2-notifications";
+import { CookieService } from 'angular2-cookie/services/cookies.service';
 
 @NgModule({
   imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule.forRoot(), routing],
@@ -43,7 +44,7 @@ import {SimpleNotificationsModule} from "angular2-notifications";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],
-  providers: [PlayerService, AdventureService, ShopService]
+  providers: [PlayerService, AdventureService, ShopService, CookieService]
 })
 export class MainHallModule {
 }

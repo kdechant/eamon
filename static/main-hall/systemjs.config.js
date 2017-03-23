@@ -22,6 +22,7 @@
             'rxjs': 'npm:rxjs',
             'angular2-notifications': 'npm:angular2-notifications',
             'angular2-uuid': 'npm:angular2-uuid/index.js',
+            'angular2-cookie': 'npm:angular2-cookie',
 
             // the app itself
             'core': "/static/core",
@@ -46,7 +47,11 @@
             rxjs: {
                 defaultExtension: 'js'
             },
-            'angular2-notifications': { main: 'components.js', defaultExtension: 'js' }
+            'angular2-notifications': { main: 'components.js', defaultExtension: 'js' },
+            'angular2-cookie': {
+                main: './core.js',
+                defaultExtension: 'js'
+            }
         }
     });
 

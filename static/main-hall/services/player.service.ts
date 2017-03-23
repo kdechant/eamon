@@ -1,6 +1,7 @@
 import { Injectable }     from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
+import {CookieService} from 'angular2-cookie/core';
 
 import {Player} from "../models/player";
 
@@ -19,8 +20,11 @@ export class PlayerService {
   // the current user's UUID
   private uuid: string;
 
+  private _cookieService: CookieService;
+
   constructor(private http: Http) {
       this.uuid = window.localStorage.getItem('eamon_uuid');
+      this._cookieService = new CookieService;
   }
 
   getList() {
@@ -30,16 +34,23 @@ export class PlayerService {
     );
   }
 
-  getPlayer(id: number) {
+  public getPlayer(id: number) {
     if (!this.player) {
       this.http.get('/api/players/' + id + '.json?uuid=' + this.uuid).map((res:Response) => res.json()).subscribe(
         data => {
           this.player = new Player();
           this.player.init(data);
           this.player.update();
+          this.log("load");
         }
       );
     }
+  }
+
+  public enterHall(player_id: number) {
+    window.localStorage.setItem('player_id', String(player_id));
+    this.getPlayer(player_id);
+    this.log("enter");
   }
 
   private setupPlayerList(data: any): void {
@@ -54,7 +65,10 @@ export class PlayerService {
 
   public create(player: Player) {
 
-    let headers = new Headers({ 'Content-Type': 'application/json' });
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+
+    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
     let options = new RequestOptions({ headers: headers });
 
     player.uuid = this.uuid;
@@ -65,7 +79,9 @@ export class PlayerService {
 
   public update() {
 
-    let headers = new Headers({ 'Content-Type': 'application/json' });
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
     let options = new RequestOptions({ headers: headers });
 
     let body = JSON.stringify(this.player);
@@ -74,7 +90,35 @@ export class PlayerService {
   }
 
   public delete(player: Player) {
-    return this.http.delete("/api/players/" + player.id);
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+    let headers = new Headers({ 'X-CSRFToken': csrf });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.delete("/api/players/" + player.id + '.json?uuid=' + this.uuid, options);
+  }
+
+  /**
+   * Records an entry in the activity log for the current player
+   * @param type
+   * @returns {Observable<R>}
+   */
+  public log(type: string = "") {
+
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+
+    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
+    let options = new RequestOptions({ headers: headers });
+
+    // using player ID from local storage to avoid race condition if this.player isn't loaded yet
+    let body = JSON.stringify({'player': window.localStorage.getItem('player_id'), 'type': type });
+
+    this.http.post("/api/log", body, options).map((res: Response) => res.json()).subscribe(
+      data => {
+       return true;
+      }
+    );
   }
 
 }

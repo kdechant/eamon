@@ -53,9 +53,11 @@ export class PlayerDetailComponent implements OnInit {
   }
 
   leaveTheUniverse() {
+    this._playerService.log("leave");
     this._playerService.update().subscribe(
       data => {
         this._playerService.player = null;
+        window.localStorage.removeItem('player_id');
         this._router.navigate( ['/'] );
       }
     );

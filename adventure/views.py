@@ -1,11 +1,11 @@
-from rest_framework import viewsets, filters, permissions, mixins, generics
+from rest_framework import viewsets, filters, permissions, mixins, generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
 from . import serializers
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, Hint, HintAnswer
+from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, Hint, HintAnswer, ActivityLog
 
 
 def index(request, path=''):
@@ -158,3 +158,12 @@ class PlayerViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+
+class LogViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoints for the logger. This is read/write.
+    """
+    queryset = ActivityLog.objects.all()
+    serializer_class = serializers.ActivityLogSerializer
+    permission_classes = (AllowAny,)

@@ -35,7 +35,7 @@ export class PlayerListComponent implements OnInit  {
   }
 
   gotoPlayer(player: Player) {
-    window.localStorage.setItem('player_id', String(player.id));
+    this._playerService.enterHall(player.id);
     this._router.navigate( ['/player', player.id] );
   }
 
