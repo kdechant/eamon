@@ -9,6 +9,7 @@ export class Adventure extends GameObject {
   full_description: string;
   slug: string;
   edx: string;
+  authors: string[];
   tags: string[];
 
 }

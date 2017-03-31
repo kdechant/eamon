@@ -1,16 +1,25 @@
 from rest_framework import serializers
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact, Hint, HintAnswer, \
+from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact, Hint, HintAnswer, \
     ActivityLog
 
 
+class AuthorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Author
+        fields = ('id', 'name')
+
+
 class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
+    authors = serializers.StringRelatedField(many=True)
     tags = TagListSerializerField()
 
     class Meta:
         model = Adventure
-        fields = ('id', 'name', 'description', 'full_description', 'intro_text', 'intro_question', 'slug', 'edx', 'dead_body_id', 'tags')
+        fields = ('id', 'name', 'description', 'full_description', 'intro_text', 'intro_question', 'slug', 'edx',
+                  'dead_body_id', 'authors', 'tags')
 
 
 class RoomExitSerializer(serializers.ModelSerializer):

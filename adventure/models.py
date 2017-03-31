@@ -48,6 +48,13 @@ ARMOR_TYPES = (
 )
 
 
+class Author(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class Adventure(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(default='', blank=True)
@@ -74,9 +81,10 @@ class Adventure(models.Model):
         help_text="The artifact ID of the first dead body. Leave blank to not use dead body artifacts.")
     active = models.BooleanField(default=0)
     # the first and last index of hints read from the hints file - used with the import_hints management command
-    first_hint = models.IntegerField(null=True)
-    last_hint = models.IntegerField(null=True)
+    first_hint = models.IntegerField(null=True,blank=True)
+    last_hint = models.IntegerField(null=True,blank=True)
     tags = TaggableManager(blank=True)
+    authors = models.ManyToManyField(Author)
 
     def __str__(self):
         return self.name

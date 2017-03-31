@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
 from . import serializers
-from .models import Adventure, Room, RoomExit, Artifact, Effect, Monster, Player, Hint, HintAnswer, ActivityLog
+from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Player, Hint, HintAnswer, ActivityLog
 
 
 def index(request, path=''):
@@ -17,6 +17,18 @@ def index(request, path=''):
 
 def adventure(request, adventure_id):
     return render(request, 'adventure.html', {'adventure_id': adventure_id})
+
+
+class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    For listing or retrieving authors.
+    """
+    queryset = Author.objects.filter()
+    serializer_class = serializers.AuthorSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        return queryset
 
 
 class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
