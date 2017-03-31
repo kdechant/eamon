@@ -8,12 +8,10 @@ import '../rxjs-operators';
 @Component({
   selector: "main-hall",
   template: `
-<div class="page-border">&nbsp;</div>
 <div class="container parchment">
   <h1>{{game_title}}</h1>
   <router-outlet></router-outlet>
 </div>
-<div class="page-border">&nbsp;</div>
   `
 })
 export class MainHallComponent {

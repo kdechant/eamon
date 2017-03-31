@@ -1,0 +1,45 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>The Wonderful World of Eamon - Adventure List</title>
+
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+  </head>
+
+  <body>
+
+    <div class="page-border">&nbsp;</div>
+
+    <div class="container parchment">
+      <h1>The Wonderful World of Eamon</h1>
+      <h2><img src="{% static "images/ravenmore/128/map.png" %}"> Adventures</h2>
+      <p>Eamon contains many different adventures of many different styles. Some are fantasy or sci-fi, contain a quest or just hack-and-slash. Some are aimed at beginners and others are for veteran adventurers only. Choose your fate and perish (or profit)...</p>
+      <div class="row">
+        {% for adv in adventures %}
+        <div class="adventure-list-item col-sm-6">
+          <h3>{{ adv.name }}</h3>
+  {#        {% if adv.authors > 0 %}#}
+          <p>By: {{ adv.authors.all|join:", " }}</p>
+  {#        {% endif %}#}
+          <p>{{ adv.description }}</p>
+          {% if adv.tags %}
+          <p>Tags: {{ adv.tags.names|join:", " }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+    {% include "_footer.html" %}
+
+    <div class="page-border">&nbsp;</div>
+
+    {% include "_google_analytics.html" %}
+  </body>
+
+</html>

@@ -10,13 +10,25 @@ from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster
 
 def index(request, path=''):
     """
-    For listing or retrieving adventure data.
+    The home page and container for "main hall" angular2 app
     """
     return render(request, 'index.html')
 
 
 def adventure(request, adventure_id):
+    """
+    The container for the "core" a.k.a. "adventure" angular2 app
+    """
     return render(request, 'adventure.html', {'adventure_id': adventure_id})
+
+
+def adventure_list(request):
+    adventures = Adventure.objects.filter(active=True).order_by('name')
+    return render(request, 'adventure-list.html', {'adventures': adventures})
+
+
+def manual(request):
+    return render(request, 'manual.html')
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
