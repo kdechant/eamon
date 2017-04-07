@@ -17,14 +17,21 @@ router.register(r'adventures/(?P<adventure_id>[\w-]+)/hints', HintViewSet)
 router.register(r'log', LogViewSet)
 
 urlpatterns = [
+    # REST API routes
     url(r'^api/', include(router.urls)),
+
+    # regular Django pages
     url(r'^$', views.index, name='index'),
     url(r'^adventure-list$', views.adventure_list, name='adventure-list'),
     url(r'^manual$', views.manual, name='manual'),
-    url(r'^adventure/(?P<adventure_id>[\w-]+)/$', views.adventure, name='adventure'),
 
-    # this route is a catch-all for compatibility with the Angular routes. It must be last in the list.
-    # NOTE: this currently matches URLs without a . in them, so .js files and broken images will still 404.
-    # NOTE: non-existent URLs won't 404 with this in place. They will be sent into the Angular app.
-    url(r'^(?P<path>[^\.]*)/$', views.index),
+    # routes into the Angular apps
+
+    # The following route will match anything starting with "main-hall" with or without a trailing slash.
+    # Any routes matched here will be sent to the "main hall" angular app.
+    # Additional path info in the route (e.g, /main-hall/shop or /main-hall/wizard) will be handled by angular's router.
+    url(r'^main-hall', views.main_hall, name='main-hall'),
+
+    # the "adventure" angular app
+    url(r'^adventure/(?P<adventure_id>[\w-]+)/$', views.adventure, name='adventure'),
 ]

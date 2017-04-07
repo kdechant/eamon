@@ -10,9 +10,16 @@ from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster
 
 def index(request, path=''):
     """
-    The home page and container for "main hall" angular2 app
+    The home page
     """
     return render(request, 'index.html')
+
+
+def main_hall(request):
+    """
+    The container for the "main hall" angular2 app
+    """
+    return render(request, 'main-hall.html')
 
 
 def adventure(request, adventure_id):

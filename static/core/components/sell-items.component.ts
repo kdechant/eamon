@@ -60,7 +60,7 @@ export class SellItemsComponent {
     let game = Game.getInstance();
     this._gameLoaderService.savePlayer(game.player).subscribe(
        data => {
-         window.location.href = "/player/" + window.localStorage.getItem('player_id');
+         window.location.href = "/main-hall/hall";
        },
        error => console.error("Error saving player!")
     );

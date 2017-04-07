@@ -21,7 +21,7 @@ import {PlayerService} from '../services/player.service';
     </div>
   </div>
   <p *ngIf="_playerService.players?.length == 0">There are no adventurers in the guest book.</p>
-  <p class="addplayer"><a [routerLink]="['/player/add']"><strong>Create a New Adventurer</strong></a></p>
+  <p class="addplayer"><a [routerLink]="['/register']"><strong>Create a New Adventurer</strong></a></p>
   `
 })
 export class PlayerListComponent implements OnInit  {
@@ -36,7 +36,7 @@ export class PlayerListComponent implements OnInit  {
 
   gotoPlayer(player: Player) {
     this._playerService.enterHall(player.id);
-    this._router.navigate( ['/player', player.id] );
+    this._router.navigate( ['/hall'] );
   }
 
   deletePlayer(player: Player) {

@@ -26,7 +26,6 @@ import {Adventure} from "../models/adventure";
 export class AdventureListComponent implements OnInit {
 
   constructor(private _router: Router,
-              private _route: ActivatedRoute,
               private _adventureService: AdventureService,
               private _playerService: PlayerService) {
   }
@@ -34,7 +33,7 @@ export class AdventureListComponent implements OnInit {
   ngOnInit() {
     this._adventureService.getList();
 
-    let id = Number(this._route.snapshot.params['id']);
+    let id = parseInt(window.localStorage.getItem('player_id'));
     this._playerService.getPlayer(id);
 
   }
@@ -48,6 +47,6 @@ export class AdventureListComponent implements OnInit {
   }
 
   gotoDetail() {
-    this._router.navigate(['/player', this._playerService.player.id]);
+    this._router.navigate(['/hall']);
   }
 }

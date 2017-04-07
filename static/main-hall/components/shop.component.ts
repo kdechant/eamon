@@ -1,8 +1,7 @@
 import {Component,  OnInit}  from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 import {NotificationsService} from "angular2-notifications";
 
-import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
 import {Artifact} from "../../core/models/artifact";
 import {ShopService} from "../services/shop.service";
@@ -23,21 +22,20 @@ export class ShopComponent implements OnInit  {
   };
 
   constructor(private _router: Router,
-              private _route: ActivatedRoute,
               private _playerService: PlayerService,
               private _shopService: ShopService,
               private _notificationService: NotificationsService) {
   }
 
   ngOnInit() {
-    let id = Number(this._route.snapshot.params['id']);
+    let id = parseInt(window.localStorage.getItem('player_id'));
     this._playerService.getPlayer(id);
     this.weapons = this._shopService.getWeapons();
     this.armors = this._shopService.getArmor();
   }
 
   gotoDetail() {
-    this._router.navigate(['/player', this._playerService.player.id]);
+    this._router.navigate(['/hall']);
   }
 
   buy(artifact) {

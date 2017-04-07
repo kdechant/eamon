@@ -1,9 +1,8 @@
 import {Component, OnInit}  from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
-import {StatusComponent} from "../components/status.component";
 
 @Component({
   template: `
@@ -27,29 +26,28 @@ export class PlayerDetailComponent implements OnInit {
   player: Player;
 
   constructor(private _router: Router,
-              private _route: ActivatedRoute,
               private _playerService: PlayerService) {
   }
 
   ngOnInit() {
-    let id = Number(this._route.snapshot.params['id']);
+    let id = parseInt(window.localStorage.getItem('player_id'));
     this._playerService.getPlayer(id);
   }
 
   gotoAdventures() {
-    this._router.navigate( ['/player', this._playerService.player.id, 'adventure'] );
+    this._router.navigate( ['/adventure'] );
   }
 
   gotoMarcos() {
-    this._router.navigate( ['/player', this._playerService.player.id, 'shop'] );
+    this._router.navigate( ['/shop'] );
   }
 
   gotoHokas() {
-    this._router.navigate( ['/player', this._playerService.player.id, 'wizard'] );
+    this._router.navigate( ['/wizard']);
   }
 
   gotoBank() {
-    this._router.navigate( ['/player', this._playerService.player.id, 'bank'] );
+    this._router.navigate( ['/bank'] );
   }
 
   leaveTheUniverse() {

@@ -1,8 +1,7 @@
 import {Component,  OnInit}  from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 
 import {PlayerService} from '../services/player.service';
-import {Game} from "../../core/models/game";
 
 @Component({
   template: `
@@ -32,17 +31,16 @@ export class BankComponent implements OnInit  {
   public amount: string;
 
   constructor(private _router: Router,
-              private _route: ActivatedRoute,
               private _playerService: PlayerService) {
   }
 
   ngOnInit() {
-    let id = Number(this._route.snapshot.params['id']);
+    let id = Number(window.localStorage.getItem('player_id'));
     this._playerService.getPlayer(id);
   }
 
   gotoDetail() {
-    this._router.navigate(['/player', this._playerService.player.id]);
+    this._router.navigate(['/hall']);
   }
 
   do(activity: string) {

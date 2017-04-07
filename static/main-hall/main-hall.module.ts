@@ -9,7 +9,6 @@ import {PercentOrNonePipe} from "./pipes/percent-or-none.pipe";
 
 import {MainHallComponent} from "./components/main-hall.component";
 import {AdventureListComponent} from "./components/adventure-list.component";
-import {IntroComponent} from "./components/intro.component";
 import {PlayerListComponent} from "./components/player-list.component";
 import {PlayerAddComponent} from "./components/player-add.component";
 import {PlayerDetailComponent} from "./components/player-detail.component";
@@ -29,7 +28,6 @@ import { CookieService } from 'angular2-cookie/services/cookies.service';
   imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule.forRoot(), routing],
   declarations: [
     MainHallComponent,
-    IntroComponent,
     AdventureListComponent,
     PlayerListComponent,
     PlayerAddComponent,

@@ -69,7 +69,7 @@ export class PlayerAddComponent implements OnInit  {
 
   gotoPlayer(player: Player) {
     window.localStorage.setItem('player_id', String(player.id));
-    this._router.navigate( ['/player', player.id], { queryParams: { } } );
+    this._router.navigate( ['/hall'] );
   }
 
   reroll() {
