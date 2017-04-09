@@ -22,14 +22,21 @@
       <div class="row">
         {% for adv in adventures %}
         <div class="adventure-list-item col-sm-6">
-          <h3>{{ adv.name }}</h3>
-          {% if adv.authors %}
-          <p>By: {{ adv.authors.all|join:", " }}</p>
-          {% endif %}
-          <p>{{ adv.description }}</p>
-          {% if adv.tags.names %}
-          <p>Tags: {{ adv.tags.names|join:", " }}</p>
-          {% endif %}
+          <div class="row">
+            <div class="col-sm-2"><img src="/static/images/ravenmore/128/map.png" width="64"></div>
+            <div class="col-sm-10">
+              <h3>{{ adv.name }}</h3>
+              {% if adv.authors %}
+              <p>By: {{ adv.authors.all|join:", " }}</p>
+              {% endif %}
+            </div>
+          </div>
+          <p class="desc">{{ adv.description }}</p>
+          <div class="tags">
+            {% for tagname in adv.tags.names %}
+            <div class="tag">{{ tagname }}</div>
+            {% endfor %}
+          </div>
         </div>
         {% endfor %}
       </div>

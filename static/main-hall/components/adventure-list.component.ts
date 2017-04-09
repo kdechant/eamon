@@ -14,10 +14,19 @@ import {Adventure} from "../models/adventure";
   <div class="row">
     <div class="adventure-list-item col-sm-6"
       *ngFor="let adv of _adventureService.adventures">
-      <h3><a (click)="gotoAdventure(adv)">{{adv.name}}</a></h3>
-      <p *ngIf="adv.authors.length > 0">By: {{adv.authors}}</p>
-      <p>{{adv.description}}</p>
-      <p *ngIf="adv.tags.length > 0">Tags: {{adv.tags}}</p>
+      <div class="row">
+        <div class="col-sm-2"><img src="/static/images/ravenmore/128/map.png" width="64"></div>
+        <div class="col-sm-10">
+          <h3><a (click)="gotoAdventure(adv)">{{adv.name}}</a></h3>
+          <p *ngIf="adv.authors.length > 0">By: {{adv.authors}}</p>
+        </div>
+      </div>
+      <p class="desc">{{adv.description}}</p>
+      <div class="tags">
+        <div class="tag" *ngFor="let tagname of adv.tags">
+          {{tagname}}
+        </div>
+      </div>
     </div>
   </div>
   <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>

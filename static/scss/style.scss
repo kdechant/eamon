@@ -1,6 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Mirza:400,500,700&subset=latin,latin-ext);
 
 $status-border: #b97;
+$status-bg: #dc9;
 
 body {
   background-image: url(/static/images/sf_dustywall02.jpg);
@@ -42,7 +43,7 @@ h2 {
 }
 
 .status-widget {
-  background-color: #dc9;
+  background-color: $status-bg;
   // apply fancy border with "border" and "box-shadow"
 	border: 3px dotted $status-border;
   border-radius: 5px;
@@ -202,5 +203,38 @@ command-prompt {
   }
 }
 .adventure-list-item {
-  min-height: 250px;
+  @media (min-width: 768px) {
+    min-height: 260px;
+  }
+  @media (min-width: 992px) {
+    min-height: 225px;
+  }
+  @media (min-width: 1200px) {
+    min-height: 200px;
+  }
+
+  h3 {
+    margin-top: 5px;
+    margin-bottom: 0;
+  }
+
+  .desc {
+    font-size: 93%;
+  }
+
+  .tags {
+    width: 100%;
+    float: left;
+    .tag {
+      float: left;
+      border: 1px solid $status-border;
+      border-radius: 2px;
+      margin-right: 5px;
+      border-left: 3px solid #841;
+      background: $status-bg;
+      padding: 0 2px 2px 2px;
+      font-size: 80%;
+    }
+  }
+
 }
