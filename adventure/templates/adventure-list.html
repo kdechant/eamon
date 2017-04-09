@@ -23,11 +23,11 @@
         {% for adv in adventures %}
         <div class="adventure-list-item col-sm-6">
           <h3>{{ adv.name }}</h3>
-          {% if adv.authors > 0 %}
+          {% if adv.authors %}
           <p>By: {{ adv.authors.all|join:", " }}</p>
           {% endif %}
           <p>{{ adv.description }}</p>
-          {% if adv.tags %}
+          {% if adv.tags.names %}
           <p>Tags: {{ adv.tags.names|join:", " }}</p>
           {% endif %}
         </div>
