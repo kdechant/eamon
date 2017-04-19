@@ -123,12 +123,13 @@ describe("Monster Combat", function() {
 
   it("should fumble", function () {
     let alfred = game.monsters.get(3);  // has a weapon
+    let sword = game.artifacts.get(8);  // alfred's weapon
     let thief = game.monsters.get(4);   // no weapon
 
     // fumble recovered
     game.mock_random_numbers = [98, 1];
     alfred.attack(thief);
-    expect(game.history.getLastOutput().text).toBe("--fumble recovered!");
+    expect(game.history.getLastOutput().text).toBe("-- fumble recovered!");
 
     game.mock_random_numbers = [98, 1];
     thief.attack(alfred);
@@ -137,24 +138,26 @@ describe("Monster Combat", function() {
     // weapon dropped!
     game.mock_random_numbers = [98, 42];
     alfred.attack(thief);
-    expect(game.history.getLastOutput().text).toBe("--weapon dropped!");
+    expect(game.history.getLastOutput().text).toBe("-- weapon dropped!");
 
     // user injured self
     game.mock_random_numbers = [98, 82];
-    alfred.pickUp(game.artifacts.get(8));
-    alfred.ready(game.artifacts.get(8));
+    alfred.pickUp(sword);
+    alfred.ready(sword);
     alfred.armor_class = 99; // to simplify test, armor always absorbs blow
     alfred.attack(thief);
-    expect(game.history.getLastOutput().text).toBe("--blow bounces off armor!");
+    expect(game.history.getLastOutput().text).toBe("-- blow bounces off armor!");
 
     // weapon damaged/broken
     game.mock_random_numbers = [98, 90];
     alfred.attack(thief);
-    expect(game.history.getLastOutput().text).toBe("--weapon damaged!");
+    expect(game.history.getLastOutput().text).toBe("-- weapon damaged!");
     game.mock_random_numbers = [98, 99, 1];  // fumble, damage, no hit self
     alfred.attack(thief);
-    expect(game.history.getLastOutput().text).toBe("--weapon broken!");
-
+    expect(game.history.getLastOutput().text).toBe("-- weapon broken!");
+    expect(alfred.weapon_id).toBeNull();
+    expect(sword.monster_id).toBeNull();
+    expect(sword.room_id).toBeNull();
   });
 
 });
