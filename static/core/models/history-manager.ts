@@ -36,7 +36,14 @@ export class HistoryManager {
   write(text: string, type: string = "normal") {
     if (!this.suppressNextMessage) {
       this.total_delay += this.delay;
-      setTimeout(() => { this.history[this.index - 1].push(text, type); }, this.total_delay);
+      if (this.delay > 0) {
+        setTimeout(() => {
+          this.history[this.index - 1].push(text, type);
+        }, this.total_delay);
+      } else {
+        // delay of zero is used for unit testing, otherwise the timeouts make the tests fail
+        this.history[this.index - 1].push(text, type);
+      }
     }
     this.suppressNextMessage = false;
   }
@@ -49,7 +56,7 @@ export class HistoryManager {
    * game.history.append(" all one line");
    */
   append(text: string) {
-    setTimeout(() => { this.history[this.index - 1].append(text); }, this.total_delay + 10);
+    setTimeout(() => { this.history[this.index - 1].append(text); }, this.total_delay);
   }
 
   /**

@@ -20,5 +20,6 @@ export function initMockGame() {
   let game = Game.getInstance();
   let HINTS = [];  // there is no mock data for hints yet
   game.init([ADVENTURE, ROOMS, ARTIFACTS, EFFECTS, MONSTERS, HINTS, PLAYER]);
+  game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
   game.start();
 }

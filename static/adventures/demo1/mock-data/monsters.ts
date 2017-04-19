@@ -61,7 +61,9 @@ export var MONSTERS: Array<Object> = [
     "count": 1,
     "friendliness": "hostile",
     "combat_code": 0,
-    "weapon_id": null,
+    "weapon_id": 0,
+    "weapon_dice": 1,
+    "weapon_sides": 6,
     "armor_class": 1
   },
   {

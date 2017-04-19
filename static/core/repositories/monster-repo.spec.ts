@@ -11,7 +11,7 @@ describe("Monster Repo", function() {
   it("should read the monster data", function() {
     let game = Game.getInstance();
     expect(game.monsters.all.length).toEqual(6, "There should be 6 monsters including the player.");
-    expect(game.artifacts.all.length).toEqual(31, "There should be 31 artifacts (incl. 5 dead bodies and 5 player artifacts) after setting up the player's items.");
+    expect(game.artifacts.all.length).toEqual(26, "There should be 26 artifacts (incl. 5 player artifacts) after setting up the player's items.");
 
     expect(game.monsters.get(1).id).toEqual(1);
     expect(game.monsters.get(1).name).toEqual("guard");

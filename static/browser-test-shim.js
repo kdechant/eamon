@@ -11,6 +11,10 @@ Error.stackTraceLimit = 2; // "No stacktrace"" is usually best for app testing.
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000;
 
 var baseURL = document.baseURI;
+if (!baseURL) {
+    baseTags = document.getElementsByTagName("base");
+    baseURL = baseTags.length ? baseTags[0].href : document.URL;
+}
 baseURL = baseURL + baseURL[baseURL.length-1] ? '' : '/';
 
 System.config({
