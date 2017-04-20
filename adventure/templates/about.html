@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>The Wonderful World of Eamon - About Eamon</title>
+
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+  </head>
+
+  <body>
+
+    <div class="page-border">&nbsp;</div>
+
+    <div class="container parchment">
+      <h1>The Wonderful World of Eamon</h1>
+      <h2><img src="{% static "images/ravenmore/128/scroll.png" %}"> About Eamon</h2>
+      <p>Far away, at the dead center of the Milky Way, is the planet Eamon. It doesn't orbit any suns, two great suns orbit it! The shifting pull from these great bodies bring strange forces to bear upon this planet; twisting light, tides, even the laws of science itself! Strange things happen on Planet Eamon, and the citizens must always be adaptable, for things are rarely what they seem, and quite often not the same as they were from one day to the next!</p>
+
+      <p>Eamon is played through characters who are members of the famous Free Adventurer's Guild. Free Adventurers are men and women who have dared to seek their fortune in the marvelous world of shifting laws and time. Players will often find their characters fighting terrible monsters such as orcs, trolls, and dragons, and claiming various riches and treasure as their own. However, Planet Eamon is bound by no laws of time or space. Anything can happen once an adventure has been started. At any random time, a character could end up facing such varied opponents as Billy the Kid or Darth Vader!</p>
+
+      <h3>Eamon History</h3>
+
+      <p>Eamon is a text adventure game with RPG elements. The original game was written for the Apple ][ by Donald Brown, circa 1980.</p>
+      <p>Eamon is notable for its modular design, allowing the same player character to explore many different adventures.
+        Over the years, many authors contributed hundreds of adventures to the Eamon universe.</p>
+      <p>In the 1990s came Eamon Deluxe by Frank Black, a port of the Eamon system to MS-DOS, with a number of enhancements. Frank's work is the basis for this web conversion.</p>
+
+      <h3>How does Eamon remember my character?</h3>
+      <p>Any characters you create are stored within your web browser, using a feature called "local storage." This makes it simple to get started, because you don't have to create an account or log in. It does, however, mean that your characters don't transfer between computers, or between different browsers on the same computer.</p>
+
+      <h3>What technology is Eamon built on?</h3>
+      <p>"Classic" Eamon was written in Applesoft BASIC. Eamon Deluxe is also written in BASIC and requires an MS-DOS emulator such as DOSBox.</p>
+      <p>At the time when Classic Eamon was created, BASIC was the default language that every programmer knew. When I decided to undertake this conversion, it made sense to again choose a language programmers in the 2010s are familiar with. Thus, I ported the game logic to JavaScript. Specifically, this system runs TypeScript and Angular. This has the benefit of keeping the entire game engine within the browser, making the system very fast. The adventure data is stored in a MySQL database with a Django back end.</p>
+      <p>If you are interested in seeing the source code or contributing to Eamon, click the links to my GitHub project below.</p>
+
+    </div>
+    {% include "_footer.html" %}
+
+    <div class="page-border">&nbsp;</div>
+
+    {% include "_google_analytics.html" %}
+  </body>
+
+</html>

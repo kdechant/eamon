@@ -4,7 +4,7 @@ This is a port of the classic Eamon adventure system to run on the web.
 
 Play it at http://eamon.terranok.com. The main hall and several adventures have been ported so far, with more on the way!
 
-Eamon is a text adventure game with basic RPG features. It is notable for its modular adventure system, which allows authors to write their own adventures using a database editor program and a bit of custom programming.
+Eamon is a text adventure game with RPG elements. It is notable for its modular adventure system, which allows authors to write their own adventures using a database editor program and a bit of custom programming.
 
 The original Eamon was written by Donald Brown and released around 1980 for the Apple 2. Over 250 adventures were subsequently released. Eamon was ported to MS-DOS as Eamon Deluxe by Frank Black beginning in the 1990s. That work is the basis for this rewrite.
 

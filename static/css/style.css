@@ -17,6 +17,10 @@ h2 {
     width: 64px;
     height: 64px; }
 
+h4 {
+  font-size: 20px;
+  font-weight: bold; }
+
 .parchment {
   background-image: url(/static/images/parchment_alpha.png);
   background-size: 100% 100%;

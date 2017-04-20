@@ -15,6 +15,13 @@ def index(request, path=''):
     return render(request, 'index.html')
 
 
+def about(request):
+    """
+    The "about" page
+    """
+    return render(request, 'about.html')
+
+
 def main_hall(request):
     """
     The container for the "main hall" angular2 app
