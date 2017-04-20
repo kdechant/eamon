@@ -173,3 +173,9 @@ command-prompt .form-control {
     background: #dc9;
     padding: 0 2px 2px 2px;
     font-size: 80%; }
+
+.stat {
+  font-size: 133%; }
+
+.margin-bottom-md {
+  margin-bottom: 15px; }

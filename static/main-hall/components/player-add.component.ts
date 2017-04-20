@@ -11,30 +11,47 @@ import {PlayerService} from '../services/player.service';
     <p>The Irishman walks away and in walks a man of possibly Elfish descent.</p>
     <p>He studies you for a moment and says, &quot;Please enter your name and gender.&quot;</p>
     <form (ngSubmit)="save()">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" [(ngModel)]="player.name" name="name">
-      </div>
-      <div>
-          <label>
-              <input #male name="gender" type="radio" value="m" (click)="player.gender = male.value" />
-              Male
-          </label>
-      </div>
-      <div>
-          <label>
-              <input #female name="gender" type="radio" value="f" (click)="player.gender = female.value" />
-              Female
-          </label>
-      </div>
-      <p>&quot;Your prime attributes are--&quot;</p>
-      <p>Hardiness: {{player.hardiness}}<br />
-      <p>Agility: {{player.agility}}<br />
-      <p>Charisma: {{player.charisma}}</p>
+      
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" [(ngModel)]="player.name" name="name">
+          </div>
+          <div class="row margin-bottom-md">
+            <div class="col-sm-2">
+              <label>
+                  <input #male name="gender" type="radio" value="m" (click)="player.gender = male.value" />
+                  Male
+              </label>
+            </div>
+            <div class="col-sm-2">
+              <label>
+                  <input #female name="gender" type="radio" value="f" (click)="player.gender = female.value" />
+                  Female
+              </label>
+            </div>
+          </div>
+          <p>&quot;Your prime attributes are--&quot;</p>
+          <div class="row margin-bottom-md">
+            <div class="col-sm-4 col-lg-3 text-center">
+              <p><strong>Hardiness</strong></p>
+              <p class="stat">{{player.hardiness}}</p>
+              <p><small>Hit points. Also determines how much you can carry.</small></p>
+            </div>
+            <div class="col-sm-4 col-lg-3 text-center">
+              <p><strong>Agility</strong></p>
+              <p class="stat">{{player.agility}}</p>
+              <p><small>Increases your chance to hit, and makes you harder to hit.</small></p>
+            </div>
+            <div class="col-sm-4 col-lg-3 text-center">
+              <p><strong>Charisma</strong></p>
+              <p class="stat">{{player.charisma}}</p>
+              <p><small>Makes some monsters and NPCs more friendly.</small></p>
+            </div>
+          </div>
       <div class="buttons" *ngIf="!player.id">
-        <input type="button" id="reroll" (click)="reroll()" value="Reroll" />
-        <input type="submit" value="Begin Your Adventuring Career" />
-        <input type="button" id="cancel" (click)="gotoList()" value="Cancel" />
+        <input type="button" class="btn" id="reroll" (click)="reroll()" value="Reroll" />
+        <input type="submit" class="btn" value="Begin Your Adventuring Career" />
+        <input type="button" class="btn" id="cancel" (click)="gotoList()" value="Cancel" />
       </div>
     </form>
     <div id="prosper" *ngIf="player.id">
