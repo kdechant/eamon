@@ -790,6 +790,7 @@ export class Monster extends GameObject {
         }
         this.damage = 0;
         this.count--;
+        game.triggerEvent("death", this);
       } else {
         // single monster. drop weapon, etc.
 

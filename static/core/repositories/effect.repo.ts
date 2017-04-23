@@ -71,7 +71,7 @@ export class EffectRepository {
     if (ef) {
       if (inline) {
         // print on the same line as the last effect
-        Game.getInstance().history.append(ef.text);
+        Game.getInstance().history.append(" " + ef.text);
       } else {
         // print as a new paragraph
         let final_style = style;

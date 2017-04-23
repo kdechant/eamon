@@ -12,3 +12,8 @@ UPDATE adventure_artifact SET synonyms = 'paneling,west wall' WHERE adventure_id
 UPDATE adventure_artifact SET dice = 1, weapon_type = 5 WHERE adventure_id = 18 AND artifact_id = 6; -- dagger
 UPDATE adventure_artifact SET weapon_type = 5 WHERE adventure_id = 18 AND artifact_id = 34; -- rapier
 UPDATE adventure_monster SET weapon_sides = 3 WHERE adventure_id = 18 AND monster_id = 14; -- tentacles
+
+-- beginner's forest
+UPDATE adventure_artifact SET synonyms = 'green arch,vine covered arch,arch,vines,wrought iron gate,gate,words' WHERE adventure_id = 3 AND artifact_id IN (19,20);
+UPDATE adventure_effect SET next = NULL where adventure_id = 3 and effect_id = 4;
+
