@@ -114,7 +114,7 @@ class RoomExit(models.Model):
     message = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.room_from + " " + self.direction
+        return str(self.room_from) + " " + self.direction
 
 
 class Artifact(models.Model):
@@ -156,9 +156,11 @@ class Artifact(models.Model):
     dice = models.IntegerField(null=True)
     sides = models.IntegerField(null=True)
     clothing_type = models.IntegerField(null=True,choices=CLOTHING_TYPES)
-    armor_class = models.IntegerField(default=0)
+    armor_class = models.IntegerField(default=0,
+        help_text="(Armor only) How many hits does this armor protect against?")
     armor_type = models.IntegerField(null=True,choices=ARMOR_TYPES)
-    armor_penalty = models.IntegerField(default=0,null=True)
+    armor_penalty = models.IntegerField(default=0,null=True,
+        help_text="(Armor only) How much armor expertise does the player need to use this armor without penalty?")
     get_all = models.BooleanField(default=True,
         help_text="Will the 'get all' command pick up this item?"
     )
@@ -187,12 +189,22 @@ class ArtifactMarking(models.Model):
 
 
 class Effect(models.Model):
+    STYLES = (
+        ('', 'Normal'),
+        ('success', 'Success (green)'),
+        ('special', 'Special 1 (blue)'),
+        ('special2', 'Special 1 (purple)'),
+        ('warning', 'Warning (orange)'),
+        ('danger', 'Danger (red)'),
+    )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
     effect_id = models.IntegerField(default=0) # The in-game effect ID.
     text = models.TextField(max_length=65535)
-    style = models.TextField(max_length=20, null=True) # used by EDX to display effect text in color
-    next = models.IntegerField(null=True) # The next chained effect
-    next_inline = models.IntegerField(null=True) # The next chained effect, without a paragraph break.
+    style = models.CharField(max_length=20, null=True, choices=STYLES) # used by EDX to display effect text in color
+    next = models.IntegerField(null=True,
+                               help_text="The next chained effect. Used with EDX conversions.")
+    next_inline = models.IntegerField(null=True,
+                                      help_text="The next chained effect, no line break. Used with EDX conversions.")
 
     def __str__(self):
         return self.text[0:50]
@@ -214,16 +226,20 @@ class Monster(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='monsters')
     monster_id = models.IntegerField(default=0) # The in-game monster ID.
     name = models.CharField(max_length=255)
-    synonyms = models.CharField(null=True, max_length=255)
+    synonyms = models.CharField(null=True, max_length=255, help_text="Other names used for this monster. If the name is 'python' a synonym might be 'snake'")
     description = models.TextField(max_length=1000)
-    effect = models.IntegerField(null=True) # The ID of an effect to display after the description
-    effect_inline = models.IntegerField(null=True) # The ID of an effect to display after the description, without a paragraph break.
+    # The ID of an effect to display after the description
+    effect = models.IntegerField(null=True, help_text="Used only with EDX conversions")
+    # The ID of an effect to display after the description, without a paragraph break.
+    effect_inline = models.IntegerField(null=True, help_text="Used only with EDX conversions")
     count = models.IntegerField(default=1)
     original_group_size = models.IntegerField(default=1)
     hardiness = models.IntegerField(default=12)
     agility = models.IntegerField(default=12)
     friendliness = models.CharField(max_length=10,choices=FRIENDLINESS)
-    friend_odds = models.IntegerField(default=50)
+    friend_odds = models.IntegerField(default=50,
+        help_text="Used when 'Friendliness' is 'Random'"
+    )
     combat_code = models.IntegerField(default=0, choices=COMBAT_CODES)
     courage = models.IntegerField(default=100)
     room_id = models.IntegerField(null=True)
