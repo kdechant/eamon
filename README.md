@@ -18,20 +18,4 @@ True to the original Eamon, this is non-commercial software. You can freely view
 
 **Authors wanted!** If you want to help port your favorite adventure into the new system, drop me a line and I can guide you through the process. Knowledge of JavaScript and a familiarity with the original system or Eamon Deluxe is all you need. Send adventurers to their deaths for fun and profit!
 
-## How to get started developing
-
-You need Python 3.5 or higher and a recent version of NodeJS installed.
-
-* Open a command prompt and navigate to the repository root
-* Create a virtual environment using `virtualenv venv`
-* Install Python packages using `pip install -r requirements.txt`
-* Run `python manage.py runserver`
-* Open another command prompt and navigate to the "static" folder
-* Install Angular and other JS packages using `npm install`
-* Run `npm start`
-* A browser window will pop up, showing the home screen
-
-## How to run the unit tests
-
-* Run `npm start` as above
-* In your browser, open a new tab and enter the address 'http://localhost:3000/unit_tests.html'
+See the file `ADVENTURE-DESIGN.md` in this folder to get started building an adventure.
