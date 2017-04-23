@@ -482,7 +482,10 @@ export class Monster extends GameObject {
       // if the monster's desired weapon isn't here, or the monster doesn't care which weapon it uses,
       // pick up the first available weapon
       let i = game.artifacts.visible.find(x => x.is_weapon);
-      if (typeof i !== 'undefined') this.pickUpWeapon(i);
+      if (typeof i !== 'undefined') {
+        this.pickUpWeapon(i);
+        return;
+      }
     }
 
     // attack!
