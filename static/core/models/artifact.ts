@@ -281,6 +281,20 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Frees a bound monster. If called on an artifact that is not of the "bound monster" type, this does nothing.
+   */
+  public freeBoundMonster(): void {
+    let game = Game.getInstance();
+    if (this.type === Artifact.TYPE_BOUND_MONSTER) {
+      // put the freed monster into the room
+      let monster = game.monsters.get(this.monster_id);
+      monster.room_id = game.rooms.current_room.id;
+      // remove the "bound monster" artifact
+      this.destroy();
+    }
+  }
+
+  /**
    * Deals damage to an artifact
    * @param {number} damage - The amount of damage to do.
    * @param {string} source - Whether a physical ("attack") or magical ("blast") source of damage

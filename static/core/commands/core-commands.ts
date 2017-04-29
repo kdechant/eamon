@@ -986,13 +986,10 @@ export class FreeCommand implements BaseCommand {
       } else {
         message = "Freed.";
       }
-      game.history.write(message);
-      game.triggerEvent("free", arg, a, monster);
-      // put the freed monster into the room
-      monster = game.monsters.get(a.monster_id);
-      monster.room_id = game.rooms.current_room.id;
-      // remove the "bound monster" artifact
-      a.destroy();
+      if (game.triggerEvent("free", arg, a)) {
+        game.history.write(message);
+        a.freeBoundMonster();
+      }
     } else {
       throw new CommandException("I don't see any " + arg + "!");
     }

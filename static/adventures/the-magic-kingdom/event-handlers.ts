@@ -150,13 +150,14 @@ export var event_handlers = {
     return true;
   },
 
-  "free": function(arg: string, artifact: Artifact, monster: Monster) {
+  "free": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
 
     if (artifact.id === 15) {
       // the princess' gold chain
       game.artifacts.get(12).room_id = game.rooms.current_room.id;
     }
+    return true;
   },
 
   // every adventure should have a "power" event handler.
