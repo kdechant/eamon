@@ -67,7 +67,7 @@ class Command(BaseCommand):
 
         # load the adventure objects (including ones we just created) so we can reference
         # them when importing the other files.
-        adventures = Adventure.objects.filter(edx=edx)
+        adventures = Adventure.objects.filter(edx=edx).order_by('id')
 
         # All other files are binary
         with open(folder + '/ROOMS.DAT', 'rb') as datafile:
