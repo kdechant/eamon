@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+
+  db:
+    image: mariadb:10.1
+    environment:
+      MYSQL_ROOT_PASSWORD: trollsfire
+      MYSQL_DATABASE: eamon
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - ./dbdata:/var/lib/mysql/data
+      - ./db/import.sh:/tmp/import.sh
+      - ./db/db.sql:/tmp/db.sql
+    ports:
+      - "13306:3306"
+
+  django:
+    # Docker hack to wait until MySQL is up, then run stuff.
+    command: bash -c "while ! nc -w 1 -z db 3306; do sleep 0.1; done; python ./manage.py migrate; while :; do python ./manage.py runserver 0.0.0.0:8000; sleep 1; done"
+    image: python:3.6.1
+    build: .
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      IN_DOCKER: 1
+    ports:
+      - "8000:8000"
+    user:
+      webuser
+
+  node:
+    command: bash -c "npm install; npm run watch-all"
+    image: node:latest
+#    build: ./docker/node
+    volumes:
+      - .:/app
+    depends_on:
+      - django
+    working_dir: /app/static
+#    ports:
+#      - "3000:3000"

@@ -6,43 +6,37 @@ Eamon is built on Angular and Django, but you don't need in-depth knowledge abou
 
 ## Getting started
  
-The first step is to get a copy of Eamon running on your development machine. You'll need the following:
+To design an adventure, you'll need to set up a local copy of Eamon. Thanks to Docker, this only takes a few easy steps.
 
-* Python v3.4 or higher
-* Node.js v6.x or higher
-* MySQL v5.6 or higher
+First, install docker and docker-compose on your system:
+https://docs.docker.com/engine/installation/
+https://docs.docker.com/compose/install/
 
-The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
+Docker is available for Linux, Windows 10, and MacOS.
 
-### Set up your development environment
+Once Docker is installed, open a terminal and run the following command:
 
-* Clone this Git repo
-* Get a copy of the MySQL database and load it into a database called `eamon`
-* Make sure the database user and password in eamon/settings.py match something that works on your system
-* Open a command prompt and navigate to the repository root
-* Create a Python virtual environment using `virtualenv venv`
-* If your system has both python 2 and python 3 installed, you might need to run this instead: `virtualenv -p /usr/bin/python3 venv`
-* Activate the virtual environment with `source venv/bin/activate` 
-* Install Python packages using `pip install -r requirements.txt`
-* Create a user for the admin: `python manage.py createsuperuser`
-* Run `python manage.py runserver`
-    * If you're using PyCharm, skip this step and set up your development server inside PyCharm itself. It makes life a bit easier.
-* Open a second command prompt and navigate to the "static" folder
-* Install Angular and other JS packages using `npm install`
-* Compile the TypeScript into JavaScript by running `node_modules/typescript/bin/tsc`
-* Run `npm start`
-    * If your source code editor doesn't support TypeScript, you'll need to run `npm start-all` instead. This will automatically transpile TypeScript into JavaScript when you save any .ts file.
-* A browser window will pop up, showing the home screen
+    docker-compose up -d
 
-URLs: 
-Eamon home page: http://localhost:3000
-Admin page (for building adventure data): http://localhost:3000/admin
-To log into the admin, use the username and password you used when you ran the "createsuperuser" command above.
+To load the base database, containing all currently published adventures, run:
 
-### How to run the unit tests
+    ./db/import.sh
+    
+Eamon will now be available at http://localhost:8000
 
-* Run `npm start` as above
-* In your browser, open a new tab and enter the address 'http://localhost:3000/unit_tests.html'
+The Adventure Designer is located at http://localhost:8000/admin
+
+To create an account in the adventure designer, run the following:
+
+    docker-compose run django python manage.py createsuperuser
+
+### Running the unit tests
+
+* In your browser, open a new tab and enter the address 'http://localhost:8000/static/unit_tests.html'
+
+### Manual setup
+
+If you can't use Docker, or you prefer a manual installation, see the file ADVENTURE-DESIGN-MANUAL-SETUP.md for instructions.
 
 ## Building the adventure database
 
@@ -59,13 +53,32 @@ The adventure objects are defined in the following tables in the database:
 	• Adventure_hint
 	• Adventure_hintanswer
 
-First, create a row in the `adventure_adventure` table. Give your adventure a name and a slug. Also give it a description and intro text. If you want to ask a question to the player on the intro screen, put the question in the `intro_question` field. Set the `active` field to 1.
+First, create an Adventure. Give your adventure a name and a slug. Also give it a description and intro text. If you want to ask a question to the player on the intro screen, put the question in the `intro_question` field. Set the `active` field to 1.
 
-The fields with names beginning with `edx_`, as well as the `first_hint` and `last_hint` fields, are used for importing data from the EDX databases. For new adventures, leave these blank.
+The fields with names beginning with `EDX`, as well as the `first_hint` and `last_hint` fields, are used for importing data from the EDX databases. For new adventures, leave these blank.
 
 ### Adding rooms
 
-Put your rooms in the `adventure_rooms` table. Make sure to put the adventure_id of your own adventure. The `id` column here is just an autonumber for the `rooms` table as a whole. You should give your rooms their in-adventure number (starting with 1 and counting up) in the `room_id` column.
+From the admin dashboard, click "+ Add" next to "Rooms" to create a new room.
+
+Fields are:
+
+- Adventure: Choose the adventure you created above in the drop-down
+- Room ID: Give it an ID number. Room 1 is the where the player will start. Typically, rooms are numbered sequentially starting with 1, though the program currently won't calculate this for you.
+- Name
+- Description - Unlike Classic Eamon, this can contain as much text as you like.
+- Is Dark - Check this box if the room is dark and requires a light source
+
+Room Exits
+
+Each room typically has one or more exits, connecting it to other rooms.
+
+Fields are:
+
+- Direction: n, e, s, w, ne, se, sw, nw, u, d
+- Room To: The room id of the destination room. Enter -999 for the exit to the main hall. Other negative numbers may be used for special connections. These will require a custom event handler.
+- Door ID: If this connection is blocked by a door, enter the artifact ID of the door. Leave blank if there is no door.
+- Message: currently unused
 
 ### Artifacts and monsters
 
