@@ -88,7 +88,8 @@ command-prompt .form-control {
   margin-top: 20px; }
 
 .btn {
-  font-size: 20px; }
+  padding-top: 4px;
+  font-size: 18px; }
 
 .emphasis {
   font-weight: bold; }

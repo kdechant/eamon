@@ -2,9 +2,9 @@
   <div *ngIf="action == ''">
     <p>As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back room and says, &quot;Well, as I live and breathe, if it isn't my old pal, {{_playerService.player?.name}}!&quot;</p>
     <p>So, what do you need?</p>
-    <button class="btn" (click)="action = 'buy'">Buy weapons and armor</button>
-    <button class="btn" (click)="action = 'sell'">Sell weapons and armor</button>
-    <button class="btn" (click)="gotoDetail()">Go back to Main Hall</button>
+    <button class="btn btn-default" (click)="action = 'buy'">Buy weapons and armor</button>
+    <button class="btn btn-default" (click)="action = 'sell'">Sell weapons and armor</button>
+    <button class="btn btn-default" (click)="gotoDetail()">Go back to Main Hall</button>
   </div>
 
   <div *ngIf="action == 'buy'">
@@ -28,7 +28,12 @@
                 <td>{{ artifact.weapon_odds }}%</td>
                 <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
                 <td>{{ artifact.value }} gp</td>
-                <td><button class="btn" (click)="buy(artifact)">Buy</button></td>
+                <td>
+                  <button class="btn btn-primary" (click)="buy(artifact)"
+                          *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
+                  <button class="btn disabled"
+                          *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -50,11 +55,16 @@
                 <td>{{ artifact.armor_class }}</td>
                 <td>{{ artifact.armor_penalty }}%</td>
                 <td>{{ artifact.value }} gp</td>
-                <td><button class="btn" (click)="buy(artifact)">Buy</button></td>
+                <td>
+                  <button class="btn btn-primary" (click)="buy(artifact)"
+                          *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
+                  <button class="btn disabled"
+                          *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
+                </td>
             </tr>
         </tbody>
     </table>
-    <button (click)="action = ''">Done</button>
+    <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
 
   <div *ngIf="action == 'sell'">
@@ -104,6 +114,6 @@
             </tr>
         </tbody>
     </table>
-    <button class="btn" (click)="action = ''">Done</button>
+    <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
   <simple-notifications [options]="notification_options"></simple-notifications>

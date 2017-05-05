@@ -14,7 +14,7 @@ export class WizardComponent implements OnInit  {
   public spells: any[] = [
     {
       'name': "blast",
-      'description': "Damages one enemy. Can also be used to break open doors and chests.",
+      'description': "Damages one enemy. Can also be used to break open some doors and chests.",
       'price': 1000
     },
     {
@@ -67,15 +67,16 @@ export class WizardComponent implements OnInit  {
       let possible_increase = 100 - player.spell_abilities_original[spell.name];
       let inc = Math.floor(possible_increase / 4 + Game.getInstance().diceRoll(1, possible_increase / 2));
       player.spell_abilities_original[spell.name] += inc;
+      player.gold -= spell.price;
 
     } else {
       // learning for the first time
 
       this.message = "Hokas teaches you your spell, takes his fee, and returns to his stool on the bar. As you walk away, you hear him order a Double Dragon Blomb.";
       player.spell_abilities_original[spell.name] = Game.getInstance().diceRoll(1, 50) + 25;
+      player.gold -= spell.price;
 
     }
-    player.gold -= spell.price;
   }
 
 }
