@@ -88,6 +88,51 @@ describe("The Prince's Tavern", function() {
         game.command_parser.run('speed');
         expect(game.effects.get(10).seen).toBeTruthy();
 
+        // pink elephant
+        game.player.moveToRoom(33);
+        game.command_parser.run('drink rum');
+        expect(game.effects.get(27).seen).toBeTruthy("effect 27 not shown");
+        expect(game.monsters.get(11).room_id).toBe(33, "pink elephant did not appear");
+
+      }
+    );
+  }));
+
+  it("should handle the strange brew", async(() => {
+    gameLoaderService.setupGameData(true).subscribe(
+      data => {
+        game.init(data);
+        game.start();
+
+        // distillery/strange brew
+        game.player.moveToRoom(51);
+        game.monsters.get(17).moveToRoom(50);  // get fire worm out of the way
+        game.mock_random_numbers = [1, 2, 3, 4, 5];
+        let original_ag = game.player.agility;
+        let original_ch = game.player.charisma;
+        let original_sword = game.player.weapon_abilities[5];
+        let original_ae = game.player.armor_expertise;
+
+        game.command_parser.run("drink strange brew");
+        expect(game.effects.get(28).seen).toBeTruthy("effect 28 not shown");
+        expect(game.player.charisma).toBe(original_ch - 3, "didn't lower ch");
+
+        game.command_parser.run("drink strange brew");
+        expect(game.effects.get(29).seen).toBeTruthy("effect 29 not shown");
+        expect(game.player.charisma).toBe(original_ch, "didn't raise ch");  // -3 above, +3 here
+
+        game.command_parser.run("drink strange brew");
+        expect(game.effects.get(30).seen).toBeTruthy("effect 30 not shown");
+        expect(game.player.agility).toBe(original_ag - 3, "didn't lower ag");
+
+        game.command_parser.run("drink strange brew");
+        expect(game.effects.get(31).seen).toBeTruthy("effect 31 not shown");
+        expect(game.player.weapon_abilities[5]).toBe(original_sword + 7, "didn't raise wpns");
+
+        game.command_parser.run("drink strange brew");
+        expect(game.effects.get(32).seen).toBeTruthy("effect 32 not shown");
+        expect(game.player.armor_expertise).toBe(original_ae + 10, "didn't raise ae");
+
       }
     );
   }));

@@ -93,8 +93,8 @@ export class Monster extends GameObject {
   /**
    * Moves the monster to a specific room.
    */
-  public moveToRoom(room_id: number, monsters_follow: boolean = true): void {
-    this.room_id = room_id;
+  public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
+    this.room_id = room_id || Game.getInstance().player.room_id;
 
     // when the player moves, set the current room reference
     if (this.id === Monster.PLAYER) {

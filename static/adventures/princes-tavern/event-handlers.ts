@@ -11,7 +11,12 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     // add your custom game start code here
-    game.data['combo'] = (32 + game.diceRoll(1, 10)) + '-' + (20 + game.diceRoll(1, 8)) + '-' + (30 + game.diceRoll(1, 8));
+    game.data['combo'] = [
+      (32 + game.diceRoll(1, 10)) + '-' + (20 + game.diceRoll(1, 8)) + '-' + (30 + game.diceRoll(1, 8)),
+      (32 + game.diceRoll(1, 10)) + '-' + (20 + game.diceRoll(1, 8)) + '-' + (30 + game.diceRoll(1, 8)),
+      (32 + game.diceRoll(1, 10)) + '-' + (20 + game.diceRoll(1, 8)) + '-' + (30 + game.diceRoll(1, 8)),
+      (32 + game.diceRoll(1, 10)) + '-' + (20 + game.diceRoll(1, 8)) + '-' + (30 + game.diceRoll(1, 8))
+    ];
     game.data['drinking contest active'] = false;
     game.data['locate active'] = false;
     game.data["protection spell text"] = false;
@@ -35,8 +40,20 @@ export var event_handlers = {
 
   },
 
+  "attackMonster": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // gerschter bar
+    if (game.player.room_id === 7) {
+      game.effects.print(9);
+      game.player.moveToRoom()
+      game.monsters.get(20).room_id = null;
+    }
+    return true;
+  },
+
   "beforeSpell": function(spell_name: string) {
     let game = Game.getInstance();
+    // gerschter bar
     if (game.player.room_id === 7) {
       game.effects.print(10);
       return false;
@@ -60,6 +77,36 @@ export var event_handlers = {
     return true;
   },
 
+  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+    let game = Game.getInstance();
+    if (artifact !== null) {
+      if (artifact.id === 69) {
+        // vault door
+        command.opened_something = true; // use this even if we didn't open it, to suppress other messages
+        game.modal.show("Enter combination (use dashes):", function(value) {
+          if (value === game.data['combo'][3]) {
+            game.history.write("The vault door opened!", "success");
+            artifact.is_open = true;
+          } else {
+            game.history.write("The vault door did not open.");
+          }
+        });
+      }
+    }
+  },
+
+  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    let game = Game.getInstance();
+    if (artifact && artifact.name === 'graffiti') {
+      game.history.write("You see some names and measurements:");
+      game.history.write("Deede Berry - " + game.data['combo'][0]);
+      game.history.write("Fifi LaFrentz - " + game.data['combo'][1]);
+      game.history.write("V. Ault - " + game.data['combo'][2]);
+      game.history.write("Jamie Zena - " + game.data['combo'][3]);
+      command.markings_read = true;
+    }
+  },
+
   "say": function(phrase: string) {
     let game = Game.getInstance();
     if ((phrase === 'gronk' || phrase === 'grunt') && game.monsters.get(6).isHere()) {
@@ -81,6 +128,45 @@ export var event_handlers = {
       case 'peanuts':
         game.effects.print(2);
         game.player.moveToRoom(36, true);
+        break;
+      case 'case of rum':
+      case 'case of brandy':
+      case 'case of vodka':
+        game.history.write("What a lush!");
+        if (game.monsters.get(11).room_id === null) {
+          game.effects.print(27);
+          game.monsters.get(11).moveToRoom();
+        }
+        break;
+      case '600 year old scotch':
+        game.artifacts.get(26).moveToRoom();
+        break;
+      case 'strange brew':
+        let roll = game.diceRoll(1, 5);
+        switch (roll) {
+          case 1:
+            game.effects.print(28);
+            game.player.charisma -= 3;
+            break;
+          case 2:
+            game.effects.print(29);
+            game.player.charisma += 3;
+            break;
+          case 3:
+            game.effects.print(30);
+            game.player.agility -= 3;
+            break;
+          case 4:
+            game.effects.print(31);
+            for (let wa in game.player.weapon_abilities) {
+              game.player.weapon_abilities[wa] += 7;
+            }
+            break;
+          case 5:
+            game.effects.print(32);
+            game.player.armor_expertise += 10;
+            break;
+        }
         break;
     }
   },
