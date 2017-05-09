@@ -25,7 +25,7 @@ export var event_handlers = {
     }
   },
 
-  "use": function(artifact) {
+  "use": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     switch (artifact.name) {
       case "cup of coffee":

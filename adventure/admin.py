@@ -3,6 +3,8 @@ from django.contrib import admin
 # Register your models here.
 from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Hint, HintAnswer
 
+admin.site.site_header = 'Eamon Adventure Admin'
+
 
 @admin.register(Adventure)
 class AdventureAdmin(admin.ModelAdmin):

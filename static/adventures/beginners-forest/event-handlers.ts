@@ -89,6 +89,7 @@ export var event_handlers = {
     // ranger
     if (recipient.id === 11) {
       game.history.write(recipient.name + " is still pretending that you aren't here.");
+      return false;
     }
     return true;
   },

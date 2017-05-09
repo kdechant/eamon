@@ -350,7 +350,7 @@ class PlayerArtifact(models.Model):
     armor_penalty = models.IntegerField(default=0,null=True)
 
     def __str__(self):
-        return self.player + " " + self.name
+        return str(self.player) + " " + self.name
 
 
 class ActivityLog(models.Model):
