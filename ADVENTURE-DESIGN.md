@@ -125,9 +125,20 @@ The following types of effects are built into the game and do not require custom
 * Light sources, including ones that can run our of fuel
 * Containers like chests, bags, and backpacks
 
-### Available event handlers
+### Event handler examples
 
-TODO
+There are dozens of different event handlers, each with its own unique implementation.
+ 
+Examples include:
+* Game start and custom variable initialization
+* Movement and custom exit codes
+* Using items
+* Giving items to NPCs
+* Attacking monsters (and being prevented from attacking)
+* Setting off a trap when opening a container
+* Random effects of the POWER spell
+ 
+ See EVENT-HANDERS.md for full documentation and examples of each.
 
 ### Using custom game flags and data
 

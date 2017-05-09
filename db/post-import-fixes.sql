@@ -15,5 +15,8 @@ UPDATE adventure_monster SET weapon_sides = 3 WHERE adventure_id = 18 AND monste
 
 -- beginner's forest
 UPDATE adventure_artifact SET synonyms = 'green arch,vine covered arch,arch,vines,wrought iron gate,gate,words' WHERE adventure_id = 3 AND artifact_id IN (19,20);
-UPDATE adventure_effect SET next = NULL where adventure_id = 3 and effect_id = 4;
+UPDATE adventure_effect SET NEXT = NULL WHERE adventure_id = 3 AND effect_id = 4;
 
+-- prince's tavern
+UPDATE adventure_monster SET friendliness = 'neutral' WHERE adventure_id = 85 AND monster_id IN (12, 18, 30, 32);
+UPDATE adventure_artifact SET NAME = 'front door', description = 'You see a big, heavy door in the south wall leading out of the tavern. It looks like it was built to keep something out. Or to keep something in?', room_id = 2, key_id = 28, TYPE = 8, weight = 100 WHERE adventure_id = 85 AND artifact_id = 36;

@@ -135,6 +135,7 @@ class Command(BaseCommand):
                 print('effect #' + str(id) + ': ' + text)
                 e = Effect.objects.get_or_create(adventure=adventure, effect_id=id)[0]
                 e.text = text
+                e.save()
 
         # monsters
 

@@ -326,6 +326,7 @@ export class Game {
       if (!this.rooms.current_room.seen) {
         this.rooms.current_room.show_description();
         this.rooms.current_room.seen = true;
+        this.triggerEvent("seeRoom");
       }
     }
 

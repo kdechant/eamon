@@ -86,6 +86,7 @@ export class EffectRepository {
       if (ef.next_inline !== null) {
         this.print(ef.next_inline, style, true);
       }
+      ef.seen = true;
     } else {
       Game.getInstance().history.write("Effect #" + id + " not found!");
     }

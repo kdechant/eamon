@@ -880,31 +880,35 @@ export class Monster extends GameObject {
 
     let success: boolean = false;
 
-    // roll to see if the spell succeeded
-    let roll = game.diceRoll(1, 100);
-    if (roll === 100) {
+    // this event handler can alter any spell or prevent it from firing
+    if (game.triggerEvent("beforeSpell", spell_name)) {
 
-      game.history.write("The strain of attempting to cast " + spell_name.toUpperCase() + " overloads your brain and you forget it completely for the rest of this adventure.");
-      game.player.spell_abilities[spell_name] = 0;
+      // roll to see if the spell succeeded
+      let roll = game.diceRoll(1, 100);
+      if (roll === 100) {
 
-      // always a 5% chance to work and a 5% chance to fail
-    } else if (roll <= game.player.spell_abilities[spell_name] || roll <= 5 && roll <= 95) {
-      // success!
-      success = true;
+        game.history.write("The strain of attempting to cast " + spell_name.toUpperCase() + " overloads your brain and you forget it completely for the rest of this adventure.");
+        game.player.spell_abilities[spell_name] = 0;
 
-      // check for ability increase
-      let inc_roll = game.diceRoll(1, 100);
-      if (inc_roll > this.spell_abilities_original[spell_name]) {
-        this.spell_abilities_original[spell_name] += 2;
-        game.history.write("Spell ability increased!", "success");
+        // always a 5% chance to work and a 5% chance to fail
+      } else if (roll <= game.player.spell_abilities[spell_name] || roll <= 5 && roll <= 95) {
+        // success!
+        success = true;
+
+        // check for ability increase
+        let inc_roll = game.diceRoll(1, 100);
+        if (inc_roll > this.spell_abilities_original[spell_name]) {
+          this.spell_abilities_original[spell_name] += 2;
+          game.history.write("Spell ability increased!", "success");
+        }
+
+      } else {
+        game.history.write("Nothing happens.");
       }
 
-    } else {
-      game.history.write("Nothing happens.");
+      // temporarily decrease spell ability
+      this.spell_abilities[spell_name] = Math.round(this.spell_abilities[spell_name] / 2);
     }
-
-    // temporarily decrease spell ability
-    this.spell_abilities[spell_name] = Math.round(this.spell_abilities[spell_name] / 2);
 
     return success;
   }

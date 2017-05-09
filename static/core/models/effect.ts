@@ -11,5 +11,6 @@ export class Effect extends GameObject {
   style: string;
   next: number;  // another effect chained onto this one
   next_inline: number;  // a chained effect that is printed without a paragraph break
+  seen: boolean = false;  // used mainly for unit tests
 
 }
