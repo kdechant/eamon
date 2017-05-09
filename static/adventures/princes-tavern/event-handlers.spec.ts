@@ -34,9 +34,10 @@ describe("The Prince's Tavern", function() {
     gameLoaderService.setupGameData(true).subscribe(
       data => {
         game.init(data);
+        game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
         expect(game.rooms.rooms.length).toBe(63, "Wrong room count. Check data.");
-        expect(game.artifacts.all.length).toBe(68 + 5, "Wrong artifact count. Check data."); // includes player artifacts
-        expect(game.effects.all.length).toBe(43, "Wrong effect count. Check data.");
+        expect(game.artifacts.all.length).toBe(70 + 5, "Wrong artifact count. Check data."); // includes player artifacts
+        expect(game.effects.all.length).toBe(44, "Wrong effect count. Check data.");
         expect(game.monsters.all.length).toBe(33, "Wrong monster count. Check data."); // includes player
         game.start();
 
@@ -68,9 +69,20 @@ describe("The Prince's Tavern", function() {
         game.artifacts.get(8).monster_id = Monster.PLAYER;
         game.artifacts.get(8).room_id = null;
         game.player.updateInventory();
+        expect(game.monsters.get(6).isHere()).toBeTruthy("player should be in same room as piano player");
         expect(game.player.hasArtifact(8)).toBeTruthy("player didn't get artifact 8");
         game.command_parser.run("give lamp to mad piano player");
         expect(game.effects.get(37).seen).toBeTruthy("effect 37 not shown");
+
+        // prince
+        game.player.moveToRoom(game.monsters.get(12).room_id);
+        game.artifacts.get(22).monster_id = Monster.PLAYER;
+        game.player.updateInventory();
+        expect(game.player.hasArtifact(22)).toBeTruthy("player didn't get artifact 22");
+        game.command_parser.run("give slipper to prince");
+        game.artifacts.updateVisible();
+        expect(game.effects.get(38).seen).toBeTruthy("effect 38 not shown");
+        expect(game.artifacts.get(28).isHere()).toBeTruthy('key should be in room');
 
         // hokas tokas
         game.player.moveToRoom(game.monsters.get(32).room_id);
@@ -102,6 +114,7 @@ describe("The Prince's Tavern", function() {
     gameLoaderService.setupGameData(true).subscribe(
       data => {
         game.init(data);
+        game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
         game.start();
 
         // distillery/strange brew

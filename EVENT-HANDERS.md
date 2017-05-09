@@ -208,16 +208,122 @@ There are several events related to casting spells. These include the POWER spel
  
 ### Power 
 
-The base adventure includes a default implementation of POWER, but you All adventures should
+The base adventure includes a default implementation of POWER, but you should customize it to your needs.
+
+Parameters:
+- roll (number) - a dice roll from 1 to 100. This is the roll to determine the Power effect. It is not the roll for spell success. This event handler is called only if the spell has succeeded.
+
+Example:
+
+      "power": function(roll) {
+        let game = Game.getInstance();
+        if (roll <= 50) {
+          game.history.write("You hear a loud sonic boom which echoes all around you!");
+        } else if (roll <= 75) {
+          // teleport to random room
+          game.history.write("You are being teleported...");
+          let room = game.rooms.getRandom();
+          game.player.moveToRoom(room.id);
+          game.skip_battle_actions = true;
+        } else {
+          game.history.write("All your wounds are healed!");
+          game.player.heal(1000);
+        }
+      },
 
 ### Blast
 
-### Before Spell
+This is called when the player tries to use the BLAST spell on a monster. Return false to prevent the spell from affecting the target. Otherwise, this should return true, or the spell will not work. 
 
-This is a general-purpose event handler that can be called before any spell is cast. It can alter the spell or prevent it from firing.
+Example:
+
+      "blast": function(arg: string, target: Monster) {
+        let game = Game.getInstance();
+        // this monster disappears if blasted
+        if (target.id === 20) {
+          game.effects.print(21);
+          game.monsters.get(20).room_id = null;
+        }
+        return true;
+      },
+
+### Before a Spell
+
+The "beforeSpell" event handler is a general-purpose handler that can be called before any spell is cast. It can alter the spell or prevent it from firing.
 
 Parameters:
 - spell_name (string) - The name of the spell ("blast", "heal", "power", or "speed")
 
 Example:
 
+      "beforeSpell": function(spell_name: string) {
+        let game = Game.getInstance();
+        // this prevents all spell casting in a certain room
+        if (game.player.room_id === 7) {
+          game.history.write("This is an anti-magic area!");
+          return false;
+        }
+        // this prevents only POWER in a different room
+        if (game.player.room_id === 8 && spell_name === 'power') {
+          game.history.write("A wizard's magic has prevented the POWER spell from working in this area!");
+          return false;
+        }
+        return true;
+      },
+
+## After selling items
+
+The `afterSell` event handler provides extra logic on the final screen of the game, after the player has sold treasures to Sam Slicker, but before the return to the Main Hall. This is useful for giving a reward to the player for completing a quest.
+
+In this event handler, you will need to use `game.exit_message.push()` instead of the usual `game.history.write()` to display output to the player.
+
+Parameters: none
+
+Example:
+
+      "afterSell": function() {
+        let game = Game.getInstance();
+        let cynthia = game.monsters.get(3);
+        // Duke Luxom's Reward - given if Cynthia made it to the exit and still likes the player.
+        // The "here" in "isHere()" refers to the last room the player was in before stepping out the exit.
+        if (cynthia.isHere() && cynthia.reaction !== Monster.RX_HOSTILE) {
+          let reward = game.player.charisma * 10;
+          game.exit_message.push("Additionally, you receive " + reward + " gold pieces for the safe return of Cynthia.");
+          game.player.gold += reward;
+        }
+      },
+
+# Requesting player input
+
+In some event handlers, you may need to ask for additional input from the player before proceeding. For this purpose, the game engine contains a "modal" object which displays a prompt.
+
+Function: `game.modal.show()`
+
+Parameters:
+- text (string) - The text of the question to ask the player
+- callback (function) - A TypeScript function to run as a callback. Within this function, check if the player's answer matches what you expected.
+
+Example:
+
+      "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+        let game = Game.getInstance();
+        // open a vault door with a combination lock
+        if (artifact !== null && artifact.id === 3) {
+          command.opened_something = true; // specific to "open" event handler - this suppress the built-in messages
+          
+          // show the modal here
+          game.modal.show("Enter combination (use dashes):", function(value) {
+            if (value === '11-16-27') {
+              game.history.write("The vault door opened!", "success");
+              artifact.is_open = true;
+            } else {
+              game.history.write("The vault door did not open.");
+            }
+          });
+          
+        }
+      },
+
+The modal handles the logic for collecting the user's input and pausing the game clock until the player answers the question. The text the user entered will be available in the `value` parameter of the callback function.
+
+The modal is designed to work in early-turn event handlers like "beforeMove", "open", and "use". Due to the animation of Eamon's results display, it should not be used in "endTurn" event handlers, as it may behave unpredictably.

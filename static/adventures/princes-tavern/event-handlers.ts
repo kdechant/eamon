@@ -73,6 +73,10 @@ export var event_handlers = {
       game.effects.print(13);
       game.effects.print(14);
       game.data['locate active'] = true;
+    } else if (recipient.id === 12 && artifact.id === 22) {
+      // slipper to prince
+      game.effects.print(38);
+      game.artifacts.get(28).moveToRoom();
     }
     return true;
   },
