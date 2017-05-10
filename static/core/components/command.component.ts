@@ -58,7 +58,6 @@ export class CommandPromptComponent {
 
         // start a new history entry
         this.game.ready = false;
-        this.game.history.push(value);
 
         // run the command
         let result = this.game.command_parser.run(value);

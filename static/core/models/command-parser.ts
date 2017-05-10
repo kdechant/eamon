@@ -100,6 +100,7 @@ export class CommandParser {
     if (command_match.length === 1) {
       // found exactly one match. run it.
       let command = this.available_commands[this.available_verbs[command_match[0]]];
+      game.history.push(command_match[0] + (args.length ? " " + args : ""));
       try {
         command.run(verb, args);
         if (tick) {
@@ -118,9 +119,11 @@ export class CommandParser {
       }
 
     } else if (command_match.length > 1) {
-      game.history.write("Did you mean " + command_match.join(" or ") + "?");
+      game.history.push(input);
+      game.history.write("Did you mean '" + command_match.join("' or '") + "'?");
       game.setReady();
     } else {
+      game.history.push(input);
       game.history.write("I don't know the command '" + verb + "'!");
       game.setReady();
     }
