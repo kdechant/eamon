@@ -35,6 +35,7 @@ export class HistoryManager {
    */
   write(text: string, type: string = "normal") {
     if (!this.suppressNextMessage) {
+      text = text.charAt(0).toUpperCase() + text.slice(1);
       this.total_delay += this.delay;
       if (this.delay > 0) {
         setTimeout(() => {
@@ -106,12 +107,14 @@ export class HistoryManager {
   /**
    * Gets the most recent output entry added to the history.
    * Used for unit tests.
+   * @param {number} num
+   *   The number of history entries to go back (default 1)
    */
-  getLastOutput() {
+  getLastOutput(num: number = 1) {
     if (this.history.length > 0) {
       let res = this.history[this.history.length - 1]["results"];
-      if (res.length > 0) {
-        return res[res.length - 1];
+      if (res.length >= num) {
+        return res[res.length - num];
       } else {
         return null;
       }

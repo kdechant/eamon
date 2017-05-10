@@ -91,7 +91,7 @@ describe("Monster", function() {
     m.pickUpWeapon(game.artifacts.get(3));
     expect(m.hasArtifact(3)).toBe(true);
     expect(m.weapon_id).toBe(3);
-    expect(game.history.getLastOutput().text).toBe("guard picks up magic sword.");
+    expect(game.history.getLastOutput().text).toBe("Guard picks up magic sword.");
   });
 
   it("should know how to ready its best weapon", function () {

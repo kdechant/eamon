@@ -1,5 +1,5 @@
 /**
- * Unit tests for The Beginner's Cave
+ * Unit tests for The Prince's Tavern
  */
 import {async, getTestBed} from '@angular/core/testing';
 import {HttpModule} from '@angular/http';
