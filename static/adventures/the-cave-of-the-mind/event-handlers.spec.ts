@@ -32,8 +32,9 @@ describe("Cave of the Mind", function() {
     gameLoaderService.setupGameData(true).subscribe(
       data => {
         game.init(data);
+        game.history.delay = 0;
         expect(game.rooms.rooms.length).toBe(32, "Wrong room count. Check data.");
-        expect(game.artifacts.all.length).toBe(51 + 16 + 5, "Wrong artifact count. Check data."); // includes player artifacts
+        expect(game.artifacts.all.length).toBe(52 + 5, "Wrong artifact count. Check data."); // includes player artifacts
         expect(game.effects.all.length).toBe(15, "Wrong effect count. Check data.");
         expect(game.monsters.all.length).toBe(16, "Wrong monster count. Check data."); // includes player
 
@@ -51,7 +52,7 @@ describe("Cave of the Mind", function() {
         // use the potion
         let p = game.artifacts.get(16);
         game.triggerEvent("use", "potion", p);
-        expect(game.history.getLastOutput().text).toBe(game.effects.get(10).text);
+        expect(game.effects.get(10).seen).toBeTruthy("Effect 10 was not shown");
         expect(game.won).toBeTruthy();
 
         // inscription
@@ -59,9 +60,9 @@ describe("Cave of the Mind", function() {
         expect(game.player.inventory.length).toBe(5);
         game.triggerEvent("beforeRead", "", game.artifacts.get(17));
         expect(game.player.inventory.length).toBe(2, "Player weapons did not disappear");
-        expect(game.artifacts.get(68).room_id).toBe(1);
-        expect(game.artifacts.get(69).room_id).toBe(2);
-        expect(game.artifacts.get(70).room_id).toBe(3);
+        expect(game.artifacts.get(53).room_id).toBe(1);
+        expect(game.artifacts.get(54).room_id).toBe(2);
+        expect(game.artifacts.get(55).room_id).toBe(3);
 
         // power spell effects
         game.triggerEvent("power", 20);
