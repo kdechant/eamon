@@ -17,7 +17,23 @@ export class MoveCommand implements BaseCommand {
 
     let game = Game.getInstance();
 
-    // TODO: turn "north" into "n"
+    // turn long words ("north") into short ("n")
+    let directions = {
+      "north": "n",
+      "northeast": "ne",
+      "east": "e",
+      "southeast": "se",
+      "south": "s",
+      "southwest": "sw",
+      "west": "w",
+      "northwest": "nw",
+      "up": "u",
+      "down": "d",
+    };
+    if (directions.hasOwnProperty(verb)) {
+      verb = directions[verb];
+    }
+
     let room_from = game.rooms.current_room;
     let exit = game.rooms.current_room.getExit(verb);
     let msg: string;
