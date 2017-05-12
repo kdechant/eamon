@@ -31,13 +31,6 @@ export var event_handlers = {
       game.data["protection spell text"] = true;
     }
 
-    // worm text moved to the monster description.
-    // if (game.player.room_id === 51 && !game.data["protection spell text"]) {
-    //   game.effects.print(7, "special2");
-    //   game.effects.print(8, "special2");
-    //   game.data["worm text"] = true;
-    // }
-
   },
 
   "attackMonster": function(arg: string, target: Monster) {
@@ -47,6 +40,32 @@ export var event_handlers = {
       game.effects.print(9);
       game.player.moveToRoom()
       game.monsters.get(20).room_id = null;
+    }
+    return true;
+  },
+
+  "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
+    let game = Game.getInstance();
+
+    console.log(room, exit)
+
+    if (exit.room_to === -5) {
+      game.effects.print(5, "danger");
+      game.effects.print(6, "danger");
+      game.die();
+      return false;
+    } else if (exit.room_to === -999) {
+      if (game.player.hasArtifact(25)) {
+        game.effects.print(41);
+      } else if (game.artifacts.get(25).room_id === null && game.artifacts.get(25).monster_id === null) {
+        // drank it
+        game.effects.print(40, "danger");
+        game.die();
+        return false;
+      } else {
+        game.effects.print(39);
+        return false;
+      }
     }
     return true;
   },
@@ -63,7 +82,6 @@ export var event_handlers = {
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
-    console.log(artifact, recipient);
 
     if (recipient.id === 6 && artifact.id === 8) {
       // lamp to piano player

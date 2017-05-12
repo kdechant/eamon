@@ -8,7 +8,6 @@ custom_commands.push({
   verbs: ["locate"],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
-console.log(game.data['locate active']);
     if (game.data['locate active']) {
 
       game.history.write("Your mind reaches beyond your body...", "special");

@@ -106,6 +106,12 @@ describe("The Prince's Tavern", function() {
         expect(game.effects.get(27).seen).toBeTruthy("effect 27 not shown");
         expect(game.monsters.get(11).room_id).toBe(33, "pink elephant did not appear");
 
+        // stable
+        game.player.moveToRoom(10);
+        game.command_parser.run('s');
+        expect(game.effects.get(5).seen).toBeTruthy("failed to show effect 5");
+        expect(game.effects.get(6).seen).toBeTruthy("failed to show effect 6");
+        expect(game.died).toBeTruthy("player should be dead");
       }
     );
   }));
@@ -150,4 +156,28 @@ describe("The Prince's Tavern", function() {
     );
   }));
 
+  it("should handle the exit logic", async(() => {
+    gameLoaderService.setupGameData(true).subscribe(
+      data => {
+        game.init(data);
+        game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
+        game.start();
+
+        game.player.moveToRoom(2);
+        game.artifacts.get(28).monster_id = Monster.PLAYER;
+        game.player.updateInventory();
+        game.command_parser.run('s');
+        expect(game.effects.get(39).seen).toBeTruthy("failed to show effect 39");
+        expect(game.won).toBeFalsy("player should not win");
+
+        // again, with the bottle
+        game.artifacts.get(25).monster_id = Monster.PLAYER;
+        game.artifacts.get(25).room_id = null;
+        game.player.updateInventory();
+        game.command_parser.run('s');
+        expect(game.effects.get(41).seen).toBeTruthy("failed to show effect 41");
+        expect(game.won).toBeTruthy("player should win");
+      }
+    );
+  }));
 });

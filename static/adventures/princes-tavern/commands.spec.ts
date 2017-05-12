@@ -40,7 +40,6 @@ describe("The Prince's Tavern", function() {
 
         // before active
         game.command_parser.run("locate rum", false);
-        console.log(game.history.history);
         expect(game.history.getLastOutput().text).toBe("Nothing happens.");
 
         // after active
