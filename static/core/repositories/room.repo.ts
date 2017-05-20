@@ -37,9 +37,14 @@ export class RoomRepository {
 
   /**
    * Gets a random room.
+   * @param (number[]) An array of rooms to exclude.
    * @return Room
    */
-  getRandom() {
-    return this.rooms[Game.getInstance().diceRoll(1, this.rooms.length) - 1];
+  getRandom(exclude: number[] = []) {
+    let roll = Game.getInstance().diceRoll(1, this.rooms.length) - 1;
+    while (exclude.find(x => x === roll)) {
+      roll = Game.getInstance().diceRoll(1, this.rooms.length) - 1;
+    }
+    return this.rooms[roll];
   }
 }

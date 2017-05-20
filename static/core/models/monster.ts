@@ -91,6 +91,11 @@ export class Monster extends GameObject {
   weapons: Artifact[]; // list of weapons, used when selling at game exit
 
   /**
+   * A container for custom data used by specific adventures
+   */
+  data: { [key: string]: any; } = {};
+
+  /**
    * Moves the monster to a specific room.
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {

@@ -143,13 +143,40 @@ Sample:
         }
       },
 
+## Drink
+
+This is called when the player tries to drink something. It can be used to handle situations where the player needs
+to drink something that is not an explicit artifact. For example, to order a drink at a bar.
+
+Parameters:
+- arg (string) - What the player typed after USE (e.g., "use *lever*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
+
+Example:
+
+    "drink": function(arg: string, artifact: Artifact) {
+        let game = Game.getInstance();
+        // use the "drink" command to order a drink from the bartender
+        if (game.player.room_id === 5) {  // the bar
+          game.history.write("The bartender pours you a drink.");
+          game.artifacts.get(6).moveToRoom(); // moves the "beer" artifact to the current room
+          return false; // stops the game from running the rest of the "drink" command logic
+        }
+        return true; // normal situation not handled above; resume regular command logic (healing potions, etc.) 
+      },
+    },
+
+A note on healing potions:
+
+These common types of artifacts are handled by the core game and don't require a custom event handler. Set the artifact type to "Edible" (9) or "Drinkable" (6), then set the dice and sides to match the amount of healing effect you want.
+
 ## Use
 
 The `use()` handler is called whenever a player tries to USE an artifact. This includes eating or drinking artifacts. (Healing potions and healing food are built into the core game, but other special effects should use this event handler).
 
 Parameters:
 - arg (string) - What the player typed after USE (e.g., "use *lever*" )
-- artifact (Artifact) - If the player's text matched the name of an artifact, this will contain the Artifact object.
+- artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
 
 Example:
 

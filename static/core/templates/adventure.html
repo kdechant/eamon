@@ -21,11 +21,18 @@
             <command-list [game]="game"></command-list>
           </div>
         </div>
+
         <div class="game-modal" *ngIf="game?.modal?.visible">
-          <p>{{game.modal?.text}}</p>
-          <p><input type="text" [(ngModel)]="game.modal.value"></p>
-          <p><button class="btn btn-success" id="return" (click)="game.modal.submit()">Go</button></p>
+          <p>{{game.modal?.current_question?.question}}</p>
+          <div class="modal-text" *ngIf="game.modal?.current_question?.type == 'text'">
+            <p><input type="text" [(ngModel)]="game.modal.current_question.answer"></p>
+            <p><button class="btn btn-success" id="return" (click)="game.modal.submit()">Go</button></p>
+          </div>
+          <div class="modal-multiple" *ngIf="game.modal?.current_question?.type == 'multiple_choice'">
+            <p><span *ngFor="let c of game?.modal?.current_question?.choices"><button class="btn btn-primary" (click)="game.modal.submit(c)">{{ c }}</button></span></p>
+          </div>
         </div>
+
       </div>
       <div class="status col-sm-5">
         <status [game]="game"></status>

@@ -46,6 +46,31 @@ custom_commands.push({
   },
 });
 
+custom_commands.push({
+  name: "pay",
+  verbs: ["pay"],
+  run: function(verb: string, arg: string): void {
+    let game = Game.getInstance();
+    if (game.player.room_id === 36 && game.data['bar tab']) {
+      if (game.in_battle) {
+        game.player.gold -= game.data['bar tab'] + 100;
+        if (game.player.gold < 0) game.player.gold = 0;
+        game.data['bar tab'] = 0;
+        game.monsters.get(13).reaction = Monster.RX_NEUTRAL;
+        game.monsters.get(14).reaction = Monster.RX_NEUTRAL;
+        game.history.write('You have paid for your drink, plus damages. The bar is open for business.');
+      } else {
+        game.player.gold -= game.data['bar tab'];
+        if (game.player.gold < 0) game.player.gold = 0;
+        game.data['bar tab'] = 0;
+        game.history.write('The bartender smiles and replies, "Thank you."');
+      }
+    } else {
+      game.history.write("Your tab is all paid up.");
+    }
+  },
+});
+
 function fix_room_name(name) {
   let n = name.replace("You are ", "");
   if (n.charAt(n.length - 1) === ".") {

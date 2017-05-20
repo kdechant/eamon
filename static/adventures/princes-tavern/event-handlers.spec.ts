@@ -9,6 +9,8 @@ import {GameLoaderService} from "../../core/services/game-loader.service";
 import {event_handlers} from "adventure/event-handlers";
 import {Monster} from "../../core/models/monster";
 
+import {drunk_messages} from "adventure/event-handlers";
+
 import {
   TestBed, inject
 } from '@angular/core/testing';
@@ -105,6 +107,23 @@ describe("The Prince's Tavern", function() {
         game.command_parser.run('drink rum');
         expect(game.effects.get(27).seen).toBeTruthy("effect 27 not shown");
         expect(game.monsters.get(11).room_id).toBe(33, "pink elephant did not appear");
+
+        // bac
+        game.data['drinks'] = 30; // mock player has HD of 50
+        game.triggerEvent('endTurn');
+        expect(game.history.getLastOutput().text).toBe(drunk_messages[0].text);
+        game.data['drinks'] = 51;
+        game.triggerEvent('endTurn');
+        expect(game.history.getLastOutput().text).toBe(drunk_messages[1].text);
+        game.data['drinks'] = 55;
+        game.triggerEvent('endTurn');
+        expect(game.history.getLastOutput().text).toBe(drunk_messages[2].text);
+        game.data['drinks'] = 59;
+        game.triggerEvent('endTurn');
+        expect(game.history.getLastOutput().text).toBe(drunk_messages[3].text);
+        game.data['drinks'] = 63;
+        game.triggerEvent('endTurn');
+        expect(game.history.getLastOutput().text).toBe(drunk_messages[4].text);
 
         // stable
         game.player.moveToRoom(10);

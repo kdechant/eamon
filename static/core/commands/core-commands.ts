@@ -534,16 +534,18 @@ export class DrinkCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
     let item = game.artifacts.getLocalByName(arg);
-    if (item) {
-      if (item.type === Artifact.TYPE_DRINKABLE) {
-        if (item.quantity > 0) {
-          game.history.write("You drink the " + item.name + ".");
-          item.use();
+    if (game.triggerEvent("drink", item) !== false) {
+      if (item) {
+        if (item.type === Artifact.TYPE_DRINKABLE) {
+          if (item.quantity > 0) {
+            game.history.write("You drink the " + item.name + ".");
+            item.use();
+          } else {
+            throw new CommandException("There's none left!");
+          }
         } else {
-          throw new CommandException("There's none left!");
+          throw new CommandException("You can't drink that!");
         }
-      } else {
-        throw new CommandException("You can't drink that!");
       }
     }
   }
