@@ -38,7 +38,7 @@ describe("The Prince's Tavern", function() {
         game.init(data);
         game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
         expect(game.rooms.rooms.length).toBe(63, "Wrong room count. Check data.");
-        expect(game.artifacts.all.length).toBe(70 + 5, "Wrong artifact count. Check data."); // includes player artifacts
+        expect(game.artifacts.all.length).toBe(72 + 5, "Wrong artifact count. Check data."); // includes player artifacts
         expect(game.effects.all.length).toBe(44, "Wrong effect count. Check data.");
         expect(game.monsters.all.length).toBe(33, "Wrong monster count. Check data."); // includes player
         game.start();
@@ -124,6 +124,30 @@ describe("The Prince's Tavern", function() {
         game.data['drinks'] = 63;
         game.triggerEvent('endTurn');
         expect(game.history.getLastOutput().text).toBe(drunk_messages[4].text);
+
+        // sealed door
+        game.player.moveToRoom(52);
+        game.command_parser.run("open door", false);
+        expect(game.artifacts.get(72).is_open).toBeFalsy("Shouldn't be able to open sealed door");
+        game.command_parser.run("say evantke", false);
+        expect(game.artifacts.get(72).is_open).toBeTruthy("Door should open magically");
+
+        // candle
+        game.artifacts.get(1).moveToRoom();
+        game.artifacts.get(15).moveToRoom();
+        game.mock_random_numbers = [44];
+        game.command_parser.run("light candle");
+        expect(game.player.room_id).toBe(44, "player did not teleport");
+
+        // barrel
+        game.player.moveToRoom(9);
+        game.command_parser.run("drink wine", false);
+        expect(game.effects.get(19).seen).toBeTruthy("failed to show effect 19");
+        expect(game.player.room_id).toBe(12, "player did not move to empty barrel");
+        game.artifacts.updateVisible();
+        game.command_parser.run("get loose boards", false);
+        console.log(game.history.history)
+        expect(game.player.room_id).toBe(16, "Player should have moved");
 
         // stable
         game.player.moveToRoom(10);

@@ -646,25 +646,29 @@ export class LightCommand implements BaseCommand {
   verbs: string[] = ["light"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let artifact = game.player.findInInventory(arg);
-    if (artifact) {
-      if (artifact.type === Artifact.TYPE_LIGHT_SOURCE) {
-        if (artifact.is_lit) {
-          artifact.is_lit = false;
-          game.history.write("You put out the " + artifact.name + ".");
-        } else {
-          if (artifact.quantity > 0 || artifact.quantity === -1) {
-            artifact.is_lit = true;
-            game.history.write("You light the " + artifact.name + ".");
+    let artifact = game.artifacts.getLocalByName(arg);
+
+    if (game.triggerEvent('light', arg, artifact) !== false ) {
+
+      if (artifact) {
+        if (artifact.type === Artifact.TYPE_LIGHT_SOURCE) {
+          if (artifact.is_lit) {
+            artifact.is_lit = false;
+            game.history.write("You put out the " + artifact.name + ".");
           } else {
-            game.history.write("It's out of fuel!");
+            if (artifact.quantity > 0 || artifact.quantity === -1) {
+              artifact.is_lit = true;
+              game.history.write("You light the " + artifact.name + ".");
+            } else {
+              game.history.write("It's out of fuel!");
+            }
           }
+        } else {
+          throw new CommandException("That isn't a light source!");
         }
       } else {
-        throw new CommandException("That isn't a light source!");
+        throw new CommandException("You aren't carrying a " + arg + "!");
       }
-    } else {
-      throw new CommandException("You aren't carrying a " + arg + "!");
     }
 
   }
@@ -759,18 +763,19 @@ export class OpenCommand implements BaseCommand {
             if (game.player.hasArtifact(a.key_id)) {
               let key = game.artifacts.get(a.key_id);
               game.history.write("You unlock it using the " + key.name + ".");
+              a.is_open = true;
             } else {
               throw new CommandException("It's locked and you don't have the key!");
             }
           } else {
             game.history.write(a.name + " opened.");
+            a.is_open = true;
 
             if (a.type === Artifact.TYPE_CONTAINER) {
               a.printContents();
             }
 
           }
-          a.is_open = true;
           this.opened_something = true;
         } else {
           throw new CommandException("It's already open!");

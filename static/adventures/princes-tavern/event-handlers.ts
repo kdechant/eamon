@@ -6,6 +6,8 @@ import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {ModalQuestion} from "../../core/models/modal";
 
+//
+
 // some data - export so we can use it in tests
 export var drinks = [
   {"name": "seven-7", "price": 2, "strength": 4},
@@ -53,6 +55,7 @@ export var event_handlers = {
     game.data["drinks"] = 0;
     game.data["how drunk"] = 0;
     game.data["original ag"] = game.player.agility;
+    game.data['barrel air'] = 4;
 
     // drinkers
     game.monsters.get(19).data['tolerance'] = 49;
@@ -83,11 +86,13 @@ export var event_handlers = {
           // scatter player's artifacts
           game.data['drinks'] = 0;
           game.data['drinking contest active'] = 0;
+          game.player.agility = game.data['original ag'];
           game.history.write("You wake up several hours later. All your possessions are gone! They must have been stolen while you were passed out.", "emphasis");
           for (let i of game.player.inventory) {
-            let dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 57]);
+            let dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 54, 57, 61]);
             i.moveToRoom(dest.id);
           }
+          game.player.updateInventory();
         }
       } else if (condition < .25) {
         update_status(5);
@@ -101,6 +106,17 @@ export var event_handlers = {
     } else if (game.data['drinks'] > game.player.hardiness / 3) {
       update_status(1);
     }
+
+    if (game.player.room_id === 9) {
+      game.data['barrel air']--;
+      if (game.data['barrel air'] <= 0) {
+        game.effects.print(35);
+        game.die(false);
+      } else if (game.data['barrel air'] <= 1) {
+        game.history.write("You are almost out of air!", "warning");
+      }
+    }
+
   },
 
   "endTurn2": function() {
@@ -136,7 +152,7 @@ export var event_handlers = {
       game.effects.print(6, "danger");
       game.die();
       return false;
-    } else if (exit.room_to === -999) {
+    } else if (room.id === 2 && exit.room_to === -999) {
       if (game.player.hasArtifact(25)) {
         game.effects.print(41);
       } else if (game.artifacts.get(25).room_id === null && game.artifacts.get(25).monster_id === null) {
@@ -146,6 +162,7 @@ export var event_handlers = {
         return false;
       } else {
         game.effects.print(39);
+        game.player.agility = game.data['original ag']; // sober up
         return false;
       }
     } else if (room.id === 36 && game.data["bar tab"] > 0) {
@@ -158,6 +175,15 @@ export var event_handlers = {
         game.monsters.get(14).reaction = Monster.RX_HOSTILE;
       }
       return false;
+    }
+    return true;
+  },
+
+  "afterGet": function(arg, artifact) {
+    let game = Game.getInstance();
+    // loose boards
+    if (artifact && artifact.id === 35) {
+      game.player.moveToRoom(16);
     }
     return true;
   },
@@ -282,6 +308,11 @@ export var event_handlers = {
         game.monsters.get(14).reaction = Monster.RX_HOSTILE;
       }
       return false;
+
+    // wine barrel
+    } else if (game.player.room_id === 9) {
+      game.effects.print(19);
+      game.player.moveToRoom(12);
     }
     return true;
   },
@@ -305,6 +336,24 @@ export var event_handlers = {
     return true;
   },
 
+  "light": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if (artifact !== null) {
+      if (artifact.id === 15) {
+        if (game.artifacts.get(1).isHere()) {
+          game.history.write("You have been teleported!");
+          game.artifacts.get(1).destroy();
+          let dest = game.rooms.getRandom([1, 12, 16, 54, 61]);
+          game.player.moveToRoom(dest.id);
+        } else {
+          game.history.write("Try looking for something to light it with.");
+        }
+        return false;
+      }
+    }
+    return true;
+  },
+
   "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
     let game = Game.getInstance();
     if (artifact !== null) {
@@ -319,6 +368,9 @@ export var event_handlers = {
             game.history.write("The vault door did not open.");
           }
         });
+      } else if (artifact.id === 72) {
+        game.history.write("You don't see any physical way to open it.");
+        command.opened_something = true; // use this even if we didn't open it, to suppress other messages
       }
     }
   },
@@ -339,6 +391,10 @@ export var event_handlers = {
     let game = Game.getInstance();
     if ((phrase === 'gronk' || phrase === 'grunt') && game.monsters.get(6).isHere()) {
       game.effects.print(43);
+    }
+    if (phrase === 'evantke' && game.artifacts.get(72).isHere()) {
+      game.effects.print(26, "special");
+      game.artifacts.get(72).is_open = true;
     }
   },
 
@@ -397,6 +453,20 @@ export var event_handlers = {
             break;
         }
         break;
+      case "matchbook":
+        if (game.artifacts.get(15).isHere()) {
+          game.command_parser.run("light candle", false);
+        } else {
+          game.history.write("Try looking for something to light with it.");
+        }
+        break;
+      case "candle":
+        if (game.artifacts.get(1).isHere()) {
+          game.command_parser.run("light candle", false);
+        } else {
+          game.history.write("Try looking for something to light it with.");
+        }
+        break;
     }
   },
 
@@ -411,7 +481,74 @@ export var event_handlers = {
       game.artifacts.get(13).moveToRoom();
       return;
     }
-    game.history.write("POWER TODO!")
+    // resurrect
+    let bodies = game.artifacts.visible.filter(x => x.isHere() && x.type === Artifact.TYPE_DEAD_BODY);
+    if (bodies.length) {
+      for (let a of bodies) {
+        let m = game.monsters.get(a.id - game.dead_body_id);
+        game.history.write(m.name + ' comes alive!', 'special');
+        m.damage = 0;
+        m.moveToRoom();
+        a.destroy();
+      }
+      return;
+    }
+
+    // regular power effects
+    if (roll <= 10) {
+      game.history.write("You feel an increase in your magic abilities!", "special");
+      for (let spell_name in this.spell_abilities) {
+        if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
+          this.spell_abilities[spell_name] += 5;
+          this.spell_abilities_original[spell_name] += 5;
+        }
+      }
+    } else if (roll <= 28) {
+      game.history.write("Small fireballs circle your head, faster and faster, then explode in a shower of sparks!");
+    } else if (roll <= 38 && !game.data['barrel']) {
+      game.effects.print(15);
+      game.player.moveToRoom(9, false);
+      game.data['barrel'] = true;
+    } else if (roll <= 45) {
+      // hear conversations
+      game.effects.print(16);
+      game.effects.print(17);
+      game.effects.print(18);
+    } else if (roll <= 53) {
+      game.effects.print(20, "special");
+      game.player.hardiness += 4;
+    } else if (roll <= 61) {
+      game.effects.print(21, "special");
+      game.player.injure(3);
+    } else if (roll <= 69) {
+      game.effects.print(22, "special");
+      if (game.player.charisma < 15) {
+        game.player.charisma += 15;
+      } else {
+        game.player.charisma += 5;
+      }
+    } else if (roll <= 77) {
+      // horse
+      game.effects.print(23, "special");
+      game.effects.print(25, "special");
+      for (let wa in game.player.weapon_abilities) {
+        game.player.weapon_abilities[wa] -= 10;
+      }
+    } else if (roll <= 85) {
+      game.effects.print(7, "special");
+      game.player.injure(Math.floor((game.player.hardiness - game.player.damage) / 2));
+      game.effects.print(8, "special");
+    } else if (roll <= 95) {
+      game.history.write("You can feel the new agility flowing through you!", "success");
+      if (game.player.speed_time === 0) {
+        game.player.speed_multiplier = 2;
+      }
+      game.player.speed_time += 10 + game.diceRoll(1, 10);
+    } else {
+      game.history.write("All your wounds are healed!");
+      game.player.heal(1000);
+    }
+
   },
 
 }; // end event handlers
