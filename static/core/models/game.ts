@@ -260,7 +260,6 @@ export class Game {
     // if speed spell is active, decrease its time remaining
     if (this.player.speed_time > 0) {
       this.player.speed_time--;
-      console.log(this.player.speed_time);
       if (this.player.speed_time === 0) {
         this.history.write("Your speed spell just expired!", "success");
         this.player.speed_multiplier = 1;
@@ -438,6 +437,15 @@ export class Game {
    */
   public resume() {
     this.active = true;
+  }
+
+  /**
+   * Delays the output for a bit
+   * @param {number} time
+   *   The amount of time to delay, in seconds
+   */
+  public delay(time: number = 3) {
+    this.history.total_delay += time * 1000;
   }
 
   /**

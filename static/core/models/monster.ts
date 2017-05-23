@@ -920,11 +920,14 @@ export class Monster extends GameObject {
 
   /**
    * Recharges the player's spell abilities. Called on game tick.
+   * @param {number} amount
+   *   The amount to recharge. Default is 1 per turn but you can call this in a special effect with a
+   *   different value if you like.
    */
-  public rechargeSpellAbilities(): void {
+  public rechargeSpellAbilities(amount: number = 1): void {
     for (let spell_name in this.spell_abilities) {
       if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
-        this.spell_abilities[spell_name]++;
+        this.spell_abilities[spell_name] = Math.min(this.spell_abilities[spell_name] += amount, this.spell_abilities_original[spell_name]);
       }
     }
   }

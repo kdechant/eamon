@@ -112,7 +112,7 @@ class Command(BaseCommand):
                 a.type = int(m.group(5))
                 a.weight = int(m.group(7))
                 a.room_id = int(m.group(8))
-                a.odds = int(m.group(11)) if m.group(11) else None
+                a.weapon_odds = int(m.group(11)) if m.group(11) else None
                 a.weapon_type = int(m.group(13)) if m.group(13) else None
                 a.dice = int(m.group(16)) if m.group(16) else None
                 a.sides = int(m.group(18)) if m.group(18) else None

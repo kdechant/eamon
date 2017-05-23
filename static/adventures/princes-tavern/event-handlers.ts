@@ -71,6 +71,11 @@ export var event_handlers = {
     game.monsters.get(24).data['tolerance'] = 18;
     game.monsters.get(24).data['drinks'] = 0;
 
+    // custom attack messages
+    game.monsters.get(16).combat_verbs = ["bites at", "leaps at"];
+    game.monsters.get(11).combat_verbs = ["stomps on", "charges at", "gores"];
+    game.monsters.get(17).combat_verbs = ["bites at", "slithers at", "spits acid at"];
+
   },
 
   "endTurn": function() {
@@ -117,6 +122,8 @@ export var event_handlers = {
       }
     }
 
+    // magic recharges faster here - this is in addition to the built-in recharge in the game object.
+    game.player.rechargeSpellAbilities(2);
   },
 
   "endTurn2": function() {
@@ -133,9 +140,21 @@ export var event_handlers = {
     // gerschter bar
     if (game.player.room_id === 7) {
       game.effects.print(9);
-      game.player.moveToRoom()
+      game.player.moveToRoom();
       game.monsters.get(20).room_id = null;
+      return false;
     }
+    // brawlers
+    if (target.id === 25) {
+      game.history.write("You don't want to wade into that fray. Better find a different way to get their attention.");
+      return false;
+    }
+    // drinking contest
+    if (game.player.room_id === 22 && game.data['drinking contest active']) {
+      game.effects.print(4);
+      return false;
+    }
+
     return true;
   },
 
@@ -328,6 +347,7 @@ export var event_handlers = {
       game.effects.print(13);
       game.effects.print(14);
       game.data['locate active'] = true;
+      recipient.room_id = null;
     } else if (recipient.id === 12 && artifact.id === 22) {
       // slipper to prince
       game.effects.print(38);
@@ -412,6 +432,7 @@ export var event_handlers = {
       case 'peanuts':
         game.effects.print(2);
         game.player.moveToRoom(36, true);
+        game.delay();
         break;
       case 'case of rum':
       case 'case of brandy':
@@ -423,6 +444,8 @@ export var event_handlers = {
         }
         break;
       case '600 year old scotch':
+        game.history.write("That was probably the most expensive drink you've ever had!");
+        artifact.destroy();
         game.artifacts.get(26).moveToRoom();
         break;
       case 'strange brew':
@@ -476,7 +499,7 @@ export var event_handlers = {
   "power": function(roll) {
     let game = Game.getInstance();
     if (game.monsters.get(25).isHere()) {
-      game.effects.print(12);
+      game.effects.print(12, "special");
       game.monsters.get(25).room_id = null;
       game.artifacts.get(13).moveToRoom();
       return;
