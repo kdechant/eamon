@@ -225,6 +225,9 @@ export class Game {
     // if there is no intro text, just start the game
     if (this.intro_text === "") {
       this.start();
+    } else {
+      // event handler that can change the intro text
+      this.triggerEvent("intro");
     }
 
   }

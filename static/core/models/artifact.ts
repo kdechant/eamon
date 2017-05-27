@@ -76,7 +76,8 @@ export class Artifact extends GameObject {
    */
   public moveToRoom(room_id: number = null): void {
     this.room_id = room_id || Game.getInstance().player.room_id;
-    this.monster_id = null;
+    if (this.type !== Artifact.TYPE_BOUND_MONSTER)
+      this.monster_id = null;
     this.container_id = null;
   }
 

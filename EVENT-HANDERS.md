@@ -65,21 +65,43 @@ What happened here?
 
 The following is a list of all the available event handlers, how they're used, and a sample handler of each type.
 
-## Game Start
+## Game Intro
 
-The "start" eveny handler runs once at the very beginning of the game. Use this to set up initial variables and move
-monsters and artifacts around before the player can interact with them.
+The "intro" event handler is called after the game data is initialized, right as the intro text is shown. Use this to 
+alter the intro text if you need to.
 
 Parameters: none
 
 Sample code:
 
-      "start": function(arg: string) {
+      "intro": function() {
+        let game = Game.getInstance();
+        // change the intro text if the player is female
+        if (game.player.gender === 'f') {
+          game.intro_text = game.intro_text.replace("Larcenous Lil", "Slippery Sven");
+        }
+      },
+
+## Game Start
+
+The "start" eveny handler runs once at the very beginning of the game. Use this to set up initial variables and move
+monsters and artifacts around before the player can interact with them. Any text or effects printed in this event 
+handler will appear at the very beginning of the game output. To change the pre-game intro text, use the "intro"
+event handler instead.
+
+Parameters: none
+
+Sample code:
+
+      "start": function() {
         let game = Game.getInstance();
     
         // declare some variables
         game.data['my var'] = true;
         game.data['another var'] = 5;
+        
+        // give monster #1 custom attack messages
+        game.monsters.get(1).combat_verbs = ["breathes fire at", "claws at", "swings its tail at"];
         
         // move monster #2 to a random room
         game.monsters.get(2).moveToRoom(game.diceRoll(1,6));
