@@ -133,7 +133,6 @@ export var event_handlers = {
           break;
         case 71:
           game.history.write("You take back your gold...");
-          game.player.wear(artifact);
           break;
       }
     }

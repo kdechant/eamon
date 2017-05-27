@@ -1,0 +1,61 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>The Wonderful World of Eamon - Adventure List</title>
+
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+  </head>
+
+  <body>
+
+    <div class="page-border">&nbsp;</div>
+
+    <div class="container parchment">
+      <h1>The Wonderful World of Eamon</h1>
+      <h2><img src="{% static "images/ravenmore/128/scroll.png" %}"> News</h2>
+      <div class="row">
+        {% for a in articles %}
+        <div class="news-list-item col-sm-12">
+          <h3>{{ a.title }}</h3>
+          <p class="date">{{ a.created_at }}</p>
+          <p class="desc">{{ a.body | safe }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if articles.has_other_pages %}
+        <ul class="pagination">
+          {% if articles.has_previous %}
+            <li class="btn"><a href="?page={{ articles.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+            <li class="btn disabled"><span>&laquo;</span></li>
+          {% endif %}
+          {% for i in articles.paginator.page_range %}
+            {% if articles.number == i %}
+              <li class="btn active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+              <li class="btn"><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if articles.has_next %}
+            <li class="btn"><a href="?page={{ articles.next_page_number }}">&raquo;</a></li>
+          {% else %}
+            <li class="btn disabled"><span>&raquo;</span></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+
+    </div>
+    {% include "_footer.html" %}
+
+    <div class="page-border">&nbsp;</div>
+
+    {% include "_google_analytics.html" %}
+  </body>
+
+</html>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third-party apps from pypi
+    'ckeditor',
     'rest_framework',
     'corsheaders',
     'taggit',       # django-taggit package for model tagging
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 
     # custom code
     'adventure',
+    'news',
 ]
 
 MIDDLEWARE_CLASSES = [

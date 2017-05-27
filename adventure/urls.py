@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^about$', views.about, name='about'),
     url(r'^adventure-list$', views.adventure_list, name='adventure-list'),
     url(r'^manual$', views.manual, name='manual'),
+    url(r'^news/', include('news.urls')),
 
     # routes into the Angular apps
 
