@@ -11,6 +11,7 @@ class AdventureAdmin(admin.ModelAdmin):
     list_display = ('name', 'author_list', 'edx', 'edx_version', 'active', 'tag_list')
     list_filter = ['edx', 'edx_version', 'authors', 'active']
     ordering = ['name']
+    exclude = ('edx', 'edx_version', 'edx_room_offset', 'edx_artifact_offset', 'edx_effect_offset', 'edx_monster_offset', 'edx_program_file', 'directions', 'first_hint', 'last_hint')
 
     def get_queryset(self, request):
         return super(AdventureAdmin, self).get_queryset(request).prefetch_related('tags')
@@ -37,6 +38,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_display_links = ('room_id', 'name')
     list_filter = ['adventure']
     ordering = ['adventure', 'room_id']
+    exclude = ('effect', 'effect_inline')
 
     inlines = [
         RoomExitInline,
@@ -49,6 +51,7 @@ class ArtifactAdmin(admin.ModelAdmin):
     list_display_links = ('artifact_id', 'name')
     list_filter = ['adventure']
     ordering = ['adventure', 'artifact_id']
+    exclude = ('effect', 'effect_inline', 'clothing_type', 'original_group_size')
 
 
 @admin.register(Effect)
@@ -65,6 +68,7 @@ class MonsterAdmin(admin.ModelAdmin):
     list_display_links = ('name', )
     list_filter = ['adventure']
     ordering = ['adventure_id', 'monster_id']
+    exclude = ('effect', 'effect_inline', 'defense_bonus', 'original_group_size')
 
 
 class HintAnswerInline(admin.TabularInline):
