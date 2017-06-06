@@ -21,6 +21,7 @@
 
             // other libraries
             'rxjs': 'npm:rxjs',
+            'angular2-cookie': 'npm:angular2-cookie',
 
             // the app itself
             'core': "/static/core",
@@ -38,6 +39,10 @@
                 defaultExtension: 'js'
             },
             rxjs: {
+                defaultExtension: 'js'
+            },
+            'angular2-cookie': {
+                main: './core.js',
                 defaultExtension: 'js'
             }
         }

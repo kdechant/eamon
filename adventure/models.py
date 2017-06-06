@@ -372,5 +372,6 @@ class ActivityLog(models.Model):
     """
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='activity_log')
     type = models.CharField(max_length=255)
+    value = models.IntegerField(null=True, blank=True)
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='activity_log', null=True)
     created = models.DateTimeField(auto_now_add=True,null=True)

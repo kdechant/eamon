@@ -250,6 +250,9 @@ export class Artifact extends GameObject {
    */
   public reveal(): void {
     let game = Game.getInstance();
+    if (this.hidden) {
+      game.statistics['secret doors found']++;
+    }
     this.embedded = false;
     this.hidden = false; // display
     if (!this.seen) {

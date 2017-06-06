@@ -1,3 +1,5 @@
+import {ReflectiveInjector} from '@angular/core';
+
 import {RoomRepository} from "../repositories/room.repo";
 import {ArtifactRepository} from "../repositories/artifact.repo";
 import {EffectRepository} from "../repositories/effect.repo";
@@ -12,6 +14,7 @@ import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
 import {isNull} from "util";
+import {LoggerService} from "../services/logger.service";
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -25,6 +28,11 @@ export class Game {
   static STATUS_SELLING: number = 3;
 
   private static _instance: Game = new Game();
+
+  /**
+   * @var {number} The current adventure's id in the database
+   */
+  id: number;
 
   /**
    * @var {string} The current adventure's name
@@ -166,12 +174,23 @@ export class Game {
    */
   modal: Modal;
 
+  /**
+   * Statistics for the game (damage taken, secret doors found, etc.)
+   */
+  statistics: { [key: string]: number; } = {
+    'damage taken': 0,
+    'damage dealt': 0,
+    'secret doors found': 0
+  };
+
   // Mock objects for testing
   /**
    * Pre-defined random numbers. If you put X numbers into this array, these will be used
    * as the results of the next X calls to game.diceRoll().
    */
   mock_random_numbers: number[] = [];
+
+  logger: LoggerService;
 
   constructor() {
     if (Game._instance) {
@@ -189,6 +208,7 @@ export class Game {
    */
   init(data) {
 
+    this.id = data[0].id;
     this.name = data[0].name;
     this.description = data[0].description;
     this.intro_text = data[0].intro_text;
@@ -218,6 +238,8 @@ export class Game {
       e.run = event_handlers[i];
       this.event_handlers.push(e);
     }
+
+    this.logger.log("start adventure");
 
     // Show the adventure description
     this.history.push("");
@@ -457,6 +479,11 @@ export class Game {
   public exit() {
     this.active = false;
     this.won = true;
+
+    this.logger.log('exit adventure');
+    for (let s in this.statistics) {
+      this.logger.log(s, this.statistics[s]);
+    }
   }
 
   /**
@@ -469,6 +496,14 @@ export class Game {
     if (show_health) this.player.showHealth();
     this.active = false;
     this.died = true;
+
+    this.logger.log('died');
+    for (let s in this.statistics) {
+      if (s.indexOf('damage') !== -1) {
+        this.logger.log(s, this.statistics[s]);
+      }
+    }
+
   }
 
 }

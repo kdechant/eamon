@@ -556,10 +556,12 @@ export class Monster extends GameObject {
         game.history.write("-- a hit!", "success no-space");
       }
       // deal the damage
-      target.injure(Math.floor(damage * multiplier), ignore_armor);
+      let damage_dealt = target.injure(Math.floor(damage * multiplier), ignore_armor);
 
       // check for weapon ability increase
       if (this.id === Monster.PLAYER) {
+        game.statistics['damage dealt'] += Math.min(damage_dealt, target.hardiness - target.damage);
+
         let inc_roll = game.diceRoll(1, 100);
         if (inc_roll > odds) {
           if (this.weapon_abilities[wpn.weapon_type] < 50) {
@@ -781,6 +783,10 @@ export class Monster extends GameObject {
     }
     this.damage += damage;
     this.showHealth();
+
+    if (this.id === Monster.PLAYER) {
+      game.statistics['damage taken'] += Math.min(damage, this.hardiness - this.damage);
+    }
 
     // handle death
     if (this.damage >= this.hardiness) {

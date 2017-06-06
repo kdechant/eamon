@@ -9,6 +9,7 @@ import {GameVarsPipe} from "./pipes/gamevars.pipe";
 import {AdventureComponent} from "./components/adventure.component";
 
 import {GameLoaderService} from "./services/game-loader.service";
+import {LoggerService} from "./services/logger.service";
 import {CommandPromptComponent} from "./components/command.component";
 import {HistoryComponent} from "./components/history.component";
 import {ArtifactComponent} from "./components/artifact.component";
@@ -33,7 +34,7 @@ import {StatusComponent} from "./components/status.component";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AdventureComponent],
-  providers: [GameLoaderService]
+  providers: [GameLoaderService, LoggerService]
 })
 export class AdventureModule {
 }
