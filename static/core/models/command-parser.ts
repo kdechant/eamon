@@ -100,7 +100,11 @@ export class CommandParser {
     if (command_match.length === 1) {
       // found exactly one match. run it.
       let command = this.available_commands[this.available_verbs[command_match[0]]];
-      game.history.push(command_match[0] + (args.length ? " " + args : ""));
+      let ct = command_match[0];
+      if (typeof command.history_display === 'function') {
+        ct = command.history_display(verb);
+      }
+      game.history.push(ct + (args.length ? " " + args : ""));
       try {
         command.run(verb, args);
         if (tick) {

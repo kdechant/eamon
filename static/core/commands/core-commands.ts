@@ -12,26 +12,40 @@ export class MoveCommand implements BaseCommand {
   verbs: string[] = ["north", "n", "south", "s", "east", "e", "west", "w",
     "up", "u", "down", "d",
     "ne", "northeast", "se", "southeast", "sw", "southwest", "nw", "northwest"];
+  directions: { [key: string]: string; } = {
+    "north": "n",
+    "northeast": "ne",
+    "east": "e",
+    "southeast": "se",
+    "south": "s",
+    "southwest": "sw",
+    "west": "w",
+    "northwest": "nw",
+    "up": "u",
+    "down": "d",
+  };
+
+  /**
+   * Alters the display in the history window
+   * @param {string} verb
+   */
+  history_display(verb) {
+    // turn short words ("n") into long ("north")
+    for (let d in this.directions) {
+      if (this.directions[d] === verb) {
+        return d;
+      }
+    }
+    return verb;
+  }
 
   run(verb, arg) {
 
     let game = Game.getInstance();
 
     // turn long words ("north") into short ("n")
-    let directions = {
-      "north": "n",
-      "northeast": "ne",
-      "east": "e",
-      "southeast": "se",
-      "south": "s",
-      "southwest": "sw",
-      "west": "w",
-      "northwest": "nw",
-      "up": "u",
-      "down": "d",
-    };
-    if (directions.hasOwnProperty(verb)) {
-      verb = directions[verb];
+    if (this.directions.hasOwnProperty(verb)) {
+      verb = this.directions[verb];
     }
 
     let room_from = game.rooms.current_room;
@@ -63,7 +77,7 @@ export class MoveCommand implements BaseCommand {
       // try to unlock the door using a key the player is carrying
       if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
         let key = game.artifacts.get(door.key_id);
-        game.history.write("You unlock the door using the " + key.name + ".");
+        game.history.write("You unlock the " + door.name + " using the " + key.name + ".");
         door.is_open = true;
       }
 
@@ -162,7 +176,15 @@ export class LookCommand implements BaseCommand {
 
       // error message if nothing matched
       if (!match) {
-        throw new CommandException("I see no " + arg + " here!");
+        let common_stuff = ["wall", "door", "floor", "ceiling", "road", "path", "trail", "window"];
+        if (common_stuff.indexOf(arg) !== -1) {
+          game.history.write("You see nothing special.");
+        } else if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
+          // generic sign which is not really readable. we can pretend.
+          game.rooms.current_room.show_description();
+        } else {
+          throw new CommandException("I see no " + arg + " here!");
+        }
       }
 
     }
@@ -715,6 +737,12 @@ export class ReadCommand implements BaseCommand {
           game.effects.print(a.effect_id + i);
         }
         this.markings_read = true;
+      } else {
+        // readable artifact with no effects. just show description. common in some older adventures.
+        if (a.type === Artifact.TYPE_READABLE) {
+          a.showDescription();
+          this.markings_read = true;
+        }
       }
 
       // also call the event handler to allow reading custom markings on other artifact types
@@ -724,8 +752,13 @@ export class ReadCommand implements BaseCommand {
 
     // otherwise, nothing happens
     if (!this.markings_read) {
-      if (a || arg === 'wall' || arg === 'door' || arg === 'floor' || arg === 'ceiling') {
+      if (a) {
+        game.history.write(a.name + " has no markings to read!");
+      } else if (arg === 'wall' || arg === 'door' || arg === 'floor' || arg === 'ceiling') {
         game.history.write("There are no markings to read!");
+      } else if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
+        // generic sign which is not really readable. we can pretend.
+        game.rooms.current_room.show_description();
       } else {
         game.history.write("There is no " + arg + " here!");
       }

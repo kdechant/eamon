@@ -7,6 +7,17 @@ import {Game} from "../models/game";
 export interface BaseCommand {
   name: string;
   verbs: string[];
+  /**
+   * Optional function to change what appears in the history window.
+   * @param verb
+   */
+  history_display? (verb: string);
+
+  /**
+   * The main function that contains the command logic
+   * @param verb
+   * @param arg
+   */
   run(verb, arg);
 }
 
