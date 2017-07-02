@@ -77,6 +77,23 @@ describe("Assault on the Clone Master", function() {
         game.command_parser.run('close gate');
         expect(game.artifacts.get(22).is_open).toBeTruthy('gate should not have closed');
 
+        // cannon
+        game.modal.mock_answers = ['Battlefield', 'Power Station', 'Inner Gate'];
+        game.player.moveToRoom(18);
+        // todo: move the soliders from the wall
+        game.command_parser.run('use cannon');
+        expect(game.effects.get(5).seen).toBeTruthy('effect 5 should be seen');
+        game.command_parser.run('use cannon');
+        expect(game.effects.get(6).seen).toBeTruthy('effect 6 should be seen');
+        game.command_parser.run('use cannon');
+        expect(game.effects.get(7).seen).toBeTruthy('effect 7 should be seen');
+        expect(game.artifacts.get(22).room_id).toBeNull('should have destroyed gate');
+        expect(game.artifacts.get(23).room_id).toBe(20, 'broken gate should be there');
+        // broken
+        expect(game.effects.get(8).seen).toBeTruthy('effect 8 should be seen');
+        expect(game.artifacts.get(19).room_id).toBeNull('cannon should have jammed');
+        expect(game.artifacts.get(20).room_id).toBe(18, 'broken cannon should be there');
+
       }
     );
   }));

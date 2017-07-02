@@ -6,6 +6,11 @@ export class Modal {
   public current_question: ModalQuestion;
   private counter = 0;
   public visible: boolean = false;
+  /**
+   * Mock answers used with unit tests
+   * @type {Array}
+   */
+  public mock_answers: string[] = [];
 
   /**
    * The easy way to ask a question of the player. Asks a question that takes a text answer.
@@ -36,6 +41,11 @@ export class Modal {
       this.visible = true;
       this.current_question = this.questions[0];
       this.counter = 0;
+      if (this.mock_answers.length > 0) {
+        let answer = this.mock_answers.shift();
+        console.log("mock answer: ", answer);
+        this.submit(answer);
+      }
     } else {
       console.error("tried to run modal without any questions");
     }

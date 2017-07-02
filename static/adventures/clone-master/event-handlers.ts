@@ -4,6 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
+import {ModalQuestion} from "../../core/models/modal";
 
 export var event_handlers = {
 
@@ -12,6 +13,7 @@ export var event_handlers = {
 
     game.data['inner gate open'] = false;
     game.data['clone check'] = false;
+    game.data['cannon uses'] = 3;
 
   },
 
@@ -74,6 +76,45 @@ export var event_handlers = {
     // nasreen's opening remarks
     if (monster.id === 1) {
       game.history.write('Nasreen tells you, "Two of my commandos, Nevil and Norwood, are waiting in the camp to the south. We should join them as soon as you\'re ready."');
+    }
+  },
+
+  "use": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    switch (artifact.name) {
+      case 'fire cannon':
+
+        let q1 = new ModalQuestion;
+        q1.type = 'multiple_choice';
+        q1.question = "What do you target with the cannon?";
+        q1.choices = ['Battlefield', 'Power Station', 'Inner Gate'];
+        q1.callback = function (answer) {
+          switch (answer) {
+            case q1.choices[0]:
+              game.effects.print(5);
+              break;
+            case q1.choices[1]:
+              game.effects.print(6);
+              break;
+            case q1.choices[2]:
+              game.effects.print(7);
+              game.artifacts.get(22).destroy();
+              game.rooms.getRoomById(20).getExit('s').door_id = null;
+              game.artifacts.get(23).moveToRoom(20);
+              game.monsters.get(12).moveToRoom(0);
+              game.artifacts.get(44).moveToRoom(21);
+              break;
+          }
+          game.data['cannon uses']--;
+          if (game.data['cannon uses'] <= 0) {
+            game.effects.print(8);
+            artifact.destroy();
+            game.artifacts.get(20).moveToRoom();
+          }
+        };
+        game.modal.questions = [q1];
+        game.modal.run();
+        break;
     }
   },
 
