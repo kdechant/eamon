@@ -165,20 +165,54 @@ Sample:
         }
       },
 
+## Open and Close
+
+These effects are common with doors and containers.
+
+### Open
+
+
+### Close
+
+This is called when the player tries to close an artifact like a container or door. It can be used to handle situations
+where the player shouldn't be able to close something (like a door that's been broken open), or when a player should
+try to close something that is not an explicit artifact.
+
+Parameters:
+- arg (string) - What the player typed after CLOSE (e.g., "close *chest*" or "close *window*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
+
+Example:
+
+    "close": function(arg: string, artifact: Artifact) {
+        let game = Game.getInstance();
+        // trying to close a drawbridge when the winch has been smashed
+        if (artifact.name === 'drawbridge' && game.data['drawbridge winch smashed']) {
+          game.history.write("The winch has been smashed. You can't close it.");
+          return false; // stops the game from running the rest of the "close" command logic
+        }
+        return true; // normal situation not handled above; resume regular command logic
+      },
+    },
+
+A note on standard doors/gates and containers like chests or bags:
+
+These common types of artifacts are handled by the core game and don't require a custom event handler. Set the artifact type to "Door/Gate" (8) or "Container" (4). Optionally give it a "key id" to lock it using that artifact ID, or put items into a container by setting their "container_id" property to the ID of the container artifact.
+
 ## Drink
 
 This is called when the player tries to drink something. It can be used to handle situations where the player needs
 to drink something that is not an explicit artifact. For example, to order a drink at a bar.
 
 Parameters:
-- arg (string) - What the player typed after USE (e.g., "use *lever*" )
+- arg (string) - What the player typed after DRINK (e.g., "drink *water*" )
 - artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
 
 Example:
 
     "drink": function(arg: string, artifact: Artifact) {
         let game = Game.getInstance();
-        // use the "drink" command to order a drink from the bartender
+        // use the "drink" command (with no arguments) to order a drink from the bartender
         if (game.player.room_id === 5) {  // the bar
           game.history.write("The bartender pours you a drink.");
           game.artifacts.get(6).moveToRoom(); // moves the "beer" artifact to the current room

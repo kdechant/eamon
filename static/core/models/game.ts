@@ -1,5 +1,3 @@
-import {ReflectiveInjector} from '@angular/core';
-
 import {RoomRepository} from "../repositories/room.repo";
 import {ArtifactRepository} from "../repositories/artifact.repo";
 import {EffectRepository} from "../repositories/effect.repo";
@@ -13,8 +11,7 @@ import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
-import {isNull} from "util";
-import {LoggerService} from "../services/logger.service";
+import {ILoggerService} from "../services/logger.service";
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -190,7 +187,7 @@ export class Game {
    */
   mock_random_numbers: number[] = [];
 
-  logger: LoggerService;
+  logger: ILoggerService;
 
   constructor() {
     if (Game._instance) {

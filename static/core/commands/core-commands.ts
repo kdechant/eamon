@@ -66,7 +66,7 @@ export class MoveCommand implements BaseCommand {
 
       // if it's a hidden or secret door, the exit is blocked even if the door's "open" flag is set.
       // show the normal "you can't go that way" message here, to avoid giving away secret door locations
-      if (door.embedded && door.hidden) {
+      if (door.hidden) {
         throw new CommandException("You can't go that way!");
       }
 
@@ -858,23 +858,22 @@ export class CloseCommand implements BaseCommand {
         a.reveal();
       }
 
-      if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE || a.key_id === -1) {
-        throw new CommandException("You don't need to.");
-      } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
-        if (!a.is_open) {
-          throw new CommandException("It's not open.");
-        } else if (a.is_broken) {
-          throw new CommandException("You broke it.");
-        } else {
-          a.is_open = false;
-          game.history.write(a.name + " closed.");
-          this.closed_something = true;
+      if (game.triggerEvent('close', arg, a)) {
+        if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE || a.key_id === -1) {
+          throw new CommandException("You don't need to.");
+        } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
+          if (!a.is_open) {
+            throw new CommandException("It's not open.");
+          } else if (a.is_broken) {
+            throw new CommandException("You broke it.");
+          } else {
+            a.is_open = false;
+            game.history.write(a.name + " closed.");
+            this.closed_something = true;
+          }
         }
       }
     }
-
-    // other effects are custom to the adventure
-    game.triggerEvent("close", arg, this);
 
     // otherwise, nothing happens
     if (!this.closed_something) {

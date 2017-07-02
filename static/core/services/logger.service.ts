@@ -5,12 +5,16 @@ import {CookieService} from 'angular2-cookie/core';
 
 import {Game} from "../models/game";
 
+export interface ILoggerService {
+  log(type: string, value?: number);
+}
+
 /**
  * Game Loader service. Loads initial adventure, room, artifact, and monster
  * data from the data source.
  */
 @Injectable()
-export class LoggerService {
+export class LoggerService implements ILoggerService {
 
   // the current user's UUID
   private uuid: string;
@@ -50,6 +54,18 @@ export class LoggerService {
        return true;
       }
     );
+  }
+
+}
+
+/**
+ * Dummy logger used with automated tests
+ */
+export class DummyLoggerService implements ILoggerService {
+
+  public log(type: string = "", value: number = null) {
+    // this logger class prints its log entries to the console. It doesn't save anything to the DB.
+    console.log("Log: ", type, value);
   }
 
 }
