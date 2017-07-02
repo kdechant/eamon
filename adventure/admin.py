@@ -60,6 +60,7 @@ class EffectAdmin(admin.ModelAdmin):
     list_display_links = ('effect_id', 'text')
     list_filter = ['adventure']
     ordering = ['adventure', 'effect_id']
+    exclude = ('next', 'next_inline')
 
 
 @admin.register(Monster)

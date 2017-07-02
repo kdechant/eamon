@@ -121,7 +121,9 @@ class Artifact(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='artifacts')
     artifact_id = models.IntegerField(default=0) # The in-game artifact ID.
     name = models.CharField(max_length=255)
-    synonyms = models.CharField(null=True, max_length=255, blank=True)
+    synonyms = models.CharField(null=True, max_length=255, blank=True,
+                                help_text="Other terms for this artifact. E.g., if the artifact name is 'secret door in"
+                                          " north wall' you could have a synonym of 'door' to help the player find it.")
     description = models.TextField(max_length=1000)
     effect = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description
     effect_inline = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description, without a paragraph break.
@@ -207,10 +209,10 @@ class Effect(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
     effect_id = models.IntegerField(default=0) # The in-game effect ID.
     text = models.TextField(max_length=65535)
-    style = models.CharField(max_length=20, null=True, choices=STYLES) # used by EDX to display effect text in color
-    next = models.IntegerField(null=True,
+    style = models.CharField(max_length=20, null=True, blank=True, choices=STYLES) # used by EDX to display effect text in color
+    next = models.IntegerField(null=True, blank=True,
                                help_text="The next chained effect. Used with EDX conversions.")
-    next_inline = models.IntegerField(null=True,
+    next_inline = models.IntegerField(null=True, blank=True,
                                       help_text="The next chained effect, no line break. Used with EDX conversions.")
 
     def __str__(self):
@@ -251,13 +253,13 @@ class Monster(models.Model):
     )
     combat_code = models.IntegerField(default=0, choices=COMBAT_CODES)
     courage = models.IntegerField(default=100)
-    room_id = models.IntegerField(null=True)
+    room_id = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=6, choices=(
         ('male', 'Male'),
         ('female', 'Female'),
         ('none', 'None'),
     ))
-    weapon_id = models.IntegerField(null=True,
+    weapon_id = models.IntegerField(null=True, blank=True,
         help_text="Enter an artifact ID, or zero for natural weapons. Leave blank for no weapon.")
     attack_odds = models.IntegerField(default=50,
         help_text="Base attack odds, before agility and armor adjustments. Weapon type does not matter.")
