@@ -9,12 +9,9 @@ import {GameLoaderService} from "../../core/services/game-loader.service";
 import {event_handlers} from "adventure/event-handlers";
 import {Monster} from "../../core/models/monster";
 
-import {drunk_messages} from "adventure/event-handlers";
-
 import {
   TestBed, inject
 } from '@angular/core/testing';
-import {DummyLoggerService} from "../../core/services/logger.service";
 
 describe("Assault on the Clone Master", function() {
 
@@ -36,7 +33,6 @@ describe("Assault on the Clone Master", function() {
   it("should have working event handlers", async(() => {
     gameLoaderService.setupGameData(true).subscribe(
       data => {
-        game.logger = new DummyLoggerService;
         game.init(data);
         game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
         // expect(game.rooms.rooms.length).toBe(46, "Wrong room count. Check data.");

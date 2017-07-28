@@ -3,12 +3,12 @@ import {initMockGame} from "../utils/testing";
 
 describe("Artifact Repo", function() {
 
+  let game = Game.getInstance();
   beforeEach(() => {
     initMockGame();
   });
 
   it("should know if an artifact is within reach of the player", function() {
-    let game = Game.getInstance();
 
     // something the player is carrying
     let torch = game.artifacts.getLocalByName('torch');
@@ -41,8 +41,16 @@ describe("Artifact Repo", function() {
 
   });
 
+  it("should match by exact name", function() {
+    game.artifacts.get(3).moveToRoom(); // magic sword
+    game.artifacts.get(8).moveToRoom(); // sword
+    // if two artifacts are here and one's name is contained in the other's
+    // name, it should give preference to the exact match
+    let a = game.artifacts.getLocalByName('sword');
+    expect(a.id).toBe(8, "Fail: 'sword' matched 'magic sword' instead of the exact match 'sword'");
+  });
+
   it("should de-duplicate artifact names on game start", function() {
-    let game = Game.getInstance();
     expect(game.artifacts.get(19).name).toBe("mace#");  // duplicate name of a player weapon
     expect(game.artifacts.get(21).name).toBe("dagger");  // not a duplicate
   });

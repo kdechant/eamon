@@ -11,7 +11,7 @@ import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
-import {ILoggerService} from "../services/logger.service";
+import {ILoggerService, DummyLoggerService} from "../services/logger.service";
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -236,6 +236,10 @@ export class Game {
       this.event_handlers.push(e);
     }
 
+    // for unit tests, the logger won't usually be initialized, so create a dummy logger
+    if (!this.logger) {
+      this.logger = new DummyLoggerService;
+    }
     this.logger.log("start adventure");
 
     // Show the adventure description

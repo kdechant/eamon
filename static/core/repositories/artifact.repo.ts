@@ -117,7 +117,12 @@ export class ArtifactRepository {
    */
   getLocalByName(name: string, reveal_embedded: boolean = true) {
     // fixme: should this only return the first match? or all matches?
-    let art = this.all.find(a => a.isHere() && a.match(name));
+    // try exact match first, then fuzzy match
+    let art = this.all.find(a => a.isHere() && a.name === name);
+    if (typeof art === 'undefined') {
+      art = this.all.find(a => a.isHere() && a.match(name));
+    }
+
     if (typeof art === 'undefined') {
       return null;
     } else {
