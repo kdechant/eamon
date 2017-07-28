@@ -32,7 +32,7 @@ To create an account in the adventure designer, run the following:
 
 ### Running the unit tests
 
-* In your browser, open a new tab and enter the address 'http://localhost:8000/static/unit_tests.html'
+* In your browser, open a new tab and enter the address 'http://localhost:8000/static/unit-tests.html'
 
 ### Manual setup
 

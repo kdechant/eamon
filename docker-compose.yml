@@ -34,11 +34,8 @@ services:
   node:
     command: bash -c "npm install; npm run watch-all"
     image: node:latest
-#    build: ./docker/node
     volumes:
       - .:/app
     depends_on:
       - django
     working_dir: /app/static
-#    ports:
-#      - "3000:3000"

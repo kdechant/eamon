@@ -155,3 +155,15 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
 )
+
+# look for machine-specific config files
+if os.environ['IN_DOCKER'] == "1":
+    # docker has its own custom settings file
+    from .settings_docker import *
+else:
+    # other development or production environment.
+    # machine-specific settings can be stored in local_settings.py
+    try:
+        from local_settings import *
+    except ImportError:
+        pass

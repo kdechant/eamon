@@ -10,16 +10,14 @@ USER root
 # Install APT packages needed to build some python packages
 RUN apt-get update
 RUN apt-get install -y netcat python-dev libxml2-dev libxslt-dev libffi-dev libssl-dev libmysqlclient-dev
-#
-#ENV HOME_USER webuser
-#ENV HOME_PASS password
-#
+
+ENV HOME_USER webuser
+ENV HOME_PASS password
+
 #RUN useradd -m -s /bin/bash ${HOME_USER} && \
 #    echo "${HOME_USER}:${HOME_PASS}"|chpasswd && \
 #    adduser ${HOME_USER} sudo && \
 #    echo ${HOME_USER}' ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-#
-#USER webuser
 
 # Copy the current directory contents into the container at /app
 ADD . /app
@@ -27,6 +25,8 @@ ADD . /app
 # Install any needed packages specified in requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
+
+USER webuser
 
 # Run manage.py when the container launches
 CMD ["python", "manage.py", "runserver"]
