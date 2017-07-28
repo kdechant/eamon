@@ -42,7 +42,7 @@ export class CommandParser {
 
   /**
    * Adds a command to the list of registered commands
-   * @param BaseCommand command The command object, a subclass of BaseCommand
+   * @param {BaseCommand} command The command object, a subclass of BaseCommand
    */
   public register(command: BaseCommand): void {
 
@@ -57,9 +57,9 @@ export class CommandParser {
 
   /**
    * Parses a command into a verb and arguments, then runs the command
-   * @param string input
+   * @param {string} input
    *   The input string from the user, e.g., "n", "get all", "give sword to marcus"
-   * @param boolean tick
+   * @param {boolean} tick
    *   Whether to tick the game clock after running this command. Defaults to true.
    *   Set this to false when calling a command from within another command,
    *   to prevent multiple game clock ticks.

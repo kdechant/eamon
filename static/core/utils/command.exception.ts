@@ -7,12 +7,14 @@ export declare class Error {
 
 export class CommandException extends Error {
 
-  constructor(public message: string) {
-    super(message);
+  constructor(m: string) {
+    super(m);
     this.name = "Exception";
-    this.message = message;
-    this.stack = (<any>new Error()).stack;
+
+    // Set the prototype explicitly.
+    Object.setPrototypeOf(this, CommandException.prototype);
   }
+
   toString() {
     return this.name + ": " + this.message;
   }
