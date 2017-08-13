@@ -2,6 +2,8 @@ import {NgModule, CUSTOM_ELEMENTS_SCHEMA}      from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import {SimpleNotificationsModule} from "angular2-notifications";
+import { CookieModule } from 'ngx-cookie';
 
 import {DividePipe} from "./pipes/divide.pipe";
 import {TitleCasePipe} from "./pipes/title-case.pipe";
@@ -21,11 +23,9 @@ import {PlayerService} from "./services/player.service";
 import {AdventureService} from "./services/adventure.service";
 import {ShopService} from "./services/shop.service";
 import {routing} from './main-hall.routing';
-import {SimpleNotificationsModule} from "angular2-notifications";
-import { CookieService } from 'angular2-cookie/services/cookies.service';
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule.forRoot(), routing],
+  imports: [BrowserModule, FormsModule, HttpModule, SimpleNotificationsModule.forRoot(), routing, CookieModule.forRoot()],
   declarations: [
     MainHallComponent,
     AdventureListComponent,
@@ -42,7 +42,7 @@ import { CookieService } from 'angular2-cookie/services/cookies.service';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],
-  providers: [PlayerService, AdventureService, ShopService, CookieService]
+  providers: [PlayerService, AdventureService, ShopService]
 })
 export class MainHallModule {
 }

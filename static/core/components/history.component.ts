@@ -1,5 +1,5 @@
-import {Component, Input, AfterViewChecked,
-  trigger, state, style, animate, transition} from "@angular/core";
+import {Component, Input, AfterViewChecked} from "@angular/core";
+import {trigger, state, style, animate, transition} from '@angular/animations';
 
 @Component({
   selector: "history",

@@ -1,7 +1,7 @@
 import { Injectable }     from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import {CookieService} from 'angular2-cookie/core';
+import { CookieService } from 'ngx-cookie';
 
 import {Player} from "../models/player";
 
@@ -20,11 +20,8 @@ export class PlayerService {
   // the current user's UUID
   private uuid: string;
 
-  private _cookieService: CookieService;
-
-  constructor(private http: Http) {
+  constructor(private http: Http, private _cookieService:CookieService) {
       this.uuid = window.localStorage.getItem('eamon_uuid');
-      this._cookieService = new CookieService;
   }
 
   getList() {

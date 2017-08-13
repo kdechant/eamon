@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Response, Headers, RequestOptions} from "@angular/http";
 import {Observable} from "rxjs/Rx";
-import {CookieService} from 'angular2-cookie/core';
+import { CookieService } from 'ngx-cookie';
 
 import {Game} from "../models/game";
 import {Monster} from "../models/monster";
@@ -19,11 +19,8 @@ export class GameLoaderService {
   // the current user's UUID
   private uuid: string;
 
-  private _cookieService: CookieService;
-
-  constructor(private http: Http) {
+  constructor(private http: Http, private _cookieService:CookieService) {
       this.uuid = window.localStorage.getItem('eamon_uuid');
-      this._cookieService = new CookieService;
   }
 
   setupGameData(mock_player: boolean = false): Observable<Object> {

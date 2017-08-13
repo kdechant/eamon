@@ -1,7 +1,9 @@
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA}      from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import { CookieModule } from 'ngx-cookie';
 
 import {Nl2brPipe} from "./pipes/nl2br.pipe";
 import {GameVarsPipe} from "./pipes/gamevars.pipe";
@@ -19,7 +21,7 @@ import {CommandListComponent} from "./components/command-list.component";
 import {StatusComponent} from "./components/status.component";
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule],
+  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, HttpModule, CookieModule.forRoot()],
   declarations: [
     Nl2brPipe,
     GameVarsPipe,
