@@ -827,6 +827,15 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Removes a monster from the game
+   */
+  public destroy(): void {
+    let game = Game.getInstance();
+    this.room_id = null;
+    game.monsters.updateVisible();
+  }
+
+  /**
    * Heals a monster
    * @param {number} amount - The amount of hit points to heal
    */

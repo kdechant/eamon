@@ -471,7 +471,9 @@ export class Game {
    *   The amount of time to delay, in seconds
    */
   public delay(time: number = 3) {
-    this.history.total_delay += time * 1000;
+    if (this.history.delay > 0) {
+      this.history.total_delay += time * 1000;
+    }
   }
 
   /**
