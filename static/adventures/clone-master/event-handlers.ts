@@ -53,6 +53,13 @@ export var event_handlers = {
       game.data["inner gate open"] = true;
       game.effects.print(3);
     }
+    // servants' doors
+    if (room_from.id === 47 && room_to.id === 19) {
+      game.artifacts.get(21).is_open = true;
+    }
+    if (room_from.id === 44 && room_to.id === 26) {
+      game.artifacts.get(27).is_open = true;
+    }
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -147,6 +154,7 @@ export var event_handlers = {
     if (artifact.id === 45) {
       game.delay();
       game.effects.print(13);
+      game.monsters.get(15).destroy();
     }
   },
 
@@ -159,7 +167,7 @@ export var event_handlers = {
     if (monster.id === 19) {
       game.effects.print(10);
       monster.destroy();
-      game.monsters.get(20).count = Math.floor(game.monsters.get(20).count / 2);
+      game.monsters.get(20).count = Math.floor(game.monsters.get(20).count * 2 / 3);
     }
   },
 
@@ -171,7 +179,9 @@ export var event_handlers = {
           game.history.write("Try lighting it.");
           break;
         case 'fire cannon':
-
+          if (game.in_battle) {
+            throw new CommandException("The soldiers won't let you!");
+          }
           let q1 = new ModalQuestion;
           q1.type = 'multiple_choice';
           q1.question = "What do you target with the cannon?";
@@ -226,12 +236,14 @@ export var event_handlers = {
         case 'glass grenade':
           if (game.artifacts.get(34).isHere()) {
             artifact.destroy();
-            game.effects.print(14);
+            game.effects.print(15);
             destroy_clonatorium();
           } else if (game.in_battle) {
             game.effects.print(16);
             for (let m of game.monsters.all.filter(x => x.isHere() && x.reaction === Monster.RX_HOSTILE)) {
-              m.injure(game.diceRoll(1, 20));
+              for (let i = 0; i < m.count; i++) {
+                m.injure(game.diceRoll(1, 20));
+              }
             }
             artifact.destroy();
           } else {
@@ -283,8 +295,7 @@ export var event_handlers = {
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
     let game = Game.getInstance();
-      game.exit_message.push("The rebels gave you some sheets of green paper with lots of zeroes on them as a reward. You threw them away as valueless.");
-    }
+    game.exit_message.push("The rebels gave you some sheets of green paper with lots of zeroes on them as a reward. You threw them away as valueless.");
   },
 
 }; // end event handlers
@@ -302,6 +313,7 @@ function destroy_clonatorium() {
     guards.destroy();
   }
   game.monsters.get(5).destroy();
+  game.monsters.get(13).destroy();
   game.monsters.get(23).moveToRoom(27);
   game.monsters.get(23).count = 1;
   game.monsters.get(23).damage = 0;

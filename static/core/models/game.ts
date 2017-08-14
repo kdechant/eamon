@@ -315,7 +315,7 @@ export class Game {
     // non-player monster actions
     if (this.in_battle && !this.skip_battle_actions) {
       for (let m of this.monsters.all) {
-        if (m.id !== Monster.PLAYER && m.isHere()) {
+        if (m.id !== Monster.PLAYER && m.isHere() && this.player.status === Monster.STATUS_ALIVE) {
           m.doBattleActions();
         }
         this.artifacts.updateVisible();

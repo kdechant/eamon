@@ -293,7 +293,7 @@ export class Monster extends GameObject {
       this.inventory.push(a);
       this.weight_carried += a.weight;
       if (this.id === Monster.PLAYER) {
-        if (a.is_worn && (a.armor_type === Artifact.ARMOR_TYPE_ARMOR || a.armor_type === Artifact.ARMOR_TYPE_SHIELD)) {
+        if (a.is_worn && a.armor_class) {
           this.armor_worn.push(a);
           this.armor_class += a.armor_class;
         }
@@ -783,7 +783,7 @@ export class Monster extends GameObject {
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
       if (damage <= 0) {
-        game.history.write("-- blow bounces off armor!");
+        game.history.write("-- blow bounces off armor!", "no-space");
         return 0; // no need to show health here.
       }
     }

@@ -157,7 +157,7 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 # look for machine-specific config files
-if os.environ['IN_DOCKER'] == "1":
+if 'IN_DOCKER' in os.environ and os.environ['IN_DOCKER'] == "1":
     # docker has its own custom settings file
     from .settings_docker import *
 else:
