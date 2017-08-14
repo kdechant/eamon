@@ -253,6 +253,7 @@ class Monster(models.Model):
     )
     combat_code = models.IntegerField(default=0, choices=COMBAT_CODES)
     courage = models.IntegerField(default=100)
+    pursues = models.BooleanField(default=True,  help_text="Will the monster pursue a fleeing player?")
     room_id = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=6, choices=(
         ('male', 'Male'),

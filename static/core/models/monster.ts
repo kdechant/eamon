@@ -60,6 +60,7 @@ export class Monster extends GameObject {
   combat_verbs: string[] = [];  // custom messages that replace the normal attack messages
   health_messages: string[] = [];  // custom messages that replace the normal health status messages
   courage: number;
+  pursues: boolean;
   gold: number;
   weapon_id: number;
   weapon_dice: number;
@@ -193,9 +194,14 @@ export class Monster extends GameObject {
       // badly wounded
       effective_courage *= 0.5;
     }
-    // player always has a 15% chance to get away when fleeing
-    // (new rule - not in EDX. it's really annoying otherwise.)
+    // logic for monsters chasing a fleeing player
     if (following) {
+      // some monsters never pursue
+      if (!this.pursues) {
+        return false;
+      }
+      // player always has a 15% chance to get away when fleeing
+      // (new rule - not in EDX. it's really annoying otherwise.)
       effective_courage = Math.min(effective_courage, 85);
     }
     return effective_courage >= fear;
