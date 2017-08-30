@@ -26,4 +26,8 @@ export class AdventureComponent {
       );
   }
 
+  public intro_next() {
+    this.game.intro_index++;
+  }
+
 }

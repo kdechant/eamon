@@ -42,9 +42,14 @@ export class Game {
   description: string;
 
   /**
-   * @var {string} The text to display at the adventure start
+   * @var {string[]} The text to display at the adventure start
    */
-  intro_text: string;
+  intro_text: string[];
+
+  /**
+   * @var {number} The current index of the multi-page intro
+   */
+  intro_index: number;
 
   /**
    * @var {string} A question to ask the player during adventure start
@@ -208,7 +213,8 @@ export class Game {
     this.id = data[0].id;
     this.name = data[0].name;
     this.description = data[0].description;
-    this.intro_text = data[0].intro_text;
+    this.intro_text = data[0].intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
+    this.intro_index = 0;
     this.intro_question = data[0].intro_question;
     this.dead_body_id = data[0].dead_body_id;
 

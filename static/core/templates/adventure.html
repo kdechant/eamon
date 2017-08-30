@@ -2,12 +2,15 @@
   <h1>{{game.name}}</h1>
   <div class="row">
     <div class="intro col-sm-offset-1 col-sm-10 parchment" *ngIf="game?.player && !game?.started">
-      <p [innerHtml]="game?.intro_text | gamevars | nl2br"></p>
-      <p class="intro-question" *ngIf="game.intro_question">
+      <p [innerHtml]="game?.intro_text[game?.intro_index] | gamevars | nl2br"></p>
+      <p class="intro-next" *ngIf="game.intro_index < game.intro_text.length - 1">
+        <button class="btn btn-success" id="intro-next" (click)="intro_next()">Next</button>
+      </p>
+      <p class="intro-question" *ngIf="game.intro_question && game.intro_index === game.intro_text.length - 1">
         {{game.intro_question}}
         <input type="text" [(ngModel)]="game.intro_answer">
       </p>
-      <div class="intro-confirm">
+      <div class="intro-confirm" *ngIf="game.intro_index === game.intro_text.length - 1">
         <p><button class="btn btn-success" id="return" (click)="game.start()">Start Adventure</button></p>
       </div>
     </div>
