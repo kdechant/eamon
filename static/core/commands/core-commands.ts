@@ -226,7 +226,6 @@ export class GetCommand implements BaseCommand {
       if (a.match(arg) || arg === "all") {
         match = true;
         if (arg === "all" && a.get_all === false) {
-          game.history.write("You don't bother picking up the " + a.name + ".");
           continue;
         }
 
