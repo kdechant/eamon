@@ -18,7 +18,8 @@ export class CommandListComponent {
 
   public openCommands() {
     if (this.keys.length === 0 && typeof this.game !== 'undefined') {
-      this.keys = Object.keys(this.game.command_parser.available_verbs);
+      this.keys = Object.keys(this.game.command_parser.available_verbs)
+        .filter(c => c !== 'goto' && c !== 'debugger' && c !== 'accio');
     }
     this.hidden = !this.hidden;
   }

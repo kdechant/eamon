@@ -82,6 +82,24 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Moves the artifact to a specific monster's inventory.
+   */
+  public moveToInventory(monster_id: number = null): void {
+    if (this.type !== Artifact.TYPE_BOUND_MONSTER) {
+      if (monster_id === null || Game.getInstance().monsters.get(monster_id)) {
+        this.monster_id = monster_id || 0;
+        this.room_id = null;
+        this.container_id = null;
+      } else {
+        throw new CommandException("Monster # " + monster_id + " does not exist.")
+      }
+    } else {
+      throw new CommandException("moveToInventory() can't be used on bound monster artifacts.")
+    }
+
+  }
+
+  /**
    * Determines whether an artifact is available to the player right now.
    * Artifacts are available if the player is carrying them or if they are in
    * the current room.

@@ -405,7 +405,7 @@ export class Game {
    */
   public setReady() {
     // set a timeout to activate the command prompt once everything finishes
-    setTimeout(() => { console.log('ready'); this.ready = true; }, this.history.total_delay);
+    setTimeout(() => { this.ready = true; }, this.history.total_delay);
   }
 
   /**

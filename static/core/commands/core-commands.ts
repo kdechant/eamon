@@ -201,6 +201,13 @@ export class SayCommand implements BaseCommand {
 
     if (arg !== "") {
       game.history.write("Ok... \"" + arg + "\"");
+
+      // debugging mode
+      if (arg === "bort") {
+        game.history.write("You feel a sudden power, like you can see inside the Matrix.")
+        game.data["bort"] = true;
+      }
+
       game.triggerEvent("say", arg);
     } else {
       game.modal.show("Say what?", function(value) {
@@ -1157,10 +1164,12 @@ core_commands.push(new SpeedCommand());
 // a cheat command used for debugging. say "goto" and the room number (e.g., "goto 5")
 export class GotoCommand implements BaseCommand {
   name: string = "goto";
-  verbs: string[] = ["goto"];
+  verbs: string[] = ["xgoto"];
   run(verb, arg) {
     let game = Game.getInstance();
-
+    if (!game.data['bort']) {
+      throw new CommandException("I don't know the command '" + verb + "'!")
+    }
     let room_to = game.rooms.getRoomById(parseInt(arg));
     if (!room_to) {
       throw new CommandException("There is no room " + arg);
@@ -1174,10 +1183,33 @@ core_commands.push(new GotoCommand());
 // a cheat command used for debugging. opens the javascript debugger
 export class DebuggerCommand implements BaseCommand {
   name: string = "debugger";
-  verbs: string[] = ["debugger"];
+  verbs: string[] = ["xdebugger"];
   run(verb, arg) {
     let game = Game.getInstance();
+    if (!game.data['bort']) {
+      throw new CommandException("I don't know the command '" + verb + "'!")
+    }
     debugger;
   }
 }
 core_commands.push(new DebuggerCommand());
+
+// a cheat command used for debugging. gets an artifact no matter where it is
+export class AccioCommand implements BaseCommand {
+  name: string = "accio";
+  verbs: string[] = ["xaccio"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    if (!game.data['bort']) {
+      throw new CommandException("I don't know the command '" + verb + "'!")
+    }
+    let a = game.artifacts.getByName(arg);
+    if (a) {
+      if (!a.seen)
+        a.showDescription();
+      a.moveToInventory();
+      game.player.updateInventory();
+    }
+  }
+}
+core_commands.push(new AccioCommand());
