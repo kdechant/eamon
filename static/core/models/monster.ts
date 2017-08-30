@@ -289,7 +289,7 @@ export class Monster extends GameObject {
       this.armor_class = 0;
     }
     this.weight_carried = 0;
-    for (let a of game.artifacts.all.filter(x => x.monster_id === this.id)) {
+    for (let a of game.artifacts.all.filter(x => x.monster_id === this.id && x.type !== Artifact.TYPE_BOUND_MONSTER)) {
       this.inventory.push(a);
       this.weight_carried += a.weight;
       if (this.id === Monster.PLAYER) {
