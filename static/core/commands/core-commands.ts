@@ -1114,7 +1114,7 @@ export class BlastCommand implements BaseCommand {
       if (monster_target) {
         if (game.triggerEvent("blast", arg, monster_target)) {
           game.history.write("--a direct hit!", "success");
-          monster_target.injure(damage);
+          monster_target.injure(damage, true);
           monster_target.hurtFeelings();
         }
       } else if (artifact_target) {
