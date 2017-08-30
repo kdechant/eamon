@@ -23,7 +23,7 @@ export var event_handlers = {
     game.data['met gwynnith'] = false;    // d%(10)
     game.data['captain asked'] = false;    // d%(11)
     game.data['infected'] = false;    // d%(12)
-    game.data['ready invictus'] = false;    // d%(13)
+    game.data['ready invictus'] = 0;    // d%(13)
     game.data['kjelthor'] = false;    // d%(14)
     game.data['qd dragon'] = false;    // d%(15)
 
@@ -31,7 +31,6 @@ export var event_handlers = {
 
   "death": function(monster: Monster) {
     let game = Game.getInstance();
-    console.log(monster.id);
     // some monsters have effects that appear when they die
     if (monster.id >= 5 && monster.id <= 13) {
       game.effects.print(monster.id);
@@ -86,14 +85,16 @@ export var event_handlers = {
     if (game.artifacts.get(82).isHere() && game.data['infected'] === false) {
       game.data['infected'] = true;
       game.effects.print(42);
-      game.delay();
+      game.delay(2);
       for (let a of game.player.inventory) {
-        game.history.write(a + " falls from your hands", "nospace");
+        game.history.write(a.name + " falls from your hands.", "no-space");
         a.moveToRoom(39);
       }
       game.artifacts.updateVisible();
       game.player.updateInventory();
-      game.history.write("Everything goes black", "special2");
+      game.history.write("Everything goes black!", "special2");
+      game.delay(2);
+      game.history.write("You wake up an hour later, disoriented and not sure where you are.");
       game.player.moveToRoom(40);
     }
 
@@ -126,19 +127,6 @@ export var event_handlers = {
       sex_change();
     }
 
-    // Gwynnith makes Ossoric and Ossogotrix dissapear
-    if (game.monsters.get(13).isHere() && !game.data['met gwynnith']) {
-      game.data['met gwynnith'] = true;
-      game.effects.print(21);
-      let dragons = [game.monsters.get(27), game.monsters.get(28)];
-      for (let d of dragons) {
-        if (d.isHere()) {
-          game.history.write(d.name + " instantly vanishes!", "special2");
-          d.destroy();
-        }
-      }
-    }
-
     // Mouse becomes tiger
     if (game.monsters.get(22).isHere() && !game.data['mouse tiger']) {
       game.data['mouse tiger'] = true;
@@ -150,7 +138,7 @@ export var event_handlers = {
     let lis = game.monsters.get(29);
     if (lis.isHere() && game.player.room_id > 65 && lis.reaction === Monster.RX_FRIEND) {
       lis.reaction = Monster.RX_HOSTILE;
-      game.history.write(lis.name + " begins to laugh wildly", "special");
+      game.history.write(lis.name + " looks up at the tower in awe. Then she begins to laugh wildly and draws her lance!", "special");
     }
 
   },
@@ -208,6 +196,19 @@ export var event_handlers = {
       }
     }
 
+    // Gwynnith makes Ossoric and Ossogotrix dissapear
+    if (game.monsters.get(13).isHere() && !game.data['met gwynnith']) {
+      game.data['met gwynnith'] = true;
+      game.effects.print(21);
+      let dragons = [game.monsters.get(27), game.monsters.get(28)];
+      for (let d of dragons) {
+        if (d.isHere()) {
+          game.history.write(d.name + " instantly vanishes!", "special2");
+          d.destroy();
+        }
+      }
+    }
+
   },
 
   "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact) {
@@ -216,7 +217,7 @@ export var event_handlers = {
     if (new_wpn.id === 32 && !game.monsters.get(26).isHere()) {
       game.effects.print(43);
       new_wpn.destroy();
-      game.data['ready invictus'] = true;
+      game.data['ready invictus'] = 1;
       return false;
     }
     return true;
@@ -225,16 +226,17 @@ export var event_handlers = {
   "say": function(arg) {
     let game = Game.getInstance();
     if (arg === 'orowe' && game.player.room_id === 75) {
-      if (game.data['ossoric dead']) {
+      if (game.data['befriended dragons'] && !game.data['ossoric dead'] && !game.monsters.get(27).isHere()) {
         game.effects.print(51);
         game.monsters.get(27).moveToRoom();
       }
-      if (game.data['ossogotrix dead']) {
+      if (game.data['befriended dragons'] && !game.data['ossogotrix dead'] && !game.monsters.get(28).isHere()) {
         game.effects.print(52);
         game.monsters.get(28).moveToRoom();
       }
     }
 
+    // teleport to forest
     if (arg === 'kjelthor' && game.player.room_id < 47 && game.data['befriended dragons'] && !game.data['kjelthor']) {
       game.data['kjelthor'] = 1;
       game.effects.print(46);
@@ -242,6 +244,7 @@ export var event_handlers = {
     }
 
     if (arg === 'quaal dracis' && game.player.hasArtifact(30) && game.artifacts.get(30).is_worn) {
+      // ragnar/woglinde
       let slab = game.artifacts.get(42);
       if (slab.isHere()) {
         slab.destroy();
@@ -252,10 +255,12 @@ export var event_handlers = {
           game.monsters.get(9).moveToRoom();
         }
       } else if ([35, 44, 88, 98].indexOf(game.player.room_id) !== -1) {
+        // go to dragons
         game.skip_battle_actions = true;
         game.effects.print(34);
         game.player.moveToRoom(45);
       } else if (game.player.room_id === 25) {
+        // cave entrance
         game.effects.print(28);
         let rl = game.diceRoll(1, 4);
         if (rl === 1) {
@@ -304,17 +309,21 @@ export var event_handlers = {
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+
+    // another chance to use invictus
+    if (game.data['ready invictus'] === 1) {
+      game.effects.print(44);
+      game.artifacts.get(32).moveToRoom();
+      game.data['ready invictus'] = 2;
     } else {
-      game.history.write("All your wounds are healed!");
-      game.player.heal(1000);
+
+      if (roll <= 50) {
+        game.history.write("You hear a loud sonic boom which echoes all around you!");
+      } else {
+        game.history.write("Some of your wounds seem to clear up.");
+        let heal_amount = game.diceRoll(2, 6);
+        game.player.heal(heal_amount);
+      }
     }
   },
 
