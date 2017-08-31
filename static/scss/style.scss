@@ -32,6 +32,11 @@ h4 {
 }
 
 .parchment {
+  background-image: url(/static/images/parchment_alpha_vert.png);
+  background-size: 100% 100%;
+  padding: 40px 60px;
+}
+.parchment.wide {
   background-image: url(/static/images/parchment_alpha.png);
   background-size: 100% 100%;
   padding: 40px 60px;
