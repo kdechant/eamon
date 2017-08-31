@@ -12,9 +12,9 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     if (game.player.gender === 'f') {
-      game.intro_text = game.intro_text.replace("Larcenous Lil", "Slippery Sven");
-      game.intro_text = game.intro_text.replace("Lil", "Sven");
-      game.intro_text = game.intro_text.replace("She", "He");
+      game.intro_text[0] = game.intro_text[0].replace("Larcenous Lil", "Slippery Sven");
+      game.intro_text[0] = game.intro_text[0].replace("Lil", "Sven");
+      game.intro_text[0] = game.intro_text[0].replace("She", "He");
     }
   },
 

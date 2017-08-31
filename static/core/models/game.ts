@@ -252,7 +252,7 @@ export class Game {
     this.history.push("");
 
     // if there is no intro text, just start the game
-    if (this.intro_text === "") {
+    if (this.intro_text[0] === "") {
       this.start();
     } else {
       // event handler that can change the intro text
