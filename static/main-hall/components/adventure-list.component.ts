@@ -11,8 +11,8 @@ import {Adventure} from "../models/adventure";
   template: `
   <h2><img src="/static/images/ravenmore/128/map.png"> Go on an adventure</h2>
   <p>Eamon contains many different adventures of many different styles. Some are fantasy or sci-fi, contain a quest or just hack-and-slash. Some are aimed at beginners and others are for veteran adventurers only. Choose your fate and perish (or profit)...</p>
-  <div class="row">
-    <div class="adventure-list-item col-sm-6"
+  <div class="adventure-list">
+    <div class="adventure-list-item"
       *ngFor="let adv of _adventureService.adventures">
       <div class="row">
         <div class="col-sm-2"><img src="/static/images/ravenmore/128/map.png" width="64"></div>
@@ -27,9 +27,12 @@ import {Adventure} from "../models/adventure";
           {{tagname}}
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
-  <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>
+  <div class="text-center margin-bottom-lg">
+    <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>
+  </div>
   `,
 })
 export class AdventureListComponent implements OnInit {

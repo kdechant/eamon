@@ -147,40 +147,38 @@ command-prompt .form-control {
   .player .glyphicon {
     font-size: 12px; }
 
-@media (min-width: 768px) {
-  .adventure-list-item {
-    min-height: 260px; } }
+.adventure-list {
+  column-count: 2; }
 
-@media (min-width: 992px) {
-  .adventure-list-item {
-    min-height: 225px; } }
-
-@media (min-width: 1200px) {
-  .adventure-list-item {
-    min-height: 200px; } }
-
-.adventure-list-item h3 {
-  margin-top: 5px;
-  margin-bottom: 0; }
-
-.adventure-list-item .desc {
-  font-size: 93%; }
-
-.adventure-list-item .tags {
-  width: 100%;
-  float: left; }
-  .adventure-list-item .tags .tag {
-    float: left;
-    border: 1px solid #b97;
-    border-radius: 2px;
-    margin-right: 5px;
-    border-left: 3px solid #841;
-    background: #dc9;
-    padding: 0 2px 2px 2px;
-    font-size: 80%; }
+.adventure-list-item {
+  padding-top: 5px;
+  padding-bottom: 10px;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid; }
+  .adventure-list-item h3 {
+    margin-top: 5px;
+    margin-bottom: 0; }
+  .adventure-list-item .desc {
+    font-size: 93%; }
+  .adventure-list-item .tags {
+    width: 100%;
+    float: left; }
+    .adventure-list-item .tags .tag {
+      float: left;
+      border: 1px solid #b97;
+      border-radius: 2px;
+      margin-right: 5px;
+      border-left: 3px solid #841;
+      background: #dc9;
+      padding: 0 2px 2px 2px;
+      font-size: 80%; }
 
 .stat {
   font-size: 133%; }
 
 .margin-bottom-md {
   margin-bottom: 15px; }
+
+.margin-bottom-lg {
+  margin-bottom: 30px; }

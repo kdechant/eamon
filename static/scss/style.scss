@@ -208,16 +208,17 @@ command-prompt {
     font-size: 12px;
   }
 }
+.adventure-list {
+  column-count: 2;
+}
 .adventure-list-item {
-  @media (min-width: 768px) {
-    min-height: 260px;
-  }
-  @media (min-width: 992px) {
-    min-height: 225px;
-  }
-  @media (min-width: 1200px) {
-    min-height: 200px;
-  }
+
+  padding-top: 5px;
+  padding-bottom: 10px;
+
+  -webkit-column-break-inside: avoid;
+            page-break-inside: avoid;
+                 break-inside: avoid;
 
   h3 {
     margin-top: 5px;
@@ -251,4 +252,7 @@ command-prompt {
 // Utility classes
 .margin-bottom-md {
   margin-bottom: 15px;
+}
+.margin-bottom-lg {
+  margin-bottom: 30px;
 }
