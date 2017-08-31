@@ -1,26 +1,12 @@
+{% extends "base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
 
-  <head>
-    <title>The Wonderful World of Eamon - Adventure List</title>
+{% block title %}Adventurer's Manual{% endblock %}
 
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-
-  </head>
-
-  <body>
-
-    <div class="page-border">&nbsp;</div>
-
-    <div class="container">
-      <h1>The Wonderful World of Eamon</h1>
-    </div>
+{% block content %}
 
     <div class="container parchment wide">
-      <h2><img src="{% static "images/ravenmore/128/tome.png" %}"> Manual</h2>
+      <h2><img src="{% static "images/ravenmore/128/tome.png" %}"> Adventurer's Manual</h2>
 
       <p>Eamon is a combination of a text-based interactive fiction game (like Adventure, Zork, etc.) and a fantasy role-playing game. Players create a character, journey on various adventures, and interact with the game world using English-like commands. Players explore pre-mapped adventures, fighting vicious and often humorous foes, collecting loot, and locating keys, magic items, or other special objects which allow them to proceed on through the plot.</p>
 
@@ -65,6 +51,7 @@
 
       <p>Many of the beings encountered on adventures, however, will have a pre-set friendliness factor and thus react the same regardless of your character's Charisma. A rat with a friendliness rating of 0% will never be a friend, be it with Joe Normal, Hedric the Horrible, or Lovable Linda; likewise, a fellow adventurer with a friendliness rating of 100% will always become a friend to your character.</p>
 
+      <p>&nbsp;</p>
     </div>
     <div class="container parchment">
 
@@ -149,6 +136,7 @@
 
       <p>* A shield may be used in addition to armor, if the character is using a one-handed weapon. This means a character with plate armor and a shield would have protection from 6 hits, and would need an armor expertise of 65% to avoid the penalty.</p>
 
+      <p>&nbsp;</p>
     </div>
     <div class="container parchment">
 
@@ -175,6 +163,7 @@
 
       <p>Once the initial damage is calculated, it is then adjusted based on the defender's armor class. So, if a player wearing chain mail is hit for 5 points of damage, the chain mail absorbs 2 points, leaving a final damage of 3 hit points.</p>
 
+      <p>&nbsp;</p>
     </div>
     <div class="container parchment">
 
@@ -225,14 +214,7 @@
       <p>Due to the chaotic nature of the world of Eamon, some adventures may have additional spells available. Look for magic inscriptions or spell books to learn these. Unlike the standard spells, these will not work in any other adventure besides the one where they're found!</p>
 
       <p>&nbsp;</p>
-      <p>&nbsp;</p>
 
     </div>
-    {% include "_footer.html" %}
 
-    <div class="page-border">&nbsp;</div>
-
-    {% include "_google_analytics.html" %}
-  </body>
-
-</html>
+{% endblock %}

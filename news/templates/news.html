@@ -1,23 +1,9 @@
+{% extends "base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
 
-  <head>
-    <title>The Wonderful World of Eamon - Adventure List</title>
+{% block title %}News{% endblock %}
 
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-
-  </head>
-
-  <body>
-
-    <div class="page-border">&nbsp;</div>
-
-    <div class="container">
-      <h1>The Wonderful World of Eamon</h1>
-    </div>
+{% block content %}
 
     <div class="container parchment">
       <h2><img src="{% static "images/ravenmore/128/scroll.png" %}"> News</h2>
@@ -52,13 +38,6 @@
           {% endif %}
         </ul>
       {% endif %}
-
     </div>
-    {% include "_footer.html" %}
 
-    <div class="page-border">&nbsp;</div>
-
-    {% include "_google_analytics.html" %}
-  </body>
-
-</html>
+{% endblock %}

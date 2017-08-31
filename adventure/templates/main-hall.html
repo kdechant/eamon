@@ -1,14 +1,9 @@
+{% extends "base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
 
-  <head>
-    <title>The Wonderful World of Eamon</title>
-    <meta property="og:url" content="http://eamon.terranok.com" />
-    <meta property="og:title" content="The Wonderful World of Eamon" />
-    <meta property="og:description" content="Slaying dragons and saving princesses for fun and profit! A web-based version of the classic fantasy text adventure game." />
-    <meta property="og:image" content="http://eamon.terranok.com/static/images/Eamon_dragon_facebook.png" />
+{% block title %}Main Hall{% endblock %}
 
+{% block scripts %}
     <base href="/main-hall/">
 
     <!-- 1. Load libraries -->
@@ -30,23 +25,10 @@
       ]).then(null, console.error.bind(console));
     </script>
 
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
-    <!--<script src="{% static "vendor/bootstrap-3.3.6-dist/js/bootstrap.min.js" %}></script>-->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+{% endblock %}
 
-  </head>
+{% block content %}
 
-  <!-- 3. Display the application -->
-  <body>
-    <div class="page-border">&nbsp;</div>
     <main-hall>Welcome to the Wonderful World of Eamon...</main-hall>
 
-    {% include "_footer.html" %}
-
-    <div class="page-border">&nbsp;</div>
-    {% include "_google_analytics.html" %}
-
-  </body>
-
-</html>
+{% endblock %}

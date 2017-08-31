@@ -1,9 +1,9 @@
+{% extends "base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
 
-  <head>
-    <title>The Wonderful World of Eamon</title>
+{% block title %}{% endblock %}
+
+{% block scripts %}
 
     <!-- 1. Load libraries -->
      <!-- Polyfill(s) for older browsers -->
@@ -26,20 +26,13 @@
       ]).then(null, console.error.bind(console));
     </script>
 
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap.min.css" %}" />
-    <link rel="stylesheet" href="{% static "vendor/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" %}" />
-    <!--<script src="{% static "vendor/bootstrap-3.3.6-dist/js/bootstrap.min.js" %}></script>-->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+{% endblock %}
 
-  </head>
+{% block heading %}
+{% endblock %}
 
-  <!-- 3. Display the application -->
-  <body>
-    <div class="page-border">&nbsp;</div>
+{% block content %}
+
     <adventure>Waking up the monsters...</adventure>
-    <div class="page-border">&nbsp;</div>
 
-    {% include "_google_analytics.html" %}
-  </body>
-
-</html>
+{% endblock %}
