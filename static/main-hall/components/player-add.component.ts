@@ -55,11 +55,10 @@ import {PlayerService} from '../services/player.service';
       </div>
     </form>
     <div id="prosper" *ngIf="player.id">
-      <p>The man behind the desk takes back the instructions and says, &quot;It is now time
-      for you to start your life.&quot; He makes an odd sign with his hand and says, &quot;Live"
-      long and prosper.&quot;</p>
+      <p>The man behind the desk says, &quot;It is now time for you to start your life.&quot; He makes an odd 
+        sign with his hand and says, &quot;Live long and prosper.&quot;</p>
       <p>You now wander into the Main Hall...</p>
-      <button (click)="gotoPlayer(player)">Next</button>
+      <button class="btn" (click)="gotoPlayer(player)">Next</button>
     </div>
   </div>
   `
