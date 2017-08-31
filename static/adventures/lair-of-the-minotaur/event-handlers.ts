@@ -23,7 +23,7 @@ export var event_handlers = {
 
     // Lil or Sven?
     if (game.player.gender === 'f') {
-      game.intro_text = game.intro_text.replace("Larcenous Lil", "Slippery Sven");
+      game.intro_text[0] = game.intro_text[0].replace("Larcenous Lil", "Slippery Sven");
       game.artifacts.get(26).destroy();
       game.artifacts.get(40).moveToRoom(52);
     }
