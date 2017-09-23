@@ -3,6 +3,7 @@
  */
 import {async, getTestBed} from '@angular/core/testing';
 import {HttpModule} from '@angular/http';
+import { CookieService, CookieModule } from 'ngx-cookie';
 
 import {Game} from "../../core/models/game";
 import {GameLoaderService} from "../../core/services/game-loader.service";
@@ -20,9 +21,9 @@ describe("The Beginner's Cave", function() {
   let gameLoaderService = null;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [HttpModule, CookieModule.forRoot()],
       providers: [
-        GameLoaderService
+        GameLoaderService, CookieService
       ]
     });
     gameLoaderService = getTestBed().get(GameLoaderService);

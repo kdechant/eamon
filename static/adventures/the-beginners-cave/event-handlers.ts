@@ -32,6 +32,19 @@ export var event_handlers = {
 
   },
 
+  "endTurn2": function() {
+    let game = Game.getInstance();
+    if (game.in_battle && game.history.total_delay < 15000) {
+      game.delay(1);
+      game.history.write("The Hellsblade whirls in your hand! You can't stop swinging!", "special");
+      let m = game.player.chooseTarget();
+      // let m = game.monsters.visible[game.diceRoll(1, game.monsters.visible.length) - 1]; // can choose friends
+      game.player.attack(m);
+      game.tick();
+    }
+
+  },
+
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     if (exit.room_to === -1) {
       Game.getInstance().history.write("Sorry, but I'm afraid to go into the water without my life preserver.");
@@ -77,11 +90,12 @@ export var event_handlers = {
     return true;
   },
 
-  "drop": function(arg: string, artifact: Artifact): void {
+  "drop": function(arg: string, artifact: Artifact): boolean {
     // if dropping trollsfire, put it out
     if (artifact.id === 10) {
       put_out_trollsfire();
     }
+    return true;
   },
 
   "give": function(arg: string, artifact: Artifact, monster: Monster): boolean {
