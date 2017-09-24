@@ -64,25 +64,30 @@ export class MoveCommand implements BaseCommand {
     if (exit.door_id) {
       let door = game.artifacts.get(exit.door_id);
 
-      // if it's a hidden or secret door, the exit is blocked even if the door's "open" flag is set.
-      // show the normal "you can't go that way" message here, to avoid giving away secret door locations
-      if (door.hidden) {
-        throw new CommandException("You can't go that way!");
-      }
+      // sometimes doors get moved or blown up, so check if the door is still there before running the door logic
+      if (door.room_id === room_from.id) {
 
-      if (door.embedded) {
-        door.reveal();
-      }
+        // if it's a hidden or secret door, the exit is blocked even if the door's "open" flag is set.
+        // show the normal "you can't go that way" message here, to avoid giving away secret door locations
+        if (door.hidden) {
+          throw new CommandException("You can't go that way!");
+        }
 
-      // try to unlock the door using a key the player is carrying
-      if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
-        let key = game.artifacts.get(door.key_id);
-        game.history.write("You unlock the " + door.name + " using the " + key.name + ".");
-        door.is_open = true;
-      }
+        if (door.embedded) {
+          door.reveal();
+        }
 
-      if (!door.is_open) {
-        throw new CommandException("The " + door.name + " blocks your way!");
+        // try to unlock the door using a key the player is carrying
+        if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
+          let key = game.artifacts.get(door.key_id);
+          game.history.write("You unlock the " + door.name + " using the " + key.name + ".");
+          door.is_open = true;
+        }
+
+        if (!door.is_open) {
+          throw new CommandException("The " + door.name + " blocks your way!");
+        }
+
       }
     }
 
@@ -399,11 +404,11 @@ export class PutCommand implements BaseCommand {
       }
       if (container.type === Artifact.TYPE_CONTAINER) {
         if (container.is_open) {
-          if (game.triggerEvent("beforePut", arg, item)) {
+          if (game.triggerEvent("beforePut", arg, item, container)) {
             game.history.write("Done.");
             match = true;
             item.putIntoContainer(container);
-            game.triggerEvent("afterPut", arg, item);
+            game.triggerEvent("afterPut", arg, item, container);
           }
         } else {
           throw new CommandException("Try opening the " + container_name + " first.");
@@ -439,8 +444,10 @@ export class DropCommand implements BaseCommand {
           continue;
         }
         match = true;
-        game.player.drop(inventory[i]);
-        game.history.write(inventory[i].name + " dropped.", "no-space");
+        if (game.triggerEvent("drop", arg, inventory[i])) {
+          game.player.drop(inventory[i]);
+          game.history.write(inventory[i].name + " dropped.", "no-space");
+        }
       }
     }
 
