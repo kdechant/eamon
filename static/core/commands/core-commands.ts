@@ -64,7 +64,7 @@ export class MoveCommand implements BaseCommand {
     if (exit.door_id) {
       let door = game.artifacts.get(exit.door_id);
 
-      // sometimes doors get moved or blown up, so check if the door is still there before running the door logic
+      // sometimes doors get moved or blown up, so check if the door is still there before runn
       if (door.room_id === room_from.id) {
 
         // if it's a hidden or secret door, the exit is blocked even if the door's "open" flag is set.
@@ -1126,7 +1126,8 @@ export class BlastCommand implements BaseCommand {
       let damage = game.diceRoll(2, 5);
       if (monster_target) {
         if (game.triggerEvent("blast", arg, monster_target)) {
-          game.history.write("--a direct hit!", "success");
+          game.history.write(game.player.name + " casts a blast spell at " + monster_target.name);
+          game.history.write("--a direct hit!", "success no-space");
           monster_target.injure(damage, true);
           monster_target.hurtFeelings();
         }

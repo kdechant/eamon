@@ -11,10 +11,11 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     game.data['gold stolen'] = 0;
+    game.data['laszlo spells'] = 0;
 
     // custom attack messages
     game.monsters.get(5).combat_verbs = ["bites at", "leaps at"];
-    game.monsters.get(17).combat_verbs = ["shoots a fireball at", "swings at", "casts a spell at"];
+    game.monsters.get(17).combat_verbs = ["shoots a firebolt at", "swings at"];
 
   },
 
@@ -74,8 +75,11 @@ export var event_handlers = {
 
   "light": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
+    if (!game.artifacts.get(8).isHere()) {
+      game.history.write("You must have left your matches at home. You don't have anything to light it with.");
+      return false;
+    }
     if (artifact !== null) {
-      // dyn-o-mite!
       if (artifact.id === 10) {
         if (artifact.monster_id === Monster.PLAYER) {
           game.history.write("Better put it down first!");
@@ -93,6 +97,31 @@ export var event_handlers = {
         return false; // skip the regular "light source" lighting routine
       }
     }
+    return true;
+  },
+
+  "monsterAction": function(monster: Monster) {
+    let game = Game.getInstance();
+
+    // laszlo can cast spells
+    if (monster.id === 17 && game.data['laszlo spells'] < 3 && game.diceRoll(1,3) === 3) {
+      if (monster.damage > monster.hardiness * 0.4) {
+        // heal
+        game.history.write(monster.name + " casts a heal spell!");
+        let heal_amount = game.diceRoll(2, 6);
+        monster.heal(heal_amount);
+      } else {
+        // blast
+        let monster_target = monster.chooseTarget();
+        let damage = game.diceRoll(2, 5);
+        game.history.write(monster.name + " casts a blast spell at " + monster_target.name + "!");
+        game.history.write("--a direct hit!", "success");
+        monster_target.injure(damage, true);
+      }
+      game.data['laszlo spells']++;
+      return false; // skip the default combat actions
+    }
+
     return true;
   },
 
@@ -164,21 +193,32 @@ export var event_handlers = {
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+    if (roll <= 25) {
+      game.history.write("You hear a rush of wind.");
+      let lights = game.artifacts.all.filter(a => Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.isHere());
+      for (let l of lights) {
+        game.history.write("It blew out your " + l.name);
+        l.is_lit = false;
+      }
+    } else if (roll <= 50) {
+      game.history.write("A flame erupts from the floor, engulfing and burning you.", "warning");
+      game.player.injure(5);
+    } else if (roll <= 75 && game.player.hasArtifact(10)) {
+      game.history.write("The chemical you were carrying just exploded!", "warning");
+      game.player.injure(5);
+      game.artifacts.get(10).destroy();
     } else {
-      game.history.write("All your wounds are healed!");
-      game.player.heal(1000);
+      game.history.write("You hear a loud sonic boom which echoes all around you!");
+    }
+  },
+
+  // event handler that happens at the very end, after the player has sold their treasure to sam slicker
+  "afterSell": function() {
+    let game = Game.getInstance();
+    let kathryn = game.monsters.get(6);
+    if (kathryn.isHere() && kathryn.reaction !== Monster.RX_HOSTILE) {
+      game.exit_message.push("Kathryn thanks you for rescuing her and immediately heads off to find a new adventure.");
     }
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

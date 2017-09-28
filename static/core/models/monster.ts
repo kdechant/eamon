@@ -463,52 +463,56 @@ export class Monster extends GameObject {
       return;
     }
 
-    // check if the monster should flee
-    if (!this.checkCourage()) {
-      let room_to = this.chooseRandomExit();
-      if (room_to) {
-        if (this.count > 1) {
-          game.history.write(this.count + " " + this.name + "s flee out an exit", "warning");
-        } else {
-          game.history.write(this.name + " flees out an exit", "warning");
-        }
-        this.moveToRoom(room_to.id);
-        return;
-      }
-      // if there are no valid exits, the monster has to stay and fight.
-    }
+    if (game.triggerEvent('monsterAction', this)) {
 
-    // pick up weapon
-    if (this.wantsToPickUpWeapon()) {
-      if (this.weapon_id < -1) {
-        // this monster wants a specific weapon
-        // defined in EDX as -1 - the artifact number (e.g., Zapf has a weapon id of -34, and his staff is artifact 33)
-        let wpn_id = Math.abs(this.weapon_id) - 1;
-        let wpn = game.artifacts.get(wpn_id);
-        if (wpn.isHere()) {
-          this.pickUpWeapon(wpn);
+      // check if the monster should flee
+      if (!this.checkCourage()) {
+        let room_to = this.chooseRandomExit();
+        if (room_to) {
+          if (this.count > 1) {
+            game.history.write(this.count + " " + this.name + "s flee out an exit", "warning");
+          } else {
+            game.history.write(this.name + " flees out an exit", "warning");
+          }
+          this.moveToRoom(room_to.id);
+          return;
+        }
+        // if there are no valid exits, the monster has to stay and fight.
+      }
+
+      // pick up weapon
+      if (this.wantsToPickUpWeapon()) {
+        if (this.weapon_id < -1) {
+          // this monster wants a specific weapon
+          // defined in EDX as -1 - the artifact number (e.g., Zapf has a weapon id of -34, and his staff is artifact 33)
+          let wpn_id = Math.abs(this.weapon_id) - 1;
+          let wpn = game.artifacts.get(wpn_id);
+          if (wpn.isHere()) {
+            this.pickUpWeapon(wpn);
+            return;
+          }
+        }
+        // if the monster's desired weapon isn't here, or the monster doesn't care which weapon it uses,
+        // pick up the first available weapon
+        let i = game.artifacts.visible.find(x => x.is_weapon);
+        if (typeof i !== 'undefined') {
+          this.pickUpWeapon(i);
           return;
         }
       }
-      // if the monster's desired weapon isn't here, or the monster doesn't care which weapon it uses,
-      // pick up the first available weapon
-      let i = game.artifacts.visible.find(x => x.is_weapon);
-      if (typeof i !== 'undefined') {
-        this.pickUpWeapon(i);
-        return;
-      }
-    }
 
-    // attack!
-    let attacking_member_count = Math.min(this.count, 5); // up to 5 members of a group can attack per round
-    for (let i = 0; i < attacking_member_count; i++) {
-      this.group_monster_index = i;  // this lets them each have a different weapon
-      if (this.canAttack()) {
-        let target = this.chooseTarget();
-        if (target) {
-          this.attack(target);
+      // attack!
+      let attacking_member_count = Math.min(this.count, 5); // up to 5 members of a group can attack per round
+      for (let i = 0; i < attacking_member_count; i++) {
+        this.group_monster_index = i;  // this lets them each have a different weapon
+        if (this.canAttack()) {
+          let target = this.chooseTarget();
+          if (target) {
+            this.attack(target);
+          }
         }
       }
+
     }
   }
 

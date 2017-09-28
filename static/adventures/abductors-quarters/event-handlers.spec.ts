@@ -34,8 +34,8 @@ describe("The Abductor's Quarters", function() {
       data => {
         game.init(data);
         game.history.delay = 0;
-        expect(game.rooms.rooms.length).toBe(69, "Wrong room count. Check data.");
-        expect(game.artifacts.all.length).toBe(41 + 5, "Wrong artifact count. Check data."); // includes player artifacts
+        expect(game.rooms.rooms.length).toBe(66, "Wrong room count. Check data.");
+        expect(game.artifacts.all.length).toBe(39 + 5, "Wrong artifact count. Check data."); // includes player artifacts
         expect(game.effects.all.length).toBe(2, "Wrong effect count. Check data.");
         expect(game.monsters.all.length).toBe(18 + 1, "Wrong monster count. Check data."); // includes player
         game.start();
@@ -69,11 +69,13 @@ describe("The Abductor's Quarters", function() {
         expect(anderhauf.monster_id).toBeNull("anderhauf should disappear");
 
         // bottle
+        let flint = game.artifacts.get(8);
         let bottle = game.artifacts.get(10);
         let doorway = game.artifacts.get(11);
         let doorway2 = game.artifacts.get(11);
         game.player.moveToRoom(37);
         bottle.moveToRoom();
+        flint.moveToRoom();
         game.command_parser.run("light bottle");
         expect(bottle.room_id).toBeNull("bottle should disappear");
         expect(doorway.room_id).toBeNull("bricked doorway should disappear");

@@ -354,6 +354,31 @@ Example:
         return true;
       },
 
+## Monster Action
+
+To make a monster do something special during its turn, instead of the usual combat routine, you can use the
+"monsterAction" event. This is triggered each turn during a monster's normal combat phase. If the function returns
+false, the normal combat action will be skipped. If the function returns true, this means that the event handler
+did nothing, and the monster will perform its normal combat actions (attacking, fleeing, picking up a weapon).
+
+Parameters:
+- monster (Monster) - The monster whose turn it is
+
+Example:
+
+      "monsterAction": function(monster: Monster) {
+        let game = Game.getInstance();
+    
+        // this monster knows a "heal" spell and will sometimes cast it if injured
+        if (monster.id === 17 game.diceRoll(1,3) === 3 && monster.damage > monster.hardiness * 0.4) {
+          game.history.write(monster.name + " casts a heal spell!");
+          let heal_amount = game.diceRoll(2, 6);
+          monster.heal(heal_amount);
+          return false; // skip the default combat actions
+        }
+        return true;
+      },
+
 ## After selling items
 
 The `afterSell` event handler provides extra logic on the final screen of the game, after the player has sold treasures to Sam Slicker, but before the return to the Main Hall. This is useful for giving a reward to the player for completing a quest.

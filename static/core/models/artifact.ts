@@ -224,14 +224,20 @@ export class Artifact extends GameObject {
     let game = Game.getInstance();
 
     // logic for simple healing potions, healing by eating food, etc.
-    if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice > 0) {
-      let heal_amount = game.diceRoll(this.dice, this.sides);
-
+    if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice !== 0) {
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
       let owner = this.getOwner();
       if (owner) {
-        game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
-        owner.heal(heal_amount);
+        if (this.dice > 0) {
+          let heal_amount = game.diceRoll(this.dice, this.sides);
+          game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
+          owner.heal(heal_amount);
+        } else {
+          // poison - negative dice was a common way to make poison in EDX adventures
+          game.history.write("Yuck! It was poison!", "warning");
+          let damage = game.diceRoll(Math.abs(this.dice), this.sides);
+          owner.injure(damage, true);
+        }
       }
     }
 
