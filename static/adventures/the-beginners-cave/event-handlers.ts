@@ -32,19 +32,6 @@ export var event_handlers = {
 
   },
 
-  "endTurn2": function() {
-    let game = Game.getInstance();
-    if (game.in_battle && game.history.total_delay < 15000) {
-      game.delay(1);
-      game.history.write("The Hellsblade whirls in your hand! You can't stop swinging!", "special");
-      let m = game.player.chooseTarget();
-      // let m = game.monsters.visible[game.diceRoll(1, game.monsters.visible.length) - 1]; // can choose friends
-      game.player.attack(m);
-      game.tick();
-    }
-
-  },
-
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     if (exit.room_to === -1) {
       Game.getInstance().history.write("Sorry, but I'm afraid to go into the water without my life preserver.");
