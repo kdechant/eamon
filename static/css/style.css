@@ -75,6 +75,12 @@ h4 {
   height: 480px;
   overflow-y: auto;
   margin: 20px 5px 0; }
+  @media (min-height: 880px) {
+    .history {
+      height: 550px; } }
+  @media (min-height: 1000px) {
+    .history {
+      height: 650px; } }
   .history p {
     margin: 10px 0 0; }
     .history p.no-space {

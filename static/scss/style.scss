@@ -108,6 +108,13 @@ h4 {
   overflow-y: auto;
   margin: 20px 5px 0;
 
+  @media (min-height: 880px) {
+    height: 550px;
+  }
+  @media (min-height: 1000px) {
+    height: 650px;
+  }
+
   // by default, the history paragraphs have the white space at the top. (see also .no-space below.)
   p {
     margin: 10px 0 0;
