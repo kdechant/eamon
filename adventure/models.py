@@ -193,7 +193,7 @@ class ArtifactMarking(models.Model):
     """
     Markings on a readable artifact
     """
-    artifact = models.ForeignKey(Artifact)
+    artifact = models.ForeignKey(Artifact, on_delete=models.CASCADE)
     marking = models.TextField(max_length=65535)
 
 
