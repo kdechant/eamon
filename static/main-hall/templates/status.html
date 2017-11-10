@@ -54,8 +54,8 @@
       <tbody *ngFor="let artifact of player?.inventory">
       <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
         <td>{{ artifact.name }}</td>
-        <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                     title="{{ artifact.getWeaponTypeName() }}"></td>
+        <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                                     title="{{ artifact.getTypeName() }}"></td>
         <td>{{ artifact.weapon_odds }}%</td>
         <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
         <td>{{ player.getBaseToHit(artifact) }}%</td>
@@ -76,8 +76,8 @@
       <tbody *ngFor="let artifact of player?.inventory">
       <tr class="artifact" *ngIf="artifact.type != 2 && artifact.type != 3">
         <td>{{ artifact.name }}</td>
-        <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
-                                     title="{{ artifact.getArmorTypeName() }}"></td>
+        <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                                     title="{{ artifact.getTypeName() }}"></td>
         <td>{{ artifact.armor_class }}</td>
         <td>{{ artifact.armor_penalty }}</td>
       </tr>

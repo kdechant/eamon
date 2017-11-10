@@ -26,6 +26,9 @@ import {ShopService} from "../services/shop.service";
       })),
       transition('hidden => visible', animate('150ms ease-in')),
       transition('visible => hidden', animate('150ms ease-out'))
+    ]),
+    trigger('sellAnimation', [
+      transition(':leave', animate(250, style({opacity: 0})))
     ])
   ]
 })
@@ -55,18 +58,22 @@ export class ShopComponent implements OnInit  {
     this._playerService.player.gold -= artifact.value;
     artifact.message = ("Bought!");
     artifact.messageState = "visible";
-    setTimeout(function() { console.log(artifact); artifact.messageState = "hidden" }, 2500);
+    setTimeout(function() { artifact.messageState = "hidden" }, 2000);
   }
 
   sell(artifact) {
-    let index = this._playerService.player.inventory.indexOf(artifact);
-    if (index > -1) {
-      this._playerService.player.inventory.splice(index, 1);
-    }
-    this._playerService.player.gold += Math.floor(artifact.value / 2);
+    artifact.salePending = true;
     artifact.message = ("Sold!");
     artifact.messageState = "visible";
-    setTimeout(function() { console.log(artifact); artifact.messageState = "hidden" }, 2500);
+    var player = this._playerService.player;
+
+    setTimeout(function() {
+      let index = player.inventory.indexOf(artifact);
+      if (index > -1) {
+        player.inventory.splice(index, 1);
+      }
+      player.gold += Math.floor(artifact.value / 2);
+    }, 1250);
   }
 
 }

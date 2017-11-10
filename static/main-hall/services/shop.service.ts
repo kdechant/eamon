@@ -41,7 +41,7 @@ export class ShopService {
       if (item.weapon_type === 3) {
         item.name = "mace";
       } else {
-        item.name = item.getWeaponTypeName();
+        item.name = item.getTypeName();
       }
       item.description = "You see a standard " + item.name + ".";
       switch (t) {
@@ -90,7 +90,7 @@ export class ShopService {
       artifact_names[item.weapon_type].splice(name_index, 1);
 
       item.description = "You see " + (item.weapon_type === 1 ? "an" : "a") +
-        " " + item.getWeaponTypeName() + " named " + item.name + ".";
+        " " + item.getTypeName() + " named " + item.name + ".";
       item.weapon_odds = game.diceRoll(1, 7) * 5 - 10;
       item.hands = item.weapon_type === 2 ? 2 : 1;
       // item.dice = i + 1;  // always generate 1 x 1d*, 1 x 2d*, and 1 x 3d*

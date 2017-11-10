@@ -22,8 +22,8 @@ import {Artifact} from "../models/artifact";
             <tbody *ngFor="let artifact of game.player?.weapons">
                 <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
                     <td>{{ artifact.name }}</td>
-                    <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                     title="{{ artifact.getWeaponTypeName() }}"></td>
+                    <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                                     title="{{ artifact.getTypeName() }}"></td>
                     <td>{{ artifact.weapon_odds }}%</td>
                     <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
                     <td>{{ artifact.value }} gp</td>

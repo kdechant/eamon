@@ -74,6 +74,7 @@ export class Artifact extends GameObject {
   // used in Marcos' shop in Main Hall
   message: string = "testing";
   messageState: string = "hidden";
+  salePending: boolean = false;
 
   /**
    * Moves the artifact to a specific room.
@@ -385,50 +386,77 @@ export class Artifact extends GameObject {
   }
 
   /**
-   * Returns the name of the weapon type
+   * Returns the name of the weapon or armor type
    */
-  public getWeaponTypeName(): string {
-    switch (this.weapon_type) {
-      case 1:
-        return "axe";
-      case 2:
-        return "bow";
-      case 3:
-        return "club";
-      case 4:
-        return "spear";
-      case 5:
-        return "sword";
+  public getTypeName(): string {
+    if (this.type === Artifact.TYPE_WEAPON || this.type === Artifact.TYPE_MAGIC_WEAPON) {
+      switch (this.weapon_type) {
+        case 1:
+          return "axe";
+        case 2:
+          return "bow";
+        case 3:
+          return "club";
+        case 4:
+          return "spear";
+        case 5:
+          return "sword";
+      }
+    } else if (this.isArmor()) {
+      switch (this.armor_type) {
+        case Artifact.ARMOR_TYPE_ARMOR:
+          return "armor";
+        case Artifact.ARMOR_TYPE_SHIELD:
+          return "shield";
+      }
+    } else {
+      return "treasure";
     }
   }
 
   /**
-   * Returns the name of the weapon type
+   * Returns the icon to use. Return value must match an available icon filename.
    */
-  public getWeaponIcon(): string {
-    let t: string = "";
-    switch (this.weapon_type) {
-      case 1:
-        t = "axe";
-        break;
-      case 2:
-        t = "bow";
-        break;
-      case 3:
-        t = "hammer";
-        break;
-      case 4:
-        t = "upg_spear";  // there is no default spear in the icon set
-        break;
-      case 5:
-        t = "sword";
-        break;
-    }
+  public getIcon(): string {
+    switch (this.type) {
+      case Artifact.TYPE_WEAPON:
+      case Artifact.TYPE_MAGIC_WEAPON:
+        let t: string = "";
+        switch (this.weapon_type) {
+          case 1:
+            t = "axe";
+            break;
+          case 2:
+            t = "bow";
+            break;
+          case 3:
+            t = "hammer";
+            break;
+          case 4:
+            t = "upg_spear";  // there is no default spear in the icon set
+            break;
+          case 5:
+            t = "sword";
+            break;
+        }
 
-    if (this.type === Artifact.TYPE_MAGIC_WEAPON && this.weapon_type !== 4) {
-      t = 'upg_' + t;
+        if (this.type === Artifact.TYPE_MAGIC_WEAPON && this.weapon_type !== 4) {
+          t = 'upg_' + t;
+        }
+        return t;
+      case Artifact.TYPE_WEARABLE:
+        return "armor";
+      case Artifact.TYPE_CONTAINER:
+        return "backpack";
+      case Artifact.TYPE_GOLD:
+        return "coin";
+      case Artifact.TYPE_READABLE:
+        return "scroll";
+      case Artifact.TYPE_DRINKABLE:
+        return "potionBlue";
+      default:
+        return "tools";
     }
-    return t;
   }
 
   /**
@@ -436,18 +464,6 @@ export class Artifact extends GameObject {
    */
   public isArmor(): boolean {
     return (this.type === Artifact.TYPE_WEARABLE && (this.armor_type === Artifact.ARMOR_TYPE_ARMOR || this.armor_type === Artifact.ARMOR_TYPE_SHIELD));
-  }
-
-  /**
-   * Returns the name of the armor type
-   */
-  public getArmorTypeName(): string {
-    switch (this.armor_type) {
-      case Artifact.ARMOR_TYPE_ARMOR:
-        return "armor";
-      case Artifact.ARMOR_TYPE_SHIELD:
-        return "shield";
-    }
   }
 
 }

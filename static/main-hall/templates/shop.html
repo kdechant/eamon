@@ -15,8 +15,8 @@
       <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of weapons">
         <div class="artifacts-tile-inner">
           <div class="weapon-icon">
-            <img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                     title="{{ artifact.getWeaponTypeName() }}">
+            <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                                     title="{{ artifact.getTypeName() }}">
           </div>
           <strong>{{ artifact.name|titlecase }}</strong><br />
           Odds: {{ artifact.weapon_odds }}%<br />
@@ -38,8 +38,8 @@
       <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of armors">
         <div class="artifacts-tile-inner">
           <div class="weapon-icon">
-            <img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
-                                     title="{{ artifact.getArmorTypeName() }}">
+            <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                                     title="{{ artifact.getTypeName() }}">
           </div>
           <strong>{{ artifact.name|titlecase }}</strong><br />
           AC: {{ artifact.armor_class }}<br />
@@ -61,49 +61,31 @@
   <div *ngIf="action == 'sell'">
     <p>What do you want to sell?</p>
     <p>You have {{_playerService.player?.gold}} gold pieces.</p>
-    <p class="heading">Weapons:</p>
-    <table class="table artifacts-list">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Odds</th>
-            <th>Damage</th>
-            <th>Value</th>
-            <th>&nbsp;</th>
-        </tr>
-        <tbody *ngFor="let artifact of _playerService.player?.inventory">
-            <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
-                <td>{{ artifact.name }}</td>
-                <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                     title="{{ artifact.getWeaponTypeName() }}"></td>
-                <td>{{ artifact.weapon_odds }}%</td>
-                <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
-                <td>{{ artifact.value | divide:2 }} gp</td>
-                <td><button class="btn" (click)="sell(artifact)">Sell</button></td>
-            </tr>
-        </tbody>
-    </table>
-    <p class="heading">Armor and Shields:</p>
-    <table class="table artifacts-list">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Armor Class</th>
-            <th>Armor Penalty</th>
-            <th>Price</th>
-            <th>&nbsp;</th>
-        </tr>
-        <tbody *ngFor="let artifact of _playerService.player?.inventory">
-            <tr class="artifact" *ngIf="artifact.type == 11">
-                <td>{{ artifact.name }}</td>
-                <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                     title="{{ artifact.getWeaponTypeName() }}"></td>
-                <td>{{ artifact.armor_class }}</td>
-                <td>{{ artifact.armor_penalty }}%</td>
-                <td>{{ artifact.value | divide:2 }} gp</td>
-                <td><button class="btn" (click)="sell(artifact)">Sell</button></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+      <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of _playerService.player?.inventory"
+          [@sellAnimation]="artifact.type">
+        <div class="artifacts-tile-inner">
+          <div class="weapon-icon">
+            <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                                     title="{{ artifact.getTypeName() }}">
+          </div>
+          <strong>{{ artifact.name|titlecase }}</strong><br />
+          <div *ngIf="artifact.type === 2 || artifact.type === 3">
+            Odds: {{ artifact.weapon_odds }}%<br />
+            Damage: {{ artifact.dice }} d {{ artifact.sides }}<br />
+          </div>
+          <div *ngIf="artifact.type === 11">
+            AC: {{ artifact.armor_class }}<br />
+            Penalty: {{ artifact.armor_penalty }}%<br />
+          </div>
+          {{ artifact.value | divide:2 }} gp<br />
+          <button class="btn btn-primary" [ngClass]="{'disabled': artifact.salePending}" (click)="sell(artifact)">Sell</button>
+          <div class="message" [@messageAnimation]="artifact.messageState">
+            {{ artifact.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
