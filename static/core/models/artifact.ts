@@ -71,6 +71,10 @@ export class Artifact extends GameObject {
   is_broken: boolean = false;  // for a doors/containers that has been smashed open
   player_brought: boolean = false; // flag to indicate which items the player brought with them
 
+  // used in Marcos' shop in Main Hall
+  message: string = "testing";
+  messageState: string = "hidden";
+
   /**
    * Moves the artifact to a specific room.
    */

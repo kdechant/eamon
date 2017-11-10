@@ -78,9 +78,10 @@ export class ShopService {
       5: ["Slasher", "Freedom", "Ghost Reaver", "Doombringer", "Malevolent Crusader", "Swiftblade", "Oathkeeper"]
     };
     let magic_weapons: Artifact[] = [];
-    for (let i = 0; i < 4; i++) {
+    let num_weapons: number = 3;
+    for (let i = 0; i < num_weapons; i++) {
       item = new Artifact();
-      item.type = Artifact.TYPE_WEAPON;
+      item.type = Artifact.TYPE_MAGIC_WEAPON;
       item.weapon_type = game.diceRoll(1, 5);
 
       // choose a unique name
@@ -92,8 +93,11 @@ export class ShopService {
         " " + item.getWeaponTypeName() + " named " + item.name + ".";
       item.weapon_odds = game.diceRoll(1, 7) * 5 - 10;
       item.hands = item.weapon_type === 2 ? 2 : 1;
-      item.dice = i < 3 ? 2 : 3;  // always generate 3 2d* weapons and 1 3d* weapon
-      item.sides = 2 + game.diceRoll(1, 5) * 2;
+      // item.dice = i + 1;  // always generate 1 x 1d*, 1 x 2d*, and 1 x 3d*
+      item.dice = 2;  // always generate 2 2d* weapons and 1 3d* weapon
+      if (i <= num_weapons * .33) item.dice = 1;
+      if (i >= num_weapons * .66) item.dice = 3;
+      item.sides = 8 - (item.dice * 2) + game.diceRoll(1, 4) * 2;
       item.value = Math.floor(item.maxDamage() ** 1.5 + item.weapon_odds) * 5;
       item.weight = 3;
       magic_weapons.push(item);
@@ -103,13 +107,17 @@ export class ShopService {
 
     // some basic armor and shields
     let armor_types = ["leather", "chain", "scale", "plate"];
-    for (let t in armor_types) {
+    for (let a of armor_types) {
       item = new Artifact;
       item.type = Artifact.TYPE_WEARABLE;
       item.armor_type = Artifact.ARMOR_TYPE_ARMOR;
-      item.name = armor_types[t] + " armor";
+      if (a === 'chain') {
+        item.name = "chain mail";
+      } else {
+        item.name = a + " armor";
+      }
       item.description = "You see a standard set of " + item.name + ".";
-      switch (armor_types[t]) {
+      switch (a) {
         case "leather":
           item.value = 100;
           item.armor_class = 1;

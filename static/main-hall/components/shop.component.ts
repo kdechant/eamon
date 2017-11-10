@@ -1,6 +1,12 @@
-import {Component,  OnInit}  from '@angular/core';
+import {Component, Input, OnInit}  from '@angular/core';
 import {Router} from '@angular/router';
-import {NotificationsService} from "angular2-notifications";
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 import {PlayerService} from '../services/player.service';
 import {Artifact} from "../../core/models/artifact";
@@ -8,18 +14,25 @@ import {ShopService} from "../services/shop.service";
 
 @Component({
   templateUrl: "/static/main-hall/templates/shop.html",
+  animations: [
+    trigger('messageAnimation', [
+      state('visible', style({
+        opacity: 1,
+        display: 'block',
+      })),
+      state('hidden',   style({
+        opacity: 0,
+        display: 'none',
+      })),
+      transition('hidden => visible', animate('150ms ease-in')),
+      transition('visible => hidden', animate('150ms ease-out'))
+    ])
+  ]
 })
 export class ShopComponent implements OnInit  {
   weapons: Artifact[];
   armors: Artifact[];
   action: string = '';
-
-  // public notification_options = {
-  //   position: ["bottom"],
-  //   timeOut: 2000,
-  //   lastOnBottom: true,
-  //   showProgressBar: false
-  // };
 
   constructor(private _router: Router,
               private _playerService: PlayerService,
@@ -40,7 +53,9 @@ export class ShopComponent implements OnInit  {
   buy(artifact) {
     this._playerService.player.inventory.push(artifact);
     this._playerService.player.gold -= artifact.value;
-    // this._notificationService.success("You buy a " + artifact.name + ".", "");
+    artifact.message = ("Bought!");
+    artifact.messageState = "visible";
+    setTimeout(function() { console.log(artifact); artifact.messageState = "hidden" }, 2500);
   }
 
   sell(artifact) {
@@ -49,7 +64,9 @@ export class ShopComponent implements OnInit  {
       this._playerService.player.inventory.splice(index, 1);
     }
     this._playerService.player.gold += Math.floor(artifact.value / 2);
-    // this._notificationService.success("You sell your " + artifact.name + ".", "");
+    artifact.message = ("Sold!");
+    artifact.messageState = "visible";
+    setTimeout(function() { console.log(artifact); artifact.messageState = "hidden" }, 2500);
   }
 
 }

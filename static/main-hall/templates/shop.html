@@ -11,59 +11,50 @@
     <p>I just happen to have the following weapons and armor in stock:</p>
     <p>You have {{_playerService.player?.gold}} gold pieces.</p>
     <p class="heading">Weapons:</p>
-    <table class="table artifacts-list">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Odds</th>
-            <th>Damage</th>
-            <th>Price</th>
-            <th>&nbsp;</th>
-        </tr>
-        <tbody *ngFor="let artifact of weapons">
-            <tr class="artifact" *ngIf="artifact.type == 2 || artifact.type == 3">
-                <td>{{ artifact.name }}</td>
-                <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
-                                     title="{{ artifact.getWeaponTypeName() }}"></td>
-                <td>{{ artifact.weapon_odds }}%</td>
-                <td>{{ artifact.dice }} d {{ artifact.sides }}</td>
-                <td>{{ artifact.value }} gp</td>
-                <td>
-                  <button class="btn btn-primary" (click)="buy(artifact)"
-                          *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
-                  <button class="btn disabled"
-                          *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+      <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of weapons">
+        <div class="artifacts-tile-inner">
+          <div class="weapon-icon">
+            <img src="/static/images/ravenmore/128/{{ artifact.getWeaponIcon() }}.png"
+                                     title="{{ artifact.getWeaponTypeName() }}">
+          </div>
+          <strong>{{ artifact.name|titlecase }}</strong><br />
+          Odds: {{ artifact.weapon_odds }}%<br />
+          Damage: {{ artifact.dice }} d {{ artifact.sides }}<br />
+          {{ artifact.value }} gp<br />
+          <button class="btn btn-primary" (click)="buy(artifact)"
+                  *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
+          <button class="btn disabled"
+                  *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
+          <div class="message" [@messageAnimation]="artifact.messageState">
+            {{ artifact.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <p class="heading">Armor and Shields:</p>
-    <table class="table artifacts-list">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Armor Class</th>
-            <th>Armor Penalty</th>
-            <th>Price</th>
-            <th>&nbsp;</th>
-        </tr>
-        <tbody *ngFor="let artifact of armors">
-            <tr class="artifact" *ngIf="artifact.type != 2 && artifact.type != 3">
-                <td>{{ artifact.name }}</td>
-                <td class="weapon-icon"><img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
-                                     title="{{ artifact.getArmorTypeName() }}"></td>
-                <td>{{ artifact.armor_class }}</td>
-                <td>{{ artifact.armor_penalty }}%</td>
-                <td>{{ artifact.value }} gp</td>
-                <td>
-                  <button class="btn btn-primary" (click)="buy(artifact)"
-                          *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
-                  <button class="btn disabled"
-                          *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+      <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of armors">
+        <div class="artifacts-tile-inner">
+          <div class="weapon-icon">
+            <img src="/static/images/ravenmore/128/{{ artifact.getArmorTypeName() }}.png"
+                                     title="{{ artifact.getArmorTypeName() }}">
+          </div>
+          <strong>{{ artifact.name|titlecase }}</strong><br />
+          AC: {{ artifact.armor_class }}<br />
+          Penalty: {{ artifact.armor_penalty }}%<br />
+          {{ artifact.value }} gp<br />
+          <button class="btn btn-primary" (click)="buy(artifact)"
+                  *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
+          <button class="btn disabled"
+                  *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
+          <div class="message" [@messageAnimation]="artifact.messageState">
+            {{ artifact.message }}
+          </div>
+        </div>
+      </div>
+    </div>
     <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
 
@@ -116,4 +107,3 @@
     </table>
     <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
-  <simple-notifications [options]="notification_options"></simple-notifications>

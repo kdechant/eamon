@@ -1,5 +1,6 @@
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA}      from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import { CookieModule } from 'ngx-cookie';
@@ -24,7 +25,7 @@ import {ShopService} from "./services/shop.service";
 import {routing} from './main-hall.routing';
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule, routing, CookieModule.forRoot()],
+  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, HttpModule, routing, CookieModule.forRoot()],
   declarations: [
     MainHallComponent,
     AdventureListComponent,

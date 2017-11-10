@@ -71,6 +71,25 @@ h4 {
 .artifacts-list .weapon-icon img {
   width: 32px; }
 
+.artifacts-tile .artifacts-tile-inner {
+  border: 1px solid #b97;
+  height: 205px;
+  margin: 15px 0;
+  padding-top: 8px;
+  position: relative;
+  text-align: center; }
+  .artifacts-tile .artifacts-tile-inner .weapon-icon img {
+    width: 48px; }
+  .artifacts-tile .artifacts-tile-inner .message {
+    background-color: #b97;
+    color: white;
+    padding-bottom: 5px;
+    position: absolute;
+    top: 45%;
+    width: 100%; }
+  .artifacts-tile .artifacts-tile-inner button {
+    margin-top: 5px; }
+
 .history {
   height: 480px;
   overflow-y: auto;
