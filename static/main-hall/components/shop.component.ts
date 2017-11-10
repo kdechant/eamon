@@ -14,17 +14,16 @@ export class ShopComponent implements OnInit  {
   armors: Artifact[];
   action: string = '';
 
-  public notification_options = {
-    position: ["bottom"],
-    timeOut: 2000,
-    lastOnBottom: true,
-    showProgressBar: false
-  };
+  // public notification_options = {
+  //   position: ["bottom"],
+  //   timeOut: 2000,
+  //   lastOnBottom: true,
+  //   showProgressBar: false
+  // };
 
   constructor(private _router: Router,
               private _playerService: PlayerService,
-              private _shopService: ShopService,
-              private _notificationService: NotificationsService) {
+              private _shopService: ShopService) {
   }
 
   ngOnInit() {
@@ -41,7 +40,7 @@ export class ShopComponent implements OnInit  {
   buy(artifact) {
     this._playerService.player.inventory.push(artifact);
     this._playerService.player.gold -= artifact.value;
-    this._notificationService.success("You buy a " + artifact.name + ".", "");
+    // this._notificationService.success("You buy a " + artifact.name + ".", "");
   }
 
   sell(artifact) {
@@ -50,7 +49,7 @@ export class ShopComponent implements OnInit  {
       this._playerService.player.inventory.splice(index, 1);
     }
     this._playerService.player.gold += Math.floor(artifact.value / 2);
-    this._notificationService.success("You sell your " + artifact.name + ".", "");
+    // this._notificationService.success("You sell your " + artifact.name + ".", "");
   }
 
 }

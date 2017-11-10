@@ -25,7 +25,6 @@
 
             // other libraries
             'rxjs': 'npm:rxjs',
-            'angular2-notifications': '/static/node_modules/angular2-notifications',
             'angular2-uuid': 'npm:angular2-uuid/index.js',
             'ngx-cookie': 'npm:ngx-cookie/bundles/ngx-cookie.umd.js',
 
@@ -50,10 +49,6 @@
                 defaultExtension: 'js'
             },
             rxjs: {
-                defaultExtension: 'js'
-            },
-            'angular2-notifications': {
-                main: './dist/index.js',
                 defaultExtension: 'js'
             }
         }
