@@ -445,7 +445,12 @@ export class Artifact extends GameObject {
         }
         return t;
       case Artifact.TYPE_WEARABLE:
-        return "armor";
+        switch (this.armor_type) {
+          case Artifact.ARMOR_TYPE_ARMOR:
+            return "armor";
+          case Artifact.ARMOR_TYPE_SHIELD:
+            return "shield";
+        }
       case Artifact.TYPE_CONTAINER:
         return "backpack";
       case Artifact.TYPE_GOLD:

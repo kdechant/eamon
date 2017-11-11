@@ -73,19 +73,30 @@ h4 {
 
 .artifacts-tile .artifacts-tile-inner {
   border: 1px solid #b97;
-  height: 205px;
+  height: 210px;
   margin: 15px 0;
-  padding-top: 8px;
+  padding: 5%;
   position: relative;
   text-align: center; }
-  .artifacts-tile .artifacts-tile-inner .weapon-icon img {
-    width: 48px; }
+  .artifacts-tile .artifacts-tile-inner .artifact-icon img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 90px; }
+  .artifacts-tile .artifacts-tile-inner .artifact-name {
+    text-align: left;
+    width: 50%;
+    min-height: 72px; }
+  .artifacts-tile .artifacts-tile-inner .artifact-data img {
+    width: 32px;
+    margin: -5px; }
   .artifacts-tile .artifacts-tile-inner .message {
     background-color: #b97;
     color: white;
     padding-bottom: 5px;
     position: absolute;
     top: 45%;
+    left: 0;
     width: 100%; }
   .artifacts-tile .artifacts-tile-inner button {
     margin-top: 5px; }

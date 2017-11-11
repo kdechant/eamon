@@ -9,14 +9,11 @@ import '../rxjs-operators';
   selector: "main-hall",
   template: `
 <div class="container parchment">
-  <h2>{{title}}</h2>
   <router-outlet></router-outlet>
 </div>
   `
 })
 export class MainHallComponent {
-
-  public title = "Main Hall";
 
   public ngOnInit(): void {
     // set a UUID for this browser. The user will only see players associated with their UUID.

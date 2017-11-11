@@ -12,48 +12,12 @@
     <p>You have {{_playerService.player?.gold}} gold pieces.</p>
     <p class="heading">Weapons:</p>
     <div class="row">
-      <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of weapons">
-        <div class="artifacts-tile-inner">
-          <div class="weapon-icon">
-            <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
-                                     title="{{ artifact.getTypeName() }}">
-          </div>
-          <strong>{{ artifact.name|titlecase }}</strong><br />
-          Odds: {{ artifact.weapon_odds }}%<br />
-          Damage: {{ artifact.dice }} d {{ artifact.sides }}<br />
-          {{ artifact.value }} gp<br />
-          <button class="btn btn-primary" (click)="buy(artifact)"
-                  *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
-          <button class="btn disabled"
-                  *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
-          <div class="message" [@messageAnimation]="artifact.messageState">
-            {{ artifact.message }}
-          </div>
-        </div>
-      </div>
+      <artifact-tile *ngFor="let artifact of weapons" [artifact]="artifact" [action]="action"></artifact-tile>
     </div>
 
     <p class="heading">Armor and Shields:</p>
     <div class="row">
-      <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of armors">
-        <div class="artifacts-tile-inner">
-          <div class="weapon-icon">
-            <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
-                                     title="{{ artifact.getTypeName() }}">
-          </div>
-          <strong>{{ artifact.name|titlecase }}</strong><br />
-          AC: {{ artifact.armor_class }}<br />
-          Penalty: {{ artifact.armor_penalty }}%<br />
-          {{ artifact.value }} gp<br />
-          <button class="btn btn-primary" (click)="buy(artifact)"
-                  *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">Buy</button>
-          <button class="btn disabled"
-                  *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
-          <div class="message" [@messageAnimation]="artifact.messageState">
-            {{ artifact.message }}
-          </div>
-        </div>
-      </div>
+      <artifact-tile *ngFor="let artifact of armors" [artifact]="artifact" [action]="action"></artifact-tile>
     </div>
     <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
@@ -62,29 +26,8 @@
     <p>What do you want to sell?</p>
     <p>You have {{_playerService.player?.gold}} gold pieces.</p>
     <div class="row">
-      <div class="artifacts-tile col-sm-4 col-md-3 col-lg-2" *ngFor="let artifact of _playerService.player?.inventory"
-          [@sellAnimation]="artifact.type">
-        <div class="artifacts-tile-inner">
-          <div class="weapon-icon">
-            <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
-                                     title="{{ artifact.getTypeName() }}">
-          </div>
-          <strong>{{ artifact.name|titlecase }}</strong><br />
-          <div *ngIf="artifact.type === 2 || artifact.type === 3">
-            Odds: {{ artifact.weapon_odds }}%<br />
-            Damage: {{ artifact.dice }} d {{ artifact.sides }}<br />
-          </div>
-          <div *ngIf="artifact.type === 11">
-            AC: {{ artifact.armor_class }}<br />
-            Penalty: {{ artifact.armor_penalty }}%<br />
-          </div>
-          {{ artifact.value | divide:2 }} gp<br />
-          <button class="btn btn-primary" [ngClass]="{'disabled': artifact.salePending}" (click)="sell(artifact)">Sell</button>
-          <div class="message" [@messageAnimation]="artifact.messageState">
-            {{ artifact.message }}
-          </div>
-        </div>
-      </div>
+      <artifact-tile *ngFor="let artifact of _playerService.player?.inventory" [artifact]="artifact"
+                     [action]="action" [@sellAnimation]="artifact.type"></artifact-tile>
     </div>
 
     <button class="btn btn-default" (click)="action = ''">Done</button>

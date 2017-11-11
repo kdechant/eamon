@@ -7,6 +7,7 @@ import {PlayerService} from '../services/player.service';
 @Component({
   template: `
   <div class="col-sm-6">
+    <h2>Main Hall</h2>
     <p>You are in the main hall of the Guild of Free Adventurers. You can do the following:</p>
     <nav class="row icon-nav">
       <p class="col-xs-6 col-md-4"><a (click)="gotoAdventures()"><img src="/static/images/ravenmore/128/map.png"><br /> Go on an adventure</a></p>

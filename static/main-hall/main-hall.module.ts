@@ -16,6 +16,7 @@ import {PlayerAddComponent} from "./components/player-add.component";
 import {PlayerDetailComponent} from "./components/player-detail.component";
 import {BankComponent} from "./components/bank.component";
 import {ShopComponent} from "./components/shop.component";
+import {ArtifactTileComponent} from "./components/artifact-tile.component";
 import {WizardComponent} from "./components/wizard.component";
 import {StatusComponent} from "./components/status.component";
 
@@ -34,6 +35,7 @@ import {routing} from './main-hall.routing';
     PlayerDetailComponent,
     BankComponent,
     ShopComponent,
+    ArtifactTileComponent,
     StatusComponent,
     WizardComponent,
     DividePipe,
