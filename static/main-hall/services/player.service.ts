@@ -1,6 +1,5 @@
 import { Injectable }     from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie';
 
 import {Player} from "../models/player";
@@ -20,12 +19,25 @@ export class PlayerService {
   // the current user's UUID
   private uuid: string;
 
-  constructor(private http: Http, private _cookieService:CookieService) {
-      this.uuid = window.localStorage.getItem('eamon_uuid');
+  private httpOptions: any;
+
+  constructor(private http: HttpClient, private _cookieService:CookieService) {
+    this.uuid = window.localStorage.getItem('eamon_uuid');
+
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+    // the Angular 4.3+ HttpHeaders class throws an exception if any of the values are undefined
+    if (typeof(csrf) === 'undefined') {
+      csrf = '';
+    }
+    this.httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf })
+    };
+
   }
 
   getList() {
-    this.http.get('/api/players.json?uuid=' + this.uuid).map((res: Response) => res.json()).subscribe(
+    this.http.get('/api/players.json?uuid=' + this.uuid).subscribe(
       data => this.setupPlayerList(data),
       err => console.error(err)
     );
@@ -33,7 +45,7 @@ export class PlayerService {
 
   public getPlayer(id: number) {
     if (!this.player) {
-      this.http.get('/api/players/' + id + '.json?uuid=' + this.uuid).map((res:Response) => res.json()).subscribe(
+      this.http.get('/api/players/' + id + '.json?uuid=' + this.uuid).subscribe(
         data => {
           this.player = new Player();
           this.player.init(data);
@@ -62,37 +74,22 @@ export class PlayerService {
 
   public create(player: Player) {
 
-    // CSRF token is needed to make API calls work when logged into admin
-    let csrf = this._cookieService.get("csrftoken");
-
-    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
-    let options = new RequestOptions({ headers: headers });
-
     player.uuid = this.uuid;
     let body = JSON.stringify(player);
 
-    return this.http.post("/api/players", body, options).map((res: Response) => res.json());
+    return this.http.post("/api/players", body, this.httpOptions);
   }
 
   public update() {
 
-    // CSRF token is needed to make API calls work when logged into admin
-    let csrf = this._cookieService.get("csrftoken");
-    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
-    let options = new RequestOptions({ headers: headers });
-
     let body = JSON.stringify(this.player);
 
-    return this.http.put("/api/players/" + this.player.id, body, options).map((res: Response) => res.json());
+    return this.http.put("/api/players/" + this.player.id, body, this.httpOptions);
   }
 
   public delete(player: Player) {
-    // CSRF token is needed to make API calls work when logged into admin
-    let csrf = this._cookieService.get("csrftoken");
-    let headers = new Headers({ 'X-CSRFToken': csrf });
-    let options = new RequestOptions({ headers: headers });
 
-    return this.http.delete("/api/players/" + player.id + '.json?uuid=' + this.uuid, options);
+    return this.http.delete("/api/players/" + player.id + '.json?uuid=' + this.uuid, this.httpOptions);
   }
 
   /**
@@ -102,16 +99,10 @@ export class PlayerService {
    */
   public log(type: string = "") {
 
-    // CSRF token is needed to make API calls work when logged into admin
-    let csrf = this._cookieService.get("csrftoken");
-
-    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
-    let options = new RequestOptions({ headers: headers });
-
     // using player ID from local storage to avoid race condition if this.player isn't loaded yet
     let body = JSON.stringify({'player': window.localStorage.getItem('player_id'), 'type': type });
 
-    this.http.post("/api/log", body, options).map((res: Response) => res.json()).subscribe(
+    this.http.post("/api/log", body, this.httpOptions).subscribe(
       data => {
        return true;
       }

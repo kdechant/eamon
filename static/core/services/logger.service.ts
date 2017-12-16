@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Http, Response, Headers, RequestOptions} from "@angular/http";
-import {Observable} from "rxjs/Rx";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
 import { CookieService } from 'ngx-cookie';
 
 import {Game} from "../models/game";
@@ -19,8 +19,22 @@ export class LoggerService implements ILoggerService {
   // the current user's UUID
   private uuid: string;
 
-  constructor(private http: Http, private _cookieService:CookieService) {
-      this.uuid = window.localStorage.getItem('eamon_uuid');
+  // http options used for making any writing API calls
+  private httpOptions: any;
+
+  constructor(private http: HttpClient, private _cookieService:CookieService) {
+    this.uuid = window.localStorage.getItem('eamon_uuid');
+
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+    // the Angular 4.3+ HttpHeaders class throws an exception if any of the values are undefined
+    if (typeof(csrf) === 'undefined') {
+      csrf = '';
+    }
+    this.httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf })
+    };
+
   }
 
   /**
@@ -29,12 +43,6 @@ export class LoggerService implements ILoggerService {
    * @returns {Observable<R>}
    */
   public log(type: string = "", value: number = null) {
-
-    // CSRF token is needed to make API calls work when logged into admin
-    let csrf = this._cookieService.get("csrftoken");
-
-    let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
-    let options = new RequestOptions({ headers: headers });
 
     let game = Game.getInstance();
 
@@ -46,7 +54,7 @@ export class LoggerService implements ILoggerService {
       'value': value
     });
 
-    this.http.post("/api/log", body, options).map((res: Response) => res.json()).subscribe(
+    this.http.post("/api/log", body, this.httpOptions).subscribe(
       data => {
        return true;
       }

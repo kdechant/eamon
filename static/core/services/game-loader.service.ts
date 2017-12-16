@@ -1,6 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Http, Response, Headers, RequestOptions} from "@angular/http";
-import {Observable} from "rxjs/Rx";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+// FIXME: importing Observable and/or forkJoin by themselves is not working. Have to import all of rxjs. Blah.
+import Rx from 'rxjs/Rx';
+import {Observable} from 'rxjs/Observable';
+// import { forkJoin } from "rxjs/observable/forkJoin";
 import { CookieService } from 'ngx-cookie';
 
 import {Game} from "../models/game";
@@ -19,8 +22,22 @@ export class GameLoaderService {
   // the current user's UUID
   private uuid: string;
 
-  constructor(private http: Http, private _cookieService:CookieService) {
-      this.uuid = window.localStorage.getItem('eamon_uuid');
+  // http options used for making any writing API calls
+  private httpOptions: any;
+
+  constructor(private http: HttpClient, private _cookieService:CookieService) {
+    this.uuid = window.localStorage.getItem('eamon_uuid');
+
+    // CSRF token is needed to make API calls work when logged into admin
+    let csrf = this._cookieService.get("csrftoken");
+    // the Angular 4.3+ HttpHeaders class throws an exception if any of the values are undefined
+    if (typeof(csrf) === 'undefined') {
+      csrf = '';
+    }
+    this.httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf })
+    };
+
   }
 
   setupGameData(mock_player: boolean = false): Observable<Object> {
@@ -31,13 +48,13 @@ export class GameLoaderService {
     if (game_id === 'demo1') {
       // load mock data
       let path = "/static/adventures/" + game_id + "/mock-data";
-      return Observable.forkJoin(
-        this.http.get(path + "/adventure.json").map((res: Response) => res.json()),
-        this.http.get(path + "/rooms.json").map((res: Response) => res.json()),
-        this.http.get(path + "/artifacts.json").map((res: Response) => res.json()),
-        this.http.get(path + "/effects.json").map((res: Response) => res.json()),
-        this.http.get(path + "/monsters.json").map((res: Response) => res.json()),
-        this.http.get(path + "/player.json").map((res: Response) => res.json())
+      return Rx.Observable.forkJoin(
+        this.http.get(path + "/adventure.json"),
+        this.http.get(path + "/rooms.json"),
+        this.http.get(path + "/artifacts.json"),
+        this.http.get(path + "/effects.json"),
+        this.http.get(path + "/monsters.json"),
+        this.http.get(path + "/player.json")
       );
     } else {
       let player_id = window.localStorage.getItem('player_id');
@@ -49,14 +66,14 @@ export class GameLoaderService {
       }
 
       // load live data from the back end
-      return Observable.forkJoin(
-        this.http.get("/api/adventures/" + game_id).map((res: Response) => res.json()),
-        this.http.get("/api/adventures/" + game_id + "/rooms").map((res: Response) => res.json()),
-        this.http.get("/api/adventures/" + game_id + "/artifacts").map((res: Response) => res.json()),
-        this.http.get("/api/adventures/" + game_id + "/effects").map((res: Response) => res.json()),
-        this.http.get("/api/adventures/" + game_id + "/monsters").map((res: Response) => res.json()),
-        this.http.get("/api/adventures/" + game_id + "/hints").map((res: Response) => res.json()),
-        this.http.get(player_path).map((res: Response) => res.json())
+      return Rx.Observable.forkJoin(
+        this.http.get("/api/adventures/" + game_id),
+        this.http.get("/api/adventures/" + game_id + "/rooms"),
+        this.http.get("/api/adventures/" + game_id + "/artifacts"),
+        this.http.get("/api/adventures/" + game_id + "/effects"),
+        this.http.get("/api/adventures/" + game_id + "/monsters"),
+        this.http.get("/api/adventures/" + game_id + "/hints"),
+        this.http.get(player_path)
       );
     }
   }
@@ -69,14 +86,9 @@ export class GameLoaderService {
     } else {
       let player_id = window.localStorage.getItem('player_id');
 
-      // CSRF token is needed to make API calls work when logged into admin
-      let csrf = this._cookieService.get("csrftoken");
-      let headers = new Headers({ 'Content-Type': 'application/json', 'X-CSRFToken': csrf });
-      let options = new RequestOptions({ headers: headers });
-
       let body = JSON.stringify(player);
 
-      return this.http.put("/api/players/" + player_id, body, options);
+      return this.http.put("/api/players/" + player_id, body, this.httpOptions);
     }
   }
 

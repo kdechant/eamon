@@ -2,7 +2,7 @@ import {NgModule, CUSTOM_ELEMENTS_SCHEMA}      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { CookieModule } from 'ngx-cookie';
 
 import {DividePipe} from "./pipes/divide.pipe";
@@ -26,7 +26,7 @@ import {ShopService} from "./services/shop.service";
 import {routing} from './main-hall.routing';
 
 @NgModule({
-  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, HttpModule, routing, CookieModule.forRoot()],
+  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, HttpClientModule, routing, CookieModule.forRoot()],
   declarations: [
     MainHallComponent,
     AdventureListComponent,

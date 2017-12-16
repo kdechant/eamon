@@ -1,6 +1,5 @@
 import { Injectable }     from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable }     from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
 
 import {Adventure} from "../models/adventure";
 
@@ -14,17 +13,17 @@ export class AdventureService {
 
   public adventure: Adventure;
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
   getList() {
-    this.http.get('/api/adventures').map((res: Response) => res.json()).subscribe(
+    this.http.get('/api/adventures').subscribe(
       data => this.setupAdventureList(data),
       err => console.error(err)
     );
   }
 
   getDetail(id: number) {
-    this.http.get('/api/adventures/' + id).map((res: Response) => res.json()).subscribe(
+    this.http.get('/api/adventures/' + id).subscribe(
       data => {
         this.adventure = new Adventure();
         this.adventure.init(data);
