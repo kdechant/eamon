@@ -533,4 +533,57 @@ export class Game {
 
   }
 
+  /**
+   * Save the game
+   */
+  public save() {
+    this.logger.log('save game');
+    let sv = {
+      player: this.player,
+      rooms: this.rooms.rooms,
+      artifacts: this.artifacts.all,
+      // artifacts: this.artifacts.all.filter(a => a.player_brought === false),
+      effects: this.effects.all,
+      monsters: this.monsters.all,
+      // monsters: this.monsters.all.filter(m => m.id !== Monster.PLAYER),
+      gamedata: this.data
+    };
+    let savegame = JSON.stringify(sv);
+    // TODO: figure out how to compress this data, possibly using https://www.npmjs.com/package/jsoncomp or https://gist.github.com/revolunet/843889
+
+    // put in local storage? or save to the API?
+    window.localStorage.setItem('savegame', savegame);
+  }
+
+  /**
+   * Restore a save game
+   */
+  public restore() {
+    this.logger.log('restore game');
+    let savegame = window.localStorage.getItem('savegame');
+    if (savegame) {
+      let data = JSON.parse(savegame);
+      // the serialized data looks just like the data from the API, so we just need to recreate the repositories. I hope.
+      // console.log(data.rooms);
+      this.rooms = new RoomRepository(data.rooms);
+      // console.log(this.rooms.rooms);
+      // console.log(data.artifacts);
+      this.artifacts = new ArtifactRepository(data.artifacts);
+      // console.log(this.artifacts.all);
+      this.effects = new EffectRepository(data.effects);
+      this.monsters = new MonsterRepository(data.monsters);
+      // console.log(this.monsters.all);
+      // this.monsters.addPlayer(data.player);
+      this.player = this.monsters.get(0);
+      // console.log(this.player);
+      // console.log(this.rooms.current_room);
+      this.rooms.current_room = this.rooms.getRoomById(this.player.room_id);
+      // console.log(this.rooms.current_room);
+      this.player.updateInventory();
+      this.artifacts.updateVisible();
+      this.monsters.updateVisible();
+      this.data = data.gamedata;
+    }
+  }
+
 }

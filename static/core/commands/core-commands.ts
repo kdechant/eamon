@@ -1253,6 +1253,30 @@ export class SpeedCommand implements BaseCommand {
 core_commands.push(new SpeedCommand());
 
 
+export class SaveCommand implements BaseCommand {
+  name: string = "save";
+  verbs: string[] = ["save"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    game.save();
+    game.history.write("Game saved.");
+  }
+}
+core_commands.push(new SaveCommand());
+
+
+export class RestoreCommand implements BaseCommand {
+  name: string = "restore";
+  verbs: string[] = ["restore"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    game.restore();
+    game.history.write("Game restored from saved game.");
+  }
+}
+core_commands.push(new RestoreCommand());
+
+
 // a cheat command used for debugging. say "goto" and the room number (e.g., "goto 5")
 export class GotoCommand implements BaseCommand {
   name: string = "goto";
