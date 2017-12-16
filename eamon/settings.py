@@ -26,7 +26,10 @@ SECRET_KEY = 'd&q-j$g@zvm(@slk$wny&m=l%-%v)eiq3#z)mk1^%dj%aq&hi9'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'eamon.terranok.com'
+    '127.0.0.1',
+    'localhost',
+    'eamon.terranok.com',
+    'eamon-remastered.com'
 ]
 
 
@@ -52,14 +55,13 @@ INSTALLED_APPS = [
     'news',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # must be before the CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
