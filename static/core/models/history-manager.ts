@@ -1,7 +1,7 @@
 import {HistoryEntry} from "../models/history-entry";
 
 /**
- * History service. Provides a container for all the history entries.
+ * History manager model. Provides a container for all the history entries.
  */
 export class HistoryManager {
   history: HistoryEntry[];

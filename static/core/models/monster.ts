@@ -359,6 +359,20 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Determines whether a monster is wearing an artifact.
+   * @param {number} artifact_id The ID of an artifact
+   * @return boolean
+   */
+  public isWearing(artifact_id: number): boolean {
+    let a = this.inventory.find(x => x.id === artifact_id);
+    if (!a) {
+      return false;
+    } else {
+      return a.is_worn;
+    }
+  }
+
+  /**
    * Finds an item in a monster's inventory by name
    * @param {string} artifact_name
    * @returns Artifact

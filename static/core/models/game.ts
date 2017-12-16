@@ -491,12 +491,14 @@ export class Game {
    * Handles successful game exit.
    */
   public exit() {
-    this.active = false;
-    this.won = true;
+    if (this.triggerEvent('exit')) {
+      this.active = false;
+      this.won = true;
 
-    this.logger.log('exit adventure');
-    for (let s in this.statistics) {
-      this.logger.log(s, this.statistics[s]);
+      this.logger.log('exit adventure');
+      for (let s in this.statistics) {
+        this.logger.log(s, this.statistics[s]);
+      }
     }
   }
 

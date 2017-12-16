@@ -387,7 +387,7 @@ export class PutCommand implements BaseCommand {
       // catch user mischief
       let m: Monster = game.monsters.getLocalByName(item_name);
       if (m) {
-        throw new CommandException("I can't put " + container_name + " into something!");
+        throw new CommandException("I can't put " + item_name + " into something!");
       }
       m = game.monsters.getLocalByName(container_name);
       if (m) {
@@ -406,21 +406,24 @@ export class PutCommand implements BaseCommand {
       if (!container) {
         throw new CommandException("I see no " + container_name + " here!");
       }
-      if (container.type === Artifact.TYPE_CONTAINER) {
-        if (container.is_open) {
-          if (game.triggerEvent("beforePut", arg, item, container)) {
-            game.history.write("Done.");
-            match = true;
-            item.putIntoContainer(container);
-            game.triggerEvent("afterPut", arg, item, container);
+      // the "specialPut" event handler is used for logic when putting something into an artifact that
+      // is not a typical container, e.g., putting lamp oil into a lamp
+      if (game.triggerEvent('specialPut', arg, item, container)) {
+        if (container.type === Artifact.TYPE_CONTAINER) {
+          if (container.is_open) {
+            if (game.triggerEvent("beforePut", arg, item, container)) {
+              game.history.write("Done.");
+              match = true;
+              item.putIntoContainer(container);
+              game.triggerEvent("afterPut", arg, item, container);
+            }
+          } else {
+            throw new CommandException("Try opening the " + container_name + " first.");
           }
         } else {
-          throw new CommandException("Try opening the " + container_name + " first.");
+          throw new CommandException("I can't put things into the " + container_name + "!");
         }
-      } else {
-        throw new CommandException("I can't put things into the " + container_name + "!");
       }
-
     } else {
       throw new CommandException("Try putting (SOMETHING) into (SOMETHING ELSE).");
     }
@@ -798,63 +801,64 @@ export class OpenCommand implements BaseCommand {
     let game = Game.getInstance();
     let a = game.artifacts.getLocalByName(arg);
     if (a !== null) {
+      if (game.triggerEvent("beforeOpen", arg, a, this)) {
+        if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
+          // if it's a disguised monster, reveal it
 
-      if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
-        // if it's a disguised monster, reveal it
+          a.revealDisguisedMonster();
+          this.opened_something = true;
 
-        a.revealDisguisedMonster();
-        this.opened_something = true;
+        } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
+          // normal container or door/gate
 
-      } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
-        // normal container or door/gate
-
-        if (!a.is_open) {
-          // not open. try to open it.
-          if (a.key_id === -1) {
-            game.history.write("It won't open.");
-          } else if (a.key_id === 0 && a.hardiness) {
-            game.history.write("You'll have to force it open.");
-          } else if (a.key_id > 0) {
-            if (game.player.hasArtifact(a.key_id)) {
-              let key = game.artifacts.get(a.key_id);
-              game.history.write("You unlock it using the " + key.name + ".");
-              a.is_open = true;
+          if (!a.is_open) {
+            // not open. try to open it.
+            if (a.key_id === -1) {
+              game.history.write("It won't open.");
+            } else if (a.key_id === 0 && a.hardiness) {
+              game.history.write("You'll have to force it open.");
+            } else if (a.key_id > 0) {
+              if (game.player.hasArtifact(a.key_id)) {
+                let key = game.artifacts.get(a.key_id);
+                game.history.write("You unlock it using the " + key.name + ".");
+                a.is_open = true;
+              } else {
+                throw new CommandException("It's locked and you don't have the key!");
+              }
             } else {
-              throw new CommandException("It's locked and you don't have the key!");
+              game.history.write(a.name + " opened.");
+              a.is_open = true;
+
+              if (a.type === Artifact.TYPE_CONTAINER) {
+                a.printContents();
+              }
+
             }
+            this.opened_something = true;
           } else {
+            throw new CommandException("It's already open!");
+          }
+        } else if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
+          if (!a.is_open) {
             game.history.write(a.name + " opened.");
             a.is_open = true;
-
-            if (a.type === Artifact.TYPE_CONTAINER) {
-              a.printContents();
-            }
-
+            this.opened_something = true;
+          } else {
+            throw new CommandException("It's already open!");
           }
-          this.opened_something = true;
-        } else {
-          throw new CommandException("It's already open!");
         }
-      } else if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
-        if (!a.is_open) {
-          game.history.write(a.name + " opened.");
-          a.is_open = true;
-          this.opened_something = true;
-        } else {
-          throw new CommandException("It's already open!");
+
+        // other effects are custom to the adventure
+        game.triggerEvent("open", arg, a, this);
+
+        // otherwise, nothing happens
+        if (!this.opened_something) {
+          if (arg === "door") {
+            game.history.write("The door will open when you pass through it.");
+          } else {
+            game.history.write("I don't know how to open that!");
+          }
         }
-      }
-    }
-
-    // other effects are custom to the adventure
-    game.triggerEvent("open", arg, a, this);
-
-    // otherwise, nothing happens
-    if (!this.opened_something) {
-      if (arg === "door") {
-        game.history.write("The door will open when you pass through it.");
-      } else {
-        game.history.write("I don't know how to open that!");
       }
     }
   }
