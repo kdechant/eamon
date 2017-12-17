@@ -16,6 +16,11 @@
     <!-- 2. Configure SystemJS -->
     <script>
       var game_id = "{{ adventure_id }}";
+      {% if request.GET.demo %}
+      var demo = true;
+      {% else %}
+      var demo = false;
+      {% endif %}
     </script>
     <script src="{% static 'core/systemjs.config.js' %}"></script>
     <script>

@@ -39,7 +39,12 @@ import {Artifact} from "../models/artifact";
       He examines your items and pays you what they are worth...</p>
       <p>He pays you {{game.player.profit}} gold pieces total.</p>
       <p *ngFor="let msg of game.exit_message">{{msg}}</p>
-      <button class="btn" (click)="savePlayer()">Save and go to main hall</button>
+      <button class="btn" (click)="savePlayer()" *ngIf="!game.demo">Save and go to main hall</button>
+      <div *ngIf="game.demo">
+        You have completed the adventure with the demo character. The demo character cannot be saved.
+        <button class="btn" (click)="createPlayer()">Create your own character</button>
+        <button class="btn" (click)="gotoList()">Back to adventure list</button>
+      </div>
     </div>
     `,
 })
@@ -66,4 +71,11 @@ export class SellItemsComponent {
     );
   }
 
+  public createPlayer(): void {
+    window.location.href = "/main-hall";
+  }
+
+  public gotoList(): void {
+    window.location.href = "/adventure-list";
+  }
 }

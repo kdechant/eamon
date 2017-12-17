@@ -177,6 +177,11 @@ export class Game {
   modal: Modal;
 
   /**
+   * Flag for whether we're in demo mode
+   */
+  demo: boolean = false;
+
+  /**
    * Statistics for the game (damage taken, secret doors found, etc.)
    */
   statistics: { [key: string]: number; } = {

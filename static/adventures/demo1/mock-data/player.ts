@@ -2,9 +2,9 @@
  * JSON data that mocks what would come from the back-end API
  */
 export var PLAYER: Object = {
-  "name": "Princess Leia",
+  "name": "Birgitte",
   "gender": "f",
-  "hardiness": 50,
+  "hardiness": 20,
   "agility": 15,
   "charisma": 16,
   "gold": 200,

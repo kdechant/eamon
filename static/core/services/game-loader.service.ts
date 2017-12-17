@@ -79,7 +79,7 @@ export class GameLoaderService {
   }
 
   public savePlayer(player: Monster) {
-    if (game_id === 'demo1') {
+    if (game_id === 'demo1' || Game.getInstance().demo) {
       // can't save the demo player.
       console.log("The demo player is read-only.")
       return;

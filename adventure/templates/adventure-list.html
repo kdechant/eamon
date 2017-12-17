@@ -21,6 +21,7 @@
             </div>
           </div>
           <p class="desc">{{ adv.description }}</p>
+          <p><a class="btn btn-primary" href="/adventure/{{ adv.slug }}?demo=1">Play</a></p>
           <div class="tags">
             {% for tagname in adv.tags.names %}
             <div class="tag">{{ tagname }}</div>
