@@ -2,7 +2,7 @@
  * Unit tests for The Abductor's Quarters
  */
 import {async, getTestBed} from '@angular/core/testing';
-import {HttpModule} from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { CookieService, CookieModule } from 'ngx-cookie';
 
 import {Game} from "../../core/models/game";
@@ -21,7 +21,7 @@ describe("The Abductor's Quarters", function() {
   let gameLoaderService = null;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpModule, CookieModule.forRoot()],
+      imports: [HttpClientModule, CookieModule.forRoot()],
       providers: [
         GameLoaderService, CookieService
       ]

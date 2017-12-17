@@ -2,7 +2,7 @@
  * Unit tests for The Prince's Tavern
  */
 import {async, getTestBed} from '@angular/core/testing';
-import {HttpModule} from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { CookieService, CookieModule } from 'ngx-cookie';
 
 import {Game} from "../../core/models/game";
@@ -13,7 +13,6 @@ import {Monster} from "../../core/models/monster";
 import {
   TestBed, inject
 } from '@angular/core/testing';
-import {sleep} from "../../core/utils/sleep";
 
 describe("The Prince's Tavern", function() {
 
@@ -24,7 +23,7 @@ describe("The Prince's Tavern", function() {
   beforeEach(async(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // avoid errors due to slow api calls
     TestBed.configureTestingModule({
-      imports: [HttpModule, CookieModule.forRoot()],
+      imports: [HttpClientModule, CookieModule.forRoot()],
       providers: [
         GameLoaderService, CookieService
       ]

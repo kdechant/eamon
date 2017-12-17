@@ -2,7 +2,7 @@
  * Unit tests for The Prince's Tavern
  */
 import {async, getTestBed} from '@angular/core/testing';
-import {HttpModule} from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { CookieService, CookieModule } from 'ngx-cookie';
 
 import {Game} from "../../core/models/game";
@@ -25,7 +25,7 @@ describe("The Prince's Tavern", function() {
   beforeEach(async(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // avoid errors due to slow api calls
     TestBed.configureTestingModule({
-      imports: [HttpModule, CookieModule.forRoot()],
+      imports: [HttpClientModule, CookieModule.forRoot()],
       providers: [
         GameLoaderService, CookieService
       ]
@@ -147,7 +147,6 @@ describe("The Prince's Tavern", function() {
         expect(game.player.room_id).toBe(12, "player did not move to empty barrel");
         game.artifacts.updateVisible();
         game.command_parser.run("get loose boards", false);
-        console.log(game.history.history)
         expect(game.player.room_id).toBe(16, "Player should have moved");
 
         // stable
@@ -177,6 +176,7 @@ describe("The Prince's Tavern", function() {
         let original_ae = game.player.armor_expertise;
 
         game.command_parser.run("drink strange brew");
+        console.log(game.history.history)
         expect(game.effects.get(28).seen).toBeTruthy("effect 28 not shown");
         expect(game.player.charisma).toBe(original_ch - 3, "didn't lower ch");
 

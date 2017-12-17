@@ -2,7 +2,7 @@
  * Unit tests for Cave of the Mind
  */
 import {async, getTestBed} from '@angular/core/testing';
-import {HttpModule} from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { CookieService, CookieModule } from 'ngx-cookie';
 
 import {Game} from "../../core/models/game";
@@ -21,7 +21,7 @@ describe("Cave of the Mind", function() {
   let gameLoaderService = null;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpModule, CookieModule.forRoot()],
+      imports: [HttpClientModule, CookieModule.forRoot()],
       providers: [
         GameLoaderService, CookieService
       ]
