@@ -28,6 +28,7 @@
             'rxjs': 'npm:rxjs',
             'tslib': 'npm:tslib/tslib.js',
             'ngx-cookie': 'npm:ngx-cookie/bundles/ngx-cookie.umd.js',
+            '@ng-bootstrap/ng-bootstrap': 'npm:@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js',
 
             // the app itself
             'core': "/static/core",

@@ -4,6 +4,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieModule } from 'ngx-cookie';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {Nl2brPipe} from "./pipes/nl2br.pipe";
 import {GameVarsPipe} from "./pipes/gamevars.pipe";
@@ -21,7 +22,14 @@ import {CommandListComponent} from "./components/command-list.component";
 import {StatusComponent} from "./components/status.component";
 
 @NgModule({
-  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, HttpClientModule, CookieModule.forRoot()],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    HttpClientModule,
+    CookieModule.forRoot(),
+    NgbModule.forRoot()
+  ],
   declarations: [
     Nl2brPipe,
     GameVarsPipe,
