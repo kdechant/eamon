@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'd&q-j$g@zvm(@slk$wny&m=l%-%v)eiq3#z)mk1^%dj%aq&hi9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -79,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_settings_export.settings_export',
             ],
         },
     },
@@ -157,6 +158,14 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
 )
+
+GA_ID = 'UA-87327244-2'
+
+# the following settings will be available in templates using {{ settings.NAME }} ( e.g., {{ settings.DEBUG }} )
+SETTINGS_EXPORT = [
+    'DEBUG',
+    'GA_ID',
+]
 
 # look for machine-specific config files
 if 'IN_DOCKER' in os.environ and os.environ['IN_DOCKER'] == "1":

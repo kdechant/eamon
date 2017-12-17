@@ -27,7 +27,7 @@
     <div class="page-border">&nbsp;</div>
 
     {% block heading %}
-    <div class="container">
+    <div class="container-fluid">
       <h1>The Wonderful World of Eamon</h1>
     </div>
     {% endblock %}
@@ -38,11 +38,12 @@
 
     <div class="page-border">&nbsp;</div>
 
-  <script id="__bs_script__">//<![CDATA[
-    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.2.13.0.js'><\/script>".replace("HOST", location.hostname));
-//]]></script>
+    {# tracking code like Google Analytics should only run in production #}
+    {% if settings.DEBUG == False %}
+      debug is off
+      {% include "_google_analytics.html" %}
+    {% endif %}
 
-    {% include "_google_analytics.html" %}
   </body>
 
 </html>
