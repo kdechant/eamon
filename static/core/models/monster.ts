@@ -580,7 +580,7 @@ export class Monster extends GameObject {
             // new feature (not in original) - slower ability increase above 50%
             this.weapon_abilities[wpn.weapon_type] += 1;
           }
-          game.history.write("Your " + wpn.getWeaponTypeName() + " ability increased!", "success");
+          game.history.write("Your " + wpn.getTypeName() + " ability increased!", "success");
         }
         // check for armor expertise increase
         let af = this.getArmorFactor();
