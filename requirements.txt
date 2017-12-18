@@ -9,7 +9,7 @@ django-filter==1.1.0
 django-mptt==0.9.0
 django-rest-swagger==2.1.2
 django-settings-export==1.2.1
-django-taggit==0.22.1
+-e git+https://github.com/jdufresne/django-taggit.git@dj20#egg=django-taggit
 django-taggit-serializer==0.1.5
 djangorestframework==3.7.3
 html5lib==0.999999999
