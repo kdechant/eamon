@@ -1,0 +1,37 @@
+<ng-template #welcomeModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h3>Welcome to Eamon!</h3>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="game.demo">
+      <p>You are playing as the demo character. You can explore the adventure as normal, but you won't be able to save your progress or keep any items or treasure you collect after you exit the adventure.</p>
+      <p>You can create your own character later from the Main Hall if you want to keep your items and take them on future adventures.</p>
+    </div>
+    <p>Eamon takes a simple set of adventuring commands, like:</p>
+    <ul>
+      <li>'n' (north), 's' (south), etc. to move</li>
+      <li>'get sword' (or 'get all' to pick up everything)</li>
+      <li>'ready sword'</li>
+      <li>'wear chain mail'</li>
+      <li>'attack orc'</li>
+      <li>'open chest'</li>
+      <li>'remove jewels from chest'</li>
+      <li>'look wall' or 'examine bookshelf' to search for hidden items and secret passages</li>
+      <li>'give key to eddie'</li>
+      <li>To cast spells, just type the spell name: 'blast', 'heal', 'power', or 'speed'</li>
+      <li>and so on...</li>
+    </ul>
+    <p>Eamon also supports partial word matches to save typing. e.g., 'at dra' is the same as 'attack dragon'.</p>
+    <p>Hit enter to repeat the last command, or use the up and down arrows to recall previous commands.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="c('Close click')">OK, got it. Bring on the monsters!</button>
+  </div>
+</ng-template>
+
+<button type="button" class="btn btn-default" (click)="open(welcomeModal)">
+  How to Play
+</button>

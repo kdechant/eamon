@@ -17,11 +17,7 @@ export class CommandListComponent {
         .filter(c => c !== 'xgoto' && c !== 'xdebugger' && c !== 'xaccio');
     }
 
-    this.modalService.open(content).result.then((result) => {
-      console.log(`Closed with: ${result}`);
-    }, (reason) => {
-      console.log(`Dismissed`);
-    });
+    this.modalService.open(content);
   }
 
 }

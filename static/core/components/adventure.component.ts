@@ -40,29 +40,10 @@ export class AdventureComponent {
       }
     );
 
-    // if (this.game.demo) {
-    //   var that = this;
-    //   setTimeout(function() {
-    //     that.modalService.open(that.welcome_modal).result.then((result) => {
-    //       console.log(`Closed with: ${result}`);
-    //     }, (reason) => {
-    //       console.log(`Dismissed ${that.getDismissReason(reason)}`);
-    //     });
-    //   }, 2000);
-    // }
-
   }
 
   public intro_next() {
     this.game.intro_index++;
-  }
-
-  public open(content) {
-    this.modalService.open(content).result.then((result) => {
-      console.log(`Closed with: ${result}`);
-    }, (reason) => {
-      console.log(`Dismissed`);
-    });
   }
 
 }

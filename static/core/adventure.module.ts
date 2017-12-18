@@ -17,6 +17,7 @@ import {CommandPromptComponent} from "./components/command.component";
 import {HistoryComponent} from "./components/history.component";
 import {ArtifactComponent} from "./components/artifact.component";
 import {SellItemsComponent} from "./components/sell-items.component";
+import {HowToPlayComponent} from "./components/how-to-play.component";
 import {HintsComponent} from "./components/hints.component";
 import {CommandListComponent} from "./components/command-list.component";
 import {StatusComponent} from "./components/status.component";
@@ -38,6 +39,7 @@ import {StatusComponent} from "./components/status.component";
     CommandPromptComponent,
     HistoryComponent,
     SellItemsComponent,
+    HowToPlayComponent,
     HintsComponent,
     CommandListComponent,
     StatusComponent

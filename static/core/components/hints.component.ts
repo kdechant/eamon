@@ -1,36 +1,32 @@
 import {Component, Input} from "@angular/core";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "hints",
-  template: `
-    <button class="btn hints-button" (click)="openHints()">Hints</button>
-    <div class="hints" *ngIf="open">
-      <div class="hint" *ngFor="let h of game.hints?.all">
-        <p (click)="showAnswer(h)">
-          <span class="glyphicon"
-            [class.glyphicon-triangle-right]="!h.is_open"
-            [class.glyphicon-triangle-bottom]="h.is_open"
-            aria-hidden="true"></span>
-          {{ h.question }}</p>
-        <div class="hint-answers" [class.hidden]="!h.is_open">
-          <p class="hint-answer" *ngFor="let a of h.answers" [class.hidden]="a.index !== h.current_index">
-            {{ a.answer }}
-          </p>
-          <div class="hint-next-prev" [class.hidden]="h.answers.length < 2">
-            <a (click)="prevAnswer(h)">prev</a>
-            <a (click)="nextAnswer(h)">next</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    `,
+  templateUrl: "/static/core/templates/hints.html",
 })
 export class HintsComponent {
   @Input() game;
-  open = false;
+  public index: number = 1;
 
-  public openHints() {
-    this.open = !this.open;
+  constructor(private modalService: NgbModal) { }
+
+  public open(content) {
+    this.modalService.open(content, { size: 'lg' });
+  }
+
+  public nextHint() {
+    this.index++;
+    if (this.index > this.game.hints.length) {
+      this.index = 1;
+    }
+  }
+
+  public prevHint() {
+    this.index--;
+    if (this.index < 1) {
+      this.index = this.game.hints.length;
+    }
   }
 
   public showAnswer(hint) {
@@ -38,17 +34,20 @@ export class HintsComponent {
   }
 
   public nextAnswer(hint) {
-    hint.current_index++;
-    if (hint.current_index > hint.answers.length) {
-      hint.current_index = 1;
+    if (hint.current_index >= hint.answers.length - 1) {
+      hint.current_index = 0;
+    } else {
+      hint.current_index++;
     }
     console.log(hint.current_index)
   }
 
   public prevAnswer(hint) {
-    hint.current_index--;
-    if (hint.current_index < 1) {
-      hint.current_index = hint.answers.length;
+    if (hint.current_index == 1) {
+      hint.current_index = hint.answers.length - 1;
+    } else {
+      hint.current_index--;
     }
+    console.log(hint.current_index)
   }
 }
