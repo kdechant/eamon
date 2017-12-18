@@ -4,7 +4,7 @@ import {Component, Input} from "@angular/core";
   selector: "command-list",
   template: `
     <button class="btn command-list-button" (click)="openCommands()">Commands</button>
-    <div class="command-list row" [class.hidden]="hidden">
+    <div class="command-list row" *ngIf="open">
       <div class="command-list-item col-sm-3" *ngFor="let cmd of keys">
         {{ cmd }}
       </div>
@@ -13,14 +13,14 @@ import {Component, Input} from "@angular/core";
 })
 export class CommandListComponent {
   @Input() game;
-  hidden = true;
+  open = false;
   keys: string[] = [];
 
   public openCommands() {
     if (this.keys.length === 0 && typeof this.game !== 'undefined') {
       this.keys = Object.keys(this.game.command_parser.available_verbs)
-        .filter(c => c !== 'goto' && c !== 'debugger' && c !== 'accio');
+        .filter(c => c !== 'xgoto' && c !== 'xdebugger' && c !== 'xaccio');
     }
-    this.hidden = !this.hidden;
+    this.open = !this.open;
   }
 }

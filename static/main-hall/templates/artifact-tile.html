@@ -1,35 +1,33 @@
-<div class="artifacts-tile col-sm-4 col-md-3">
-  <div class="artifacts-tile-inner">
-    <div class="artifact-icon">
-      <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
-                               title="{{ artifact.getTypeName() }}">
+<div class="artifact-tile-inner">
+  <div class="artifact-icon">
+    <img src="/static/images/ravenmore/128/{{ artifact.getIcon() }}.png"
+                             title="{{ artifact.getTypeName() }}">
+  </div>
+  <div class="artifact-name">
+    <strong>{{ artifact.name|titlecase }}</strong><br />
+  </div>
+  <div class="artifact-data">
+    <div *ngIf="artifact.type === 2 || artifact.type === 3">
+      Odds: {{ artifact.weapon_odds }}%<br />
+      Damage: {{ artifact.dice }} d {{ artifact.sides }}<br />
     </div>
-    <div class="artifact-name">
-      <strong>{{ artifact.name|titlecase }}</strong><br />
+    <div *ngIf="artifact.type === 11">
+      AC: {{ artifact.armor_class }}<br />
+      Penalty: {{ artifact.armor_penalty }}%<br />
     </div>
-    <div class="artifact-data">
-      <div *ngIf="artifact.type === 2 || artifact.type === 3">
-        Odds: {{ artifact.weapon_odds }}%<br />
-        Damage: {{ artifact.dice }} d {{ artifact.sides }}<br />
-      </div>
-      <div *ngIf="artifact.type === 11">
-        AC: {{ artifact.armor_class }}<br />
-        Penalty: {{ artifact.armor_penalty }}%<br />
-      </div>
-      <img src="/static/images/ravenmore/128/coin.png"><span *ngIf="action == 'buy'">{{ artifact.value }}</span><span
-        *ngIf="action == 'sell'">{{ artifact.value | divide:2 }}</span>
-    </div>
-    <div class="artifact-buttons" *ngIf="action === 'buy'">
-      <button class="btn btn-primary" (click)="buy(artifact)"
-              *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">{{ action|titlecase }}</button>
-      <button class="btn disabled"
-              *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
-    </div>
-    <div class="artifact-buttons" *ngIf="action === 'sell'">
-      <button class="btn btn-primary" [ngClass]="{'disabled': artifact.salePending}" (click)="sell(artifact)">Sell</button>
-    </div>
-    <div class="message" [@messageAnimation]="artifact.messageState">
-      {{ artifact.message }}
-    </div>
+    <img src="/static/images/ravenmore/128/coin.png"><span *ngIf="action == 'buy'">{{ artifact.value }}</span><span
+      *ngIf="action == 'sell'">{{ artifact.value | divide:2 }}</span>
+  </div>
+  <div class="artifact-buttons" *ngIf="action === 'buy'">
+    <button class="btn btn-primary" (click)="buy(artifact)"
+            *ngIf="_playerService.player && artifact.value <= _playerService.player.gold">{{ action|titlecase }}</button>
+    <button class="btn disabled"
+            *ngIf="_playerService.player && artifact.value > _playerService.player.gold">Not enough gold</button>
+  </div>
+  <div class="artifact-buttons" *ngIf="action === 'sell'">
+    <button class="btn btn-primary" [ngClass]="{'disabled': artifact.salePending}" (click)="sell(artifact)">Sell</button>
+  </div>
+  <div class="message" [@messageAnimation]="artifact.messageState">
+    {{ artifact.message }}
   </div>
 </div>

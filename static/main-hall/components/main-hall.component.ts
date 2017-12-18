@@ -9,7 +9,7 @@ import '../rxjs-operators';
   selector: "main-hall",
   template: `
 <div class="container parchment">
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 </div>
   `
 })

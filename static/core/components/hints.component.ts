@@ -4,7 +4,7 @@ import {Component, Input} from "@angular/core";
   selector: "hints",
   template: `
     <button class="btn hints-button" (click)="openHints()">Hints</button>
-    <div class="hints" [class.hidden]="hidden">
+    <div class="hints" *ngIf="open">
       <div class="hint" *ngFor="let h of game.hints?.all">
         <p (click)="showAnswer(h)">
           <span class="glyphicon"
@@ -27,10 +27,10 @@ import {Component, Input} from "@angular/core";
 })
 export class HintsComponent {
   @Input() game;
-  hidden = true;
+  open = false;
 
   public openHints() {
-    this.hidden = !this.hidden;
+    this.open = !this.open;
   }
 
   public showAnswer(hint) {

@@ -11,13 +11,15 @@
     <p>I just happen to have the following weapons and armor in stock:</p>
     <p>You have {{_playerService.player?.gold}} gold pieces.</p>
     <p class="heading">Weapons:</p>
+    <div class="container">
     <div class="row">
-      <artifact-tile *ngFor="let artifact of weapons" [artifact]="artifact" [action]="action"></artifact-tile>
+      <artifact-tile *ngFor="let artifact of weapons" [artifact]="artifact" [action]="action" class="col-sm-6 col-md-4 col-lg-3"></artifact-tile>
+    </div>
     </div>
 
     <p class="heading">Armor and Shields:</p>
     <div class="row">
-      <artifact-tile *ngFor="let artifact of armors" [artifact]="artifact" [action]="action"></artifact-tile>
+      <artifact-tile *ngFor="let artifact of armors" [artifact]="artifact" [action]="action" class="col-sm-6 col-md-4 col-lg-3"></artifact-tile>
     </div>
     <button class="btn btn-default" (click)="action = ''">Done</button>
   </div>
@@ -27,7 +29,7 @@
     <p>You have {{_playerService.player?.gold}} gold pieces.</p>
     <div class="row">
       <artifact-tile *ngFor="let artifact of _playerService.player?.inventory" [artifact]="artifact"
-                     [action]="action" [@sellAnimation]="artifact.type"></artifact-tile>
+                     [action]="action" [@sellAnimation]="artifact.type" class="col-sm-6 col-md-4 col-lg-3"></artifact-tile>
     </div>
 
     <button class="btn btn-default" (click)="action = ''">Done</button>
