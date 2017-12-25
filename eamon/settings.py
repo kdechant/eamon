@@ -175,6 +175,6 @@ else:
     # other development or production environment.
     # machine-specific settings can be stored in local_settings.py
     try:
-        from local_settings import *
+        from .local_settings import *
     except ImportError:
         pass

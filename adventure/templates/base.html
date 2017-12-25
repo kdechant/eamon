@@ -39,7 +39,6 @@
 
     {# tracking code like Google Analytics should only run in production #}
     {% if settings.DEBUG == False %}
-      debug is off
       {% include "_google_analytics.html" %}
     {% endif %}
 
