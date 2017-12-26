@@ -24,15 +24,15 @@
 
       <div class="ae row">Armor expertise: {{ game.player.armor_expertise }}%</div>
 
-      <div class="weapon row" *ngIf="game.player.weapon">Ready weapon: {{ game.player.weapon.name }}
+      <div class="weapon row" *ngIf="game.player.weapon">Ready weapon: {{ game.player.weapon.name|titlecase }}
         ({{ game.player.weapon.dice }}d{{ game.player.weapon.sides }})
       </div>
       <div class="weapon none row" *ngIf="!game.player.weapon">Ready weapon: none!</div>
 
-      <div class="armor row" *ngIf="game.player.armor_class">Armor:
+      <div class="armor row" *ngIf="game.player.armor_class">Armor:&nbsp;
         <span
-            *ngFor="let armor of game.player.armor_worn; let isLast=last">{{ armor.name }}{{ isLast ? '' : ' and '}}</span>
-        ({{ game.player.armor_class }})
+            *ngFor="let armor of game.player.armor_worn; let isLast=last">{{ armor.name|titlecase }}{{ isLast ? '' : ' and '}}</span>
+        &nbsp;({{ game.player.armor_class }})
       </div>
       <div class="armor none row" *ngIf="!game.player.armor_class">Armor: none!</div>
 

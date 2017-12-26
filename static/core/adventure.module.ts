@@ -8,6 +8,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {Nl2brPipe} from "./pipes/nl2br.pipe";
 import {GameVarsPipe} from "./pipes/gamevars.pipe";
+import {TitleCasePipe} from "./pipes/title-case.pipe";
 
 import {AdventureComponent} from "./components/adventure.component";
 
@@ -42,7 +43,8 @@ import {StatusComponent} from "./components/status.component";
     HowToPlayComponent,
     HintsComponent,
     CommandListComponent,
-    StatusComponent
+    StatusComponent,
+    TitleCasePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AdventureComponent],
