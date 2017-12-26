@@ -145,7 +145,7 @@ export var event_handlers = {
   "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact) {
     let game = Game.getInstance();
     // cursed sword
-    if (old_wpn.id === 20) {
+    if (old_wpn && old_wpn.id === 20) {
       game.history.write("You can't pry the golden sword from your hand!");
       return false;
     }
