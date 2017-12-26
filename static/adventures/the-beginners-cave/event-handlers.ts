@@ -69,6 +69,15 @@ export var event_handlers = {
     }
   },
 
+  "flee": function() {
+    let game = Game.getInstance();
+    if (game.monsters.get(7).isHere()) {
+      game.history.write("You are held fast by the mimic and cannot flee!", "emphasis");
+      return false;
+    }
+    return true;
+  },
+
   "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact): boolean {
     // if unreadying trollsfire, put it out
     if (old_wpn && old_wpn.id === 10 && new_wpn.id !== 10) {
