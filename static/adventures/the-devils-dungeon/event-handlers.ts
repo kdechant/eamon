@@ -46,8 +46,8 @@ export var event_handlers = {
     if (game.player.hasArtifact(10)) {
       let monsters = game.monsters.getByRoom(exit.room_to);
       let danger = false;
-      for (let i in monsters) {
-        if (!monsters[i].seen) {
+      for (let m of monsters) {
+        if (!m.seen) {
           danger = true;
         }
       }

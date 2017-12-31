@@ -173,7 +173,7 @@ export class MonsterRepository {
    * @return Monster[]
    */
   getByRoom(room_id: number) {
-    return this.all.filter(x => x.room_id = room_id);
+    return this.all.filter(x => x.room_id === room_id);
   }
 
   /**
