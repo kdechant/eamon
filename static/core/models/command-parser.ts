@@ -104,7 +104,9 @@ export class CommandParser {
       if (typeof command.history_display === 'function') {
         ct = command.history_display(verb);
       }
-      game.history.push(ct + (args.length ? " " + args : ""));
+      if (tick) {
+        game.history.push(ct + (args.length ? " " + args : ""));
+      }
       try {
         command.run(verb, args);
         if (tick) {
