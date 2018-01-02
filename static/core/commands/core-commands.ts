@@ -470,14 +470,19 @@ export class ReadyCommand implements BaseCommand {
     let wpn = game.player.findInInventory(arg);
     if (wpn) {
       if (game.triggerEvent("ready", arg, old_wpn, wpn)) {
-        if (!wpn.is_weapon) {
-          throw new CommandException("That is not a weapon!");
-        }
-        if (wpn.hands === 2 && game.player.isUsingShield()) {
-          throw new CommandException("That is a two-handed weapon. Try removing your shield first.");
+        if (wpn.type === Artifact.TYPE_WEARABLE) {
+          // for armor/shields, "ready" is the same as "wear"
+          game.command_parser.run("wear " + wpn.name, false);
         } else {
-          game.player.ready(wpn);
-          game.history.write(wpn.name + " readied.");
+          if (!wpn.is_weapon) {
+            throw new CommandException("That is not a weapon!");
+          }
+          if (wpn.hands === 2 && game.player.isUsingShield()) {
+            throw new CommandException("That is a two-handed weapon. Try removing your shield first.");
+          } else {
+            game.player.ready(wpn);
+            game.history.write(wpn.name + " readied.");
+          }
         }
       }
     } else {
@@ -507,7 +512,7 @@ export class WearCommand implements BaseCommand {
           if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.isUsingShield()) {
             throw new CommandException("Try removing your other shield first.");
           }
-          if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon.hands === 2) {
+          if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon && game.player.weapon.hands === 2) {
             throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
           }
           game.player.wear(artifact);
