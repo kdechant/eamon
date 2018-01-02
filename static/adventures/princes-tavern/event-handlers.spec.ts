@@ -102,6 +102,11 @@ describe("The Prince's Tavern", function() {
         game.player.moveToRoom(7);
         game.command_parser.run('speed');
         expect(game.effects.get(10).seen).toBeTruthy();
+        game.monsters.get(8).moveToRoom();
+        game.command_parser.run('attack ogre');
+        expect(game.effects.get(9).seen).toBeTruthy();
+        expect(game.player.room_id).toBe(63, "Player did not move");
+        expect(game.monsters.get(8).room_id).toBe(63, "Ogre did not move");
 
         // pink elephant
         game.player.moveToRoom(33);
@@ -110,19 +115,20 @@ describe("The Prince's Tavern", function() {
         expect(game.monsters.get(11).room_id).toBe(33, "pink elephant did not appear");
 
         // bac
-        game.data['drinks'] = 30; // mock player has HD of 50
+        game.data['drinks'] = 18; // mock player has HD of 50
+        game.data['sober counter'] = 100;
         game.triggerEvent('endTurn');
         expect(game.history.getLastOutput().text).toBe(drunk_messages[0].text);
-        game.data['drinks'] = 51;
+        game.data['drinks'] = 21;
         game.triggerEvent('endTurn');
         expect(game.history.getLastOutput().text).toBe(drunk_messages[1].text);
-        game.data['drinks'] = 55;
+        game.data['drinks'] = 25;
         game.triggerEvent('endTurn');
         expect(game.history.getLastOutput().text).toBe(drunk_messages[2].text);
-        game.data['drinks'] = 59;
+        game.data['drinks'] = 29;
         game.triggerEvent('endTurn');
         expect(game.history.getLastOutput().text).toBe(drunk_messages[3].text);
-        game.data['drinks'] = 63;
+        game.data['drinks'] = 33;
         game.triggerEvent('endTurn');
         expect(game.history.getLastOutput().text).toBe(drunk_messages[4].text);
 

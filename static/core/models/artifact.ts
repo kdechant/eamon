@@ -237,7 +237,7 @@ export class Artifact extends GameObject {
           let heal_amount = game.diceRoll(this.dice, this.sides);
           game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
           owner.heal(heal_amount);
-        } else {
+        } else if (this.dice < 0) {
           // poison - negative dice was a common way to make poison in EDX adventures
           game.history.write("Yuck! It was poison!", "warning");
           let damage = game.diceRoll(Math.abs(this.dice), this.sides);

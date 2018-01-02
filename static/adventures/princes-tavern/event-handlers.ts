@@ -6,8 +6,6 @@ import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {ModalQuestion} from "../../core/models/modal";
 
-//
-
 // some data - export so we can use it in tests
 export var drinks = [
   {"name": "seven-7", "price": 2, "strength": 4},
@@ -29,7 +27,8 @@ export var drunk_messages = [
   {"text" : "Boy, are you drunk!", "style": "emphasis"},
   {"text" : "You are very dizzy. You don't feel well.", "style": "warning"},
   {"text" : "You feel very numb and are staggering badly.", "style": "warning"},
-  {"text" : "You feel extremely numb, dizzy, and sick.", "style": "warning"}
+  {"text" : "You feel extremely numb, dizzy, and sick.", "style": "warning"},
+  {"text" : "You seem to be sobering up a little.", "style": "normal"}
 ];
 
 export var event_handlers = {
@@ -54,19 +53,20 @@ export var event_handlers = {
     game.data["bartender patience"] = 0;
     game.data["drinks"] = 0;
     game.data["how drunk"] = 0;
+    game.data["sober counter"] = 0;
     game.data["original ag"] = game.player.agility;
     game.data['barrel air'] = 4;
 
     // drinkers
-    game.monsters.get(19).data['tolerance'] = 49;
+    game.monsters.get(19).data['tolerance'] = 42;
     game.monsters.get(19).data['drinks'] = 0;
-    game.monsters.get(20).data['tolerance'] = 35;
+    game.monsters.get(20).data['tolerance'] = 33;
     game.monsters.get(20).data['drinks'] = 0;
-    game.monsters.get(21).data['tolerance'] = 35;
+    game.monsters.get(21).data['tolerance'] = 33;
     game.monsters.get(21).data['drinks'] = 0;
-    game.monsters.get(22).data['tolerance'] = 32;
+    game.monsters.get(22).data['tolerance'] = 30;
     game.monsters.get(22).data['drinks'] = 0;
-    game.monsters.get(23).data['tolerance'] = 28;
+    game.monsters.get(23).data['tolerance'] = 27;
     game.monsters.get(23).data['drinks'] = 0;
     game.monsters.get(24).data['tolerance'] = 18;
     game.monsters.get(24).data['drinks'] = 0;
@@ -81,35 +81,50 @@ export var event_handlers = {
   "endTurn": function() {
     let game = Game.getInstance();
 
+    let sobering = false;
+
+    game.data['sober counter']--;
+    if (game.data['sober counter'] === 0 && game.data['drinks'] > 0) {
+      update_status(6);
+    }
+    if (game.data['sober counter'] <= 0 && game.data['drinks'] > 0) {
+      game.data['drinks'] -= 0.1;
+      sobering = true;
+    }
+
     // drunk yet?
     if (game.data['drinks'] > game.player.hardiness) {
       game.player.agility = Math.round(game.data['original ag'] - (game.data['drinks'] - game.player.hardiness));
-      let condition = game.player.agility / game.data['original ag'];
-      if (condition < 0) {
-        game.history.write("You passed out!", "danger");
-        if (game.player.room_id === 22) {
-          // scatter player's artifacts
-          game.data['drinks'] = 0;
-          game.data['drinking contest active'] = 0;
-          game.player.agility = game.data['original ag'];
-          game.history.write("You wake up several hours later. All your possessions are gone! They must have been stolen while you were passed out.", "emphasis");
-          for (let i of game.player.inventory) {
-            let dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 54, 57, 61]);
-            i.moveToRoom(dest.id);
+      if (!sobering) {
+        let condition = game.player.agility / game.data['original ag'];
+        if (condition <= 0) {
+          game.history.write("You passed out!", "danger");
+          if (game.player.room_id === 22) {
+            // scatter player's artifacts
+            game.data['drinks'] = 0;
+            game.data['drinking contest active'] = 0;
+            game.player.agility = game.data['original ag'];
+            game.history.write("You wake up several hours later. All your possessions are gone! They must have been stolen while you were passed out.", "emphasis");
+            for (let i of game.player.inventory) {
+              let dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 54, 57, 61]);
+              i.moveToRoom(dest.id);
+            }
+            game.player.updateInventory();
           }
-          game.player.updateInventory();
+        } else if (condition < .25) {
+          update_status(5);
+        } else if (condition < .50) {
+          update_status(4);
+        } else if (condition < .75) {
+          update_status(3);
+        } else if (condition < .99) {
+          update_status(2);
         }
-      } else if (condition < .25) {
-        update_status(5);
-      } else if (condition < .50) {
-        update_status(4);
-      } else if (condition < .75) {
-        update_status(3);
-      } else if (condition < .99) {
-        update_status(2);
       }
     } else if (game.data['drinks'] > game.player.hardiness / 3) {
-      update_status(1);
+      if (!sobering) {
+        update_status(1);
+      }
     }
 
     if (game.player.room_id === 9) {
@@ -140,8 +155,8 @@ export var event_handlers = {
     // gerschter bar
     if (game.player.room_id === 7) {
       game.effects.print(9);
-      game.player.moveToRoom();
-      game.monsters.get(20).room_id = null;
+      game.player.moveToRoom(63);
+      target.moveToRoom(63);
       return false;
     }
     // brawlers
@@ -171,19 +186,22 @@ export var event_handlers = {
       game.effects.print(6, "danger");
       game.die();
       return false;
-    } else if (room.id === 2 && exit.room_to === -999) {
-      if (game.player.hasArtifact(25)) {
-        game.effects.print(41);
-      } else if (game.artifacts.get(25).room_id === null && game.artifacts.get(25).monster_id === null) {
-        // drank it
-        game.effects.print(40, "danger");
-        game.die();
-        return false;
-      } else {
-        game.effects.print(39);
-        game.player.agility = game.data['original ag']; // sober up
-        return false;
+    } else if (exit.room_to === -999) {
+      if (room.id === 2) {
+        // main exit
+        if (game.player.hasArtifact(25)) {
+          game.effects.print(41);
+        } else if (game.artifacts.get(25).room_id === null && game.artifacts.get(25).monster_id === null) {
+          // you drank the scotch
+          game.effects.print(40, "danger");
+          game.die();
+          return false;
+        } else {
+          game.effects.print(39);
+          return false;
+        }
       }
+      game.player.agility = game.data['original ag']; // sober up
     } else if (room.id === 36 && game.data["bar tab"] > 0) {
       if (game.data['bartender patience']) {
         game.history.write("The bartender is asking you politely to pay up or incur bodily damage from the bouncer.");
@@ -253,6 +271,7 @@ export var event_handlers = {
           let drink = drinks.find(x => x.name === game.modal.questions[0].answer);
           let str = answer === 'sip' ? 0.5 : (answer === 'drink' ? 1 : 1.5);
           game.data['drinks'] += drink.strength + str;
+          game.data['sober counter'] = 10;
 
           if (answer !== 'guzzle') {
             game.data['drinker reaction']++;
@@ -272,6 +291,7 @@ export var event_handlers = {
 
           // men buy drinks ahd guzzle
           let d: any;
+          let passed_out = [];
           for (let monster_id of game.data['drinkers']) {
             m = game.monsters.get(monster_id);
             d = drinks[game.diceRoll(1, drinks.length) - 1];
@@ -280,12 +300,18 @@ export var event_handlers = {
             if (m.data['drinks'] > m.data['tolerance']) {
               game.history.write(m.name + " passes out!", "emphasis");
               game.artifacts.get(game.dead_body_id + m.id - 1).moveToRoom();
-              game.data['drinkers'].splice(game.data['drinkers'].indexOf(monster_id), 1);
+              passed_out.push(monster_id);
             }
           }
 
+          // now remove anyone who passed out from the drinkers list
+          // (do this outside the previous loop to prevent splice() from screwing with the loop)
+          for (let monster_id of passed_out) {
+            game.data['drinkers'].splice(game.data['drinkers'].indexOf(monster_id), 1);
+          }
+
           if (game.data['drinkers'].length === 0) {
-            game.history.write("The drinking contest is over. You notice a stack of gold on the table.");
+            game.history.write("The drinking contest is over. You notice a stack of gold on the table.", "success");
             game.data['drinking contest active'] = false;
             game.artifacts.get(31).moveToRoom();
           }
@@ -318,6 +344,7 @@ export var event_handlers = {
         game.data['bar tab'] += drink.price;
         game.data['bartender patience'] = 2;
         game.data['drinks'] += drink.strength;
+        game.data['sober counter'] = 10;
       } else if (game.data['bartender patience']) {
         game.history.write("The bartender asks you to pay up before she will pour you another.");
         game.data['bartender patience']--;
@@ -461,7 +488,7 @@ export var event_handlers = {
             break;
           case 3:
             game.effects.print(30);
-            game.player.agility -= 3;
+            game.player.agility = Math.max(game.player.agility - 3, 1);
             game.data['original ag'] -= 3;
             break;
           case 4:
