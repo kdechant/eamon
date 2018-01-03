@@ -258,6 +258,9 @@ command-prompt {
   justify-content: space-between;
   margin-bottom: 20px;
   .name {
+    a {
+      font-size: 24px;
+    }
     // this should fill up all available space. other divs in this box should not expand.
     flex-grow: 1;
   }

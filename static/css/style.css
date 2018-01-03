@@ -188,6 +188,8 @@ command-prompt .form-control {
   margin-bottom: 20px; }
   .player .name {
     flex-grow: 1; }
+    .player .name a {
+      font-size: 24px; }
   .player .glyphicon {
     font-size: 12px; }
 

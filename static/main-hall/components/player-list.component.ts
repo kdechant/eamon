@@ -13,10 +13,10 @@ import {PlayerService} from '../services/player.service';
   <p>The guest book on the desk lists the following adventurers:</p>
   <div class="row">
     <div class="player col-sm-4" *ngFor="let player of _playerService.players">
-      <div class="icon"><img src="/static/images/ravenmore/128/{{ player.icon }}" width="80" height="80"></div>
+      <div class="icon"><img src="/static/images/ravenmore/128/{{ player.icon }}" width="96" height="96"></div>
       <div class="name"><a (click)="gotoPlayer(player)"><strong>{{player.name}}</strong></a><br />
-      <small>HD: {{player.hardiness}} AG: {{player.agility}} CH: {{player.charisma}} <br />
-      {{player.best_weapon?.name}}</small></div>
+      HD: {{player.hardiness}} AG: {{player.agility}} CH: {{player.charisma}} <br />
+      {{player.best_weapon?.name | titleCase}}</div>
       <div class="delete"><a (click)="deletePlayer(player)"><span class="glyphicon glyphicon-trash"></span></a></div>
     </div>
   </div>
