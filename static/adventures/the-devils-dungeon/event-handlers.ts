@@ -4,6 +4,8 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
+import {ModalQuestion} from "../../core/models/modal";
+import {drinks} from "../princes-tavern/event-handlers";
 
 export var event_handlers = {
 
@@ -52,15 +54,21 @@ export var event_handlers = {
         }
       }
       if (danger) {
-        game.modal.show("The crystal ball warns of possible danger ahead! Do you wish to proceed?", function(value) {
-          if (value === 'y') {
-            // the actual movement
+        let q1 = new ModalQuestion;
+        q1.type = 'multiple_choice';
+        q1.question = "The crystal ball warns of possible danger ahead! Do you wish to proceed?";
+        q1.choices = ['Yes', 'No'];
+        q1.callback = function (answer) {
+          if (answer === 'yes') {
             let room_to = game.rooms.getRoomById(exit.room_to);
             let room_from = game.rooms.current_room;
             game.player.moveToRoom(room_to.id, true);
             game.triggerEvent("afterMove", arg, room_from, room_to);
           }
-        });
+          return true;
+        };
+        game.modal.questions = [q1];
+        game.modal.run();
         // always return false here because the actual movement happens in the callback.
         return false;
       } else {
