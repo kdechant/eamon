@@ -5,7 +5,9 @@
 
 {% block content %}
 
-    <div class="container parchment">
+<div class="container">
+  <div class="parchment">
+    <div class="parchment-inner">
       <h2><img src="{% static "images/ravenmore/128/scroll.png" %}"> News</h2>
       <div class="row">
         {% for a in articles %}
@@ -20,7 +22,7 @@
       {% if articles.has_other_pages %}
         <ul class="pagination">
           {% if articles.has_previous %}
-            <li class="btn"><a href="?page={{ articles.previous_page_number }}">&laquo;</a></li>
+            <li class="btn"><a href="/news/?page={{ articles.previous_page_number }}">&laquo;</a></li>
           {% else %}
             <li class="btn disabled"><span>&laquo;</span></li>
           {% endif %}
@@ -28,16 +30,18 @@
             {% if articles.number == i %}
               <li class="btn active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
             {% else %}
-              <li class="btn"><a href="?page={{ i }}">{{ i }}</a></li>
+              <li class="btn"><a href="/news/?page={{ i }}">{{ i }}</a></li>
             {% endif %}
           {% endfor %}
           {% if articles.has_next %}
-            <li class="btn"><a href="?page={{ articles.next_page_number }}">&raquo;</a></li>
+            <li class="btn"><a href="/news/?page={{ articles.next_page_number }}">&raquo;</a></li>
           {% else %}
             <li class="btn disabled"><span>&raquo;</span></li>
           {% endif %}
         </ul>
       {% endif %}
     </div>
+  </div>
+</div>
 
 {% endblock %}

@@ -8,8 +8,12 @@ import '../rxjs-operators';
 @Component({
   selector: "main-hall",
   template: `
-<div class="container parchment">
-    <router-outlet></router-outlet>
+<div class="container-fluid">
+  <div class="parchment">
+    <div class="parchment-inner">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
   `
 })

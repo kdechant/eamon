@@ -2,44 +2,51 @@
   <h1>{{game.name}}</h1>
 
   <div class="row" *ngIf="game?.player && !game?.started">
-    <div class="intro col-sm-offset-1 col-sm-10 parchment">
-      <p [innerHtml]="game?.intro_text[game?.intro_index] | gamevars | nl2br"></p>
-      <p class="intro-next" *ngIf="game.intro_index < game.intro_text.length - 1">
-        <button class="btn btn-success" id="intro-next" (click)="intro_next()">Next</button>
-      </p>
-      <p class="intro-question" *ngIf="game.intro_question && game.intro_index === game.intro_text.length - 1">
-        {{game.intro_question}}
-        <input type="text" [(ngModel)]="game.intro_answer">
-      </p>
-      <div class="intro-confirm" *ngIf="game.intro_index === game.intro_text.length - 1">
-        <p><button class="btn btn-success" id="return" (click)="game.start()">Start Adventure</button></p>
+    <div class="intro col-sm-offset-1 col-sm-10">
+      <div class="parchment">
+        <div class="parchment-inner">
+          <p [innerHtml]="game?.intro_text[game?.intro_index] | gamevars | nl2br"></p>
+          <p class="intro-next" *ngIf="game.intro_index < game.intro_text.length - 1">
+            <button class="btn btn-success" id="intro-next" (click)="intro_next()">Next</button>
+          </p>
+          <p class="intro-question" *ngIf="game.intro_question && game.intro_index === game.intro_text.length - 1">
+            {{game.intro_question}}
+            <input type="text" [(ngModel)]="game.intro_answer">
+          </p>
+          <div class="intro-confirm" *ngIf="game.intro_index === game.intro_text.length - 1">
+            <p><button class="btn btn-success" id="return" (click)="game.start()">Start Adventure</button></p>
+          </div>
+        </div>
       </div>
     </div>
     </div>
 
   <div class="game row" *ngIf="game?.started && !game.selling">
-      <div class="command col-md-7 parchment" *ngIf="!game.selling">
-        <history [history]="game?.history"></history>
-        <div *ngIf="!game?.modal?.visible">
-          <command-prompt [game]="game"></command-prompt>
-          <div class="hints-command-list">
-            <how-to-play [game]="game"></how-to-play>
-            <hints [game]="game"></hints>
-            <command-list [game]="game"></command-list>
+      <div class="command col-md-7" *ngIf="!game.selling">
+        <div class="parchment">
+          <div class="parchment-inner">
+            <history [history]="game?.history"></history>
+            <div *ngIf="!game?.modal?.visible">
+              <command-prompt [game]="game"></command-prompt>
+              <div class="hints-command-list">
+                <how-to-play [game]="game"></how-to-play>
+                <hints [game]="game"></hints>
+                <command-list [game]="game"></command-list>
+              </div>
+            </div>
+
+          <div class="game-modal" *ngIf="game?.modal?.visible">
+            <p>{{game.modal?.current_question?.question}}</p>
+            <div class="modal-text" *ngIf="game.modal?.current_question?.type == 'text'">
+              <p><input type="text" [(ngModel)]="game.modal.current_question.answer"></p>
+              <p><button class="btn btn-success" id="return" (click)="game.modal.submit()">Go</button></p>
+            </div>
+            <div class="modal-multiple" *ngIf="game.modal?.current_question?.type == 'multiple_choice'">
+              <p><span *ngFor="let c of game?.modal?.current_question?.choices"><button class="btn btn-primary" (click)="game.modal.submit(c)">{{ c }}</button></span></p>
+            </div>
           </div>
         </div>
-
-      <div class="game-modal" *ngIf="game?.modal?.visible">
-        <p>{{game.modal?.current_question?.question}}</p>
-        <div class="modal-text" *ngIf="game.modal?.current_question?.type == 'text'">
-          <p><input type="text" [(ngModel)]="game.modal.current_question.answer"></p>
-          <p><button class="btn btn-success" id="return" (click)="game.modal.submit()">Go</button></p>
-        </div>
-        <div class="modal-multiple" *ngIf="game.modal?.current_question?.type == 'multiple_choice'">
-          <p><span *ngFor="let c of game?.modal?.current_question?.choices"><button class="btn btn-primary" (click)="game.modal.submit(c)">{{ c }}</button></span></p>
-        </div>
       </div>
-
     </div>
     <div class="status d-none d-md-block col-md-5">
       <status [game]="game"></status>
@@ -47,8 +54,12 @@
   </div>
 
   <div class="row" *ngIf="game.selling">
-    <div class="command col-sm-12 offset-md-1 col-md-10 parchment">
-      <sell-items [game]="game"></sell-items>
+    <div class="command col-sm-12 offset-md-1 col-md-10">
+      <div class="parchment">
+        <div class="parchment-inner">
+          <sell-items [game]="game"></sell-items>
+        </div>
+      </div>
     </div>
   </div>
 </div>

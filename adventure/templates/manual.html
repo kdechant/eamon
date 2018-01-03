@@ -5,13 +5,13 @@
 
 {% block content %}
 
-    <div class="container parchment wide">
+<div class="container">
+  <div class="parchment">
+    <div class="parchment-inner">
+
       <h2><img src="{% static "images/ravenmore/128/tome.png" %}"> Adventurer's Manual</h2>
 
       <p>Eamon is a combination of a text-based interactive fiction game (like Adventure, Zork, etc.) and a fantasy role-playing game. Players create a character, journey on various adventures, and interact with the game world using English-like commands. Players explore pre-mapped adventures, fighting vicious and often humorous foes, collecting loot, and locating keys, magic items, or other special objects which allow them to proceed on through the plot.</p>
-
-    </div>
-    <div class="container parchment">
 
       <h3>Basic Character Attributes</h3>
 
@@ -50,10 +50,6 @@
       </ul>
 
       <p>Many of the beings encountered on adventures, however, will have a pre-set friendliness factor and thus react the same regardless of your character's Charisma. A rat with a friendliness rating of 0% will never be a friend, be it with Joe Normal, Hedric the Horrible, or Lovable Linda; likewise, a fellow adventurer with a friendliness rating of 100% will always become a friend to your character.</p>
-
-      <p>&nbsp;</p>
-    </div>
-    <div class="container parchment">
 
       <h3>Weapon Types and Character Weapon Abilities</h3>
 
@@ -136,10 +132,6 @@
 
       <p>* A shield may be used in addition to armor, if the character is using a one-handed weapon. This means a character with plate armor and a shield would have protection from 6 hits, and would need an armor expertise of 65% to avoid the penalty.</p>
 
-      <p>&nbsp;</p>
-    </div>
-    <div class="container parchment">
-
       <h3>Combat</h3>
 
       <h4>Attacking an oppponent</h4>
@@ -162,10 +154,6 @@
       <p>The amount of damage a weapon does is determined by two factors: the weapon's damage "dice" and "sides." In traditional RPGs, these would indicate the number and type of dice the player would roll to calculate the damage. For example, if your character's weapon has a damage rating of 2d8, you would roll two 8-sided dice and add the total. In Eamon, however, it's a computer that does the rolling. So, you may see unusual dice like d5 or d7, and this is perfectly normal.</p>
 
       <p>Once the initial damage is calculated, it is then adjusted based on the defender's armor class. So, if a player wearing chain mail is hit for 5 points of damage, the chain mail absorbs 2 points, leaving a final damage of 3 hit points.</p>
-
-      <p>&nbsp;</p>
-    </div>
-    <div class="container parchment">
 
       <h3>Magic</h3>
 
@@ -213,8 +201,7 @@
 
       <p>Due to the chaotic nature of the world of Eamon, some adventures may have additional spells available. Look for magic inscriptions or spell books to learn these. Unlike the standard spells, these will not work in any other adventure besides the one where they're found!</p>
 
-      <p>&nbsp;</p>
-
     </div>
-
+  </div>
+</div>
 {% endblock %}

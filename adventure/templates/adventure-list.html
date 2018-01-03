@@ -5,7 +5,9 @@
 
 {% block content %}
 
-    <div class="container parchment">
+<div class="container">
+  <div class="parchment">
+    <div class="parchment-inner">
       <h2><img src="{% static "images/ravenmore/128/map.png" %}"> Adventures</h2>
       <p>Eamon contains many different adventures of many different styles. Some are fantasy or sci-fi, contain a quest or just hack-and-slash. Some are aimed at beginners and others are for veteran adventurers only. Choose your fate and perish (or profit)...</p>
       <div class="adventure-list margin-bottom-lg">
@@ -32,5 +34,7 @@
         {% endfor %}
       </div>
     </div>
+  </div>
+</div>
 
 {% endblock %}

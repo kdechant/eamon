@@ -26,14 +26,12 @@ a {
   cursor: pointer; }
 
 .parchment {
-  background-image: url(/static/images/parchment_alpha_vert.png);
-  background-size: 100% 100%;
-  padding: 40px 60px; }
-
-.parchment.wide {
-  background-image: url(/static/images/parchment_alpha.png);
-  background-size: 100% 100%;
-  padding: 40px 60px; }
+  border: 20px double beige;
+  border-image: url(/static/images/parchment/parchment-border.png) 20 20 20 20 round;
+  position: relative; }
+  .parchment .parchment-inner {
+    background: url(/static/images/parchment/center.png) top left repeat;
+    padding: 18px; }
 
 .page-border {
   background-image: url(/static/images/sf_dustywall02_border.jpg);
@@ -41,7 +39,7 @@ a {
   height: 48px; }
 
 .status {
-  margin: 25px 0; }
+  margin: 5px 0; }
 
 .status-widget {
   background-color: #dc9;
@@ -106,7 +104,7 @@ artifact-tile .artifact-tile-inner {
 .history {
   height: 480px;
   overflow-y: auto;
-  margin: 20px 5px 0; }
+  margin: 0 5px; }
   @media (min-height: 880px) {
     .history {
       height: 550px; } }
@@ -136,6 +134,9 @@ command-prompt .form-control {
 
 .game-modal .btn {
   margin-right: 12px; }
+
+.return-button-container {
+  margin-top: 10px; }
 
 .emphasis {
   font-weight: bold; }
