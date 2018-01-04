@@ -23,6 +23,7 @@ import {StatusComponent} from "./components/status.component";
 import {PlayerService} from "./services/player.service";
 import {AdventureService} from "./services/adventure.service";
 import {ShopService} from "./services/shop.service";
+import {UuidService} from "./services/uuid.service";
 import {routing} from './main-hall.routing';
 
 @NgModule({
@@ -44,7 +45,7 @@ import {routing} from './main-hall.routing';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],
-  providers: [PlayerService, AdventureService, ShopService]
+  providers: [PlayerService, AdventureService, ShopService, UuidService]
 })
 export class MainHallModule {
 }
