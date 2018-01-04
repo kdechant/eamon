@@ -228,3 +228,6 @@ command-prompt .form-control {
 
 .margin-bottom-lg {
   margin-bottom: 30px; }
+
+.footer a {
+  white-space: nowrap; }
