@@ -325,6 +325,40 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Prints the artifacts the monster is carrying
+   */
+  public printInventory(style: string = "normal"): void {
+    let game = Game.getInstance();
+    if (this.reaction === Monster.RX_FRIEND) {
+      game.history.write(this.name + " is carrying:");
+      if (this.inventory.length === 0) {
+        game.history.write(" - (nothing)", "no-space");
+      }
+      for (let a of this.inventory) {
+        let notes = "";
+        if (a.inventory_message !== "") {
+          notes = a.inventory_message;
+        } else {
+          if (a.is_lit) {
+            notes = "(lit)"
+          }
+          if (a.is_worn) {
+            notes = "(worn)"
+          }
+          if (a.id === this.weapon_id) {
+            notes = "(ready weapon)"
+          }
+        }
+        game.history.write(" - " + a.name + " " + notes, "no-space");
+      }
+    } else {
+      if (this.weapon) {
+        game.history.write(this.name + " is armed with: " + this.weapon.name);
+      }
+    }
+  }
+
+  /**
    * Finds an item in a monster's inventory by name
    * @param {string} artifact_name
    * @returns Artifact

@@ -177,6 +177,10 @@ export class LookCommand implements BaseCommand {
       if (m) {
         match = true;
         game.history.write(m.description);
+
+        // display monster's inventory and status
+        m.printInventory();
+        m.showHealth();
       }
 
       // error message if nothing matched

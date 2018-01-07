@@ -197,8 +197,7 @@ export class Artifact extends GameObject {
   }
 
   /**
-   * Prints the effects associated with the artifact. Used e.g., when revealing a disguised monster
-   * (in future, could also be used for reading READABLE type artifacts.)
+   * Prints the artifacts inside a container
    */
   public printContents(style: string = "normal"): void {
     let game = Game.getInstance();
