@@ -119,6 +119,7 @@ export var event_handlers = {
 
   "say": function(arg) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (game.artifacts.get(25).isHere() && arg === 'magic') {
       game.effects.print(5, "special");
       game.artifacts.get(8).moveToRoom();

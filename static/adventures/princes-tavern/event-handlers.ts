@@ -436,6 +436,7 @@ export var event_handlers = {
 
   "say": function(phrase: string) {
     let game = Game.getInstance();
+    phrase = phrase.toLowerCase();
     if ((phrase === 'gronk' || phrase === 'grunt') && game.monsters.get(6).isHere()) {
       game.effects.print(43);
     }

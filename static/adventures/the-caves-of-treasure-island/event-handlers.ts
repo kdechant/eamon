@@ -214,6 +214,7 @@ export var event_handlers = {
 
   "say": function(arg: string) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (game.player.room_id === 9 && arg === 'help' && !game.data["hermit_saves"]) {
       game.history.write("An old hermit appears and pulls you out in the nick of time!", "special");
       game.data["hermit_saves"] = true;

@@ -154,6 +154,7 @@ export var event_handlers = {
 
   "say": function(arg) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (arg === 'anderhauf' && game.artifacts.get(17).isHere()) {
       game.history.write("As you say the word, you feel the sword vibrate and... vanish!", "special");
       game.artifacts.get(17).destroy();

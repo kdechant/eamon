@@ -197,6 +197,7 @@ export var event_handlers = {
 
   "say": function(arg: string) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (arg === 'thor' && game.artifacts.get(24).isHere()) {
       game.effects.print(32);
       for (let i in game.monsters.visible) {

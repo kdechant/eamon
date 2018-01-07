@@ -108,6 +108,7 @@ export var event_handlers = {
 
   "say": function(arg: string) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (arg === 'pickle' && game.artifacts.get(19).isHere()) {
       game.history.write("  S H A Z A M ! !  ", "special");
       game.artifacts.get(19).destroy();

@@ -225,6 +225,7 @@ export var event_handlers = {
 
   "say": function(arg) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (arg === 'orowe' && game.player.room_id === 75) {
       if (game.data['befriended dragons'] && !game.data['ossoric dead'] && !game.monsters.get(27).isHere()) {
         game.effects.print(51);

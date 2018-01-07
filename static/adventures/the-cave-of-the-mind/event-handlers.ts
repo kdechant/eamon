@@ -129,6 +129,7 @@ export var event_handlers = {
 
   "say": function(arg: string) {
     let game = Game.getInstance();
+    arg = arg.toLowerCase();
     if (arg === 'trilder' && game.data["open box"]) {
       game.command_parser.run('power', false);
     }

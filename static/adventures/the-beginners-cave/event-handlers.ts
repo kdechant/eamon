@@ -102,10 +102,11 @@ export var event_handlers = {
     return true;
   },
 
-  "say": function(arg) {
+  "say": function(phrase) {
     let game = Game.getInstance();
+    phrase = phrase.toLowerCase();
     // 'say trollsfire' is the same as running the command 'trollsfire'
-    if (arg === 'trollsfire') {
+    if (phrase === 'trollsfire') {
       game.command_parser.run('trollsfire', false);
     }
   },
