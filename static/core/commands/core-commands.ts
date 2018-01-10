@@ -825,6 +825,11 @@ export class OpenCommand implements BaseCommand {
                 let key = game.artifacts.get(a.key_id);
                 game.history.write("You unlock it using the " + key.name + ".");
                 a.is_open = true;
+
+                if (a.type === Artifact.TYPE_CONTAINER) {
+                  a.printContents();
+                }
+
               } else {
                 throw new CommandException("It's locked and you don't have the key!");
               }
