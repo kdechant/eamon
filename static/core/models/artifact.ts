@@ -140,8 +140,8 @@ export class Artifact extends GameObject {
   }
 
   /**
-   * Removes an artifact from a container and
-   * places it in the room where the container is.
+   * Removes an artifact from a container and places it in the player's inventory
+   * or the room where the container is (depending on size of artifact)
    */
   public removeFromContainer(): void {
     let game = Game.getInstance();
@@ -149,15 +149,22 @@ export class Artifact extends GameObject {
     if (container) {
       this.container_id = null;
       if (container.room_id !== null) {
-        this.room_id = container.room_id;
         this.monster_id = null;
-        game.artifacts.updateVisible();
+        if (this.weight == 999 || this.weight === -999) {
+          // not something player can carry. put it in the room
+          this.room_id = container.room_id;
+        } else {
+          game.history.write(this.name + " taken.");
+          this.monster_id = 0;
+        }
       } else if (container.monster_id !== null) {
+        // removing something from a container being carried by a monster. put in monster's inventory
         this.monster_id = container.monster_id;
         this.room_id = null;
         game.monsters.get(this.monster_id).updateInventory();
       }
       game.artifacts.updateVisible();
+      game.player.updateInventory();
     } else {
       throw new CommandException("I couldn't find that container!");
     }
