@@ -9,6 +9,7 @@ import {event_handlers} from "adventure/event-handlers";
 import {
   TestBed, inject
 } from '@angular/core/testing';
+import {Artifact} from "../../core/models/artifact";
 
 describe("The Curse of the Hellsblade", function() {
 
@@ -50,11 +51,22 @@ describe("The Curse of the Hellsblade", function() {
         game.player.moveToRoom(73);
         game.command_parser.run("open chest");
         expect(game.artifacts.get(7).is_open).toBeTruthy("chest didn't open");
+        game.artifacts.get(16).moveToInventory();
+        game.command_parser.run("put jewels into chest");
 
-        game.artifacts.get(57).moveToRoom();
-        game.player.pickUp(game.artifacts.get(57));
+        game.artifacts.get(57).moveToInventory();
+        game.player.updateInventory();
         game.command_parser.run("wear gauntlets", false);
-        //expect(game.history.getLastOutput().text).toBe("The Hellsblade whines...");
+        expect(game.history.getLastOutput(2).text).toBe("The Hellsblade whines...");
+        game.command_parser.run("remove gauntlets", false);
+        expect(game.history.getLastOutput().text).toBe("The Hellsblade twitches eagerly!");
+
+        game.player.moveToRoom(53);
+        game.command_parser.run("open clam");
+        game.command_parser.run("put gauntlets into clam");  // what a weird idea...
+        expect(game.player.hasArtifact(57)).toBeTruthy("gauntlets shouldn't go into clam");
+        game.command_parser.run("remove pearl from clam");
+        expect(game.artifacts.get(17).type).toBe(Artifact.TYPE_TREASURE, "failed to change clam type");
 
         game.player.moveToRoom(64);
         game.artifacts.get(27).moveToRoom();
@@ -71,21 +83,24 @@ describe("The Curse of the Hellsblade", function() {
         game.command_parser.run("open box", false);
         expect(game.artifacts.get(55).is_open).toBeFalsy("box should be locked");
 
-        game.artifacts.get(58).moveToRoom();
-        game.artifacts.updateVisible();
-        game.command_parser.run("get key");
+        game.artifacts.get(58).moveToInventory();
+        game.player.updateInventory();
         game.command_parser.run("open box");
-        console.log(game.history)
         expect(game.artifacts.get(55).is_open).toBeTruthy("box didn't open");
 
         game.command_parser.run("remove scabbard from box");
         game.command_parser.run("get scabbard");
+        game.command_parser.run("put gauntlets into scabbard"); // shouldn't work
+        expect(game.player.hasArtifact(57)).toBeTruthy("gauntlets shouldn't go into scabbard");
+        game.command_parser.run("put hellsblade into scabbard");
+
         game.command_parser.run("put hellsblade into scabbard");
         game.command_parser.run("put scabbard into box");
         game.command_parser.run("give gold key to guardian");
         expect(game.data['hb safe']).toBeTruthy("failed to set the safe flag");
         expect(game.artifacts.get(71).room_id).toBe(64, "door didn't appear");
 
+        console.log(game.history);
       }
     );
   }));

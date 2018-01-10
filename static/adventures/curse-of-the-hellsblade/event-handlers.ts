@@ -17,7 +17,6 @@ export var event_handlers = {
     // make the Hellsblade the ready weapon
     game.player.ready(game.artifacts.get(25));
 
-    game.artifacts.get(25).seen = true;
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -58,6 +57,10 @@ export var event_handlers = {
       game.effects.print(20);
       game.data['hb safe'] = true;
       door.moveToRoom();
+      let re = new RoomExit();
+      re.direction = 'n';
+      re.room_to = -999;
+      game.rooms.getRoomById(64).addExit(re);
     }
 
   },
@@ -67,9 +70,17 @@ export var event_handlers = {
     if (game.player.weapon_id === 25 && !game.player.isWearing(57) && game.monsters.visible.length > 0 && game.player.room_id !== 64) {
       game.delay(1);
       game.history.write("The Hellsblade whirls in your hand! You can't stop swinging!", "special2");
+      game.delay(1);
       let m = game.monsters.visible[game.diceRoll(1, game.monsters.visible.length) - 1]; // can choose friends
       game.player.attack(m);
       game.tick();
+    }
+
+    // hb starts in inventory, so show description manually
+    let hb = game.artifacts.get(25);
+    if (!hb.seen) {
+      game.history.write(hb.description);
+      hb.seen = true;
     }
 
   },
@@ -148,10 +159,17 @@ export var event_handlers = {
 
   "beforePut": function(arg: string, item: Artifact, container: Artifact) {
     let game = Game.getInstance();
+    // some items are containers because they have things inside, but you can't put anything into them
+    if (container.id === 17 || container.id === 30) {
+      game.history.write("You can't put anything into that.");
+      return false;
+    }
+    // anything other than hb into scabbard
     if (container.id === 56 && item.id !== 25) {
       game.history.write("It won't fit.");
       return false;
     }
+    // hb into anything but scabbard
     if (item.id === 25 && container.id !== 56) {
       game.history.write("It won't go!");
       return false;
@@ -177,8 +195,28 @@ export var event_handlers = {
     return true;
   },
 
-  "afterRemove": function(arg: string, artifact: Artifact) {
+  "afterRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
     let game = Game.getInstance();
+    // hb from scabbard
+    if (container && container.id == 56 && artifact.id === 25) {
+      game.effects.print(19);
+      game.player.ready(artifact);
+      game.data['hb safe'] = false;
+    }
+    // scabbard from box
+    if (container && container.id == 55 && artifact.id === 56) {
+      game.data['hb safe'] = false;
+    }
+    // clam and lump quit being containers
+    if (container && container.id == 17 || container.id == 30) {
+      container.type = Artifact.TYPE_TREASURE;
+    }
+    return true;
+  },
+
+  "afterRemoveWearable": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    // take off gauntlets
     if (artifact && artifact.id === 57 && game.player.hasArtifact(25)) {
       game.history.write("The Hellsblade twitches eagerly!", "special2");
     }
@@ -250,6 +288,7 @@ export var event_handlers = {
       game.die(false);
       return false;
     }
+    return true; // this permits normal exit logic
   }
 
 }; // end event handlers

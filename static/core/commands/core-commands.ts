@@ -326,7 +326,7 @@ export class RemoveCommand implements BaseCommand {
           if (container.is_open) {
             let item: Artifact = container.getContainedArtifact(item_name);
             if (item) {
-              if (game.triggerEvent("beforeRemove", arg, item)) {
+              if (game.triggerEvent("beforeRemoveFromContainer", arg, item, container)) {
                 game.history.write(item.name + " removed from " + container.name + ".");
                 match = true;
                 item.removeFromContainer();
@@ -334,7 +334,7 @@ export class RemoveCommand implements BaseCommand {
                   game.history.write(item.description);
                   item.seen = true;
                 }
-                game.triggerEvent("afterRemove", arg, item);
+                game.triggerEvent("afterRemoveFromContainer", arg, item, container);
               }
             } else {
               throw new CommandException("There is no " + item_name + " inside the " + container_name + "!");
@@ -354,8 +354,11 @@ export class RemoveCommand implements BaseCommand {
       let artifact = game.player.findInInventory(arg);
       if (artifact) {
         if (artifact.is_worn) {
-          game.player.remove(artifact);
-          game.history.write("You take off the " + artifact.name + ".");
+          if (game.triggerEvent("beforeRemoveWearable", arg, artifact)) {
+            game.player.remove(artifact);
+            game.history.write("You take off the " + artifact.name + ".");
+            game.triggerEvent("afterRemoveWearable", arg, artifact);
+          }
         } else {
           throw new CommandException("You aren't wearing it!");
         }

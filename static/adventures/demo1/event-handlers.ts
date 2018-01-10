@@ -78,7 +78,7 @@ export var event_handlers = {
     }
   },
 
-  "beforeRemove": function(arg: string, artifact: Artifact) {
+  "beforeRemove": function(arg: string, artifact: Artifact, container: Artifact) {
     let game = Game.getInstance();
     // special message when the player tries to pick up the throne
     if (artifact) {
@@ -94,7 +94,7 @@ export var event_handlers = {
     return true;
   },
 
-  "afterRemove": function(arg: string, artifact: Artifact) {
+  "afterRemove": function(arg: string, artifact: Artifact, container: Artifact) {
     let game = Game.getInstance();
     // special message when the player finds the treasure
     if (artifact && artifact.id === 3) {
