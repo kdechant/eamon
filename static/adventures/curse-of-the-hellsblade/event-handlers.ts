@@ -13,6 +13,7 @@ export var event_handlers = {
     game.data["open coffin"] = false;
     game.data["guardian protects box"] = true;
     game.data["hb safe"] = false;
+    game.data['wizard spells'] = 5;
 
     // make the Hellsblade the ready weapon
     game.player.ready(game.artifacts.get(25));
@@ -133,6 +134,33 @@ export var event_handlers = {
       game.history.write("He refuses it!");
       return false;
     }
+    return true;
+  },
+
+  "monsterAction": function(monster: Monster) {
+    let game = Game.getInstance();
+
+    // wizard can cast spells
+    if (monster.id === 16 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
+      if (monster.damage > monster.hardiness * 0.4) {
+        // heal
+        game.history.write(monster.name + " casts a heal spell!");
+        let heal_amount = game.diceRoll(2, 6);
+        monster.heal(heal_amount);
+      } else {
+        // blast
+        let monster_target = monster.chooseTarget();
+        if (monster_target) {
+          let damage = game.diceRoll(2, 5);
+          game.history.write(monster.name + " casts a blast spell at " + monster_target.name + "!");
+          game.history.write("--a direct hit!", "success");
+          monster_target.injure(damage, true);
+        }
+      }
+      game.data['wizard spells']--;
+      return false; // skip the default combat actions
+    }
+
     return true;
   },
 
