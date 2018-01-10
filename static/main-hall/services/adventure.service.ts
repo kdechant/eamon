@@ -34,9 +34,10 @@ export class AdventureService {
 
   private setupAdventureList(data: any): void {
     this.adventures = [];
-    for (let i in data) {
+    for (let d of data) {
+      d.authors = d.authors.join(' and ');
       let p = new Adventure();
-      p.init(data[i]);
+      p.init(d);
       this.adventures.push(p);
     }
   }
