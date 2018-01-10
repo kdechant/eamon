@@ -181,7 +181,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     if (item.id === 25 && container.id === 56) {
       game.history.write("The Hellsblade is contained, for now...", "special2");
-      container.inventory_message = " (with Hellsblade inside)";
+      container.inventory_message = "with Hellsblade inside";
     }
   },
 
