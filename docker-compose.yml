@@ -17,8 +17,8 @@ services:
 
   django:
     # Docker hack to wait until MySQL is up, then run stuff.
-    command: bash -c "while ! nc -w 1 -z db 3306; do sleep 0.1; done; python ./manage.py migrate; while :; do python ./manage.py runserver 0.0.0.0:8000; sleep 1; done"
-    image: python:3.6.1
+    command: bash -c "pip -V; while ! nc -w 1 -z db 3306; do sleep 0.1; done; python ./manage.py migrate; while :; do python ./manage.py runserver 0.0.0.0:8000; sleep 1; done"
+    image: python:3.6.4
     build: .
     volumes:
       - .:/app
@@ -32,8 +32,8 @@ services:
       webuser
 
   node:
-    command: bash -c "npm install; npm run watch-all"
-    image: node:latest
+    command: bash -c "npm install; npm rebuild node-sass --force; npm run start-all"
+    image: node:8
     volumes:
       - .:/app
     depends_on:

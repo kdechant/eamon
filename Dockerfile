@@ -14,10 +14,12 @@ RUN apt-get install -y netcat python-dev libxml2-dev libxslt-dev libffi-dev libs
 ENV HOME_USER webuser
 ENV HOME_PASS password
 
-#RUN useradd -m -s /bin/bash ${HOME_USER} && \
-#    echo "${HOME_USER}:${HOME_PASS}"|chpasswd && \
-#    adduser ${HOME_USER} sudo && \
-#    echo ${HOME_USER}' ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# create user for the web server, if it doesn't exist
+RUN id -u ${HOME_USER} &>/dev/null || \
+    useradd -m -s /bin/bash ${HOME_USER} && \
+    echo "${HOME_USER}:${HOME_PASS}"|chpasswd && \
+    adduser ${HOME_USER} sudo && \
+    echo ${HOME_USER}' ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 # Copy the current directory contents into the container at /app
 ADD . /app
