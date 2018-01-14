@@ -332,13 +332,13 @@ export class RemoveCommand implements BaseCommand {
             let item: Artifact = container.getContainedArtifact(item_name);
             if (item) {
               if (game.triggerEvent("beforeRemoveFromContainer", arg, item, container)) {
-                game.history.write(item.name + " removed from " + container.name + ".");
                 match = true;
-                item.removeFromContainer();
                 if (!item.seen) {
                   game.history.write(item.description);
                   item.seen = true;
                 }
+                game.history.write(item.name + " removed from " + container.name + ".");
+                item.removeFromContainer();
                 game.triggerEvent("afterRemoveFromContainer", arg, item, container);
               }
             } else {
@@ -395,20 +395,16 @@ export class PutCommand implements BaseCommand {
       // catch user mischief
       let m: Monster = game.monsters.getLocalByName(item_name);
       if (m) {
-        throw new CommandException("I can't put " + item_name + " into something!");
+        throw new CommandException("I can't put " + m.name + " into something!");
       }
       m = game.monsters.getLocalByName(container_name);
       if (m) {
-        throw new CommandException("I can't put something into " + container_name + "!");
+        throw new CommandException("I can't put something into " + m.name + "!");
       }
 
       let item: Artifact = game.artifacts.getLocalByName(item_name);
       if (!item) {
         throw new CommandException("I see no " + item_name + " here!");
-      }
-      if (item.monster_id !== Monster.PLAYER) {
-        game.history.write("Taking it first...");
-        game.command_parser.run('get ' + item.name);
       }
       let container: Artifact = game.artifacts.getLocalByName(container_name);
       if (!container) {
@@ -417,6 +413,27 @@ export class PutCommand implements BaseCommand {
       // the "specialPut" event handler is used for logic when putting something into an artifact that
       // is not a typical container, e.g., putting lamp oil into a lamp
       if (game.triggerEvent('specialPut', arg, item, container)) {
+        // if it's a disguised monster, reveal it
+        if (item.type === Artifact.TYPE_DISGUISED_MONSTER) {
+          item.revealDisguisedMonster();
+          return;
+        }
+        if (container.type === Artifact.TYPE_DISGUISED_MONSTER) {
+          container.revealDisguisedMonster();
+          return;
+        }
+        // make sure it's something we can put into things
+        // (if you need to put larger items into containers for the game logic, use the "specialPut" event handler)
+        if (item.weight > 900) {
+          throw new CommandException("Don't be absurd.");
+        }
+        if (item.weight === -999 || item.type === Artifact.TYPE_BOUND_MONSTER) {
+          throw new CommandException("You can't do that.");
+        }
+        // check capacity of container
+        if (item.weight > container.getRemainingCapacity()) {
+          throw new CommandException("It won't fit!");
+        }
         if (container.type === Artifact.TYPE_CONTAINER) {
           if (container.is_open) {
             if (game.triggerEvent("beforePut", arg, item, container)) {

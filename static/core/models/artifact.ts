@@ -152,10 +152,9 @@ export class Artifact extends GameObject {
         this.monster_id = null;
         if (this.weight == 999 || this.weight === -999) {
           // not something player can carry. put it in the room
-          this.room_id = container.room_id;
+          this.moveToRoom();
         } else {
-          game.history.write(this.name + " taken.");
-          this.monster_id = 0;
+          this.moveToInventory();
         }
       } else if (container.monster_id !== null) {
         // removing something from a container being carried by a monster. put in monster's inventory
@@ -218,6 +217,21 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Calculates the remaining capacity of the container
+   */
+  public getRemainingCapacity(): number {
+    let game = Game.getInstance();
+    if (this.quantity === null) {
+      return 1000000; // arbitrarily high number
+    }
+    let capacity = this.quantity;
+    for (let c of this.contents) {
+      capacity -= c.weight;
+    }
+    return capacity;
+  }
+
+  /**
    * Returns the maximum damage a weapon can do.
    */
   public maxDamage(): number {
@@ -252,7 +266,7 @@ export class Artifact extends GameObject {
       }
     }
 
-    // the real logic for this is done in an event handler defined in the adventure.
+    // for items other than standard potions and food, the logic is done in an event handler defined in the adventure.
     game.triggerEvent("use", this.name, this);
 
     // reduce quantity/number of charges remaining
