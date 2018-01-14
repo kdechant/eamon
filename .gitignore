@@ -5,3 +5,5 @@
 **/__pycache__/
 /.idea/
 venv
+db/*
+eamon/local_settings.py
