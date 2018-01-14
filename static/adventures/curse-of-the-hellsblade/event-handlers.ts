@@ -137,6 +137,18 @@ export var event_handlers = {
     return true;
   },
 
+    "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
+      let game = Game.getInstance();
+      // prevent accidental dropping of the hellsblade
+      // also, prevent "weapon hurts user" which would kill you instantly :O
+      if (attacker.id === 0 && attacker.weapon.id === 25) {
+        game.history.write("-- fumble recovered!", "no-space");
+        return false;
+      }
+      return true;  // otherwise, use regular fumble logic
+    },
+
+
   "monsterAction": function(monster: Monster) {
     let game = Game.getInstance();
 
@@ -180,7 +192,10 @@ export var event_handlers = {
     if (artifact !== null) {
       if (artifact.id === 54 && !game.data["open coffin"]) {
         game.data["open coffin"] = true;
+        game.history.write("As soon as you pry open the lid of the coffin, a huge, scary demon jumps out at you!", "special");
         game.monsters.get(30).moveToRoom();
+        game.skip_battle_actions = true;
+        command.opened_something = true; // suppress other messages
       }
     }
   },
@@ -270,7 +285,7 @@ export var event_handlers = {
 
   "wear": function(arg: string, target: Artifact) {
     let game = Game.getInstance();
-    if (target.id === 57 && game.artifacts.get(25).isHere()) {
+    if (target && target.id === 57 && game.artifacts.get(25).isHere()) {
       game.history.write("The Hellsblade whines...", "special2");
     }
     return true;
@@ -289,14 +304,8 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 50) {
+    if (roll <= 90) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
@@ -325,5 +334,4 @@ function destroySlab() {
   let game = Game.getInstance();
   game.history.write("You chop at the slab with the pick. After a few minutes, it shatters!", "success");
   game.artifacts.get(63).destroy();
-  game.rooms.current_room.getExit('w').room_to = 62;
 }

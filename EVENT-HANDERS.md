@@ -285,6 +285,37 @@ Example:
         return true;
       },
 
+## Combat
+
+### Fumble
+
+This is called whenever a monster fumbles. You can change the fumble behavior, e.g., preventing cursed weapons from
+being dropped accidentally.
+
+Parameters:
+- attacker (Monster) - The monster doing the attacking. This is the one who fumbled.
+- defender (Monster) - The monster being attacked
+- fumble_roll (number) - A random number from 1-100 which was rolled by the combat routine, to determine the fumble type:
+
+1-40 = fumble recovered
+41-80 = weapon dropped
+81-85 = weapon hits user
+86-95 = weapon damaged
+96-99 = weapon broken (with potential to hurt user)
+100 = weapon broken, hurts user with extra damage
+
+Example:
+    
+      "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
+        let game = Game.getInstance();
+        // cannot drop a cursed weapon
+        if (attacker.id === 0 && attacker.weapon.name === 'hellsblade') {
+          game.history.write("-- fumble recovered!", "no-space");
+          return false;
+        }
+        return true;  // otherwise, use regular fumble logic
+      },
+
 ## Magic spells
 
 There are several events related to casting spells. These include the POWER spell which has no built-in functionality but relies entirely on event handlers.

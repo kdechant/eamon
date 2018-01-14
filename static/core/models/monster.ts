@@ -654,52 +654,53 @@ export class Monster extends GameObject {
         game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
         let fumble_roll = game.diceRoll(1, 100);
-        if (fumble_roll <= 40) {
+        if (game.triggerEvent('fumble', this, target, fumble_roll)) {
+          if (fumble_roll <= 40) {
 
-          game.history.write("-- fumble recovered!", "no-space");
+            game.history.write("-- fumble recovered!", "no-space");
 
-        } else if (fumble_roll <= 80) {
+          } else if (fumble_roll <= 80) {
 
-          game.history.write("-- weapon dropped!", "warning no-space");
-          this.drop(wpn);
+            game.history.write("-- weapon dropped!", "warning no-space");
+            this.drop(wpn);
 
-        } else if (fumble_roll <= 85) {
+          } else if (fumble_roll <= 85) {
 
-          // not broken, user just injured self
-          game.history.write("-- weapon hits user!", "danger no-space");
-          this.injure(game.diceRoll(wpn.dice, wpn.sides));
-
-        } else {
-          // damaged or broken
-
-          if (wpn.type === Artifact.TYPE_MAGIC_WEAPON) {
-
-            // magic weapons don't break or get damaged
-            game.history.write("-- sparks fly from " + wpn.name + "!", "warning no-space");
+            // not broken, user just injured self
+            game.history.write("-- weapon hits user!", "danger no-space");
+            this.injure(game.diceRoll(wpn.dice, wpn.sides));
 
           } else {
+            // damaged or broken
 
-            if (fumble_roll <= 95 && wpn.sides > 2) {
-              // weapon damaged - decrease its damage potential
-              game.history.write("-- weapon damaged!", "warning no-space");
-              wpn.sides -= 2;
+            if (wpn.type === Artifact.TYPE_MAGIC_WEAPON) {
+
+              // magic weapons don't break or get damaged
+              game.history.write("-- sparks fly from " + wpn.name + "!", "warning no-space");
+
             } else {
-              game.history.write("-- weapon broken!", "danger no-space");
-              this.weapon_id = null;
-              this.weapon = null;
-              wpn.destroy();
-              this.courage /= 2;
-              // broken weapon can hurt user
-              if (game.diceRoll(1, 10) > 5) {
-                game.history.write("-- broken weapon hurts user!", "danger no-space");
-                let dice = wpn.dice;
-                if (fumble_roll === 100) dice++;  // worst case - extra damage
-                this.injure(game.diceRoll(dice, wpn.sides));
+
+              if (fumble_roll <= 95 && wpn.sides > 2) {
+                // weapon damaged - decrease its damage potential
+                game.history.write("-- weapon damaged!", "warning no-space");
+                wpn.sides -= 2;
+              } else {
+                game.history.write("-- weapon broken!", "danger no-space");
+                this.weapon_id = null;
+                this.weapon = null;
+                wpn.destroy();
+                this.courage /= 2;
+                // broken weapon can hurt user
+                if (game.diceRoll(1, 10) > 5) {
+                  game.history.write("-- broken weapon hurts user!", "danger no-space");
+                  let dice = wpn.dice;
+                  if (fumble_roll === 100) dice++;  // worst case - extra damage
+                  this.injure(game.diceRoll(dice, wpn.sides));
+                }
               }
             }
           }
         }
-
       }
 
     }
