@@ -64,7 +64,7 @@ export class MoveCommand implements BaseCommand {
     if (exit.door_id) {
       let door = game.artifacts.get(exit.door_id);
 
-      // sometimes doors get moved or blown up, so check if the door is still there before runn
+      // sometimes doors get moved or blown up, so check if the door is still there
       if (door.room_id === room_from.id) {
 
         // if it's a hidden or secret door, the exit is blocked even if the door's "open" flag is set.
@@ -102,10 +102,15 @@ export class MoveCommand implements BaseCommand {
         return;
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
-        game.player.moveToRoom(room_to.id, true);
+        if (room_to) {
+          game.player.moveToRoom(room_to.id, true);
 
-        game.triggerEvent("afterMove", arg, room_from, room_to);
-
+          game.triggerEvent("afterMove", arg, room_from, room_to);
+        } else {
+          // oops, broken connection
+          console.error("Tried to move to non-existent room #" + exit.room_to);
+          game.history.write("You can't go that way!");
+        }
       }
     }
   }
