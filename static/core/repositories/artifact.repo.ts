@@ -14,9 +14,16 @@ export class ArtifactRepository {
   all: Artifact[] = [];
 
   /**
-   * An array of visible Artifact objects
+   * An array of visible Artifact objects in the current room (does not include embedded) - used for the list in the
+   * status box
    */
   visible: Artifact[] = [];
+
+  /**
+   * An array of Artifact objects that are in the current room (includes embedded) - this should include things the
+   * player can interact with.
+   */
+  inRoom: Artifact[] = [];
 
   /**
    * The count of artifacts before player weapons/armor are added
@@ -136,12 +143,17 @@ export class ArtifactRepository {
    * @return Artifact[]
    */
   updateVisible() {
-    let artifacts: Artifact[] = [];
-    for (let a of this.all.filter(a => a.room_id === Game.getInstance().rooms.current_room.id && !a.embedded)) {
+    let visible: Artifact[] = [];
+    let inRoom: Artifact[] = [];
+    for (let a of this.all.filter(a => a.room_id === Game.getInstance().rooms.current_room.id)) {
       a.updateContents();
-      artifacts.push(a);
+      inRoom.push(a);
+      if (!a.embedded) {
+        visible.push(a);
+      }
     }
-    this.visible = artifacts;
+    this.visible = visible;
+    this.inRoom = inRoom;
   }
 
   /**

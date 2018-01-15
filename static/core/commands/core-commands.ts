@@ -242,11 +242,10 @@ export class GetCommand implements BaseCommand {
     arg = arg.toLowerCase();
     let match = false;
 
-    for (let i in game.artifacts.visible) {
-      let a = game.artifacts.visible[i];
+    for (let a of game.artifacts.inRoom) {
       if (a.match(arg) || arg === "all") {
         match = true;
-        if (arg === "all" && a.get_all === false) {
+        if (arg === "all" && (a.get_all === false || a.embedded)) {
           continue;
         }
 
@@ -256,6 +255,11 @@ export class GetCommand implements BaseCommand {
           if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
             a.revealDisguisedMonster();
             continue;
+          }
+
+          // if it's an embedded artifact, reveal it
+          if (a.embedded) {
+            a.reveal();
           }
 
           // weights of >900 and -999 indicate items that can't be gotten.
@@ -696,6 +700,13 @@ export class AttackCommand implements BaseCommand {
       // attacking an artifact
 
       if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
+
+        // if it's a disguised monster, reveal it
+        if (artifact_target.type === Artifact.TYPE_DISGUISED_MONSTER) {
+          artifact_target.revealDisguisedMonster();
+          return;
+        }
+
         let damage_done = artifact_target.injure(game.player.rollAttackDamage());
         if (damage_done === 0) {
           game.history.write("Nothing happens.");
