@@ -10,9 +10,7 @@ export var event_handlers = {
   "start": function(arg: string) {
     let game = Game.getInstance();
 
-    // set up game data
-    game.data["boulder_destroyed"] = false;
-
+    game.data['pass guard'] = false;
   },
 
   // the 'read' event handler should return true if the handler did something,
@@ -45,10 +43,10 @@ export var event_handlers = {
         if (game.artifacts.get(18).room_id !== game.rooms.current_room.id) {
           game.history.write("That would be a waste.");
         } else {
-          game.history.write("  B O O M ! !  ", 'danger');
-          game.data["boulder_destroyed"] = true;
+          game.history.write(" * * * B O O M * * * ", 'special2');
           artifact.destroy();
-          game.history.write("The explosion opened up the entrance!");
+          game.artifacts.get(18).destroy();
+          game.history.write("The explosion opened up the entrance to the mine shaft!");
         }
         break;
     }
@@ -78,7 +76,8 @@ export var event_handlers = {
       case -12:
 
         // the guard won't let you on the boat without a pass
-        if (game.player.findInInventory('pass')) {
+        if (game.player.findInInventory('pass') || game.data['pass guard']) {
+          game.history.write("You show the pass to the guard. He stands aside and lets you board one of the boats.");
           exit.room_to = 12;
           return true;
         } else {
@@ -100,33 +99,20 @@ export var event_handlers = {
         game.die();
         return false;
 
-      case 26:
-
-        // the boulder at the mine entrance
-        if (game.rooms.current_room.id === 6) {
-          if (!game.data['boulder_destroyed']) {
-            game.history.write("The giant boulder blocks your way.");
-            return false;
-          } else {
-            game.history.write("You descend into the mine.");
-          }
-        }
-        break;
-
     }
     return true;
   },
 
-  "endTurn": function(): void {
+  "endTurn2": function(): void {
     let game = Game.getInstance();
 
     if (game.rooms.current_room.id === 25) {
       // end game
-      if (game.player.findInInventory("Princess Julene's body")) {
+      if (game.player.hasArtifact(30)) {
         // carrying princess' body
         game.effects.print(2);
         game.exit();
-      } else {
+      } else if (game.monsters.get(11).isHere()) {
         // princess is alive
         game.effects.print(3);
         game.player.gold += 1000;
@@ -142,6 +128,7 @@ export var event_handlers = {
     if (monster.id === 17 && artifact.id === 16) {
       // give the pass to the guard
       game.history.write("You may pass now.");
+      game.data['pass guard'] = true;
     } else if (monster.id === 10 && artifact.id === 11) {
       // give the doughnut to the dragon
       game.history.write("The dragon ate the doughnut!");
@@ -179,6 +166,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands
