@@ -510,6 +510,7 @@ export class Game {
   public die(show_health = true) {
     this.player.damage = this.player.hardiness;
     if (show_health) this.player.showHealth();
+    this.triggerEvent("death", this.player);
     this.active = false;
     this.died = true;
 
