@@ -81,7 +81,7 @@ export var event_handlers = {
         game.monsters.get(44).reaction = Monster.RX_NEUTRAL;
       }
     } else if (phrase === 'vincere in nominis mithrae') {
-      if (game.player.hasArtifact(4) && game.player.hasArtifact(5) && game.player.hasArtifact(6) {
+      if (game.player.hasArtifact(4) && game.player.hasArtifact(5) && game.player.hasArtifact(6)) {
         game.effects.print(2);
         game.monsters.get(44).destroy();
       }
