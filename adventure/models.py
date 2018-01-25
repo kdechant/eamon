@@ -140,7 +140,7 @@ class Artifact(models.Model):
         help_text="If a bound monster, the ID of a monster that prevents the player from freeing it"
     )
     weight = models.IntegerField(default=0,
-        help_text="Weight in Gronds. Enter -999 for something that can't be picked up, or 999 to show the message"
+        help_text="Weight in Gronds. Enter -999 for something that can't be picked up, or 999 to show the message "
                   "'Don't be absurd' if the player tries to pick it up.")
 
     value = models.IntegerField(default=0)
@@ -150,8 +150,11 @@ class Artifact(models.Model):
     key_id = models.IntegerField(null=True,blank=True,
         help_text="If a container, door, or bound monster, the artifact ID of the key that opens it"
     )
+    linked_door_id = models.IntegerField(null=True, blank=True,
+        help_text="To make a two-sided door, enter the artifact ID of the other side of the door. They will open and close as a set."
+    )
     hardiness = models.IntegerField(null=True,blank=True,
-        help_text="If a door or container that must be smashed open, how much damage does it take to open it?")
+        help_text="If a door or container that can be smashed open, how much damage does it take to open it?")
     weapon_type = models.IntegerField(null=True,blank=True,choices=WEAPON_TYPES)
     hands = models.IntegerField(default=1,choices=(
       (1, 'One-handed'),
@@ -165,7 +168,7 @@ class Artifact(models.Model):
         help_text="(Armor only) How many hits does this armor protect against?")
     armor_type = models.IntegerField(null=True,blank=True,choices=ARMOR_TYPES)
     armor_penalty = models.IntegerField(default=0,null=True,
-        help_text="(Armor only) How much does this reduce the player's chance to hit, if they don't have enough"
+        help_text="(Armor only) How much does this reduce the player's chance to hit, if they don't have enough "
                   "armor expertise?")
     get_all = models.BooleanField(default=True,
         help_text="Will the 'get all' command pick up this item?"
@@ -173,7 +176,7 @@ class Artifact(models.Model):
     embedded = models.BooleanField(default=False,
         help_text="Check this box to make the item not appear in the artifacts list until the player looks at it.")
     hidden = models.BooleanField(default=False,
-        help_text="(For secret doors only) Check this box for embedded secret doors, so that the player can't"
+        help_text="(For secret doors only) Check this box for embedded secret doors, so that the player can't "
                   "pass through them before finding them.")
     quantity = models.IntegerField(null=True,blank=True,
         help_text="Drinks or bites, fuel for light source, etc."
@@ -255,6 +258,10 @@ class Monster(models.Model):
     courage = models.IntegerField(default=100)
     pursues = models.BooleanField(default=True,  help_text="Will the monster pursue a fleeing player?")
     room_id = models.IntegerField(null=True, blank=True)
+    container_id = models.IntegerField(null=True, blank=True,
+        help_text="Container artifact ID where this monster starts. The monster will enter the room as soon as the "
+                  "container is opened. e.g., a vampire who awakes when you open his coffin"
+    )
     gender = models.CharField(max_length=6, choices=(
         ('male', 'Male'),
         ('female', 'Female'),

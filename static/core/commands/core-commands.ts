@@ -857,7 +857,7 @@ export class OpenCommand implements BaseCommand {
               if (game.player.hasArtifact(a.key_id)) {
                 let key = game.artifacts.get(a.key_id);
                 game.history.write("You unlock it using the " + key.name + ".");
-                a.is_open = true;
+                a.open();
 
                 if (a.type === Artifact.TYPE_CONTAINER) {
                   a.printContents();
@@ -868,7 +868,7 @@ export class OpenCommand implements BaseCommand {
               }
             } else {
               game.history.write(a.name + " opened.");
-              a.is_open = true;
+              a.open();
 
               if (a.type === Artifact.TYPE_CONTAINER) {
                 a.printContents();
@@ -934,7 +934,7 @@ export class CloseCommand implements BaseCommand {
           } else if (a.is_broken) {
             throw new CommandException("You broke it.");
           } else {
-            a.is_open = false;
+            a.close();
             game.history.write(a.name + " closed.");
             this.closed_something = true;
           }

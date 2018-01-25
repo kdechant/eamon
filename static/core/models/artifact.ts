@@ -35,6 +35,7 @@ export class Artifact extends GameObject {
   monster_id: number; // if in inventory, who is carrying it
   container_id: number; // if inside a container, the artifact id of the container
   key_id: number; // if a container or door, the artifact id of the key that opens it
+  linked_door_id: number; // if a door, the artifact id of the other side of the door. The artifact with that ID will open/close when this one does.
   guard_id: number; // if a bound monster, the monster id of the monster guarding it
   weight: number;
   value: number;
@@ -295,6 +296,38 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Opens a door or container
+   */
+  public open() {
+    this.is_open = true;
+
+    // some doors have two sides, represented as two artifacts in different rooms. open the "other side" too
+    if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
+      let linked_door = Game.getInstance().artifacts.get(this.linked_door_id);
+      if (linked_door) {
+        linked_door.reveal(); // for 2-sided secret doors
+        linked_door.is_open = true;
+      }
+    }
+  }
+
+  /**
+   * Opens a door or container
+   */
+  public close() {
+    this.is_open = false;
+
+    // some doors have two sides, represented as two artifacts in different rooms. close the "other side" too
+    if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
+      let linked_door = Game.getInstance().artifacts.get(this.linked_door_id);
+      if (linked_door) {
+        linked_door.is_open = false;
+      }
+    }
+
+  }
+
+  /**
    * Reveals an embedded artifact
    */
   public reveal(): void {
@@ -304,12 +337,23 @@ export class Artifact extends GameObject {
     }
     this.embedded = false;
     this.hidden = false; // display
-    if (!this.seen) {
+    if (!this.seen && this.isHere()) {
       // yes, it's possible for embedded artifacts to already have been seen.
       // this is used as a trick by authors to do special effects.
       game.history.write(this.description);
     }
     this.seen = true; // description will be shown here. don't show it again in game clock tick.
+
+    // some doors have two sides, represented as two artifacts in different rooms. break open the "other side" too
+    if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
+      let linked_door = game.artifacts.get(this.linked_door_id);
+      if (linked_door) {
+        // don't call reveal() here or it will cause an infinite loop
+        linked_door.embedded = false;
+        linked_door.hidden = false;
+      }
+    }
+
     game.artifacts.updateVisible();
     if (this.type === Artifact.TYPE_CONTAINER && this.is_open) {
       this.printContents();
@@ -381,6 +425,16 @@ export class Artifact extends GameObject {
             this.destroy();
           } else {
             this.is_open = true;
+
+            // some doors have two sides, represented as two artifacts in different rooms. break open the "other side" too
+            if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
+              let linked_door = game.artifacts.get(this.linked_door_id);
+              if (linked_door) {
+                linked_door.reveal();
+                linked_door.is_open = true;
+                linked_door.is_broken = true;
+              }
+            }
           }
         }
       } else {
