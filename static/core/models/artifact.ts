@@ -209,11 +209,21 @@ export class Artifact extends GameObject {
   public printContents(style: string = "normal"): void {
     let game = Game.getInstance();
     game.history.write("It contains:");
-    if (this.contents.length === 0) {
+
+    // find monsters inside the container
+    let monsters = game.monsters.all.filter(x => x.container_id === this.id);
+    if (this.contents.length === 0 && monsters.length === 0) {
       game.history.write(" - (nothing)", "no-space");
     }
-    for (let i in this.contents) {
-      game.history.write(" - " + this.contents[i].name, "no-space");
+    // monsters get moved into the room automatically
+    // (the monster-in-container ability is only meant for surprises, e.g., the vampire who awakens when you open his coffin)
+    for (let m of monsters) {
+      game.history.write(" - " + m.name, "no-space");
+      m.moveToRoom();
+    }
+    // artifacts stay in the container and just get listed
+    for (let a of this.contents) {
+      game.history.write(" - " + a.name, "no-space");
     }
   }
 

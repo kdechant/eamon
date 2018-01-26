@@ -50,6 +50,7 @@ export class Monster extends GameObject {
   // data properties for all monsters
   // don't use default values here because they won't be overwritten when loading the data object.
   room_id: number;
+  container_id: number;
   gender: string;
   hardiness: number;
   agility: number;
