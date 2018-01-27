@@ -13,7 +13,25 @@ export var event_handlers = {
     game.data['vrock appeared'] = false;
     game.data['balor appeared'] = false;
     game.data['bridge'] = false;
+    game.data['wizard spells'] = 3;
+    game.data['lammasu spells'] = 3;
 
+  },
+
+  "death": function(monster: Monster) {
+    let game = Game.getInstance();
+    // balor
+    if (monster.id === 30) {
+      game.history.write("As the demon dies, its body explodes, destroying its weapons and blasting you with a powerful jolt of fire!", "special2");
+      let rl = game.diceRoll(1, 6);
+      game.player.injure(rl, true);
+      for (let m of game.monsters.visible) {
+        if (m.id !== 30) {
+          let rl = game.diceRoll(1, 6);
+          m.injure(rl);
+        }
+      }
+    }
   },
 
   "endTurn": function() {
@@ -29,14 +47,14 @@ export var event_handlers = {
       }
       if (game.player.room_id <= 63 && !game.data['vrock appeared']) {
         if (rn < 40) {
-          game.history.write("You feel a wave of heat coming from the dread idol.", "warning");
+          game.history.write("You feel a wave of heat coming from the dread idol.", "special2");
           game.monsters.get(29).moveToRoom();
           game.data['vrock appeared'] = true;
         }
       } else if (game.player.room_id <= 28 && !game.data['balor appeared']) {
         // balor always appears after vrock
         if (rn < 35) {
-          game.history.write("A feeling of approaching evil sends shivers down your spine as an icy breeze suddenly manifests itself.", "warning");
+          game.history.write("A feeling of approaching evil sends shivers down your spine as an icy breeze suddenly manifests itself.", "special2");
           game.monsters.get(30).moveToRoom();
           game.data['balor appeared'] = true;
         }
@@ -77,7 +95,47 @@ export var event_handlers = {
       let rnd = game.diceRoll(1, 20) + 5;
       if (rnd > game.player.agility) {
         game.history.write("When you touched the idol, a bolt of lightning from the ceiling hits you.", "special");
-        game.player.injure(Math.max(2, Math.floor((game.player.hardiness - game.player.damage) / 3)));
+        game.player.injure(Math.max(2, Math.floor((game.player.hardiness - game.player.damage) / 3)), true);
+      }
+    }
+  },
+
+  "monsterAction": function(monster: Monster) {
+    let game = Game.getInstance();
+
+    // wizard can cast blast
+    if (monster.id === 13 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
+      // blast
+      let monster_target = monster.chooseTarget();
+      if (monster_target) {
+        let damage = game.diceRoll(2, 5);
+        game.history.write(monster.name + " casts a blast spell at " + monster_target.name + "!");
+        game.history.write("--a direct hit!", "success");
+        monster_target.injure(damage, true);
+        game.data['wizard spells']--;
+        return false; // skip the default combat actions
+      }
+    }
+    // lammasu can cast heal
+    if (monster.id === 15 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
+      if (monster.damage > monster.hardiness * 0.4) {
+        game.history.write(monster.name + " casts a heal spell!");
+        let heal_amount = game.diceRoll(2, 6);
+        monster.heal(heal_amount);
+        game.data['lammasu spells']--;
+        return false; // skip the default combat actions
+      }
+    }
+    return true;
+  },
+
+  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+    let game = Game.getInstance();
+    if (artifact !== null) {
+      // rovnart's tomb
+      if (artifact.id === 63 && !game.effects.get(1).seen) {
+        game.effects.print(1);
+        game.player.charisma -= 2;
       }
     }
   },
@@ -86,7 +144,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     // rubies / statue
     if (item.id === 14 && container.id === 71) {
-      game.history.write("You put the rubies into the statue's scepter and you hear hidden gears grinding.");
+      game.history.write("You put the rubies into the statue's scepter and you hear hidden gears grinding. The south wall swings open!");
       container.is_open = true;
       return false;   // skips the rest of the "put" logic
     }
@@ -97,7 +155,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     // book
     if (artifact && artifact.id === 10) {
-      game.history.write("After reading the book you understand your magic spells better, thus making it easier to cast them. However the book evaporates into smoke.", "special");
+      game.history.write("After reading the book you understand your magic spells better, thus making it easier to cast them. When you finish reading, the book evaporates into smoke.", "special");
       for (let spell_name of ['blast', 'heal', 'speed', 'power']) {
         if (game.player.spell_abilities_original[spell_name]) { // only improves spells you already know
           game.player.spell_abilities[spell_name] += 5;
@@ -114,7 +172,7 @@ export var event_handlers = {
     phrase = phrase.toLowerCase();
 
     if (phrase === 'morgar' && !game.data['bridge'] && game.player.room_id === 64 && game.player.hasArtifact(1)) {
-      game.history.write("A mist appears over the chasm and then parts to reveal a crystal bridge spanning the gorge.", "special");
+      game.effects.print(4);
       game.data['bridge'] = true;
     }
   },
@@ -148,13 +206,14 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     if (game.player.room_id == 64 && !game.data['bridge']) {
+      game.effects.print(4);
       game.data['bridge'] = true;
     } else {
 
       // resurrection
       for (let a of game.artifacts.visible) {
         if (a.type === Artifact.TYPE_DEAD_BODY) {
-          let monster_id = a.id - game.dead_body_id;
+          let monster_id = a.id - game.dead_body_id + 1;
           let monster = game.monsters.get(monster_id);
           if (monster) {
             monster.damage = 0;
@@ -180,6 +239,24 @@ export var event_handlers = {
       }
     }
   },
+
+  "exit": function() {
+    let game = Game.getInstance();
+    if (game.player.hasArtifact(2)) {
+      let value = game.player.charisma * 100;
+      game.history.write("Because you successfully recovered the gold idol, King Mithidas has knighted you and given you a land grant worth " + value + " gp!", "success");
+      game.player.gold += value;
+      game.player.charisma++;
+      game.history.write("The pride of your new title has increased your charisma!", "emphasis");
+    } else {
+      game.history.write("So you returned without completing your quest. You shall be branded as the coward you are until you do finish the mission.", "emphasis");
+      if (game.player.charisma > 1) {
+        game.player.charisma--;
+        game.history.write("The shame of failure has reduced your charisma.", "emphasis");
+      }
+    }
+    return true;
+  }
 
 }; // end event handlers
 
