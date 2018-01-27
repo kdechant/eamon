@@ -351,8 +351,8 @@ export class Artifact extends GameObject {
       // yes, it's possible for embedded artifacts to already have been seen.
       // this is used as a trick by authors to do special effects.
       game.history.write(this.description);
+      this.seen = true; // since we show the description here, don't show it again in game clock tick.
     }
-    this.seen = true; // description will be shown here. don't show it again in game clock tick.
 
     // some doors have two sides, represented as two artifacts in different rooms. break open the "other side" too
     if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {

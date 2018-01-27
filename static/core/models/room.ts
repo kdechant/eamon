@@ -112,4 +112,14 @@ export class Room extends Loadable {
   public addExit(exit: RoomExit): void {
     this.exits.push(exit);
   }
+
+  /**
+   * Determines whether a given word is in the room name or description
+   */
+  public textMatch(str: string): boolean {
+    str = str.toLowerCase();
+    let name = this.name.toLowerCase();
+    let desc = this.description.toLowerCase();
+    return (name.indexOf(str) !== -1 || desc.indexOf(str) !== -1);
+  }
 }

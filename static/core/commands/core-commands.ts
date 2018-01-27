@@ -832,9 +832,15 @@ export class OpenCommand implements BaseCommand {
   opened_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    let a = game.artifacts.getLocalByName(arg);
-    if (a !== null) {
-      if (game.triggerEvent("beforeOpen", arg, a, this)) {
+    let a: Artifact = game.artifacts.getLocalByName(arg, false);
+    if (game.triggerEvent("beforeOpen", arg, a, this)) {
+      if (a !== null) {
+        // don't reveal in getLocalByName above because we want to know if we revealed something.
+        let revealed_something = false;
+        if (a.embedded) {
+          a.reveal();
+          revealed_something = true;
+        }
         if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
           // if it's a disguised monster, reveal it
 
@@ -844,6 +850,7 @@ export class OpenCommand implements BaseCommand {
         } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
           // normal container or door/gate
 
+          this.opened_something = true;
           if (!a.is_open) {
             // not open. try to open it.
             if (a.key_id === -1) {
@@ -861,7 +868,7 @@ export class OpenCommand implements BaseCommand {
                 }
 
               } else {
-                throw new CommandException("It's locked and you don't have the key!");
+                game.history.write("It's locked and you don't have the key!");
               }
             } else {
               game.history.write(a.name + " opened.");
@@ -872,33 +879,40 @@ export class OpenCommand implements BaseCommand {
               }
 
             }
-            this.opened_something = true;
           } else {
-            throw new CommandException("It's already open!");
+            if (!revealed_something) {
+              game.history.write("It's already open!");
+            }
           }
         } else if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
           if (!a.is_open) {
             game.history.write(a.name + " opened.");
             a.is_open = true;
-            this.opened_something = true;
           } else {
             throw new CommandException("It's already open!");
           }
         }
 
-        // other effects are custom to the adventure
-        game.triggerEvent("open", arg, a, this);
+      }
 
-        // otherwise, nothing happens
-        if (!this.opened_something) {
-          if (arg === "door") {
+      // other effects are custom to the adventure
+      game.triggerEvent("open", arg, a, this);
+
+      // if we didn't find anything to open, show a message
+      if (!this.opened_something) {
+        if (game.rooms.current_room.textMatch(arg)) {
+          if (arg === 'door') {
             game.history.write("The door will open when you pass through it.");
           } else {
-            game.history.write("I don't know how to open that!");
+            game.history.write("That's not something I can open.");
           }
+        } else {
+          game.history.write("I don't see a " + arg + " here!");
         }
       }
     }
+    // if the beforeOpen event handler returned false, display nothing. that event handler should display a message
+    // explaining why something couldn't be opened.
   }
 }
 core_commands.push(new OpenCommand());
