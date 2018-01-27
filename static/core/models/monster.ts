@@ -130,18 +130,17 @@ export class Monster extends GameObject {
   /**
    * Monster flees out a random exit
    */
-  public chooseRandomExit(): Room {
+  public chooseRandomExit(): RoomExit {
     let game = Game.getInstance();
 
     // choose a random exit
     // exclude any locked/hidden exits and the game exit
-    let good_exits: RoomExit[] = game.rooms.current_room.exits.filter(x => x.room_to !== RoomExit.EXIT && x.isOpen());
+    let good_exits: RoomExit[] = game.rooms.current_room.exits.filter(x => x.room_to !== RoomExit.EXIT && x.room_to > 0 && x.isOpen());
 
     if (good_exits.length === 0) {
       return null;
     } else {
-      let random_exit = good_exits[Game.getInstance().diceRoll(1, good_exits.length) - 1];
-      return game.rooms.getRoomById(random_exit.room_to);
+      return good_exits[Game.getInstance().diceRoll(1, good_exits.length) - 1];
     }
   }
 
@@ -516,14 +515,14 @@ export class Monster extends GameObject {
 
       // check if the monster should flee
       if (!this.checkCourage()) {
-        let room_to = this.chooseRandomExit();
-        if (room_to) {
+        let exit = this.chooseRandomExit();
+        if (exit) {
           if (this.count > 1) {
-            game.history.write(this.count + " " + this.name + "s flee out an exit", "warning");
+            game.history.write(this.count + " " + this.name + "s flee to the " + exit.getFriendlyDirection() + ".", "warning");
           } else {
-            game.history.write(this.name + " flees out an exit", "warning");
+            game.history.write(this.name + " flees to the " + exit.getFriendlyDirection() + ".", "warning");
           }
-          this.moveToRoom(room_to.id);
+          this.moveToRoom(exit.room_to);
           return;
         }
         // if there are no valid exits, the monster has to stay and fight.

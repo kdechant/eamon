@@ -11,6 +11,19 @@ export class RoomExit extends Loadable {
   public open: number;
   public message: string;
 
+  private directions: { [key: string]: string; } = {
+    "n": "north",
+    "ne": "northeast",
+    "e": "east",
+    "se": "southeast",
+    "s": "south",
+    "sw": "southwest",
+    "w": "west",
+    "nw": "northwest",
+    "u": "up",
+    "d:": "down"
+  };
+
   /**
    * Check for locked exits.
    * @returns boolean
@@ -20,11 +33,18 @@ export class RoomExit extends Loadable {
   public isOpen(): boolean {
     if (this.door_id) {
       let door = Game.getInstance().artifacts.get(this.door_id);
-      return door.is_open;
+      return door.is_open && !door.hidden;
     } else {
       // no door
       return true;
     }
+  }
+
+  public getFriendlyDirection(): string {
+    if (this.directions.hasOwnProperty(this.direction)) {
+      return this.directions[this.direction];
+    }
+    return this.direction;
   }
 
 }

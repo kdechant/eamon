@@ -576,25 +576,22 @@ export class FleeCommand implements BaseCommand {
     }
 
     if (game.triggerEvent("flee") !== false) {
-      let room_to = game.player.chooseRandomExit();
-      if (!room_to) {
+      let exit = game.player.chooseRandomExit();
+      if (!exit) {
         throw new CommandException("There is nowhere to flee to!");
       }
       // if the player tried to flee a certain way, go that way instead
       // of using the random exit.
       if (arg !== "") {
-        game.history.write("Attempting to flee to the " + arg + "...");
         let exit = game.rooms.current_room.getExit(arg);
         if (exit === null) {
           throw new CommandException("You can't go that way!");
         } else if (!exit.isOpen()) {
           throw new CommandException("The way is blocked!");
-        } else {
-          room_to = game.rooms.getRoomById(exit.room_to);
         }
       }
 
-      game.player.moveToRoom(room_to.id);
+      game.player.moveToRoom(exit.room_to);
       game.skip_battle_actions = true;
 
     }
