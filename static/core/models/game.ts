@@ -359,6 +359,10 @@ export class Game {
       this.history.write("It's too dark to see anything.");
     } else {
       this.history.write(this.rooms.current_room.name);
+      if (Game.getInstance().data['bort']) {
+        this.history.append(" (" + this.rooms.current_room.id + ")");
+      }
+
       if (!this.rooms.current_room.seen) {
         this.rooms.current_room.show_description();
         this.rooms.current_room.seen = true;

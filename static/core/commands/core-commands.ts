@@ -281,7 +281,7 @@ export class GetCommand implements BaseCommand {
             if (arg === "all") {
               game.history.write(a.name + " taken.", "no-space");
             } else {
-              game.history.write("Got it.");
+              game.history.write(a.name + " taken.");
             }
             game.triggerEvent("afterGet", arg, a);
 

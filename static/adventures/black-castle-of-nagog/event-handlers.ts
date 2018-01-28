@@ -155,7 +155,6 @@ export var event_handlers = {
     let game = Game.getInstance();
     // book
     if (artifact && artifact.id === 10) {
-      game.history.write("After reading the book you understand your magic spells better, thus making it easier to cast them. When you finish reading, the book evaporates into smoke.", "special");
       for (let spell_name of ['blast', 'heal', 'speed', 'power']) {
         if (game.player.spell_abilities_original[spell_name]) { // only improves spells you already know
           game.player.spell_abilities[spell_name] += 5;
