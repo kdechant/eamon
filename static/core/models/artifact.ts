@@ -220,6 +220,7 @@ export class Artifact extends GameObject {
     for (let m of monsters) {
       game.history.write(" - " + m.name, "no-space");
       m.moveToRoom();
+      game.skip_battle_actions = true;  // technically not necessary, but it's confusing to see fighting before the monster desc
     }
     // artifacts stay in the container and just get listed
     for (let a of this.contents) {

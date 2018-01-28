@@ -7,13 +7,6 @@ import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
-    game.data['mummy appeared'] = false;
-
-  },
-
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
     if (exit.room_to === -70) {
@@ -64,23 +57,6 @@ export var event_handlers = {
 
   },
 
-  // using beforeOpen instead of open to suppress the "it contains nothing" message
-  "beforeOpen": function(arg: string, artifact: Artifact, command: OpenCommand) {
-    let game = Game.getInstance();
-    if (artifact !== null) {
-      if (artifact.id === 18 && !game.data["mummy appeared"]) {
-        artifact.is_open = true;
-        game.data["mummy appeared"] = true;
-        game.monsters.get(12).moveToRoom();
-        game.monsters.get(12).showDescription();
-        game.monsters.get(12).seen = true;
-        game.skip_battle_actions = true;
-        return false;
-      }
-    }
-    return true;
-  },
-
   "use": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact) {
@@ -115,6 +91,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands
