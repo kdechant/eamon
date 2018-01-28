@@ -53,20 +53,27 @@ export var event_handlers = {
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
 
-    if ((exit.room_to === -31 || exit.room_to === -32) && !game.data["elevator on"]) {
-      game.history.write("The elevator must first be turned on.");
-      return false;
-    } else {
-      switch (exit.room_to) {
-        case -31:
-          // going up, after elevator has been turned on
-          exit.room_to = 31;
-          break;
-        case -32:
-          // going down - doesn't work
-          game.effects.print(9);
-          return false;
+    if (exit.room_to === -31 || exit.room_to === -32) {
+      if (game.data["elevator on"]) {
+        switch (exit.room_to) {
+          case -31:
+            // going up, after elevator has been turned on
+            exit.room_to = 31;
+            break;
+          case -32:
+            // going down - doesn't work
+            game.effects.print(9);
+            return false;
+        }
+      } else {
+        game.history.write("The elevator must first be turned on.");
+        return false;
       }
+    }
+
+    // bridge across chasm
+    if (exit.room_to === -28 && game.artifacts.get(24).isHere()) {
+      exit.room_to = 28;
     }
 
     return true;
@@ -100,9 +107,9 @@ export var event_handlers = {
 
   "look": function(arg: string) {
     let game = Game.getInstance();
-    let artifact = game.artifacts.getLocalByName(arg);
+    let artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact && artifact.id === 17) {
-      game.command_parser.run("read inscription");
+      game.command_parser.run("read inscription", false);
     }
   },
 
@@ -168,11 +175,13 @@ export var event_handlers = {
                   monster.reaction = Monster.RX_FRIEND;
                 }
                 if (game.player.room_id === 28 && !game.data["heat ray destroyed"]) {
-                  game.effects.print(6, "special");
+                  game.effects.print(6, "special2");
+                  game.effects.print(15, "emphasis");
                   monster.room_id = null;
                   game.monsters.get(14).moveToRoom(game.player.room_id);
                   game.artifacts.get(33).moveToRoom(game.player.room_id);
                   game.data["heat ray destroyed"] = true;
+                  game.skip_battle_actions = true;
                 } else {
                   let reactions = ["does a little dance for your amusement.", "picks its metal nose.", "stands on its head.", "tells a dirty joke."];
                   let action_no = Math.floor(Math.random() * reactions.length);
