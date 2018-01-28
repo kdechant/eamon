@@ -48,7 +48,7 @@ export class LoggerService implements ILoggerService {
 
     // using player ID from local storage to avoid race condition if this.player isn't loaded yet
     let body = JSON.stringify({
-      'player': game.demo ? 0 : window.localStorage.getItem('player_id'),
+      'player': game.demo ? null : window.localStorage.getItem('player_id'),
       'adventure': game.id,
       'type': type,
       'value': value

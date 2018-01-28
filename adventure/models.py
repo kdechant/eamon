@@ -380,7 +380,7 @@ class ActivityLog(models.Model):
     """
     Used to track player activity (going on adventures, etc.)
     """
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='activity_log')
+    player = models.ForeignKey(Player, null=True, blank=True, on_delete=models.CASCADE, related_name='activity_log')
     type = models.CharField(max_length=255)
     value = models.IntegerField(null=True, blank=True)
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='activity_log', null=True)

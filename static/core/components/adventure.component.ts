@@ -29,10 +29,7 @@ export class AdventureComponent {
     this.game = Game.getInstance();
     this.game.demo = demo;
 
-    // the logger is not currently compatible with the demo player
-    if (!this.game.demo) {
-      this.game.logger = this._loggerService;
-    } // no else block here; it will use the dummy logger automatically
+    this.game.logger = this._loggerService;
 
     this._gameLoaderService.setupGameData(this.game.demo).subscribe(
       data => {

@@ -618,7 +618,7 @@ export class Monster extends GameObject {
 
       // check for weapon ability increase
       if (this.id === Monster.PLAYER) {
-        game.statistics['damage dealt'] += Math.min(damage_dealt, target.hardiness - target.damage);
+        game.statistics['damage dealt'] += damage_dealt;
 
         let inc_roll = game.diceRoll(1, 100);
         if (inc_roll > odds) {
@@ -840,11 +840,15 @@ export class Monster extends GameObject {
         return 0; // no need to show health here.
       }
     }
+    // prevent hp from going below zero, because it makes statistics collection easier
+    if (damage > this.hardiness - this.damage) {
+      damage = this.hardiness - this.damage;
+    }
     this.damage += damage;
     this.showHealth();
 
     if (this.id === Monster.PLAYER) {
-      game.statistics['damage taken'] += Math.min(damage, this.hardiness - this.damage);
+      game.statistics['damage taken'] += damage;
     }
 
     // handle death
