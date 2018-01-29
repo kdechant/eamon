@@ -331,10 +331,14 @@ export class Monster extends GameObject {
     let game = Game.getInstance();
     if (this.reaction === Monster.RX_FRIEND) {
       game.history.write(this.name + " is carrying:");
-      if (this.inventory.length === 0) {
+
+      // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
+      let inv = this.inventory.filter(x => x.type !== Artifact.TYPE_DEAD_BODY);
+
+      if (inv.length === 0) {
         game.history.write(" - (nothing)", "no-space");
       }
-      for (let a of this.inventory) {
+      for (let a of inv) {
         let notes = "";
         if (a.inventory_message !== "") {
           notes = a.inventory_message;
