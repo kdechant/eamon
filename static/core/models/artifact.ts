@@ -71,6 +71,7 @@ export class Artifact extends GameObject {
   is_worn: boolean = false; // if the monster is wearing it
   is_broken: boolean = false;  // for a doors/containers that has been smashed open
   player_brought: boolean = false; // flag to indicate which items the player brought with them
+  has_been_opened: boolean = false; // for containers/doors, the "on open" effect will only show the first time you open it
 
   // used in Marcos' shop in Main Hall
   message: string = "testing";
@@ -323,7 +324,7 @@ export class Artifact extends GameObject {
   }
 
   /**
-   * Opens a door or container
+   * Closes a door or container
    */
   public close() {
     this.is_open = false;

@@ -49,7 +49,6 @@ export var event_handlers = {
         artifact.name = "healing potion";
         command.markings_read = true;
       } else if (artifact.id === 9) {
-        game.effects.print(7, "special");
         if (game.rooms.current_room.id === 26) {
           game.history.write("You fall into the sea and are eaten by a big fish.", "danger");
         } else {
@@ -150,7 +149,6 @@ export function light_trollsfire(): void {
   trollsfire.is_lit = true;
   trollsfire.inventory_message = "glowing";
   trollsfire.sides = 10;
-  console.log(trollsfire);
 }
 
 export function put_out_trollsfire(): void {
@@ -159,5 +157,4 @@ export function put_out_trollsfire(): void {
   trollsfire.is_lit = false;
   trollsfire.inventory_message = "";
   trollsfire.sides = 6;
-  console.log(trollsfire);
 }

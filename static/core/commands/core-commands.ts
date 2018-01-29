@@ -191,11 +191,11 @@ export class LookCommand implements BaseCommand {
       // error message if nothing matched
       if (!match) {
         let common_stuff = ["wall", "door", "floor", "ceiling", "road", "path", "trail", "window"];
-        if (common_stuff.indexOf(arg) !== -1) {
-          game.history.write("You see nothing special.");
-        } else if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
+        if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
           // generic sign which is not really readable. we can pretend.
           game.rooms.current_room.show_description();
+        } else if (common_stuff.indexOf(arg) !== -1 || game.rooms.current_room.textMatch(arg)) {
+          game.history.write("You see nothing special.");
         } else {
           throw new CommandException("I see no " + arg + " here!");
         }
@@ -832,6 +832,7 @@ export class OpenCommand implements BaseCommand {
   opened_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
+    this.opened_something = false;
     let a: Artifact = game.artifacts.getLocalByName(arg, false);
     if (game.triggerEvent("beforeOpen", arg, a, this)) {
       if (a !== null) {
@@ -891,6 +892,8 @@ export class OpenCommand implements BaseCommand {
           } else {
             throw new CommandException("It's already open!");
           }
+        } else {
+          throw new CommandException("That's not something you can open.");
         }
 
       }
@@ -904,7 +907,7 @@ export class OpenCommand implements BaseCommand {
           if (arg === 'door') {
             game.history.write("The door will open when you pass through it.");
           } else {
-            game.history.write("That's not something I can open.");
+            game.history.write("That's not something you can open.");
           }
         } else {
           game.history.write("I don't see a " + arg + " here!");
@@ -924,6 +927,7 @@ export class CloseCommand implements BaseCommand {
   closed_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
+    this.closed_something = false;
     let a = game.artifacts.getLocalByName(arg, false);  // not revealing embedded artifacts automatically
     if (a !== null) {
       // don't reveal secret passages with this command
