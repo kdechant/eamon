@@ -575,6 +575,14 @@ export class Monster extends GameObject {
   public attack(target: Monster): void {
     let game = Game.getInstance();
 
+    // calculate to-hit odds, and let event handler adjust the odds
+    let odds = this.getToHitOdds(target);
+    let odds_adjusted = game.triggerEvent('attackOdds', this, target, odds);
+    if (odds_adjusted !== true) {
+      odds = odds_adjusted;
+    }
+
+    // display attack message
     let wpn = this.getWeapon();
     let weapon_type = wpn ? wpn.weapon_type : 0;
     if (this.combat_code === 1) {
@@ -591,7 +599,7 @@ export class Monster extends GameObject {
       game.history.write(this.name + " " + attack_verb + " at " + target.name);
     }
 
-    let odds = this.getToHitOdds(target);
+    // calculate hit, miss, or fumble
     let hit_roll = game.diceRoll(1, 100);
     if (hit_roll <= odds || hit_roll <= 5) {
       // hit

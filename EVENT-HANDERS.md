@@ -316,6 +316,35 @@ Example:
         return true;  // otherwise, use regular fumble logic
       },
 
+### Attack Odds
+
+The "attackOdds" event handler is called when a monster attacks another monster, after the standard odds have been
+calculated, but before the hit check is performed. It can adjust the odds to, for example, make a monster harder or
+easier to hit based on a game condition like having an artifact, or a special type of monster.
+
+Any output printed by this event handler will appear before the "Monster1 swings at Monster2" combat message.
+
+Parameters:
+- attacker (Monster) - The monster doing the attacking. This is the one who fumbled.
+- defender (Monster) - The monster being attacked
+- odds (number) - The normal to-hit odds for the attacker, calculated by the combat routine. This is a number from 0-100
+representing a percentage, though it may in rare cases be outside the range of 0-100.
+
+Return value:
+This can return true if no adjustment should be made, or it can return a number representing the new "to hit" odds.
+
+Example:
+
+      "attackOdds": function (attacker: Monster, defender: Monster, odds: number) {
+        let game = Game.getInstance();
+        // the umber hulk's gaze makes it harder to hit
+        if (attacker.id === Monster.PLAYER && defender.name === 'Umber Hulk') {
+          game.history.write("Your vision seems to swim making it hard to concentrate on fighting.");
+          return odds - 10;
+        }
+        return true;  // this makes the game use the normal odds in situations not covered above.
+      },
+
 ## Magic spells
 
 There are several events related to casting spells. These include the POWER spell which has no built-in functionality but relies entirely on event handlers.

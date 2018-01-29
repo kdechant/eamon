@@ -100,6 +100,19 @@ export var event_handlers = {
     }
   },
 
+  "attackOdds": function (attacker: Monster, defender: Monster, odds: number) {
+    let game = Game.getInstance();
+    // umber hulk's gaze
+    if (attacker.id === Monster.PLAYER && defender.id === 21) {
+      // TODO: if the IQ stat is ever implemented, turn this into an IQ check instead of HD
+      if (game.diceRoll(1, 34) > game.player.hardiness) {
+        game.history.write("Your vision seems to swim, making it hard to concentrate on fighting.", "special no-space");
+        return odds - 10;
+      }
+    }
+    return true;
+  },
+
   "monsterAction": function(monster: Monster) {
     let game = Game.getInstance();
 
