@@ -68,7 +68,7 @@ export class CommandParser {
 
     let game = Game.getInstance();
 
-    input = input.trim();
+    input = input.toLowerCase().trim();
     let space_pos = input.indexOf(" ");
     let verb: string, args: string;
     if (space_pos === -1) {
