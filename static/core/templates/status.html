@@ -40,10 +40,15 @@
   </div>
 
   <div class="status-widget room">
-    <p class="room-name" (click)="toggleDesc()">Current Location: {{ game.rooms.current_room.name }}</p>
-    <p class="room-description" [class.hidden]="hiddenDesc">{{ game.rooms.current_room.description }}</p>
-    <div class="room-exits">Visible Exits:
-      <span *ngFor="let exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
+    <div *ngIf="light || !game.rooms.current_room.is_dark">
+      <p class="room-name" (click)="toggleDesc()">Current Location: {{ game.rooms.current_room.name }}</p>
+      <p class="room-description" [class.hidden]="hiddenDesc">{{ game.rooms.current_room.description }}</p>
+      <div class="room-exits">Visible Exits:
+        <span *ngFor="let exit of game.rooms.current_room.exits">{{ exit.direction }} </span>
+      </div>
+    </div>
+    <div *ngIf="game.rooms.current_room.is_dark && !light">
+      <p class="room-name" (click)="toggleDesc()">Current Location: in the dark</p>
     </div>
   </div>
 
