@@ -650,7 +650,7 @@ export class Monster extends GameObject {
 
       // miss or fumble
       // NOTE: monsters with natural weapons can't fumble. they just miss instead.
-      if (hit_roll < 97 || this.weapon_id === 0) {
+      if (hit_roll < 97 || this.weapon_id === 0 || this.weapon_id === null) {
         let miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type];
         let miss_verb = miss_verbs[game.diceRoll(1, miss_verbs.length) - 1];
         game.history.write("-- " + miss_verb + "!", "no-space");

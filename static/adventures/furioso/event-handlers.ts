@@ -148,6 +148,14 @@ export var event_handlers = {
     return true;
   },
 
+  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    let game = Game.getInstance();
+    if (artifact !== null && artifact.id === 11) {
+      game.effects.print(10);
+      command.markings_read = true;
+    }
+  },
+
   "revealArtifact": function(artifact: Artifact) {
     let game = Game.getInstance();
     // two secret doors with the same alias
