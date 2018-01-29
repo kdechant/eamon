@@ -106,17 +106,6 @@ export var event_handlers = {
     return true;
   },
 
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
-    let game = Game.getInstance();
-    if (artifact !== null) {
-      if (artifact.id === 16 && !game.data["open coffin"]) {
-        game.data["open coffin"] = true;
-        game.effects.print(3, "special");
-        game.monsters.get(1).moveToRoom();
-      }
-    }
-  },
-
   "say": function(arg) {
     let game = Game.getInstance();
     arg = arg.toLowerCase();

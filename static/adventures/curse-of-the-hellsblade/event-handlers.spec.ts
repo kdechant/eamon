@@ -34,7 +34,7 @@ describe("The Curse of the Hellsblade", function() {
         game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
         expect(game.rooms.rooms.length).toBe(79, "Wrong room count. Check data.");
         expect(game.artifacts.all.length).toBe(71 + 5, "Wrong artifact count. Check data."); // includes player artifacts
-        expect(game.effects.all.length).toBe(20, "Wrong effect count. Check data.");
+        expect(game.effects.all.length).toBe(16, "Wrong effect count. Check data.");
         expect(game.monsters.all.length).toBe(32, "Wrong monster count. Check data."); // includes player
         game.start();
 

@@ -867,6 +867,9 @@ export class OpenCommand implements BaseCommand {
                 if (a.type === Artifact.TYPE_CONTAINER) {
                   a.printContents();
                 }
+                if (a.effect_id && !game.effects.get(a.effect_id).seen) {
+                  game.effects.print(a.effect_id);
+                }
 
               } else {
                 game.history.write("It's locked and you don't have the key!");
@@ -877,6 +880,9 @@ export class OpenCommand implements BaseCommand {
 
               if (a.type === Artifact.TYPE_CONTAINER) {
                 a.printContents();
+              }
+              if (a.effect_id && !game.effects.get(a.effect_id).seen) {
+                game.effects.print(a.effect_id);
               }
 
             }

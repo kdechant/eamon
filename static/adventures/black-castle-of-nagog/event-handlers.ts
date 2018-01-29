@@ -134,7 +134,6 @@ export var event_handlers = {
     if (artifact !== null) {
       // rovnart's tomb
       if (artifact.id === 63 && !game.effects.get(1).seen) {
-        game.effects.print(1);
         game.player.charisma -= 2;
       }
     }

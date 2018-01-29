@@ -156,16 +156,6 @@ export var event_handlers = {
     }
   },
 
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
-    let game = Game.getInstance();
-    if (artifact !== null) {
-      if (artifact.id === 13 && !game.data["open chest"]) {
-        game.data["open chest"] = true;
-        game.effects.print(20, "special");
-      }
-    }
-  },
-
   "use": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact) {

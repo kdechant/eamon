@@ -13,8 +13,6 @@ export var event_handlers = {
     game.data['pass guard'] = false;
   },
 
-  // the 'read' event handler should return true if the handler did something,
-  // otherwise the "there are no markings to read" message will appear.
   "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
     let game = Game.getInstance();
     if (artifact !== null && artifact.id === 11) {

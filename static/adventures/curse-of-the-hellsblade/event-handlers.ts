@@ -10,7 +10,7 @@ export var event_handlers = {
   "start": function(arg: string) {
     let game = Game.getInstance();
 
-    game.data["open coffin"] = false;
+    // game.data["open coffin"] = false;
     game.data["guardian protects box"] = true;
     game.data["hb safe"] = false;
     game.data['wizard spells'] = 5;
@@ -185,19 +185,6 @@ export var event_handlers = {
       }
     }
     return true;
-  },
-
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
-    let game = Game.getInstance();
-    if (artifact !== null) {
-      if (artifact.id === 54 && !game.data["open coffin"]) {
-        game.data["open coffin"] = true;
-        game.history.write("As soon as you pry open the lid of the coffin, a huge, scary demon jumps out at you!", "special");
-        game.monsters.get(30).moveToRoom();
-        game.skip_battle_actions = true;
-        command.opened_something = true; // suppress other messages
-      }
-    }
   },
 
   "beforePut": function(arg: string, item: Artifact, container: Artifact) {
