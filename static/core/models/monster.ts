@@ -85,7 +85,7 @@ export class Monster extends GameObject {
   armor_worn: Artifact[];
   weapon: Artifact;
   inventory: Artifact[];
-  speed_time: number = 0; // time remaining on speed spell
+  spell_counters: { [key: string]: number };  // time remaining on various spells (e.g., speed)
   speed_multiplier: number = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
   profit: number = 0; // the money the player makes for selling items when they leave the adventure
@@ -398,6 +398,7 @@ export class Monster extends GameObject {
    * Readies the best weapon the monster is carrying
    */
   public readyBestWeapon(): void {
+    this.weapon = null; // needed e.g., when restoring a saved game, because the "weapon" property won't deserialize correctly
     for (let a of this.inventory.filter(x => x.is_weapon)) {
       if (this.weapon === undefined || this.weapon === null ||
         a.maxDamage() > this.weapon.maxDamage()) {

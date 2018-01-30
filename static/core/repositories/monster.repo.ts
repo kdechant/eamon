@@ -98,13 +98,13 @@ export class MonsterRepository {
       3: player_data.wpn_club,
       4: player_data.wpn_spear,
       5: player_data.wpn_sword
-    }
+    };
     player_data.spell_abilities = {
       "power": player_data.spl_power,
       "heal": player_data.spl_heal,
       "blast": player_data.spl_blast,
       "speed": player_data.spl_speed
-    }
+    };
 
     game.player = new Monster();
     game.player.init(player_data);
@@ -120,6 +120,7 @@ export class MonsterRepository {
       "blast": game.player.spell_abilities.blast,
       "speed": game.player.spell_abilities.speed
     };
+    game.player.spell_counters = { 'speed': 0 };
     this.all.push(game.player);
 
     // create new artifact objects for the weapons and armor the player brought

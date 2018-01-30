@@ -170,10 +170,10 @@ export var event_handlers = {
     // agility ring
     if (target.id === 2) {
       game.history.write("You can feel the new agility flowing through you!", "success");
-      if (game.player.speed_time === 0) {
+      if (game.player.spell_counters['speed'] === 0) {
         game.player.speed_multiplier = 2;
       }
-      game.player.speed_time += 10 + game.diceRoll(1, 10);
+      game.player.spell_counters['speed'] += 10 + game.diceRoll(1, 10);
     }
     return true;
   },

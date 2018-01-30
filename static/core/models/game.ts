@@ -294,13 +294,19 @@ export class Game {
 
     this.player.rechargeSpellAbilities();
 
-    // if speed spell is active, decrease its time remaining
-    if (this.player.speed_time > 0) {
-      this.player.speed_time--;
-      if (this.player.speed_time === 0) {
-        this.history.write("Your speed spell just expired!", "success");
-        this.player.speed_multiplier = 1;
-        this.triggerEvent('spellExpires', 'speed');
+    // if speed spell (or other timed spell) is active, decrease its time remaining
+    for (let spell_name in this.player.spell_counters) {
+      if (this.player.spell_counters[spell_name] > 0) {
+        this.player.spell_counters[spell_name]--;
+        if (this.player.spell_counters[spell_name] === 0) {
+          if (spell_name === 'speed') {
+            this.history.write("Your speed spell just expired!", "success");
+            this.player.speed_multiplier = 1;
+          }
+          // other spells (typically custom spells in adventures) don't have an "expires" message.
+          // if a message is desired, print it inside the "spellExpires" event handler.
+          this.triggerEvent('spellExpires', spell_name);
+        }
       }
     }
 
