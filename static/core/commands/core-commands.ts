@@ -181,10 +181,12 @@ export class LookCommand implements BaseCommand {
       let m = game.monsters.getLocalByName(arg);
       if (m) {
         match = true;
-        game.history.write(m.description);
-
-        // display monster's inventory and status
-        m.printInventory();
+        if (m.id === Monster.PLAYER) {
+          game.history.write("You see yourself.");
+        } else {
+          game.history.write(m.description);
+          if (m.printInventory();
+        }
         m.showHealth();
       }
 
