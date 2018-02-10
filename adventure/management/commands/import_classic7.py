@@ -150,8 +150,8 @@ class Command(BaseCommand):
                 a.effect_id = int(m.group(32)) if m.group(32) else None
                 a.num_effects = int(m.group(34)) if m.group(32) else None
                 a.is_open = int(m.group(36)) if m.group(36) else 0
-                if a.type == 5:
-                    a.quantity = int(m.group(36)) if m.group(38) else 0
+                if a.type == 5:   # light source quantity
+                    a.quantity = int(m.group(38)) if m.group(38) else 0
 
                 # dead bodies - convert to "dead body" type
                 if adventure.dead_body_id and a.artifact_id >= adventure.dead_body_id:

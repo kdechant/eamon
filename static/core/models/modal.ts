@@ -72,9 +72,12 @@ export class Modal {
   }
 
   private close() {
+    let game = Game.getInstance();
     this.visible = false;
-    Game.getInstance().resume();
-    Game.getInstance().tick();
+    if (!game.won && !game.died) {
+      game.resume();
+      game.tick();
+    }
   }
 }
 
