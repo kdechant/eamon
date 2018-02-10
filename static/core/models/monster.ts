@@ -525,7 +525,11 @@ export class Monster extends GameObject {
           if (this.count > 1) {
             game.history.write(this.count + " " + this.name + "s flee to the " + exit.getFriendlyDirection() + ".", "warning");
           } else {
-            game.history.write(this.name + " flees to the " + exit.getFriendlyDirection() + ".", "warning");
+            if (exit.direction == 'u' || exit.direction == 'd') {
+              game.history.write(this.name + " flees " + exit.getFriendlyDirection() + "ward.", "warning");
+            } else {
+              game.history.write(this.name + " flees to the " + exit.getFriendlyDirection() + ".", "warning");
+            }
           }
           this.moveToRoom(exit.room_to);
           return;
