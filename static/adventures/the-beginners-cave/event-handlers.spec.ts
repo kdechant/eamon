@@ -58,26 +58,20 @@ describe("The Beginner's Cave", function() {
 
         // some tests of the core game engine - put here because this is a basic adventure with stuff we can try
         game.command_parser.run("open door");
-        expect(game.history.getOutput()).not.toBeNull('first command output nothing');
         expect(game.history.getOutput().text).toBe("I don't see a door here!", "wrong message for 'open door'");
         game.command_parser.run("open spaceship");
-        expect(game.history.getOutput()).not.toBeNull('2nd command output nothing');
         expect(game.history.getOutput().text).toBe("I don't see a spaceship here!", "wrong message for 'open door'");
         game.player.moveToRoom(15);
         game.command_parser.run("OPEN WALL");  // uppercase to test case insensitivity
-        expect(game.history.getOutput()).not.toBeNull('3rd command output nothing';
         expect(game.history.getOutput().text).toBe(game.artifacts.get(14).description, 'should see secret door description');
         game.player.moveToRoom(25);
         game.monsters.get(8).destroy(); // get pirate out of the way
         game.command_parser.run('e');
         game.command_parser.run("look boat");
-        expect(game.history.getOutput()).not.toBeNull('4th command output nothing';
         expect(game.history.getOutput().text).toBe(game.artifacts.get(24).description, "should see boat description");
         game.command_parser.run("open boat");
-        expect(game.history.getOutput()).not.toBeNull('5th command output nothing';
         expect(game.history.getOutput().text).toBe("That's not something you can open.", "wrong message for 'open boat'");
         game.command_parser.run("open jewels");
-        expect(game.history.getOutput()).not.toBeNull('6th command output nothing';
         expect(game.history.getOutput().text).toBe("That's not something you can open.", "wrong message for 'open boat'");
 
         console.log(game.history.history);

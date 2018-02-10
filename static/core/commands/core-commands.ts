@@ -185,7 +185,7 @@ export class LookCommand implements BaseCommand {
           game.history.write("You see yourself.");
         } else {
           game.history.write(m.description);
-          if (m.printInventory();
+          m.printInventory();
         }
         m.showHealth();
       }
