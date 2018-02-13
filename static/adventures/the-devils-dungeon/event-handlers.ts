@@ -59,7 +59,7 @@ export var event_handlers = {
         q1.question = "The crystal ball warns of possible danger ahead! Do you wish to proceed?";
         q1.choices = ['Yes', 'No'];
         q1.callback = function (answer) {
-          if (answer === 'yes') {
+          if (answer.toLowerCase() === 'yes') {
             let room_to = game.rooms.getRoomById(exit.room_to);
             let room_from = game.rooms.current_room;
             game.player.moveToRoom(room_to.id, true);
