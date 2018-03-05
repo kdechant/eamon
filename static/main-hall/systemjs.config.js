@@ -28,6 +28,7 @@
             'tslib': 'npm:tslib/tslib.js',
             'angular2-uuid': 'npm:angular2-uuid/index.js',
             'ngx-cookie': 'npm:ngx-cookie/bundles/ngx-cookie.umd.js',
+            'angular5-social-login': 'npm:angular5-social-login/angular5-social-login.umd.js',
 
             // the app itself
             'core': "/static/core",

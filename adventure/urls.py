@@ -3,10 +3,11 @@ from rest_framework import routers
 
 from . import views
 
-from .views import PlayerViewSet, AdventureViewSet, AuthorViewSet, RoomViewSet, ArtifactViewSet, EffectViewSet, MonsterViewSet, HintViewSet, LogViewSet
+from .views import PlayerViewSet, PlayerProfileViewSet, AdventureViewSet, AuthorViewSet, RoomViewSet, ArtifactViewSet, EffectViewSet, MonsterViewSet, HintViewSet, LogViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'players', PlayerViewSet)
+router.register(r'profiles', PlayerProfileViewSet)
 router.register(r'authors', AuthorViewSet)
 router.register(r'adventures', AdventureViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/rooms$', RoomViewSet)

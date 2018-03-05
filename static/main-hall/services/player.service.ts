@@ -19,6 +19,9 @@ export class PlayerService {
   // the current user's UUID
   private uuid: string;
 
+  // the user's login ID, if logged in with social auth (FB user ID, etc.)
+  public login_id: string;
+
   private httpOptions: any;
 
   constructor(private http: HttpClient, private _cookieService:CookieService) {
@@ -85,6 +88,24 @@ export class PlayerService {
     let body = JSON.stringify(this.player);
 
     return this.http.put("/api/players/" + this.player.id, body, this.httpOptions);
+  }
+
+  /**
+   * Finds any characters in the current browser's local storage and links them to the social login ID
+   */
+  public linkLocalChars() {
+    let body = JSON.stringify({
+      'social_id': this.login_id,
+      'uuid': window.localStorage.getItem('eamon_uuid')
+    });
+    this.http.post("/api/profiles", body, this.httpOptions).subscribe(
+      data => {
+        let uuid = String(data['uuid']);
+        window.localStorage.setItem('eamon_uuid', uuid);
+        this.uuid = uuid;
+        this.getList();
+      }
+    )
   }
 
   public delete(player: Player) {

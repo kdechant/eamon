@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
-from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerArtifact, Hint, HintAnswer, \
-    ActivityLog
+from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, \
+    Player, PlayerArtifact, PlayerProfile, Hint, HintAnswer, ActivityLog
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -109,6 +109,13 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
+        fields = '__all__'
+
+
+class PlayerProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PlayerProfile
         fields = '__all__'
 
 

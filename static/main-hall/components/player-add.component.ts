@@ -8,7 +8,7 @@ import {PlayerService} from '../services/player.service';
   template: `
   <div class="col-sm-12">
     <p>The burly Irishman hits his forehead and says, &quot;Ah, ye must be new here! Well, wait just a minute and I'll bring someone out to take care of ye.&quot;</p>
-    <p>The Irishman walks away and in walks a man of possibly Elfish descent.</p>
+    <p>The Irishman walks away and in walks a serious, pointy-eared man of possibly Elfish descent.</p>
     <p>He studies you for a moment and says, &quot;Please enter your name and gender.&quot;</p>
     <form (ngSubmit)="save()">
       
@@ -55,8 +55,9 @@ import {PlayerService} from '../services/player.service';
       </div>
     </form>
     <div id="prosper" *ngIf="player.id">
-      <p>The man behind the desk says, &quot;It is now time for you to start your life.&quot; He makes an odd 
-        sign with his hand and says, &quot;Live long and prosper.&quot;</p>
+      <p>The man behind the desk says, &quot;It is now time for you to start your life. Your first
+        task will be to buy weapons and armor and test your skill on a suitable Beginner adventure.&quot;
+        He makes an odd sign with his hand and says, &quot;Live long and prosper.&quot;</p>
       <p>You now wander into the Main Hall...</p>
       <button class="btn" (click)="gotoPlayer(player)">Next</button>
     </div>

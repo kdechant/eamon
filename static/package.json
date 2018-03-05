@@ -32,6 +32,7 @@
     "@angular/upgrade": "~5.2.0",
     "@ng-bootstrap/ng-bootstrap": "~1.0.0",
     "angular2-notifications": "^0.9.6",
+    "angular5-social-login": "^1.0.9",
     "bootstrap": "4.0.0",
     "core-js": "^2.5.1",
     "ngx-cookie": "^2.0.1",

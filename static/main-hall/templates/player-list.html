@@ -1,0 +1,24 @@
+<p>You are in the outer chamber of the hall of the Guild of Free Adventurers. Many men and women are guzzling beer and there is loud singing and laughter.</p>
+<p>On the north side of the chamber is a cubbyhole with a desk. Over the desk is a sign which says: <strong>&quot;REGISTER HERE OR ELSE!&quot;</strong></p>
+<p>Behind the desk is a burly Irishman who looks at you with a scowl and asks, &quot;What's your name?&quot;</p>
+<p>The guest book on the desk lists the following adventurers:</p>
+<div class="row">
+  <div class="player col-sm-4" *ngFor="let player of _playerService.players">
+    <div class="icon"><img src="/static/images/ravenmore/128/{{ player.icon }}" width="96" height="96"></div>
+    <div class="name"><a (click)="gotoPlayer(player)"><strong>{{player.name}}</strong></a><br />
+    HD: {{player.hardiness}} AG: {{player.agility}} CH: {{player.charisma}} <br />
+    {{player.best_weapon?.name | titleCase}}</div>
+    <div class="delete"><a (click)="deletePlayer(player)"><span class="glyphicon glyphicon-trash"></span></a></div>
+  </div>
+</div>
+<p *ngIf="_playerService.players?.length == 0">There are no adventurers in the guest book.</p>
+<p class="addplayer"><a [routerLink]="['/register']"><strong>Create a New Adventurer</strong></a></p>
+
+<p *ngIf="_playerService.login_id">The Irishman also mentions something else to you. &quot;I see you're from the future, and you're logged in with Facebook. I will keep my guest book up in somewhere called 'the cloud' and you can use the same adventurers from any computer and browser, as long as you log in with the same Facebook account.&quot;</p>
+
+<div *ngIf="!_playerService.login_id">
+  <p>The Irishman also mentions something else to you. &quot;I see you're from the future, and you're visiting in a web browser. Note that I keep my guest book inside your browser in something called 'local storage.' Your adventurers will live inside your browser and you can play as them any time you want, as long as you use the same computer and the same browser.&quot;</p>
+  <p>&quot;If you want me to save your adventurers so you can play as them across multiple computers and browsers, you can 'log in with Facebook' and I'll keep them in the big guest book up in the clouds.&quot;</p>
+  <button (click)="socialSignIn('facebook')">Log in with Facebook</button>
+
+</div>

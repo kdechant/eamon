@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
 from . import serializers
-from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Player, Hint, HintAnswer, ActivityLog
+from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerProfile, Hint, HintAnswer, ActivityLog
 
 
 def index(request, path=''):
@@ -133,6 +133,48 @@ class HintViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
         return self.queryset.filter(Q(adventure__slug=adventure_id) | Q(question="EAMON GENERAL HELP.", edx="E001")).order_by('index')
+
+
+class PlayerProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoints for user data. This is read/write.
+    """
+    serializer_class = serializers.PlayerProfileSerializer
+    queryset = PlayerProfile.objects.all()
+    permission_classes = (AllowAny,)
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def create(self, request, pk=None):
+        """
+        This is actually an "upsert" for users
+        """
+        social_id = self.request.data['social_id']
+        # print(str(self.request.query_params))
+        # print("Social ID = " + str(social_id))
+        request_uuid = self.request.data['uuid']
+
+        # create a profile if not found
+        pl, created = PlayerProfile.objects.get_or_create(social_id=social_id)
+        db_uuid = pl.uuid
+        if created:
+            pl.social_id = social_id
+            pl.uuid = request_uuid
+            pl.save()
+
+        # look for any player characters with the browser's old UUID, and update them to match the profile's UUID
+        players = Player.objects.filter(uuid=request_uuid).exclude(uuid=db_uuid)
+        print("Updating players...")
+        for p in players:
+            print("Updating player: " + p.name)
+            print("Old UUID: " + p.uuid)
+            print("New UUID: " + db_uuid)
+            p.uuid = db_uuid
+            p.save()
+
+        serializer = serializers.PlayerProfileSerializer(pl)
+        return Response(serializer.data)
 
 
 class PlayerViewSet(viewsets.ModelViewSet):

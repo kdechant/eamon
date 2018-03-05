@@ -306,6 +306,11 @@ class HintAnswer(models.Model):
     answer = models.TextField(max_length=1000)
 
 
+class PlayerProfile(models.Model):
+    social_id = models.CharField(max_length=100, null=True)
+    uuid = models.CharField(max_length=255, null=True)
+
+
 class Player(models.Model):
     """
     Represents the player saved in the main hall.

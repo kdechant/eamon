@@ -5,6 +5,13 @@ import {FormsModule}    from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieModule } from 'ngx-cookie';
 
+import {
+    SocialLoginModule,
+    AuthServiceConfig,
+    GoogleLoginProvider,
+    FacebookLoginProvider,
+} from "angular5-social-login";
+
 import {DividePipe} from "./pipes/divide.pipe";
 import {TitleCasePipe} from "./pipes/title-case.pipe";
 import {PercentOrNonePipe} from "./pipes/percent-or-none.pipe";
@@ -26,8 +33,28 @@ import {ShopService} from "./services/shop.service";
 import {UuidService} from "./services/uuid.service";
 import {routing} from './main-hall.routing';
 
+// Configs
+export function getAuthServiceConfigs() {
+  let config = new AuthServiceConfig([
+      {
+        id: FacebookLoginProvider.PROVIDER_ID,
+        provider: new FacebookLoginProvider("184221458976224")
+      },
+    ]
+  );
+  return config;
+}
+
 @NgModule({
-  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, HttpClientModule, routing, CookieModule.forRoot()],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    HttpClientModule,
+    routing,
+    CookieModule.forRoot(),
+    SocialLoginModule
+  ],
   declarations: [
     MainHallComponent,
     AdventureListComponent,
@@ -45,7 +72,16 @@ import {routing} from './main-hall.routing';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],
-  providers: [PlayerService, AdventureService, ShopService, UuidService]
+  providers: [
+    PlayerService,
+    AdventureService,
+    ShopService,
+    UuidService,
+    {
+      provide: AuthServiceConfig,
+      useFactory: getAuthServiceConfigs
+    }
+  ]
 })
 export class MainHallModule {
 }
