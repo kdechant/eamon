@@ -28,6 +28,7 @@
             'tslib': 'npm:tslib/tslib.js',
             'angular2-uuid': 'npm:angular2-uuid/index.js',
             'ngx-cookie': 'npm:ngx-cookie/bundles/ngx-cookie.umd.js',
+            '@ng-bootstrap/ng-bootstrap': 'npm:@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js',
             'angular5-social-login': 'npm:angular5-social-login/angular5-social-login.umd.js',
 
             // the app itself

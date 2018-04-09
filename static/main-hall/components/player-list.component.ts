@@ -6,6 +6,9 @@ import {
     FacebookLoginProvider,
     GoogleLoginProvider
 } from 'angular5-social-login';
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+
+import {UuidService} from '../services/uuid.service';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
@@ -19,7 +22,9 @@ export class PlayerListComponent implements OnInit  {
   constructor(
     private _router: Router,
     private _playerService: PlayerService,
-    private socialAuthService: AuthService
+    private socialAuthService: AuthService,
+    private uuid: UuidService,
+    private modalService: NgbModal
   ) { }
 
   public ngOnInit(): void {
@@ -41,10 +46,20 @@ export class PlayerListComponent implements OnInit  {
         console.log(socialPlatform + " sign in data : ", userData);
         this._playerService.login_id = userData.id;
         window.localStorage.setItem('social_id', userData.id);
+        window.localStorage.setItem('social_platform', socialPlatform);
         this._playerService.linkLocalChars();
-        // this._playerService.getList();
       }
     );
+  }
+
+  public socialSignOut(socialPlatform : string) {
+    console.log(socialPlatform + " sign out : ", socialPlatform);
+    window.localStorage.removeItem('social_id');
+    window.localStorage.removeItem('social_platform');
+    // set new uuid to clear the player list
+    let token = this.uuid.uuid();
+    window.localStorage.setItem('eamon_uuid', token);
+    window.location.reload();
   }
 
   gotoPlayer(player: Player) {

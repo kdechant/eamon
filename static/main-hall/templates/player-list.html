@@ -14,11 +14,35 @@
 <p *ngIf="_playerService.players?.length == 0">There are no adventurers in the guest book.</p>
 <p class="addplayer"><a [routerLink]="['/register']"><strong>Create a New Adventurer</strong></a></p>
 
-<p *ngIf="_playerService.login_id">The Irishman also mentions something else to you. &quot;I see you're from the future, and you're logged in with Facebook. I will keep my guest book up in somewhere called 'the cloud' and you can use the same adventurers from any computer and browser, as long as you log in with the same Facebook account.&quot;</p>
+<div class="col-sm-8 offset-sm-2 status-widget">
+  <div *ngIf="_playerService.login_id">
+    <p>You are logged in with Facebook, so your adventurers are linked to your Facebook account. You may access these adventurers on any computer if you log in with Facebook on that computer.</p>
+    <button class="facebook-login" (click)="socialSignOut('facebook')">Log out</button>
+  </div>
 
-<div *ngIf="!_playerService.login_id">
-  <p>The Irishman also mentions something else to you. &quot;I see you're from the future, and you're visiting in a web browser. Note that I keep my guest book inside your browser in something called 'local storage.' Your adventurers will live inside your browser and you can play as them any time you want, as long as you use the same computer and the same browser.&quot;</p>
-  <p>&quot;If you want me to save your adventurers so you can play as them across multiple computers and browsers, you can 'log in with Facebook' and I'll keep them in the big guest book up in the clouds.&quot;</p>
-  <button (click)="socialSignIn('facebook')">Log in with Facebook</button>
-
+  <div *ngIf="!_playerService.login_id">
+    <p>Your adventurers are stored within your browser. You will need to use this same computer and browser to play as the same adventurers.</p>
+    <p>You can also log in with Facebook to share your adventurers across multiple computers.</p>
+    <button class="facebook-login" (click)="socialSignIn('facebook')">Log in with Facebook</button>
+    <a (click)="modalService.open(socialExplanation)">What happens when I log in?</a>
+  </div>
 </div>
+
+<ng-template #socialExplanation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h3>How Eamon Stores Adventurers</h3>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body row">
+    <div class="col-12">
+      <p>The Irishman mentions something else to you. &quot;I see you're from the future, and you're visiting in a web browser. Normally, I keep my guest book inside your browser in something called 'local storage.' Your adventurers will live inside your browser and you can play as them any time you want, as long as you use the same computer and the same browser.&quot;</p>
+      <p>&quot;If you want me to save your adventurers so you can play as them across multiple computers and browsers, you can 'log in with Facebook' and I'll keep them in the big guest book up in the clouds.&quot;</p>
+      <p>&quot;And don't worry. I know that you Free Adventurers might have colorful pasts and you might not want other people to know you're here. Here in Eamon, we never sell or give away any information about our adventurers, not even to our local armourer or wizard. Your information is safe here.&quot;</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="c('Close click')">Close</button>
+  </div>
+</ng-template>

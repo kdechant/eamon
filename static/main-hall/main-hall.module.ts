@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieModule } from 'ngx-cookie';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {
     SocialLoginModule,
@@ -53,6 +54,7 @@ export function getAuthServiceConfigs() {
     HttpClientModule,
     routing,
     CookieModule.forRoot(),
+    NgbModule.forRoot(),
     SocialLoginModule
   ],
   declarations: [
