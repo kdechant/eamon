@@ -182,6 +182,11 @@ export class Game {
   demo: boolean = false;
 
   /**
+   * Saved game descriptions
+   */
+  saves: string[] = [];
+
+  /**
    * Statistics for the game (damage taken, secret doors found, etc.)
    */
   statistics: { [key: string]: number; } = {
@@ -509,6 +514,12 @@ export class Game {
       for (let s in this.statistics) {
         this.logger.log(s, this.statistics[s]);
       }
+
+      // delete the saved games
+      for (let i = 1; i <= 10; i++) {
+        window.localStorage.removeItem('savegame_' + this.id + '_' + i);
+        window.localStorage.removeItem('savegame_description_' + this.id + '_' + i);
+      }
     }
   }
 
@@ -523,6 +534,7 @@ export class Game {
     this.triggerEvent("death", this.player);
     this.active = false;
     this.died = true;
+    this.getSavedGames();
 
     this.logger.log('died');
     for (let s in this.statistics) {
@@ -536,31 +548,31 @@ export class Game {
   /**
    * Save the game
    */
-  public save() {
-    this.logger.log('save game');
+  public save(slot, description) {
+    this.logger.log('save game to slot ' + slot + ': ' + description);
     let sv = {
+      description: description,
       player: this.player,
       rooms: this.rooms.rooms,
       artifacts: this.artifacts.all,
-      // artifacts: this.artifacts.all.filter(a => a.player_brought === false),
       effects: this.effects.all,
       monsters: this.monsters.all,
-      // monsters: this.monsters.all.filter(m => m.id !== Monster.PLAYER),
       gamedata: this.data
     };
     let savegame = JSON.stringify(sv);
     // TODO: figure out how to compress this data, possibly using https://www.npmjs.com/package/jsoncomp or https://gist.github.com/revolunet/843889
 
     // put in local storage? or save to the API?
-    window.localStorage.setItem('savegame', savegame);
+    window.localStorage.setItem('savegame_' + this.id + "_" + slot, savegame);
+    window.localStorage.setItem('savegame_description_' + this.id + "_" + slot, description);
   }
 
   /**
    * Restore a save game
    */
-  public restore() {
-    this.logger.log('restore game');
-    let savegame = window.localStorage.getItem('savegame');
+  public restore(slot) {
+    this.logger.log('restore game from slot ' + slot);
+    let savegame = window.localStorage.getItem('savegame_' + this.id + "_" + slot);
     if (savegame) {
       let data = JSON.parse(savegame);
       // the serialized data looks just like the data from the API, so we just need to recreate the repositories. I hope.
@@ -583,7 +595,25 @@ export class Game {
       this.artifacts.updateVisible();
       this.monsters.updateVisible();
       this.data = data.gamedata;
+
+      this.died = false;
+      this.active = true;
+      this.ready = true;
+
+      this.history = new HistoryManager;
+      this.history.push("restore");
+      this.history.write("Game restored from slot " + slot + ".");
     }
   }
 
+  public getSavedGames() {
+    this.saves = [];
+    for (let i = 1; i <= 10; i++) {
+      let description = window.localStorage.getItem('savegame_description_' + this.id + '_' + i);
+      if (description !== null) {
+        this.saves.push(i + ": " + description);
+      }
+    }
+    return this.saves;
+  }
 }

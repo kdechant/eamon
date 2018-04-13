@@ -18,8 +18,12 @@ import {Component, Input, ViewChild, ElementRef, Renderer} from "@angular/core";
     <div class="return-button-container" *ngIf="game.won">
       <button class="btn btn-success" id="return" (click)="exit()">Return to Main Hall</button>
     </div>
-    <div class="return-button-container" *ngIf="game.died">
-      <button class="btn btn-success" id="return" (click)="restart()">Start Over</button>
+    <div class="return-button-container" *ngIf="game.died && !restore">
+      <button class="btn btn-success" id="start_over" (click)="startOver()">Start Over</button>
+      <button class="btn btn-success" id="restore" (click)="showSaves()">Restore a Saved Game</button>
+    </div>
+    <div class="return-button-container" *ngIf="game.died && restore">
+      <button class="btn btn-success" *ngFor="let sv of game?.saves" (click)="restoreSavedGame(sv)">{{sv}}</button>
     </div>
     `,
 })
@@ -33,6 +37,7 @@ export class CommandPromptComponent {
 
   public command: string;
   public last_command: string;
+  public restore: boolean = false;
 
   constructor(private renderer: Renderer) {}
 
@@ -91,7 +96,18 @@ export class CommandPromptComponent {
     this.game.player.sellItems();
   }
 
-  restart(): void {
+  startOver(): void {
     window.location.reload();
+  }
+
+  showSaves(): void {
+    this.restore = true;
+  }
+
+  restoreSavedGame(save): void {
+    let slot = parseInt(save);
+    this.game.restore(slot);
+    this.game.tick();
+    this.restore = false;
   }
 }

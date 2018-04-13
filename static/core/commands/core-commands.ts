@@ -4,6 +4,7 @@ import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 import {RoomExit} from "../models/room";
 import {CommandException} from "../utils/command.exception";
+import {ModalQuestion} from "../models/modal";
 
 export let core_commands = [];
 
@@ -1258,8 +1259,29 @@ export class SaveCommand implements BaseCommand {
   verbs: string[] = ["save"];
   run(verb, arg) {
     let game = Game.getInstance();
-    game.save();
-    game.history.write("Game saved.");
+
+    let q1 = new ModalQuestion;
+    q1.type = 'multiple_choice';
+    q1.question = "Please choose a saved game slot:";
+    q1.choices = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'cancel'];
+    q1.callback = function (answer) {
+      if (answer === 'cancel') {
+        return false;
+      }
+      q2.answer = window.localStorage.getItem('savegame_description_' + game.id + "_" + answer);
+    };
+
+    let q2 = new ModalQuestion();
+    q2.type = 'text';
+    q2.question = "Enter a description for the saved game:";
+    q2.callback = function (answer) {
+      game.save(game.modal.questions[0].answer, answer);
+      game.history.write("Game saved to slot " + game.modal.questions[0].answer + ".");
+      return true;
+    };
+    game.modal.questions = [q1, q2];
+    game.modal.run();
+
   }
 }
 core_commands.push(new SaveCommand());
@@ -1270,8 +1292,26 @@ export class RestoreCommand implements BaseCommand {
   verbs: string[] = ["restore"];
   run(verb, arg) {
     let game = Game.getInstance();
-    game.restore();
-    game.history.write("Game restored from saved game.");
+
+    let q1 = new ModalQuestion;
+    q1.type = 'multiple_choice';
+    q1.question = "Please choose a saved game to restore:";
+    q1.choices = [];
+    let saves = game.getSavedGames();
+    for (let sv of saves) {
+      q1.choices.push(sv);
+    }
+    q1.choices.push('cancel');
+    q1.callback = function (answer) {
+      if (answer === 'cancel') {
+        return false;
+      }
+      let slot = parseInt(answer);
+      game.restore(slot);
+      return true;
+    };
+    game.modal.questions = [q1];
+    game.modal.run();
   }
 }
 core_commands.push(new RestoreCommand());
