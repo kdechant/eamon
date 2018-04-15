@@ -39,7 +39,6 @@ export class Artifact extends GameObject {
   guard_id: number; // if a bound monster, the monster id of the monster guarding it
   weight: number;
   value: number;
-  fixed_value: boolean;
   type: number;
   is_open: boolean;
   hardiness: number;  // for doors/containers that must be smashed open - how much damage is required to open it
@@ -71,10 +70,9 @@ export class Artifact extends GameObject {
   is_worn: boolean = false; // if the monster is wearing it
   is_broken: boolean = false;  // for a doors/containers that has been smashed open
   player_brought: boolean = false; // flag to indicate which items the player brought with them
-  has_been_opened: boolean = false; // for containers/doors, the "on open" effect will only show the first time you open it
 
   // used in Marcos' shop in Main Hall
-  message: string = "testing";
+  message: string = "";
   messageState: string = "hidden";
   salePending: boolean = false;
 

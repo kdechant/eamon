@@ -208,4 +208,21 @@ export class MonsterRepository {
     this.visible = monsters;
   }
 
+  /**
+   * Serializes the repo to JSON, without some unnecessary deep-copy data like monster inventories
+   */
+  public serialize() {
+    let data = JSON.parse(JSON.stringify(this.all));
+    for (let m of data) {
+      // calculated properties don't need to be serialized
+      delete m.inventory;
+      delete m.armor_worn;
+      delete m.weapon;
+      delete m.weight_carried;
+      // some properties are only used in the main hall or game exit
+      delete m.profit;
+    }
+    return data;
+  }
+
 }

@@ -167,4 +167,23 @@ export class ArtifactRepository {
     return false;
   }
 
+  /**
+   * Serializes the repo to JSON, without some unnecessary deep-copy data like artifact contents
+   */
+  public serialize() {
+    let data = JSON.parse(JSON.stringify(this.all));
+    for (let a of data) {
+      // calculated properties don't need to be serialized
+      delete a.contents;
+      // some properties are only used in the main hall
+      delete a.message;
+      delete a.messageState;
+      delete a.salePending;
+      // unused stuff that can be removed later
+      delete a.markings;
+      delete a.markings_index;
+    }
+    return data;
+  }
+
 }

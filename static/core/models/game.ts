@@ -13,6 +13,8 @@ import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
 import {ILoggerService, DummyLoggerService} from "../services/logger.service";
 
+declare var LZString;
+
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
  */
@@ -552,15 +554,14 @@ export class Game {
     this.logger.log('save game to slot ' + slot + ': ' + description);
     let sv = {
       description: description,
-      player: this.player,
       rooms: this.rooms.rooms,
-      artifacts: this.artifacts.all,
+      artifacts: this.artifacts.serialize(),
       effects: this.effects.all,
-      monsters: this.monsters.all,
+      monsters: this.monsters.serialize(),
       gamedata: this.data
     };
     let savegame = JSON.stringify(sv);
-    // TODO: figure out how to compress this data, possibly using https://www.npmjs.com/package/jsoncomp or https://gist.github.com/revolunet/843889
+    savegame = LZString.compressToBase64(savegame);
 
     // put in local storage? or save to the API?
     window.localStorage.setItem('savegame_' + this.id + "_" + slot, savegame);
@@ -574,23 +575,14 @@ export class Game {
     this.logger.log('restore game from slot ' + slot);
     let savegame = window.localStorage.getItem('savegame_' + this.id + "_" + slot);
     if (savegame) {
-      let data = JSON.parse(savegame);
-      // the serialized data looks just like the data from the API, so we just need to recreate the repositories. I hope.
-      // console.log(data.rooms);
+      let data = JSON.parse(LZString.decompressFromBase64(savegame));
+      // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
       this.rooms = new RoomRepository(data.rooms);
-      // console.log(this.rooms.rooms);
-      // console.log(data.artifacts);
       this.artifacts = new ArtifactRepository(data.artifacts);
-      // console.log(this.artifacts.all);
       this.effects = new EffectRepository(data.effects);
       this.monsters = new MonsterRepository(data.monsters);
-      // console.log(this.monsters.all);
-      // this.monsters.addPlayer(data.player);
       this.player = this.monsters.get(0);
-      // console.log(this.player);
-      // console.log(this.rooms.current_room);
       this.rooms.current_room = this.rooms.getRoomById(this.player.room_id);
-      // console.log(this.rooms.current_room);
       this.player.updateInventory();
       this.artifacts.updateVisible();
       this.monsters.updateVisible();

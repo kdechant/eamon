@@ -1265,10 +1265,12 @@ export class SaveCommand implements BaseCommand {
     q1.question = "Please choose a saved game slot:";
     q1.choices = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'cancel'];
     q1.callback = function (answer) {
+      console.log(answer);
       if (answer === 'cancel') {
         return false;
       }
       q2.answer = window.localStorage.getItem('savegame_description_' + game.id + "_" + answer);
+      return true;
     };
 
     let q2 = new ModalQuestion();
