@@ -22,6 +22,7 @@ import {AdventureListComponent} from "./components/adventure-list.component";
 import {PlayerListComponent} from "./components/player-list.component";
 import {PlayerAddComponent} from "./components/player-add.component";
 import {PlayerDetailComponent} from "./components/player-detail.component";
+import {SavedGameTileComponent} from "./components/saved-game-tile.component";
 import {BankComponent} from "./components/bank.component";
 import {ShopComponent} from "./components/shop.component";
 import {ArtifactTileComponent} from "./components/artifact-tile.component";
@@ -63,6 +64,7 @@ export function getAuthServiceConfigs() {
     PlayerListComponent,
     PlayerAddComponent,
     PlayerDetailComponent,
+    SavedGameTileComponent,
     BankComponent,
     ShopComponent,
     ArtifactTileComponent,

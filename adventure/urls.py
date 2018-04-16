@@ -4,6 +4,7 @@ from rest_framework import routers
 from . import views
 
 from .views import PlayerViewSet, PlayerProfileViewSet, AdventureViewSet, AuthorViewSet, RoomViewSet, ArtifactViewSet, EffectViewSet, MonsterViewSet, HintViewSet, LogViewSet
+from player.views import SavedGameViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'players', PlayerViewSet)
@@ -15,6 +16,7 @@ router.register(r'adventures/(?P<adventure_id>[\w-]+)/artifacts$', ArtifactViewS
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/effects$', EffectViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/monsters$', MonsterViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/hints', HintViewSet)
+router.register(r'saves', SavedGameViewSet)
 router.register(r'log', LogViewSet)
 
 urlpatterns = [

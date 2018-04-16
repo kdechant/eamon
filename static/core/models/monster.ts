@@ -74,6 +74,7 @@ export class Monster extends GameObject {
   spell_abilities_original: any;
   weapon_abilities: { [key: number]: number; };
   armor_expertise: number;
+  saved_games: Object[] = [];
 
   // game-state properties
   seen: boolean = false;

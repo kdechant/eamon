@@ -3,10 +3,11 @@ import {Router} from '@angular/router';
 
 import {Player} from '../models/player';
 import {PlayerService} from '../services/player.service';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   template: `
-  <div class="row">
+  <div class="row" *ngIf="_playerService.player?.saved_games?.length == 0">
     <div class="col-sm">
       <h2>Main Hall</h2>
       <p>You are in the main hall of the Guild of Free Adventurers. You can do the following:</p>
@@ -23,7 +24,24 @@ import {PlayerService} from '../services/player.service';
       <status [player]="_playerService.player"></status>
     </div>
   </div>
-  `
+  <div class="row" *ngIf="_playerService.player?.saved_games?.length > 0">
+    <div class="col-sm">
+      <h2>Continue Your Adventures</h2>
+      <p>Welcome back, {{_playerService.player?.name}}! It looks like you were on an adventure the last time we saw you.
+        Choose a saved game to restore:</p>
+      <div class="container-fluid">
+        <div class="row">
+          <saved-game-tile *ngFor="let sv of _playerService.player?.saved_games" [saved_game]="sv" class="col-sm-6 col-md-4 col-lg-3"  [@fadeOutAnimation]="sv.id"></saved-game-tile>
+        </div>
+      </div>
+    </div>
+  </div>
+  `,
+  animations: [
+    trigger('fadeOutAnimation', [
+      transition(':leave', animate(300, style({opacity: 0})))
+    ])
+  ]
 })
 export class PlayerDetailComponent implements OnInit {
   player: Player;
@@ -62,6 +80,11 @@ export class PlayerDetailComponent implements OnInit {
         this._router.navigate( ['/'] );
       }
     );
+  }
+
+  public loadSavedGame(saved_game) {
+    window.localStorage.addItem('saved_game_id');
+    window.location.href = '/adventure/' + saved_game.adventure.slug;
   }
 
 }

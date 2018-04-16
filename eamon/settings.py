@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # custom code
     'adventure',
     'news',
+    'player',
 ]
 
 MIDDLEWARE = [

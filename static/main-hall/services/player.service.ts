@@ -108,9 +108,26 @@ export class PlayerService {
     )
   }
 
+  /**
+   * Deletes the player
+   * @param {Player} player
+   * @returns {Observable<ArrayBuffer>}
+   */
   public delete(player: Player) {
-
     return this.http.delete("/api/players/" + player.id + '.json?uuid=' + this.uuid, this.httpOptions);
+  }
+
+  /**
+   * Deletes a saved game
+   * @param {Object} saved_game
+   * @returns {Observable<ArrayBuffer>}
+   */
+  public deleteSavedGame(saved_game: any) {
+    this.http.delete("/api/saves/" + saved_game.id + '.json?uuid=' + this.uuid, this.httpOptions).subscribe(
+      data => {
+        this.player.saved_games = this.player.saved_games.filter(sv => sv.id !== saved_game.id);
+      }
+    );
   }
 
   /**

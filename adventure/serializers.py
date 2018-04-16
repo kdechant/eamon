@@ -3,6 +3,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, \
     Player, PlayerArtifact, PlayerProfile, Hint, HintAnswer, ActivityLog
+from player.serializers import SavedGameListSerializer
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -85,6 +86,7 @@ class PlayerArtifactSerializer(serializers.ModelSerializer):
 
 class PlayerSerializer(serializers.ModelSerializer):
     inventory = PlayerArtifactSerializer(many=True, read_only=False)
+    saved_games = SavedGameListSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         inventory_data = validated_data.pop('inventory') # not used here - causes errors if present
