@@ -36,6 +36,11 @@ export class SavedGameTileComponent {
   constructor(private _playerService: PlayerService) {
   }
 
+  public loadSavedGame(saved_game) {
+    window.localStorage.setItem('saved_game_slot', saved_game.slot);
+    window.location.href = '/adventure/' + saved_game.adventure.slug;
+  }
+
   public deleteSavedGame(saved_game) {
     if (confirm("Are you sure you want to delete this saved game?")) {
       saved_game.message = 'Deleted!';

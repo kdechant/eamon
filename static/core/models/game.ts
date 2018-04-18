@@ -12,6 +12,7 @@ import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
 import {ILoggerService, DummyLoggerService} from "../services/logger.service";
+import {SavedGameService} from "../services/saved-game.service";
 
 declare var LZString;
 
@@ -184,11 +185,6 @@ export class Game {
   demo: boolean = false;
 
   /**
-   * Saved game descriptions
-   */
-  saves: string[] = [];
-
-  /**
    * Statistics for the game (damage taken, secret doors found, etc.)
    */
   statistics: { [key: string]: number; } = {
@@ -205,6 +201,10 @@ export class Game {
   mock_random_numbers: number[] = [];
 
   logger: ILoggerService;
+
+  // Saved game stuff
+  savedGameService: SavedGameService;
+  public saved_games: any = {};
 
   constructor() {
     if (Game._instance) {
@@ -255,21 +255,47 @@ export class Game {
     }
 
     // for unit tests, the logger won't usually be initialized, so create a dummy logger
-    if (!this.logger) {
+    // if (!this.logger) {
       this.logger = new DummyLoggerService;
-    }
-    this.logger.log("start adventure");
+    // }
 
-    // Show the adventure description
-    this.history.push("");
+    // load the saved games
+    this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
+      data => {
+        for (let sv of data) {
+          this.saved_games[sv.slot] = sv;
+        }
+        console.log('loaded save games', this.saved_games)
 
-    // if there is no intro text, just start the game
-    if (this.intro_text[0] === "") {
-      this.start();
-    } else {
-      // event handler that can change the intro text
-      this.triggerEvent("intro");
-    }
+        // determine if resuming a saved game
+        let saved_game_slot = window.localStorage.getItem('saved_game_slot');
+        console.log('restoring from slot ' + saved_game_slot + ' on game start')
+        if (saved_game_slot) {
+
+          // loading a saved game
+          this.restore(saved_game_slot);
+          // window.localStorage.removeItem('saved_game_slot');
+          this.start();
+
+        } else {
+
+          // new game
+          this.logger.log("start adventure");
+
+          // Show the adventure description
+          this.history.push("");
+
+          // if there is no intro text, just start the game
+          if (this.intro_text[0] === "") {
+            this.start();
+          } else {
+            // event handler that can change the intro text
+            this.triggerEvent("intro");
+          }
+
+        }
+      }
+    );
 
   }
 
@@ -434,7 +460,7 @@ export class Game {
    * Rolls a set of dice
    * @param {number} dice
    *   The number of dice
-   * @param (number} sides
+   * @param {number} sides
    *   The number of sides on each dice. Normally a positive integer but zero and negative numbers are also supported.
    */
   diceRoll(dice, sides) {
@@ -527,8 +553,9 @@ export class Game {
 
   /**
    * Handles player death.
-   * @param boolean show_health whether to show the "player is dead" message. Usually true, except if the player
-   * was killed during combat, when the message will already have been shown.
+   * @param {boolean} show_health
+   *   whether to show the "player is dead" message. Usually true, except if the player
+   *   was killed during combat, when the message will already have been shown.
    */
   public die(show_health = true) {
     this.player.damage = this.player.hardiness;
@@ -549,63 +576,76 @@ export class Game {
 
   /**
    * Save the game
+   * @param {number} slot
+   *   The saved game slot (1-10)
+   * @param {string} description
+   *   The description to give the saved game (e.g., "before maze" or "after fighting dragon")
    */
   public save(slot, description) {
     this.logger.log('save game to slot ' + slot + ': ' + description);
     let sv = {
+      player_id: window.localStorage.getItem('player_id'),
+      uuid: window.localStorage.getItem('eamon_uuid'),
+      adventure_id: this.id,
+      slot: slot,
       description: description,
-      rooms: this.rooms.rooms,
-      artifacts: this.artifacts.serialize(),
-      effects: this.effects.all,
-      monsters: this.monsters.serialize(),
-      gamedata: this.data
+      data: {
+        rooms: this.rooms.rooms,
+        artifacts: this.artifacts.serialize(),
+        effects: this.effects.all,
+        monsters: this.monsters.serialize(),
+        gamedata: this.data
+      },
     };
-    let savegame = JSON.stringify(sv);
-    savegame = LZString.compressToBase64(savegame);
 
-    // put in local storage? or save to the API?
-    window.localStorage.setItem('savegame_' + this.id + "_" + slot, savegame);
-    window.localStorage.setItem('savegame_description_' + this.id + "_" + slot, description);
+    // save to the API
+    this.savedGameService.saveGame(sv).subscribe(
+      sv => {
+        this.saved_games[slot] = sv;
+        console.log(this.saved_games);
+      },
+      err => {
+        this.history.write("Error saving game!");
+        console.log(err);
+      }
+    );
   }
 
   /**
    * Restore a save game
+   * @param {number} slot
+   *   The saved game slot (1-10)
    */
   public restore(slot) {
     this.logger.log('restore game from slot ' + slot);
-    let savegame = window.localStorage.getItem('savegame_' + this.id + "_" + slot);
-    if (savegame) {
-      let data = JSON.parse(LZString.decompressFromBase64(savegame));
-      // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
-      this.rooms = new RoomRepository(data.rooms);
-      this.artifacts = new ArtifactRepository(data.artifacts);
-      this.effects = new EffectRepository(data.effects);
-      this.monsters = new MonsterRepository(data.monsters);
-      this.player = this.monsters.get(0);
-      this.rooms.current_room = this.rooms.getRoomById(this.player.room_id);
-      this.player.updateInventory();
-      this.artifacts.updateVisible();
-      this.monsters.updateVisible();
-      this.data = data.gamedata;
+    this.savedGameService.loadSavedGame(this.saved_games[slot]).subscribe(
+      sv => {
+        console.log("received save game data", sv);
+        let data = JSON.parse(LZString.decompressFromBase64(sv['data']));
+        // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
+        this.rooms = new RoomRepository(data.rooms);
+        this.artifacts = new ArtifactRepository(data.artifacts);
+        this.effects = new EffectRepository(data.effects);
+        this.monsters = new MonsterRepository(data.monsters);
+        this.player = this.monsters.get(0);
+        this.rooms.current_room = this.rooms.getRoomById(this.player.room_id);
+        this.player.updateInventory();
+        this.artifacts.updateVisible();
+        this.monsters.updateVisible();
+        this.data = data.gamedata;
 
-      this.died = false;
-      this.active = true;
-      this.ready = true;
+        this.died = false;
+        this.active = true;
+        this.ready = true;
 
-      this.history = new HistoryManager;
-      this.history.push("restore");
-      this.history.write("Game restored from slot " + slot + ".");
-    }
-  }
+        this.history = new HistoryManager;
+        this.history.push("restore");
+        this.history.write("Game restored from slot " + slot + ".");
 
-  public getSavedGames() {
-    this.saves = [];
-    for (let i = 1; i <= 10; i++) {
-      let description = window.localStorage.getItem('savegame_description_' + this.id + '_' + i);
-      if (description !== null) {
-        this.saves.push(i + ": " + description);
+        // run end turn method to show location, monsters, and artifacts
+        this.endTurn();
       }
-    }
-    return this.saves;
+    );
   }
+
 }

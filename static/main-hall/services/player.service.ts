@@ -122,10 +122,15 @@ export class PlayerService {
    * @param {Object} saved_game
    * @returns {Observable<ArrayBuffer>}
    */
-  public deleteSavedGame(saved_game: any) {
+  public deleteSavedGame(saved_game: any): void {
     this.http.delete("/api/saves/" + saved_game.id + '.json?uuid=' + this.uuid, this.httpOptions).subscribe(
       data => {
         this.player.saved_games = this.player.saved_games.filter(sv => sv.id !== saved_game.id);
+        this.log("delete saved game #" + saved_game.id);
+      },
+      err => {
+        console.error(err);
+        saved_game.message = 'Error';
       }
     );
   }

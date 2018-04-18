@@ -143,16 +143,14 @@ class PlayerProfileViewSet(viewsets.ModelViewSet):
     queryset = PlayerProfile.objects.all()
     permission_classes = (AllowAny,)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         pass
 
-    def create(self, request, pk=None):
+    def create(self, request, *args, **kwargs):
         """
         This is actually an "upsert" for users
         """
         social_id = self.request.data['social_id']
-        # print(str(self.request.query_params))
-        # print("Social ID = " + str(social_id))
         request_uuid = self.request.data['uuid']
 
         # create a profile if not found
@@ -206,7 +204,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
     """
     API URL to update a player. Overrides the parent class.
     """
-    def update(self, request, pk=None):
+    def update(self, request, *args, **kwargs):
         # uuid = self.request.query_params.get('uuid', None)
         # if uuid is not None:
         #     raise PermissionError

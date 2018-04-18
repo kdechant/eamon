@@ -221,6 +221,7 @@ export class MonsterRepository {
       delete m.weight_carried;
       // some properties are only used in the main hall or game exit
       delete m.profit;
+      delete m.saved_games;
     }
     return data;
   }

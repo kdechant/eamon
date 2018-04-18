@@ -3,6 +3,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {GameLoaderService} from "../services/game-loader.service";
 import {LoggerService} from "../services/logger.service";
+import {SavedGameService} from "../services/saved-game.service";
 
 import {Game} from "../models/game";
 
@@ -22,6 +23,7 @@ export class AdventureComponent {
   constructor(
     private modalService: NgbModal,
     private _gameLoaderService: GameLoaderService,
+    private _savedGameService: SavedGameService,
     private _loggerService: LoggerService) { }
 
   public ngOnInit(): void {
@@ -30,6 +32,7 @@ export class AdventureComponent {
     this.game.demo = demo;
 
     this.game.logger = this._loggerService;
+    this.game.savedGameService = this._savedGameService;
 
     this._gameLoaderService.setupGameData(this.game.demo).subscribe(
       data => {

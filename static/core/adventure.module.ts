@@ -13,6 +13,7 @@ import {TitleCasePipe} from "./pipes/title-case.pipe";
 import {AdventureComponent} from "./components/adventure.component";
 
 import {GameLoaderService} from "./services/game-loader.service";
+import {SavedGameService} from "./services/saved-game.service";
 import {LoggerService} from "./services/logger.service";
 import {CommandPromptComponent} from "./components/command.component";
 import {HistoryComponent} from "./components/history.component";
@@ -48,7 +49,7 @@ import {StatusComponent} from "./components/status.component";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AdventureComponent],
-  providers: [GameLoaderService, LoggerService]
+  providers: [GameLoaderService, SavedGameService, LoggerService]
 })
 export class AdventureModule {
 }

@@ -82,9 +82,4 @@ export class PlayerDetailComponent implements OnInit {
     );
   }
 
-  public loadSavedGame(saved_game) {
-    window.localStorage.addItem('saved_game_id');
-    window.location.href = '/adventure/' + saved_game.adventure.slug;
-  }
-
 }

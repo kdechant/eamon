@@ -1260,12 +1260,15 @@ export class SaveCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
+    if (game.demo) {
+      throw new CommandException("Saved games are not available when playing as the demo character.");
+    }
+
     let q1 = new ModalQuestion;
     q1.type = 'multiple_choice';
     q1.question = "Please choose a saved game slot:";
     q1.choices = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'cancel'];
     q1.callback = function (answer) {
-      console.log(answer);
       if (answer === 'cancel') {
         return false;
       }
@@ -1295,13 +1298,18 @@ export class RestoreCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
 
+    if (game.demo) {
+      throw new CommandException("Saved games are not available when playing as the demo character.");
+    }
+
     let q1 = new ModalQuestion;
     q1.type = 'multiple_choice';
     q1.question = "Please choose a saved game to restore:";
     q1.choices = [];
-    let saves = game.getSavedGames();
-    for (let sv of saves) {
-      q1.choices.push(sv);
+    for (let i = 1; i <= 10; i++) {
+      if (game.saved_games.hasOwnProperty(i)) {
+        q1.choices.push(i + ": " + game.saved_games[i].description);
+      }
     }
     q1.choices.push('cancel');
     q1.callback = function (answer) {
