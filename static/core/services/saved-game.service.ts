@@ -1,15 +1,23 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie';
-import {Game} from "../models/game";
+import Rx from 'rxjs/Rx';
 
+// compression library loaded using <script> tag
 declare var LZString;
+
+export interface ISavedGameService {
+  saveGame(data: any);
+  listSavedGames(player_id: any, adventure_id: number);
+  loadSavedGame(saved_game: any);
+  loadSavedGameById(id: number);
+}
 
 /**
  * Saved Game service. Handles saving and restoring saved games.
  */
 @Injectable()
-export class SavedGameService {
+export class SavedGameService implements ISavedGameService {
 
   // the current user's UUID
   private uuid: string;
@@ -37,7 +45,7 @@ export class SavedGameService {
     return this.http.post("/api/saves?uuid=" + this.uuid, data, this.httpOptions);
   }
 
-  public listSavedGames(player_id, adventure_id) {
+  public listSavedGames(player_id: any, adventure_id: number) {
     return this.http.get("/api/saves.json?player_id=" + player_id + "&adventure_id=" + adventure_id, this.httpOptions);
   }
 
@@ -48,6 +56,26 @@ export class SavedGameService {
 
   public loadSavedGameById(id: number) {
     return this.http.get("/api/saves/" + id + ".json?uuid=" + this.uuid, this.httpOptions);
+  }
+
+}
+
+/**
+ * Dummy service used with automated tests
+ */
+export class DummySavedGameService implements ISavedGameService {
+
+  public saveGame(data: any) {
+  }
+
+  public listSavedGames(player_id: any, adventure_id: number) {
+    return Rx.Observable.of([]);
+  }
+
+  public loadSavedGame(saved_game: any) {
+  }
+
+  public loadSavedGameById(id: number) {
   }
 
 }

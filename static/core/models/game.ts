@@ -12,7 +12,7 @@ import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
 import {event_handlers} from "adventure/event-handlers";
 import {ILoggerService, DummyLoggerService} from "../services/logger.service";
-import {SavedGameService} from "../services/saved-game.service";
+import {DummySavedGameService, ISavedGameService} from "../services/saved-game.service";
 
 declare var LZString;
 
@@ -203,7 +203,7 @@ export class Game {
   logger: ILoggerService;
 
   // Saved game stuff
-  savedGameService: SavedGameService;
+  savedGameService: ISavedGameService;
   public saved_games: any = {};
 
   constructor() {
@@ -255,9 +255,12 @@ export class Game {
     }
 
     // for unit tests, the logger won't usually be initialized, so create a dummy logger
-    // if (!this.logger) {
+    if (!this.logger) {
       this.logger = new DummyLoggerService;
-    // }
+    }
+    if (!this.savedGameService) {
+      this.savedGameService = new DummySavedGameService();
+    }
 
     // load the saved games
     this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
@@ -274,7 +277,7 @@ export class Game {
 
           // loading a saved game
           this.restore(saved_game_slot);
-          // window.localStorage.removeItem('saved_game_slot');
+          window.localStorage.removeItem('saved_game_slot');
           this.start();
 
         } else {
