@@ -24,6 +24,7 @@ The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
 * If your system has both python 2 and python 3 installed, you might need to run this instead: `virtualenv -p /usr/bin/python3 venv`
 * Activate the virtual environment with `source venv/bin/activate` 
 * Install Python packages using `pip install -r requirements.txt`
+    * On Windows, the mysqlclient package might fail. If so, use `pip install -r requirements.txt --find-links=packages`
 * Create a user for the admin: `python manage.py createsuperuser`
 * Run `python manage.py runserver`
     * If you're using PyCharm, skip this step and set up your development server inside PyCharm itself. It makes life a bit easier.
