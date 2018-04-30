@@ -133,7 +133,8 @@ command-prompt .form-control {
   font-size: 18px; }
 
 .game-modal .btn {
-  margin-right: 12px; }
+  margin-right: 12px;
+  margin-bottom: 10px; }
 
 .return-button-container {
   margin-top: 10px; }

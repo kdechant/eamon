@@ -1,7 +1,10 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
 import { CookieService } from 'ngx-cookie';
 import Rx from 'rxjs/Rx';
+
+import {Game} from "../models/game";
 
 // compression library loaded using <script> tag
 declare var LZString;
@@ -11,6 +14,7 @@ export interface ISavedGameService {
   listSavedGames(player_id: any, adventure_id: number);
   loadSavedGame(saved_game: any);
   loadSavedGameById(id: number);
+  deleteSavedGame(saved_game: any);
 }
 
 /**
@@ -58,6 +62,15 @@ export class SavedGameService implements ISavedGameService {
     return this.http.get("/api/saves/" + id + ".json?uuid=" + this.uuid, this.httpOptions);
   }
 
+  /**
+   * Deletes a saved game
+   * @param {Object} saved_game
+   * @returns {Observable<ArrayBuffer>}
+   */
+  public deleteSavedGame(saved_game: any): Observable<ArrayBuffer> {
+    return this.http.delete("/api/saves/" + saved_game.id + '.json?uuid=' + this.uuid, this.httpOptions);
+  }
+
 }
 
 /**
@@ -76,6 +89,9 @@ export class DummySavedGameService implements ISavedGameService {
   }
 
   public loadSavedGameById(id: number) {
+  }
+
+  public deleteSavedGame(saved_game: any) {
   }
 
 }

@@ -8,6 +8,7 @@ class SavedGame(models.Model):
     slot = models.IntegerField(null=True)
     description = models.CharField(max_length=255, blank=True, default="")
     data = models.TextField(max_length=1000000, null=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "Player {}, Adventure {}, Slot {}: {}".format(self.player_id, self.adventure_id, self.slot, self.description)

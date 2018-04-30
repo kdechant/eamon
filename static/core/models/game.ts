@@ -258,7 +258,7 @@ export class Game {
     if (!this.logger) {
       this.logger = new DummyLoggerService;
     }
-    if (!this.savedGameService) {
+    if (!this.savedGameService || this.demo) {
       this.savedGameService = new DummySavedGameService();
     }
 
@@ -268,11 +268,9 @@ export class Game {
         for (let sv of data) {
           this.saved_games[sv.slot] = sv;
         }
-        console.log('loaded save games', this.saved_games)
 
         // determine if resuming a saved game
         let saved_game_slot = window.localStorage.getItem('saved_game_slot');
-        console.log('restoring from slot ' + saved_game_slot + ' on game start')
         if (saved_game_slot) {
 
           // loading a saved game
@@ -547,9 +545,19 @@ export class Game {
       }
 
       // delete the saved games
-      for (let i = 1; i <= 10; i++) {
-        window.localStorage.removeItem('savegame_' + this.id + '_' + i);
-        window.localStorage.removeItem('savegame_description_' + this.id + '_' + i);
+      for (let slot=1; slot <= 10; slot++) {
+        let saved_game = this.saved_games[slot];
+        if (saved_game) {
+          this.savedGameService.deleteSavedGame(saved_game).subscribe(
+            data => {
+              delete this.saved_games[slot];
+              this.logger.log("delete saved game #" + saved_game.id);
+            },
+            err => {
+              console.error(err);
+            }
+          );
+        }
       }
     }
   }

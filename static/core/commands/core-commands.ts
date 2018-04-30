@@ -1267,12 +1267,23 @@ export class SaveCommand implements BaseCommand {
     let q1 = new ModalQuestion;
     q1.type = 'multiple_choice';
     q1.question = "Please choose a saved game slot:";
-    q1.choices = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'cancel'];
+    q1.choices = [];
+    for (let slot = 1; slot <= 10; slot++) {
+      if (game.saved_games.hasOwnProperty(slot.toString())) {
+        q1.choices.push(slot + ": " + game.saved_games[slot].description);
+      } else {
+        q1.choices.push(slot + ": blank");
+      }
+    }
+    q1.choices.push('cancel');
     q1.callback = function (answer) {
       if (answer === 'cancel') {
         return false;
       }
-      q2.answer = window.localStorage.getItem('savegame_description_' + game.id + "_" + answer);
+      let slot = parseInt(answer);
+      if (game.saved_games.hasOwnProperty(slot.toString())) {
+        q2.answer = game.saved_games[slot].description;
+      }
       return true;
     };
 
@@ -1280,8 +1291,9 @@ export class SaveCommand implements BaseCommand {
     q2.type = 'text';
     q2.question = "Enter a description for the saved game:";
     q2.callback = function (answer) {
-      game.save(game.modal.questions[0].answer, answer);
-      game.history.write("Game saved to slot " + game.modal.questions[0].answer + ".");
+      let slot = parseInt(game.modal.questions[0].answer);
+      game.save(slot, answer);
+      game.history.write("Game saved to slot " + slot + ".");
       return true;
     };
     game.modal.questions = [q1, q2];
