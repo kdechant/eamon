@@ -66,6 +66,8 @@ export class Monster extends GameObject {
   weapon_id: number;
   weapon_dice: number;
   weapon_sides: number;
+  attack_odds: number;
+  defense_bonus: number;
   armor_class: number;
 
   // data properties for player only
@@ -730,21 +732,22 @@ export class Monster extends GameObject {
    */
   public getToHitOdds(defender: Monster): number {
     // attacker's adjusted agility
-    let attacker_ag: number = Math.min(this.agility * this.speed_multiplier, 30) - Math.min(this.armor_class, 7);
+    let attacker_ag: number = Math.min(this.agility * this.speed_multiplier, 30);
     // defender's adjusted agility
-    let defender_ag: number = Math.min(defender.agility * defender.speed_multiplier, 30) - Math.min(defender.armor_class, 7);
+    let defender_ag: number = Math.min(defender.agility * defender.speed_multiplier, 30);
 
-    let to_hit: number = 50 + (attacker_ag - defender_ag) * 2;
-    // add weapon odds (weapon odds are capped at 30%)
-    let wpn = this.getWeapon();
-    if (wpn) {
-      to_hit += Math.min(wpn.weapon_odds, 30) / 2;
+    // Base to-hit value
+    let to_hit = 2 * (attacker_ag - defender_ag) + this.attack_odds - this.getArmorFactor() - defender.defense_bonus;
+
+    // special logic for player - adjust by weapon ability
+    if (this.id === Monster.PLAYER) {
+      to_hit += Math.min(this.weapon_abilities[wpn.weapon_type], 100);
     }
 
-    // for player, adjust by weapon ability and armor factor
-    if (this.id === Monster.PLAYER) {
-      to_hit -= this.getArmorFactor();
-      to_hit += Math.min(this.weapon_abilities[wpn.weapon_type], 100) / 4;
+    // add weapon odds (capped at 30%)
+    let wpn = this.getWeapon();
+    if (wpn) {
+      to_hit += Math.min(wpn.weapon_odds, 30);
     }
     return to_hit;
   }

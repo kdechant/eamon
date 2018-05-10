@@ -121,6 +121,11 @@ export class MonsterRepository {
       "speed": game.player.spell_abilities.speed
     };
     game.player.spell_counters = { 'speed': 0 };
+    // Player has a base to-hit of 25% (in addition to weapon ability)
+    // Why? Because the Classic Eamon 4.0-6.0 formula didn't account for defender's agility, and thus the
+    // starting weapon abilities for a new player were set too low. Adding 25% to account for this.
+    game.player.attack_odds = 25;
+    game.player.defense_bonus = 0;
     this.all.push(game.player);
 
     // create new artifact objects for the weapons and armor the player brought

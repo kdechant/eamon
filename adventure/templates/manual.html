@@ -69,19 +69,21 @@
 
       <p>Additionally, some non-player characters and monsters may have "natural weapons" (claws, teeth, fire breath, poison ooze, etc.) or may have no weapon at all.</p>
 
-      <p>Each player will have a different skill with each of the five weapon types. These skills increase when the player lands a successful hit, with the chances of an increase being greater with a lower chance of hitting. If Hedric the Horrible is wielding an axe, and has a 60% chance to hit, when he lands a successful blow, he has a 40% chance of gaining a 2% increase in his "axe" ability. The next round, his chance to hit would be 62%, and he would have a 38% chance to improve his ability by another 2%.</p>
+      <p>Each player will have a different skill with each of the five weapon types. These skills increase when the player lands a successful hit, with the chances of an increase being greater with a lower chance of hitting. If Hedric the Horrible is wielding an axe, and has a 60% chance to hit, when he lands a successful blow, he has a 40% chance of gaining a 2% increase in his "axe" ability. The next round, his chance to hit would be 62%, and he would have a 38% chance to improve his ability by another 2%.<p>
 
-      <p>For simplicity, NPCs are assumed to have the same ability with any type of weapon.</p>
+      <p>Once Hedric's axe ability reaches 50% or higher, he will have less to learn about the art, and his abilities will only increase by 1% with a successful roll.</p>
 
       <h4>Armor Types and Armor Expertise</h4>
 
-      <p>Eamon features several different types of armor: leather, chain, plate, and even some magic armors. Each provides a different amount of protection. Each also has a penalty for the wearer. Armor is cumbersome, and wearing heavy armor can make it harder for the character to hit an opponent. This effect diminishes with practice, as the character gains "armor expertise." Armor expertise increases the same way as weapon abilities do. However, it is limited by the type of armor worn. For example, wearing leather armor without a shield, a character's armor expertise will never increase above 10%.</p>
+      <p>Eamon features several different types of armor: leather, chain, plate, and even some magic armors. Each provides a different amount of protection. The table below lists some common armor and shield types and the amount of protection provided by each.</p>
 
-      <p>The "to hit penalty" here reflects a new character with an Armor Expertise of zero. As the character becomes used to the constricting effects of fighting and maneuvering while wearing armor, their increased Armor Expertise will reduce the adjustment until, finally, armor has no negative effects at all.</p>
+      <p>Armor and shields also have a penalty for the wearer. Armor is cumbersome, and wearing heavy armor can make it harder for the character to hit an opponent. This effect is called the Armor Penalty. This amount is subtracted from the player's To Hit chance.</p>
 
-      <p>The "Armor Expertise Required" column here reflects the amount of armor expertise the player must have to completely eliminate the penalty. Numbers lower than this will result in a partial reduction in the penalty. Numbers higher than this will never increase your chance to hit.</p>
+      <p>The Armor Penalty diminishes with practice. As the character becomes used to the constricting effects of fighting and maneuvering while wearing armor, the penalty is reduced. This stat is called Armor Expertise (AE). AE increases the same way that weapon abilities do. However, the maximum AE is equal to the total Armor Penalty of the armor and shield the player is using. For example, wearing leather armor without a shield, a character's AE will never increase above 10%. Wearing chain mail and carrying a shield, the player's AE may increase up to 25%.</p>
 
-      <p>A character's Armor Expertise ability is developed the same way as their weapon abilities: Every time they successfully strike an opponent in combat, 1D65 is rolled. If the result is larger than the odds adjustment of their armor versus their current Armor Expertise, their ability is increased by 2%. Armor Expertise will continue to increase until it reaches the maximum limit of 65%, whereupon any type of standard armor can be worn without negative effects.</p>
+      <p>Once the player's AE is equal to (or higher than) the total Armor Penalty of the armor and shields the player is wearing, the Armor Penalty is removed entirely, and the armor has not effect on the chances to hit.</p>
+
+      <p>In some cases, the player may have a higher AE than Armor Penalty. This never has a net increase to the player's chance to hit. For example, if a player with an AE of 60% wore scale armor with an Armor Penalty of 40%, the net effect of wearing armor is zero.</p>
 
       <p>The standard armor types and their combat penalties are:</p>
 
@@ -89,71 +91,96 @@
         <tr>
           <th>Type</th>
           <th>Hits Absorbed</th>
-          <th>To Hit Penalty</th>
-          <th>Armor Expertise Required*</th>
+          <th>Armor Penalty</th>
         </tr>
         <tr>
           <td>None</td>
           <td>0</td>
           <td>0%</td>
-          <td>0%</td>
         </tr>
         <tr>
-          <td>Shield *</td>
+          <td>Shield <sup>1</sup></td>
           <td>1</td>
-          <td>1%</td>
           <td>5%</td>
         </tr>
         <tr>
           <td>Leather Armor</td>
           <td>1</td>
-          <td>4%</td>
           <td>10%</td>
         </tr>
         <tr>
           <td>Chain Mail</td>
-          <td>2</td>
-          <td>16%</td>
+          <td>3</td>
           <td>20%</td>
+        </tr>
+        <tr>
+          <td>Scale Armor</td>
+          <td>4</td>
+          <td>40%</td>
         </tr>
         <tr>
           <td>Plate Armor</td>
           <td>5</td>
-          <td>36%</td>
           <td>60%</td>
         </tr>
         <tr>
           <td>Magic Armor</td>
           <td>varies</td>
           <td>varies</td>
-          <td>varies</td>
         </tr>
       </table>
 
-      <p>* A shield may be used in addition to armor, if the character is using a one-handed weapon. This means a character with plate armor and a shield would have protection from 6 hits, and would need an armor expertise of 65% to avoid the penalty.</p>
+      <p><sup>1</sup> A shield may be used in addition to armor, if the character is using a one-handed weapon. This means a character with plate armor and a shield would have protection from 6 hits, and would need an Armor Expertise of 65% to avoid the penalty.</p>
 
       <h3>Combat</h3>
 
-      <h4>Attacking an oppponent</h4>
+      <h4>Attacking an opponent</h4>
 
       <p>When one character or monster attacks another, there are several factors that go into calculating the hit or miss:</p>
 
       <ul>
         <li>Attacker's agility</li>
         <li>Defender's agility</li>
-        <li>Attacker's armor class</li>
-        <li>Defenders's armor class</li>
-        <li>Weapon ability</li>
-        <li>Weapon odds</li>
+        <li>Attacker's base to-hit odds <sup>2</sup></li>
+        <li>Attacker's Weapon ability <sup>3</sup></li>
+        <li>Weapon odds (if the attacker is using a weapon)</li>
+        <li>Special defensive bonuses possessed by some monsters</li>
       </ul>
+
+      <p><sup>2</sup> The player has a base to-hit of 25%, plus any weapon abilities.</p>
+      <p><sup>3</sup> NPCs have the same ability with all weapon classes.</p>
 
       <p>Each individual weapon has its own odds adjustment, also known as "weapon odds" or "weapon complexity". This number reflects the quality of the weapon and how hard it is to use properly. A magic bow may increase your chance to hit, while a poorly-made sword may decrease it.</p>
 
-      <p>Armor also affects the odds of one opponent striking another in combat (after all, one just isn't as agile when fighting from within a tin can!).</p>
+      <p>For example, the gorilla in the Beginner's Cave has an agility of 11 and a base to-hit of 50%. Joe Normal, with his agility of 12 and a club ability of 20%, would have a 47% chance to hit the gorilla, and the gorilla would have a 48% chance to hit Joe. Hedric the Horrible, with his agility of 20 and club ability of 30%, has a 73% chance to hit the gorilla, and the gorilla has a 32% chance to hit Hedric.</p>
+
+      <ul>
+        <li>Base formula: 2*(Attacker AG - Defender AG) + Attacker base to hit + attacker weapon ability + weapon odds - armor penalty - defender special defensive odds = to hit chance</li>
+        <li>Joe Normal attacks Gorilla: 2*(12 - 11) + 25% + 20% = 47%</li>
+        <li>Gorilla attacks Joe Normal: 2*(11 - 12) + 50% = 48%</li>
+        <li>Hedric attacks Gorilla: 2*(18 - 11) + 25% + 30% = 69%</li>
+        <li>Gorilla attacks Hedric: 2*(11 - 18) + 50% = 36%</li>
+      </ul>
+
+      <p>The above examples are a simple case, in which neither Joe nor Hedric is wearing armor, and their weapons have Weapon Odds of zero.</p>
+
+      <p>For a more complete example, we need to account for Armor Penalty, Armor Expertise, and Weapon Odds. Let's say Hedric is wearing chain armor (Armor Penalty 20%) and has an Armor Expertise of 14% (for an effective Armor Penalty of 6%). He is using a club with a to-hit bonus (weapon odds) of 10%. His chance to hit is now 73%.</p>
+
+      <ul>
+        <li>Base formula: 2*(Attacker AG - Defender AG) + Attacker base to hit + attacker weapon ability + weapon odds - armor penalty - defender special defensive odds = to hit chance</li>
+        <li>Hedric attacks Gorilla: 2*(18 - 11) + 25% + 30% + 10% - (20% - 14%) = 73%</li>
+        <li>Gorilla attacks Hedric: 2*(11 - 18) + 50% = 36%</li>
+      </ul>
+
+      <p>Note that the gorilla still has the same chance to hit Hedric in this case. The defender's Armor Penalty, Weapon Abilities, and Weapon Odds do not affect the attacker's chance to hit.</p>
+
+      <p>Because monsters with higher agility are harder to hit, they also give the player a better chance to increase weapon abilities. If you want to build your stats, leave the cave rats alone and find yourself a dragon or mighty warrior to fight!</p>
+
+      <h4>Damage</h4>
 
       <p>The amount of damage a weapon does is determined by two factors: the weapon's damage "dice" and "sides." In traditional RPGs, these would indicate the number and type of dice the player would roll to calculate the damage. For example, if your character's weapon has a damage rating of 2d8, you would roll two 8-sided dice and add the total. In Eamon, however, it's a computer that does the rolling. So, you may see unusual dice like d5 or d7, and this is perfectly normal.</p>
 
-      <p>Once the initial damage is calculated, it is then adjusted based on the defender's armor class. So, if a player wearing chain mail is hit for 5 points of damage, the chain mail absorbs 2 points, leaving a final damage of 3 hit points.</p>
+      <p>Once the initial damage is calculated, it is then adjusted based on the defender's armor class. So, if a player wearing chain mail is hit for 5 points of damage, the chain mail absorbs 2 points, leaving a final damage of 3 hit points. If the attack is weaker than the defender's armor class, Eamon will show a "blow bounces off armor!" message and the defender will take no damage at all.</p>
 
       <h3>Magic</h3>
 

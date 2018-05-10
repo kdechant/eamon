@@ -631,7 +631,6 @@ export class Game {
     this.logger.log('restore game from slot ' + slot);
     this.savedGameService.loadSavedGame(this.saved_games[slot]).subscribe(
       sv => {
-        console.log("received save game data", sv);
         let data = JSON.parse(LZString.decompressFromBase64(sv['data']));
         // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
         this.rooms = new RoomRepository(data.rooms);
