@@ -740,12 +740,12 @@ export class Monster extends GameObject {
     let to_hit = 2 * (attacker_ag - defender_ag) + this.attack_odds - this.getArmorFactor() - defender.defense_bonus;
 
     // special logic for player - adjust by weapon ability
+    let wpn = this.getWeapon();
     if (this.id === Monster.PLAYER) {
       to_hit += Math.min(this.weapon_abilities[wpn.weapon_type], 100);
     }
 
     // add weapon odds (capped at 30%)
-    let wpn = this.getWeapon();
     if (wpn) {
       to_hit += Math.min(wpn.weapon_odds, 30);
     }

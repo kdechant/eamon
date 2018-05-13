@@ -205,6 +205,10 @@ export class Game {
   // Saved game stuff
   savedGameService: ISavedGameService;
   public saved_games: any = {};
+  /**
+   * Saved games used only when player died
+   */
+  public saves: any = [];
 
   constructor() {
     if (Game._instance) {
@@ -574,7 +578,13 @@ export class Game {
     this.triggerEvent("death", this.player);
     this.active = false;
     this.died = true;
-    this.getSavedGames();
+    // saved games needs to be an array for *ngFor
+    this.saves = [];
+    for (let i = 1; i <= 10; i++) {
+      if (this.saved_games.hasOwnProperty(i)) {
+        this.saves.push(i + ": " + this.saved_games[i].description);
+      }
+    }
 
     this.logger.log('died');
     for (let s in this.statistics) {

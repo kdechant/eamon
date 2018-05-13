@@ -23,7 +23,13 @@ import {Component, Input, ViewChild, ElementRef, Renderer} from "@angular/core";
       <button class="btn btn-success" id="restore" (click)="showSaves()">Restore a Saved Game</button>
     </div>
     <div class="return-button-container" *ngIf="game.died && restore">
-      <button class="btn btn-success" *ngFor="let sv of game?.saves" (click)="restoreSavedGame(sv)">{{sv}}</button>
+      <span *ngIf="game.saves">
+        <button class="btn btn-success" *ngFor="let sv of game?.saves" (click)="restoreSavedGame(sv)">{{sv}}</button>
+      </span>
+      <span *ngIf="!game.saves">
+        You have no saved games.
+      </span>
+      <button class="btn btn-success" (click)="hideSaves()">Cancel</button>
     </div>
     `,
 })
@@ -102,6 +108,10 @@ export class CommandPromptComponent {
 
   showSaves(): void {
     this.restore = true;
+  }
+
+  hideSaves(): void {
+    this.restore = false;
   }
 
   restoreSavedGame(save): void {
