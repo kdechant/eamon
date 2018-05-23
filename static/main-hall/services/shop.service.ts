@@ -128,19 +128,19 @@ export class ShopService {
           item.value = 250;
           item.armor_class = 3;
           item.armor_penalty = 20;
-          item.weight = 10;
+          item.weight = 15;
           break;
         case "scale":
           item.value = 350;
           item.armor_class = 4;
           item.armor_penalty = 40;
-          item.weight = 12;
+          item.weight = 18;
           break;
         case "plate":
           item.value = 500;
           item.armor_class = 5;
           item.armor_penalty = 60;
-          item.weight = 15;
+          item.weight = 20;
           break;
       }
       this.armors.push(item);
