@@ -3,6 +3,11 @@
 <html>
 
   <head>
+    {# tracking code like Google Analytics should only run in production #}
+    {% if settings.DEBUG == False %}
+      {% include "_google_analytics.html" %}
+    {% endif %}
+
     <title>The Wonderful World of Eamon - {% block title %}{% endblock %}</title>
 
     <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
@@ -36,11 +41,6 @@
     {% include "_footer.html" %}
 
     <div class="page-border">&nbsp;</div>
-
-    {# tracking code like Google Analytics should only run in production #}
-    {% if settings.DEBUG == False %}
-      {% include "_google_analytics.html" %}
-    {% endif %}
 
   </body>
 
