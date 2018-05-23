@@ -242,3 +242,8 @@ command-prompt .form-control {
 
 .footer a {
   white-space: nowrap; }
+
+.subfooter a {
+  color: #eeeeee;
+  font-size: 93%;
+  white-space: nowrap; }

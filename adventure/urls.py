@@ -26,6 +26,7 @@ urlpatterns = [
     # regular Django pages
     url(r'^$', views.index, name='index'),
     url(r'^about$', views.about, name='about'),
+    url(r'^privacy$', views.privacy_policy, name='privacy_policy'),
     url(r'^adventure-list$', views.adventure_list, name='adventure-list'),
     url(r'^manual$', views.manual, name='manual'),
     url(r'^news/', include('news.urls')),

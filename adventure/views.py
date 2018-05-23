@@ -22,6 +22,13 @@ def about(request):
     return render(request, 'about.html')
 
 
+def privacy_policy(request):
+    """
+    The "privacy policy" page
+    """
+    return render(request, 'privacy.html')
+
+
 def main_hall(request):
     """
     The container for the "main hall" angular2 app
@@ -65,7 +72,7 @@ class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.AdventureSerializer
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = Adventure.objects.filter(active=True)
         return queryset
 
     def retrieve(self, request, pk=None):
