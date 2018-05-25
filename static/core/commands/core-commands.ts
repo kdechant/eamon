@@ -126,7 +126,9 @@ export class LookCommand implements BaseCommand {
     let game = Game.getInstance();
 
     // look event. can be used to reveal secret doors, etc.
-    game.triggerEvent("look", arg);
+    if (!game.triggerEvent("look", arg)) {
+      return;
+    }
 
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
       // can't look at anything if it's dark.
@@ -245,66 +247,71 @@ export class GetCommand implements BaseCommand {
     arg = arg.toLowerCase();
     let match = false;
 
-    for (let a of game.artifacts.inRoom) {
-      if (a.match(arg) || arg === "all") {
-        match = true;
-        if (arg === "all" && (a.get_all === false || a.embedded)) {
-          continue;
-        }
+    // the "specialGet" event handler is used for logic when getting something that wouldn't normally be gettable
+    // like an artifact that's in a different room but is visible in the distance. (See Sword of Inari)
+    if (game.triggerEvent('specialGet', arg)) {
 
-        if (game.triggerEvent("beforeGet", arg, a)) {
-
-          // if it's a disguised monster, reveal it
-          if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
-            a.revealDisguisedMonster();
+      for (let a of game.artifacts.inRoom) {
+        if (a.match(arg) || arg === "all") {
+          match = true;
+          if (arg === "all" && (a.get_all === false || a.embedded)) {
             continue;
           }
 
-          // if it's an embedded artifact, reveal it
-          if (a.embedded) {
-            a.reveal();
-          }
+          if (game.triggerEvent("beforeGet", arg, a)) {
 
-          // weights of >900 and -999 indicate items that can't be gotten.
-          if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
-            continue;
-          }
-          if (a.weight > 900) {
-            throw new CommandException("Don't be absurd.");
-          }
-          if (a.weight === -999) {
-            throw new CommandException("You can't get that.");
-          }
-          if (a.type === Artifact.TYPE_BOUND_MONSTER) {
-            throw new CommandException("You can't get that.");
-          }
-
-          if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
-            game.player.pickUp(a);
-            if (arg === "all") {
-              game.history.write(a.name + " taken.", "no-space");
-            } else {
-              game.history.write(a.name + " taken.");
+            // if it's a disguised monster, reveal it
+            if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
+              a.revealDisguisedMonster();
+              continue;
             }
-            game.triggerEvent("afterGet", arg, a);
 
-            // if in battle and player has no weapon ready, ready it
-            if (game.in_battle && a.is_weapon && game.player.weapon_id === null) {
-              if (a.hands === 1 || !game.player.isUsingShield()) {
-                game.player.ready(a);
-                game.history.write("Readied.");
+            // if it's an embedded artifact, reveal it
+            if (a.embedded) {
+              a.reveal();
+            }
+
+            // weights of >900 and -999 indicate items that can't be gotten.
+            if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
+              continue;
+            }
+            if (a.weight > 900) {
+              throw new CommandException("Don't be absurd.");
+            }
+            if (a.weight === -999) {
+              throw new CommandException("You can't get that.");
+            }
+            if (a.type === Artifact.TYPE_BOUND_MONSTER) {
+              throw new CommandException("You can't get that.");
+            }
+
+            if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
+              game.player.pickUp(a);
+              if (arg === "all") {
+                game.history.write(a.name + " taken.", "no-space");
+              } else {
+                game.history.write(a.name + " taken.");
               }
+              game.triggerEvent("afterGet", arg, a);
+
+              // if in battle and player has no weapon ready, ready it
+              if (game.in_battle && a.is_weapon && game.player.weapon_id === null) {
+                if (a.hands === 1 || !game.player.isUsingShield()) {
+                  game.player.ready(a);
+                  game.history.write("Readied.");
+                }
+              }
+            } else {
+              game.history.write(a.name + " is too heavy.");
             }
-          } else {
-            game.history.write(a.name + " is too heavy.");
           }
         }
       }
-    }
 
-    // message if nothing was taken
-    if (!match && arg !== "all") {
-      throw new CommandException("I see no " + arg + " here!");
+      // message if nothing was taken
+      if (!match && arg !== "all") {
+        throw new CommandException("I see no " + arg + " here!");
+      }
     }
   }
 }
