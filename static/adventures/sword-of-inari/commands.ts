@@ -43,3 +43,26 @@ custom_commands.push({
 
   },
 });
+
+custom_commands.push({
+  name: "pay",
+  verbs: ["pay"],
+  run: function(verb: string, arg: string): void {
+    let game = Game.getInstance();
+
+    // this command is just a friendly alias for giving money to a couple of NPCs
+    let npc = game.monsters.getLocalByName(arg);
+    if (npc) {
+      if (npc.id === 8) {
+        game.command_parser.run('give 10 to bartender', false);
+      } else if (npc.id === 9) {
+        game.command_parser.run('give 10 to innkeeper', false);
+      } else {
+        game.history.write(npc.name + " doesn't have anything to buy");
+      }
+    } else {
+      throw new CommandException("No one here by that name.");
+    }
+
+  },
+});

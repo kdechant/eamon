@@ -101,6 +101,10 @@ export class MoveCommand implements BaseCommand {
         game.history.write("You successfully ride off into the sunset!");
         game.exit();
         return;
+      } else if (exit.room_to === RoomExit.EXIT_SILENT) {
+        // leaving the adventure (silent version)
+        game.exit();
+        return;
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
         if (room_to) {

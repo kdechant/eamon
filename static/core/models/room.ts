@@ -4,6 +4,7 @@ import {Game} from "./game";
 export class RoomExit extends Loadable {
 
   static EXIT: number = -999;
+  static EXIT_SILENT: number = -998;  // same as regular exit, but without the "ride off into the sunset" message
 
   public direction: string;
   public room_to: number;

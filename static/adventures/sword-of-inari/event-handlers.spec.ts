@@ -82,6 +82,8 @@ describe("Sword of Inari tests", function() {
         game.player.moveToRoom(10);
         game.command_parser.run('look sword of inari');
         expect(game.history.getOutput().text).toBe("The sword is too high to see clearly!");
+        game.command_parser.run('look sword');
+        expect(game.history.getOutput().text).toBe("The sword is too high to see clearly!");
         game.command_parser.run('get sword of inari');
         expect(game.history.getOutput().text).toBe("You can't reach it from here!");
         expect(sword.container_id).toBe(31, 'sword should still be in brace');
@@ -138,7 +140,7 @@ describe("Sword of Inari tests", function() {
         game.command_parser.run('buy drink');
         expect(beer.room_id).toBe(15, 'beer should have appeared');
         game.command_parser.run('give 10 to bartender');
-        expect(game.history.getOutput().text).toBe("Finish what you have first!");
+        expect(game.history.getOutput().text).toBe('"Finish what you have first!"');
         game.command_parser.run('drink beer');
         // expect(game.history.getOutput(1).text).toBe("You gulp it all down in one drink. Everyone is impressed.");
         expect(beer.room_id).toBeNull('beer should disappear');
@@ -150,7 +152,7 @@ describe("Sword of Inari tests", function() {
         game.command_parser.run('give 10 to innkeeper');
         expect(game.artifacts.get(19).room_id).toBe(16, 'key should have appeared');
         game.command_parser.run('rent room');
-        expect(game.history.getOutput().text).toBe("You already rented a room!");
+        expect(game.history.getOutput().text).toBe('"You already rented a room!"');
 
         //  open grate
         game.player.moveToRoom(21);
@@ -176,9 +178,10 @@ describe("Sword of Inari tests", function() {
         expect(game.effects.get(9).seen).toBeTruthy('should have seen effect 9');
         expect(game.player.room_id).toBe(17, 'should not have moved east from room 17');
         game.player.moveToRoom(21);
+        game.mock_random_numbers = [49]; // this move has an agility check. roll of 49 will fail it
         game.command_parser.run('n');
         expect(game.monsters.get(12).room_id).toBe(17, 'trackers should appear');
-        expect(game.player.room_id).toBe(17, 'should move to 17 from 21');
+        expect(game.player.room_id).toBe(17, 'should move from 21 to 17');
         game.monsters.get(12).destroy();  // remove trackers
         game.player.moveToRoom(22);
         game.command_parser.run('e');
