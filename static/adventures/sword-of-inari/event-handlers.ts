@@ -15,7 +15,26 @@ export var event_handlers = {
     game.data['exit flag'] = false;
     game.data['bell ringing'] = false;
     game.data['amulet used'] = false;
+    game.data['room rented'] = false;
 
+  },
+
+  "attackMonster": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // illusionary army disappears if attacked/blasted
+    if (target.id === 6) {
+      armyDisappears();
+    }
+    return true;
+  },
+
+  "blastMonster": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // illusionary army disappears if attacked/blasted
+    if (target.id === 6) {
+      armyDisappears();
+    }
+    return true;
   },
 
   "beforeGet": function(arg, artifact) {
@@ -51,7 +70,11 @@ export var event_handlers = {
 
     // Leave cathedral without player or Esher carrying Sword of Inari
     if (room.id === 12 && exit.room_to === 13 && esher.isHere()) {
-      if (!game.player.hasArtifact(12) && !esher.hasArtifact(12)) {
+      let has_sword = game.player.hasArtifact(12) || esher.hasArtifact(12);
+      if (game.artifacts.get(12).container_id === 13) {
+        let hasSword = game.player.hasArtifact(13) || esher.hasArtifact(13);
+      }
+      if (!has_sword) {
         game.effects.print(20);
         return false;
       }
@@ -139,6 +162,33 @@ export var event_handlers = {
     return true;
   },
 
+  "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
+    let game = Game.getInstance();
+    // buy options from Bozworth the gnome
+    if ((recipient.id === 8 || recipient.id === 9) && gold_amount !== 10) {
+      throw new CommandException("He wants 10 gold pieces, no more, no less!");
+    }
+
+    if (recipient.id === 8) {
+      if (game.artifacts.get(32).room_id !== null) {
+        throw new CommandException("Finish what you have first!");
+      }
+      game.history.write("One brew coming right up!");
+      game.artifacts.get(32).moveToRoom();
+      game.artifacts.get(32).quantity = 1;
+    } else if (recipient.id === 9) {
+      if (game.data['room rented']) {
+        throw new CommandException("You already rented a room!");
+      }
+      game.data['room rented'] = true;
+      game.history.write("First room on your left!");
+      game.artifacts.get(19).moveToRoom();
+    } else {
+      throw new CommandException("No services are currently being offered by " + recipient.name + ".");
+    }
+    return true;
+  },
+
   "look": function(arg: string) {
     let game = Game.getInstance();
     let artifact = game.artifacts.getByName(arg);
@@ -199,6 +249,10 @@ export var event_handlers = {
             game.history.write("There's not enough room for the spell to work!", "warning");
           }
           break;
+        // The following conflicted with the regular "you drink..." message. Removed pending game logic changes.
+        // case 32:
+        //   game.history.write("You gulp it all down in one drink. Everyone is impressed.");
+        //   break;
         case 38:
           // hammer
           if (game.artifacts.get(52).isHere()) {
@@ -209,7 +263,7 @@ export var event_handlers = {
         case 47:
           // tools
           if (game.player.room_id === 21 && !game.artifacts.get(23).is_open) {
-            game.artifacts.get(23).moveToRoom();
+            game.artifacts.get(23).reveal();
             game.artifacts.get(23).open();
             game.history.write("You've pried the grate open!", "emphasis");
           }
@@ -224,26 +278,124 @@ export var event_handlers = {
     }
   },
 
+  "beforeOpen": function(arg: string, artifact: Artifact, command: OpenCommand) {
+    let game = Game.getInstance();
+    if (artifact !== null) {
+      if (artifact.id === 23) {
+        artifact.reveal();
+        game.history.write("It's stuck! You will need to find a way to pry it open.");
+        return false;
+      }
+    }
+    return true;
+  },
+
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+
+    if (game.artifacts.get(11).isHere()) {
+      game.effects.print(40);
+      return;
+    } else if (game.artifacts.get(12).isHere()) {
+      game.effects.print(39);
+      return;
+    }
+
+    if (roll <= 20) {
+      game.effects.print(41);
+    } else if (roll <= 40) {
+      game.effects.print(42);
+    } else if (roll <= 60) {
+      game.effects.print(43);
+    } else if (roll <= 91) {
+      game.effects.print(44);
     } else {
-      game.history.write("All your wounds are healed!");
-      game.player.heal(1000);
+      for (let m of game.monsters.visible) {
+        game.history.write("All of " + m.name + "'s wounds are healed!");
+        m.heal(m.damage);
+      }
     }
   },
 
+  "take": function(arg: string, artifact: Artifact, monster: Monster) {
+    let game = Game.getInstance();
+    // you can't take alfred's lucky sword.
+    if (monster.id === 1 && artifact.id === 1) {
+      game.history.write(monster.name + " will not give up his weapon!");
+      return false;
+    }
+    return true;
+  },
+
+  "exit": function() {
+    let game = Game.getInstance();
+    let sword = game.artifacts.get(12);
+    let amulet = game.artifacts.get(11);
+
+    // Leave without using amulet
+    if (sword.container_id !== 31 && !game.data['amulet used']) {
+      game.effects.print(16);
+      failedQuest();
+      return true;
+    }
+
+    // Leave without putting Sword of Inari in scabbard
+    if (sword.container_id !== 13) {
+      game.effects.print(18);
+      failedQuest();
+      return true;
+    }
+
+    // Leave without using cube
+    if (sword.container_id !== 31 && game.monsters.get(6).room_id !== 9) {
+      game.effects.print(17);
+      failedQuest();
+      return true;
+    }
+
+    // Leave without Sword of Inari
+    if (sword.container_id !== 13 || !game.player.hasArtifact(13)) {
+      game.effects.print(23);  // this effect has some chained effects in the db
+      return true;
+    }
+
+    // successful mission
+    game.effects.print(21);  // this effect has some chained effects in the db
+    game.player.gold += 5000;
+    // Player can't sell Sword, scabbard, amulet, or cube!
+    game.artifacts.get(11).destroy();
+    game.artifacts.get(12).destroy();
+    game.artifacts.get(13).destroy();
+    game.artifacts.get(14).destroy();
+
+    return true;
+  }
+
 }; // end event handlers
 
+/**
+ * The illusionary army handling
+ */
+function armyDisappears() {
+  let game = Game.getInstance();
+  game.history.write("* * * P O O F * * *", "special2");
+  game.history.write("The Illusionary Soldiers vanish!");
+  game.monsters.get(6).room_id = null;
+}
 
-// declare any functions used by event handlers and custom commands
+/**
+ * Stuff that happens if your quest fails
+ */
+function failedQuest() {
+  let game = Game.getInstance();
+  game.effects.print(27);
+  game.effects.print(15);
+  game.effects.print(24);
+  for (let a of game.player.inventory) {
+    a.destroy();
+  }
+  game.player.gold = 0;
+}
