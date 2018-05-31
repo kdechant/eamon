@@ -428,7 +428,6 @@ function hasSword() {
  */
 function failedQuest() {
   let game = Game.getInstance();
-  game.effects.print(27);
   game.effects.print(15);
   game.effects.print(24);
   for (let a of game.player.inventory) {

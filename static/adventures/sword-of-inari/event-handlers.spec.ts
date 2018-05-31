@@ -205,7 +205,6 @@ describe("Sword of Inari tests", function() {
         game.command_parser.run('u');
         expect(game.player.gold).toBe(0, 'player gold should be taken away');
         expect(game.effects.get(18).seen).toBeTruthy('should have seen eff 18');
-        expect(game.effects.get(27).seen).toBeTruthy('should have seen eff 27');
         expect(game.effects.get(15).seen).toBeTruthy('should have seen eff 15');
         expect(game.effects.get(24).seen).toBeTruthy('should have seen eff 24');
 
