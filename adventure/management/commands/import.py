@@ -41,8 +41,9 @@ class Command(BaseCommand):
             if len(sub_adventures) > 0:
                 # multiple adventures in the database
                 for adv in sub_adventures:
-                    print("Adventure: " + adv[0])
+                    print("Adventure: '" + adv[0] + "'")
                     a = Adventure.objects.get_or_create(name=adv[0], edx=edx)[0]
+                    print("Adventure ID:" + str(a.id))
                     a.slug = slugify(adv[0])
                     a.edx_room_offset = adv[5]
                     a.edx_artifact_offset = adv[6]
@@ -84,7 +85,7 @@ class Command(BaseCommand):
 
                     # determine adventure id based on offsets
                     for a in adventures:
-                        if room_id >= a.edx_room_offset:
+                        if a.edx_room_offset is not None and room_id >= a.edx_room_offset:
                             adventure_id = a.id
                             new_room_id = room_id - a.edx_room_offset + 1
 
@@ -153,7 +154,7 @@ class Command(BaseCommand):
 
                     # determine adventure id based on offsets
                     for a in adventures:
-                        if artifact_id >= a.edx_artifact_offset:
+                        if a.edx_artifact_offset is not None and artifact_id >= a.edx_artifact_offset:
                             adventure_id = a.id
                             new_artifact_id = artifact_id - a.edx_artifact_offset + 1
 
@@ -310,7 +311,7 @@ class Command(BaseCommand):
 
                 # determine adventure id based on offsets
                 for a in adventures:
-                    if effect_id >= a.edx_effect_offset:
+                    if a.edx_effect_offset is not None and effect_id >= a.edx_effect_offset:
                         adventure_id = a.id
                         new_effect_id = effect_id - a.edx_effect_offset + 1
 
@@ -360,7 +361,7 @@ class Command(BaseCommand):
 
                     # determine adventure id based on offsets
                     for a in adventures:
-                        if monster_id >= a.edx_monster_offset:
+                        if a.edx_monster_offset is not None and monster_id >= a.edx_monster_offset:
                             adventure_id = a.id
                             new_monster_id = monster_id - a.edx_monster_offset + 1
 
