@@ -270,7 +270,9 @@ command-prompt {
   }
 }
 .adventure-list {
-  column-count: 2;
+  @media (min-width: 480px) {
+    column-count: 2;
+  }
 }
 .adventure-list-item {
 

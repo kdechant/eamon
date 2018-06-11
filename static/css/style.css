@@ -194,8 +194,9 @@ command-prompt .form-control {
   .player .glyphicon {
     font-size: 12px; }
 
-.adventure-list {
-  column-count: 2; }
+@media (min-width: 480px) {
+  .adventure-list {
+    column-count: 2; } }
 
 .adventure-list-item {
   padding-top: 5px;
