@@ -12,6 +12,10 @@
 
     <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+
     <meta property="og:url" content="https:{{ request.build_absolute_uri }}" />
     <meta property="og:title" content="The Wonderful World of Eamon" />
     <meta property="og:description" content="Slaying dragons and saving princesses for fun and profit! A web-based version of the classic fantasy text adventure game." />
