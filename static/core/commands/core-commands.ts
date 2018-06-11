@@ -312,6 +312,22 @@ export class GetCommand implements BaseCommand {
         }
       }
 
+      // artifact in container
+      if (!match) {
+        let art = game.artifacts.getByName(arg);
+        if (art.container_id !== null) {
+          let container = game.artifacts.get(art.container_id);
+          if (container.monster_id === Monster.PLAYER) {
+            throw new CommandException("You're already carrying it. But you could REMOVE it from the " + container.name + ".");
+          } else if (container.room_id === game.player.room_id && !container.embedded) {
+            game.command_parser.run('remove ' + arg + ' from ' + container.name, false);
+            return;
+          } else {
+            throw new CommandException("I see no " + arg + " here!");
+          }
+        }
+      }
+
       // message if nothing was taken
       if (!match && arg !== "all") {
         throw new CommandException("I see no " + arg + " here!");
@@ -1081,7 +1097,16 @@ export class TakeCommand implements BaseCommand {
 
     let monster = game.monsters.getByName(monster_name);
     if (!monster || monster.room_id !== game.rooms.current_room.id) {
-      throw new CommandException(monster_name + " is not here!");
+
+      // if user types an artifact name instead of a monster name
+      let a: Artifact = game.artifacts.getLocalByName(monster_name);
+      if (a && a.type === Artifact.TYPE_CONTAINER) {
+        game.command_parser.run('remove ' + arg, false);
+        return;
+      } else {
+        throw new CommandException(monster_name + " is not here!");
+      }
+
     }
 
     let item = monster.findInInventory(item_name);
@@ -1095,6 +1120,9 @@ export class TakeCommand implements BaseCommand {
       let ready_weapon_id = monster.weapon_id;
       monster.updateInventory();
       game.history.write(monster.name + " gives you the " + item.name + ".");
+      if (!item.seen) {
+        item.showDescription();
+      }
       if (item.id === ready_weapon_id) {
         // took NPC's ready weapon. NPC should ready another weapon if they have one
         monster.weapon = null;
