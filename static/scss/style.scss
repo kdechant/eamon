@@ -274,6 +274,20 @@ command-prompt {
     column-count: 2;
   }
 }
+
+.tags {
+  .tag {
+    float: left;
+    border: 1px solid $status-border;
+    border-radius: 2px;
+    margin-right: 5px;
+    border-left: 3px solid #841;
+    background: $status-bg;
+    padding: 0 2px 2px 2px;
+    font-size: 80%;
+  }
+}
+
 .adventure-list-item {
 
   padding-top: 5px;
@@ -292,19 +306,8 @@ command-prompt {
     font-size: 93%;
   }
 
-  .tags {
-    width: 100%;
-    float: left;
-    .tag {
-      float: left;
-      border: 1px solid $status-border;
-      border-radius: 2px;
-      margin-right: 5px;
-      border-left: 3px solid #841;
-      background: $status-bg;
-      padding: 0 2px 2px 2px;
-      font-size: 80%;
-    }
+  .adv-id {
+    margin-top: 0.6em;
   }
 
 }

@@ -198,6 +198,16 @@ command-prompt .form-control {
   .adventure-list {
     column-count: 2; } }
 
+.tags .tag {
+  float: left;
+  border: 1px solid #b97;
+  border-radius: 2px;
+  margin-right: 5px;
+  border-left: 3px solid #841;
+  background: #dc9;
+  padding: 0 2px 2px 2px;
+  font-size: 80%; }
+
 .adventure-list-item {
   padding-top: 5px;
   padding-bottom: 10px;
@@ -209,18 +219,8 @@ command-prompt .form-control {
     margin-bottom: 0; }
   .adventure-list-item .desc {
     font-size: 93%; }
-  .adventure-list-item .tags {
-    width: 100%;
-    float: left; }
-    .adventure-list-item .tags .tag {
-      float: left;
-      border: 1px solid #b97;
-      border-radius: 2px;
-      margin-right: 5px;
-      border-left: 3px solid #841;
-      background: #dc9;
-      padding: 0 2px 2px 2px;
-      font-size: 80%; }
+  .adventure-list-item .adv-id {
+    margin-top: 0.6em; }
 
 .stat {
   font-size: 133%; }
