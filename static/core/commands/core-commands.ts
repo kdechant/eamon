@@ -1072,6 +1072,9 @@ export class GiveCommand implements BaseCommand {
           game.history.write(recipient.name + " readies the " + item.name + ".");
           recipient.ready(item);
         }
+
+        game.triggerEvent('afterGive', arg, item, recipient);
+
       }
     }
   }
