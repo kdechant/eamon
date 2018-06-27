@@ -308,6 +308,9 @@ export class Monster extends GameObject {
       this.weapon = null;
       this.weapon_id = null;
     }
+
+    // allow event handler to adjust armor class after the standard calculation
+    game.triggerEvent('armorClass', this);
   }
 
   /**

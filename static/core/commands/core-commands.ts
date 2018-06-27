@@ -315,7 +315,7 @@ export class GetCommand implements BaseCommand {
       // artifact in container
       if (!match) {
         let art = game.artifacts.getByName(arg);
-        if (art.container_id !== null) {
+        if (art && art.container_id !== null) {
           let container = game.artifacts.get(art.container_id);
           if (container.monster_id === Monster.PLAYER) {
             throw new CommandException("You're already carrying it. But you could REMOVE it from the " + container.name + ".");

@@ -41,6 +41,18 @@ describe("Temple of the Trolls tests", function() {
         expect(game.artifacts.get(33).isHere).toBeTruthy('artifact 33 did not appear');
         game.command_parser.run('get all');
 
+        // spells
+        let original_ac = game.player.armor_class;
+        game.command_parser.run('say qorgaw');
+        expect(game.player.spell_counters['qorgaw']).toBeGreaterThan(0);
+        expect(game.player.armor_class).toBe(original_ac + 3);
+        game.command_parser.run('say trezore');
+        expect(game.player.spell_counters['trezore']).toBeGreaterThan(0);
+
+        // other say command uses
+        game.command_parser.run('say info');
+        expect(game.history.getOutput(1).text).toBe('The magic words the king told you are: ' + game.data['active words']);
+
         // king
         game.player.moveToRoom(8);
         game.tick();
@@ -69,6 +81,17 @@ describe("Temple of the Trolls tests", function() {
         game.command_parser.run('ex rock');
         expect(game.artifacts.get(47).embedded).toBeFalsy('should have shown art #47');
         expect(game.artifacts.get(48).embedded).toBeFalsy( 'should have shown art #48');
+
+        // temple door
+        game.command_parser.run('d');
+        game.command_parser.run('s');
+        expect(game.artifacts.get(46).is_open).toBeFalsy('door should start closed');
+        game.command_parser.run('open marble door');
+        expect(game.artifacts.get(46).is_open).toBeFalsy('door should still be closed');
+        game.command_parser.run('say ' + game.data['active words']);
+        expect(game.artifacts.get(46).is_open).toBeTruthy('door should be open');
+        game.command_parser.run('s');
+        expect(game.player.room_id).toBe(25, 'player did not move through door');
 
         // ulik
         let ulik = game.monsters.get(8);
@@ -108,18 +131,19 @@ describe("Temple of the Trolls tests", function() {
         game.artifacts.get(25).moveToInventory();
         game.player.updateInventory();
         game.command_parser.run('give shield to grommick');
-        expect(game.history.getOutput(0).text).toBe('Grommick smiles and says, "I have no use for that."');
+        expect(game.history.getOutput(0).text).toBe('Grommick shrugs and says, "I have no use for that."');
         game.command_parser.run('give sword blank to grommick');
         expect(game.history.getOutput(1).text).toBe('Grommick smiles and says, "I\'ll need a magic power source."');
         game.command_parser.run('give amulet to grommick');
         expect(game.history.getOutput(1).text).toBe('Grommick smiles and says, "I\'ll need a suitable reward."');
         game.command_parser.run('give red diamond to grommick');
         expect(game.effects.get(2).seen).toBeTruthy('should have seen effect #2');
-        expect(game.artifacts.get(37).room_id).toBe(15, 'sword did not appear');
         expect(game.artifacts.get(37).sides).toBe(10, 'wrong weapon sides');
-        expect(game.player.room_id).toBe(15, 'player did not move');
+        expect(game.player.room_id).toBe(63, 'player did not move');
 
-        console.log(game.history);
+        for (let h of game.history.history) {
+          console.log(h);
+        }
       }
     );
   }));

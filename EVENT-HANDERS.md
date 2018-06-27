@@ -345,6 +345,53 @@ Example:
         return true;  // this makes the game use the normal odds in situations not covered above.
       },
 
+### Attack Damage
+
+The "attackDamage" event handler is called when a monster attacks another monster, after the standard damage amount
+ has been calculated, but before the damage is dealt. It can adjust the damage amount to, for example, create a
+ magic spell that makes the player do more damage, or make a certain monster resistant to damage from a specific
+ weapon.
+
+Any output printed by this event handler will appear after the "Monster1 swings at Monster2" combat message.
+
+Parameters:
+- attacker (Monster) - The monster doing the attacking. This is the one who fumbled.
+- defender (Monster) - The monster being attacked
+- damage (number) - The normal damage done by the attacker, calculated by the combat routine, measured in hit points
+
+Return value:
+This can return true if no adjustment should be made, or it can return a number representing the new "to hit" odds.
+
+Example:
+
+      "attackDamage": function (attacker: Monster, defender: Monster, odds: number) {
+        let game = Game.getInstance();
+        // a dragon-slaying weapon
+        if (attacker.weapon.name === 'dragonlance' && defender.name === 'green dragon') {
+          return damage * 2;
+        }
+        return true;  // this makes the game use the normal odds in situations not covered above.
+      },
+
+### Armor Class
+
+The "armorClass" event handler allows you to customize the player's armor class. It is called every time a monster's inventory and armor are recalculated, just after the normal calculation is performed. It can adjust the armor class depending on game conditions, e.g., whether a certain spell is active.
+ 
+If present, this event handler will be called frequently, so it is not recommended to output any messages.
+
+Parameters:
+- monster (Monster) - The monster whose armor class is being calculated
+
+Example:
+    
+      "armorClass": function (monster: Monster) {
+        let game = Game.getInstance();
+        if (monster.id === Monster.PLAYER && monster.spell_counters['protection'] > 0) {
+          // protection spell ac bonus
+          monster.armor_class += 3;
+        }
+      },
+
 ## Magic spells
 
 There are several events related to casting spells. These include the POWER spell which has no built-in functionality but relies entirely on event handlers.
