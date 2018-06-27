@@ -110,7 +110,9 @@ export var event_handlers = {
     let artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact && artifact.id === 17) {
       game.command_parser.run("read inscription", false);
+      return false;
     }
+    return true;
   },
 
   // the 'read'/'beforeRead' event handler should set command.markings_read to true if the handler

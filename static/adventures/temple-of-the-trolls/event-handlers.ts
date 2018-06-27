@@ -167,7 +167,7 @@ export var event_handlers = {
 
   "look": function(arg: string) {
     let game = Game.getInstance();
-    let artifact = game.artifacts.getLocalByName(arg);
+    let artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact) {
       switch (artifact.id) {
         case 27:
