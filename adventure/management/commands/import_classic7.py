@@ -97,7 +97,7 @@ class Command(BaseCommand):
             for m in match:
                 # print('id: ' + m.group(1))  # id
                 id = int(m.group(1))
-                name = sentence_case(m.group(2))
+                name = m.group(2).lower()
                 print('artifact #' + m.group(1) + ': ' + name)
                 desc = sentence_case(regex.sub(r'\s{2,}', " ", m.group(3)))
                 # print('desc: ' + desc)  # desc
@@ -128,12 +128,16 @@ class Command(BaseCommand):
                 # 6 = type desc
                 a.weight = int(m.group(7))
                 a.room_id = int(m.group(8))
-                if a.room_id > 200:
-                    a.room_id -= 200
-                    a.embedded = 1
-                if a.room_id < 0:
-                    a.monster_id = abs(a.room_id) - 1
+                if a.room_id > 500:
+                    a.container_id = a.room_id - 500
                     a.room_id = None
+                if a.room_id is not None:
+                    if a.room_id > 200:
+                        a.room_id -= 200
+                        a.embedded = 1
+                    if a.room_id < 0:
+                        a.monster_id = abs(a.room_id) - 1
+                        a.room_id = None
                 a.weapon_odds = int(m.group(11)) if m.group(11) else None
                 a.weapon_type = int(m.group(13)) if m.group(13) else None
                 a.dice = int(m.group(16)) if m.group(16) else None
@@ -207,7 +211,7 @@ class Command(BaseCommand):
             match = monsters_regex.finditer(data)
             for m in match:
                 id = int(m.group(1))
-                name = sentence_case(m.group(2))
+                name = m.group(2).lower()
                 print('monster #' + str(id) + ': ' + name)
                 desc = sentence_case(regex.sub(r'\s{2,}', " ", m.group(3)))
                 print('desc: ' + desc)
