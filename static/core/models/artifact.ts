@@ -428,9 +428,8 @@ export class Artifact extends GameObject {
           this.is_broken = true;
           game.history.write("The " + this.name + " smashes to pieces!");
           if (this.type === Artifact.TYPE_CONTAINER) {
-            for (let i in this.contents) {
-              this.contents[i].room_id = game.player.room_id;
-              this.contents[i].container_id = null;
+            for (let item of this.contents) {
+              item.moveToRoom();
             }
             this.destroy();
           } else {
