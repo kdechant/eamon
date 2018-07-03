@@ -17,6 +17,27 @@ export var event_handlers = {
 
   },
 
+  "attackMonster": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // dragon
+    if (target.id === 9) {
+      game.history.write('The dragon yawns and the flame almost scorches your face. Then he goes back to sleep.');
+      return false;
+    }
+    return true;
+  },
+
+  "blast": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // dragon
+    if (target.id === 9) {
+      game.history.write('A direct hit!');
+      game.history.write('The dragon yawns and rolls over.');
+      return false;
+    }
+    return true;
+  },
+
   "endTurn2": function() {
     let game = Game.getInstance();
     if (game.monsters.get(1).isHere() && game.monsters.get(10).isHere() && !game.data['tom speaks']) {
