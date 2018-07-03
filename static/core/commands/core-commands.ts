@@ -322,14 +322,18 @@ export class GetCommand implements BaseCommand {
           } else if (container.room_id === game.player.room_id && !container.embedded) {
             game.command_parser.run('remove ' + arg + ' from ' + container.name, false);
             return;
-          } else {
-            throw new CommandException("I see no " + arg + " here!");
           }
         }
       }
 
       // message if nothing was taken
       if (!match && arg !== "all") {
+
+        // catch user mischief
+        if (game.monsters.getLocalByName(arg)) {
+          throw new CommandException("I can't get that.");
+        }
+
         throw new CommandException("I see no " + arg + " here!");
       }
     }
@@ -351,12 +355,6 @@ export class RemoveCommand implements BaseCommand {
     if (regex_result !== null) {
       let item_name: string = regex_result[1];
       let container_name: string = regex_result[2];
-
-      // catch user mischief
-      let m: Monster = game.monsters.getLocalByName(container_name);
-      if (m) {
-        throw new CommandException("I can't remove something from " + container_name + "!");
-      }
 
       // look for a container artifact and see if we can remove the item from it
       let container: Artifact = game.artifacts.getLocalByName(container_name);
@@ -385,6 +383,13 @@ export class RemoveCommand implements BaseCommand {
           throw new CommandException("I can't remove things from the " + container_name + "!");
         }
       } else {
+
+        // catch user mischief
+        let m: Monster = game.monsters.getLocalByName(container_name);
+        if (m) {
+          throw new CommandException("I can't remove something from " + m.name + "!");
+        }
+
         throw new CommandException("I see no " + container_name + " here!");
       }
 
@@ -946,6 +951,12 @@ export class OpenCommand implements BaseCommand {
             game.history.write("That's not something you can open.");
           }
         } else {
+
+          // catch user mischief
+          if (game.monsters.getLocalByName(arg)) {
+            throw new CommandException("That's not something you can open.");
+          }
+
           game.history.write("I don't see a " + arg + " here!");
         }
       }
@@ -1179,6 +1190,13 @@ export class FreeCommand implements BaseCommand {
         a.freeBoundMonster();
       }
     } else {
+
+      // catch user mischief
+      let m: Monster = game.monsters.getLocalByName(arg);
+      if (m) {
+        throw new CommandException(m.name + " is already free!");
+      }
+
       throw new CommandException("I don't see any " + arg + "!");
     }
 
