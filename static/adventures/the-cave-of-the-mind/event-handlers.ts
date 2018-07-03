@@ -253,14 +253,14 @@ export var event_handlers = {
     let game = Game.getInstance();
     // cyber-bit
     if (game.artifacts.get(5).isHere()) {
-      game.exit_message.push(game.effects.get(14).text);
+      game.after_sell_messages.push(game.effects.get(14).text);
     }
     // aj and chef messages
     if (game.monsters.get(7).isHere()) {
-      game.exit_message.push(game.effects.get(11).text);
+      game.after_sell_messages.push(game.effects.get(11).text);
     }
     if (game.monsters.get(11).isHere()) {
-      game.exit_message.push(game.effects.get(12).text);
+      game.after_sell_messages.push(game.effects.get(12).text);
     }
   }
 

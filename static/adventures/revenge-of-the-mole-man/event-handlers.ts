@@ -106,7 +106,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     // Hokas' reward
     if (game.artifacts.get(33).isHere()) {   // if player was carrying, gets automatically put down in "exit" handler
-      game.exit_message.push("Hokas Tokas pays you 1,500 gold pieces for the body of the basilisk.");
+      game.after_sell_messages.push("Hokas Tokas pays you 1,500 gold pieces for the body of the basilisk.");
       game.player.gold += 1500;
       game.artifacts.get(33).destroy(); // hides it from the status box
     }

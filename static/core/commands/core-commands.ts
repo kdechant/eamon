@@ -98,7 +98,7 @@ export class MoveCommand implements BaseCommand {
     if (game.triggerEvent("beforeMove", arg, game.rooms.current_room, exit)) {
       if (exit.room_to === RoomExit.EXIT) {
         // leaving the adventure
-        game.history.write("You successfully ride off into the sunset!");
+        game.history.write(game.exit_message);
         game.exit();
         return;
       } else if (exit.room_to === RoomExit.EXIT_SILENT) {

@@ -154,13 +154,13 @@ export var event_handlers = {
     // reward for saving leia
     let leia = game.monsters.get(13);
     if (leia.isHere() && leia.reaction !== Monster.RX_HOSTILE) {
-      game.exit_message.push(game.effects.get(1).text);
+      game.after_sell_messages.push(game.effects.get(1).text);
       game.player.gold += 2500;
     }
     // reward for killing vader
     let vader = game.monsters.get(12);
     if (vader.room_id === null) {
-      game.exit_message.push(game.effects.get(2).text);
+      game.after_sell_messages.push(game.effects.get(2).text);
       game.player.gold += 1000;
     }
 

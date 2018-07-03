@@ -218,7 +218,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     let kathryn = game.monsters.get(6);
     if (kathryn.isHere() && kathryn.reaction !== Monster.RX_HOSTILE) {
-      game.exit_message.push("Kathryn thanks you for rescuing her and immediately heads off to find a new adventure.");
+      game.after_sell_messages.push("Kathryn thanks you for rescuing her and immediately heads off to find a new adventure.");
     }
   },
 

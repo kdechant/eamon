@@ -139,7 +139,12 @@ export class Game {
   /**
    * Messages that are displayed during the exit phase, after the sale of treasure
    */
-  exit_message: string[] = [];
+  exit_message: string = "You successfully ride off into the sunset.";
+
+  /**
+   * Messages that are displayed during the exit phase, after the sale of treasure
+   */
+  after_sell_messages: string[] = [];
 
   // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
 

@@ -7,6 +7,11 @@ import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
+  "start": function() {
+    let game = Game.getInstance();
+    game.exit_message = 'You return to the main hall.';
+  },
+
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.

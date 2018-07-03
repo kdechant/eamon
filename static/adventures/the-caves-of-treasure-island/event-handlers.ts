@@ -235,7 +235,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     let genz = game.monsters.get(7);
     if (genz.isHere() && genz.reaction !== Monster.RX_HOSTILE) {
-      game.exit_message.push(game.effects.get(6).text);
+      game.after_sell_messages.push(game.effects.get(6).text);
       game.player.profit += 1000;
     }
   },

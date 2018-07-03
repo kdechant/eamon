@@ -9,6 +9,7 @@ export var event_handlers = {
 
   "start": function(arg: string) {
     let game = Game.getInstance();
+    game.exit_message = 'You enter your boat and return to the main hall.';
 
     // custom variables
     game.data['dragon vanish'] = 0;

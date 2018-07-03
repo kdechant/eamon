@@ -134,7 +134,7 @@ export var event_handlers = {
     // Duke Luxom's Reward
     if (cynthia.isHere() && cynthia.reaction !== Monster.RX_HOSTILE) {
       let reward = game.player.charisma * 10;
-      game.exit_message.push("Additionally, you receive " + reward + " gold pieces for the safe return of Cynthia.");
+      game.after_sell_messages.push("Additionally, you receive " + reward + " gold pieces for the safe return of Cynthia.");
       game.player.gold += reward;
     }
   },

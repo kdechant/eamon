@@ -288,7 +288,7 @@ export var event_handlers = {
 
     if (game.data["ship"] === "passenger") {
       let taken = Math.floor(game.player.profit / 2);
-      game.exit_message.push("The captain of the passenger ship takes " + taken + " gold pieces for your fare.");
+      game.after_sell_messages.push("The captain of the passenger ship takes " + taken + " gold pieces for your fare.");
       game.player.gold -= taken;
     }
 

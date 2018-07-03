@@ -295,7 +295,7 @@ export var event_handlers = {
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
     let game = Game.getInstance();
-    game.exit_message.push("The rebels gave you some sheets of green paper with lots of zeroes on them as a reward. You threw them away as valueless.");
+    game.after_sell_messages.push("The rebels gave you some sheets of green paper with lots of zeroes on them as a reward. You threw them away as valueless.");
   },
 
 }; // end event handlers
