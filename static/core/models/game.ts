@@ -548,7 +548,7 @@ export class Game {
       this.active = false;
       this.won = true;
 
-      this.logger.log('exit adventure');
+      this.logger.log('exit adventure', this.timer);
       for (let s in this.statistics) {
         this.logger.log(s, this.statistics[s]);
       }
@@ -591,7 +591,8 @@ export class Game {
       }
     }
 
-    this.logger.log('died');
+    this.logger.log('died', this.timer);
+    this.logger.log('died in room', this.player.room_id);
     for (let s in this.statistics) {
       if (s.indexOf('damage') !== -1) {
         this.logger.log(s, this.statistics[s]);
@@ -620,6 +621,7 @@ export class Game {
         artifacts: this.artifacts.serialize(),
         effects: this.effects.all,
         monsters: this.monsters.serialize(),
+        timer: this.timer,
         gamedata: this.data
       },
     };
@@ -657,6 +659,7 @@ export class Game {
         this.player.updateInventory();
         this.artifacts.updateVisible();
         this.monsters.updateVisible();
+        this.timer = data.timer;
         this.data = data.gamedata;
 
         this.died = false;

@@ -642,7 +642,7 @@ export class Monster extends GameObject {
       if (damage_adjusted !== true) {
         damage = damage_adjusted;
       }
-      let damage_dealt = target.injure(damage, ignore_armor);
+      let damage_dealt = target.injure(damage, ignore_armor, this);
 
       // check for weapon ability increase
       if (this.id === Monster.PLAYER) {
@@ -696,7 +696,7 @@ export class Monster extends GameObject {
 
             // not broken, user just injured self
             game.history.write("-- weapon hits user!", "danger no-space");
-            this.injure(game.diceRoll(wpn.dice, wpn.sides));
+            this.injure(game.diceRoll(wpn.dice, wpn.sides), false, this);
 
           } else {
             // damaged or broken
@@ -723,7 +723,7 @@ export class Monster extends GameObject {
                   game.history.write("-- broken weapon hurts user!", "danger no-space");
                   let dice = wpn.dice;
                   if (fumble_roll === 100) dice++;  // worst case - extra damage
-                  this.injure(game.diceRoll(dice, wpn.sides));
+                  this.injure(game.diceRoll(dice, wpn.sides), false, this);
                 }
               }
             }
@@ -856,11 +856,12 @@ export class Monster extends GameObject {
 
   /**
    * Deals damage to a monster
-   * @param {number} amount - The amount of damage to do.
+   * @param {number} damage - The amount of damage to do.
    * @param {boolean} ignore_armor - Whether to ignore the effect of armor
+   * @param {Monster} attacker - Reference to the attacking monster, if in combat
    * @returns number The amount of actual damage done
    */
-  public injure(damage: number, ignore_armor: boolean = false): number {
+  public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
     let game = Game.getInstance();
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
@@ -908,6 +909,9 @@ export class Monster extends GameObject {
         game.triggerEvent("death", this);
         if (this.id === Monster.PLAYER) {
           game.die(false);
+          if (attacker) {
+            game.logger.log('killed by', attacker.id);
+          }
           this.room_id = null; // stops monsters from continuing to attack your dead body
         } else {
           this.room_id = null;
