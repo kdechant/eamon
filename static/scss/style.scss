@@ -286,6 +286,12 @@ command-prompt {
     padding: 0 2px 2px 2px;
     font-size: 80%;
   }
+  &.tags-vertical {
+    .tag {
+      float: none;
+      width: 100%;
+    }
+  }
 }
 
 .adventure-list-item {

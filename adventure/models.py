@@ -83,11 +83,17 @@ class Adventure(models.Model):
     # the first and last index of hints read from the hints file - used with the import_hints management command
     first_hint = models.IntegerField(null=True,blank=True)
     last_hint = models.IntegerField(null=True,blank=True)
+    date_published = models.DateField(null=True,blank=True)
+    featured_month = models.CharField(null=True,blank=True,max_length=7)
     tags = TaggableManager(blank=True)
     authors = models.ManyToManyField(Author)
 
     def __str__(self):
         return self.name
+
+    @property
+    def times_played(self):
+        return ActivityLog.objects.filter(type='start adventure', adventure_id=self.id).count()
 
     class Meta:
         ordering = ['name']

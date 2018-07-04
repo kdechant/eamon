@@ -8,8 +8,11 @@ export class Adventure extends GameObject {
   description: string;
   full_description: string;
   slug: string;
-  edx: string;
+  featured_month: string;
+  date_published: string;
+  times_played: string;
   authors: string[];
+  authors_display: string;
   tags: string[];
 
 }

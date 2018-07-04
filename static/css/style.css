@@ -208,6 +208,10 @@ command-prompt .form-control {
   padding: 0 2px 2px 2px;
   font-size: 80%; }
 
+.tags.tags-vertical .tag {
+  float: none;
+  width: 100%; }
+
 .adventure-list-item {
   padding-top: 5px;
   padding-bottom: 10px;
