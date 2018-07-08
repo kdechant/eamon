@@ -188,10 +188,10 @@ export class Artifact extends GameObject {
   /**
    * If the artifact is a container, build the list of contents
    */
-  public updateContents(): void {
+  public updateContents(override: boolean = false): void {
 
     this.contents = [];
-    if (this.type === Artifact.TYPE_CONTAINER) {
+    if (this.type === Artifact.TYPE_CONTAINER || override) {
       let artifacts_repo: ArtifactRepository = Game.getInstance().artifacts;
       for (let i in artifacts_repo.all) {
         if (artifacts_repo.all[i].container_id === this.id) {

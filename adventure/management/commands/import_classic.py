@@ -1,4 +1,4 @@
-import struct, re, os, regex
+import struct, re, os, os.path, regex
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.text import slugify
@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
         # compile a regex to reuse later
         rooms_regex = regex.compile(r'ROOM # ([0-9]+) \[([A-Za-z0-9\' /.()-\[\]]+)\]\s+'
-                                    r'DESC:\s+([A-Za-z0-9\'\s \/\.,;()!?-]+)\s+'
+                                    r'DESC:\s+([A-Za-z0-9\'\s \/\.,:;()!?-]+)\s+'
                                     r'DIRECTIONS MOVED IN--\s+'
                                     r'NORTH\s+:\s+(-?[0-9]+)\s+(\[.+\])?\s+'
                                     r'SOUTH\s+:\s+(-?[0-9]+)\s+(\[.+\])?\s+'
@@ -39,7 +39,7 @@ class Command(BaseCommand):
             match = rooms_regex.finditer(data)
             for m in match:
                 # print('id: ' + m.group(1)) # id
-                print('room: ' + m.group(2)) # name
+                print('room #' + m.group(1) + ': ' + m.group(2)) # name
                 # print('desc: ' + m.group(3)) # desc
                 # print('n: ' + m.group(4)) # n
                 # print('s: ' + m.group(6)) # s
@@ -125,17 +125,20 @@ class Command(BaseCommand):
         # effects
         effect_regex = regex.compile(r'EFFECT #(\d+):\s+([A-Za-z0-9\'\s \/\.,;()!?-]+)')
 
-        with open(folder + '/effects.txt', 'r') as datafile:
-            data = datafile.read()
-            data = data.replace('EFFECT #', '~~~EFFECT #')  # makes regex matching easier
-            match = effect_regex.finditer(data, regex.M)
-            for m in match:
-                id = int(m.group(1))
-                text = sentence_case(regex.sub(r'\s{2,}', " ", m.group(2)))
-                print('effect #' + str(id) + ': ' + text)
-                e = Effect.objects.get_or_create(adventure=adventure, effect_id=id)[0]
-                e.text = text
-                e.save()
+        if os.path.isfile(folder + '/effects.txt'):
+            with open(folder + '/effects.txt', 'r') as datafile:
+                data = datafile.read()
+                data = data.replace('EFFECT #', '~~~EFFECT #')  # makes regex matching easier
+                match = effect_regex.finditer(data, regex.M)
+                for m in match:
+                    id = int(m.group(1))
+                    text = sentence_case(regex.sub(r'\s{2,}', " ", m.group(2)))
+                    print('effect #' + str(id) + ': ' + text)
+                    e = Effect.objects.get_or_create(adventure=adventure, effect_id=id)[0]
+                    e.text = text
+                    e.save()
+        else:
+            print("No effects file found. Skipping.")
 
         # monsters
 

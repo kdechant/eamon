@@ -148,7 +148,7 @@ export class LookCommand implements BaseCommand {
       let match = false;
 
       // see if there is a matching artifact. (don't reveal yet - or we would see the description twice)
-      let a = game.artifacts.getLocalByName(arg, false);
+      let a: Artifact = game.artifacts.getLocalByName(arg, false);
       if (a) {
         match = true;
 
@@ -158,6 +158,19 @@ export class LookCommand implements BaseCommand {
           a.reveal();
         } else {
           game.history.write(a.description);
+        }
+
+        // Reveal artifacts "hidden" in this artifact - e.g., a ring on a dead body, etc.
+        // This only applies to artifacts that are not containers. To set up this effect, give the "contained" item
+        // a "container_id" of another artifact that is not a container (see Temple of Ngurct fireball wand for example)
+        console.log(a.type);
+        a.updateContents(true); // override the container logic to have contents of any artifact type, just for this logic
+        console.log(a.contents);
+        if (a.type !== Artifact.TYPE_CONTAINER && a.contents.length > 0) {
+          game.history.write("You found something!");
+          for (let item of a.contents) {
+            item.moveToRoom();
+          }
         }
 
         // display quantity for food, drinks, and light sources
@@ -689,7 +702,7 @@ export class UseCommand implements BaseCommand {
   verbs: string[] = ["use"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item = game.artifacts.getByName(arg);
+    let item: Artifact = game.artifacts.getByName(arg);
     if (item) {
       if (item.quantity === null || item.quantity > 0) {
         item.use();
