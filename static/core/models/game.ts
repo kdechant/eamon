@@ -494,6 +494,17 @@ export class Game {
   }
 
   /**
+   * Returns a random element from an array
+   * @param array
+   *   A one-dimensional array; e.g., the array of rooms or monsters
+   * @returns {any}
+   */
+  getRandomElement(array: any[]) {
+    let index = this.diceRoll(1, Math.floor(Math.random() * array.length)) - 1;
+    return array[index];
+  }
+
+  /**
    * Triggers a game event.
    * @param {string} event_name
    *   The name of the event, e.g., "beforeGet", "look", "open", "read"

@@ -810,6 +810,21 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Rolls a saving throw for a monster to avoid an effect
+   * @param {string} stat
+   *   The stat to check the saving throw against: 'hardiness', 'agility', or 'charisma'
+   * @param {number} difficulty
+   *   The number that must be rolled for the throw to succeed
+   */
+  public rollSavingThrow(stat, difficulty) {
+    console.log(this.name + " saving throw: " + stat + ' vs. ' + difficulty);
+    let roll = Game.getInstance().diceRoll(1, 20);
+    let success = roll + this[stat] / 3 >= difficulty;
+    console.log("rolled " + roll + " + bonus of " + this[stat] / 3 + " = " + (success ? "success" : "fail"));
+    return success;
+  }
+
+  /**
    * Gets the weapon a monster is currently using. For group monsters, the return value will depend on the
    * value of this.group_monster_index.
    * @returns Artifact
