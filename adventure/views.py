@@ -122,7 +122,7 @@ class MonsterViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Lists monster data for an adventure.
     """
-    queryset = Monster.objects.all()
+    queryset = Monster.objects.all().order_by('monster_id')
     serializer_class = serializers.MonsterSerializer
 
     def get_queryset(self):

@@ -67,21 +67,23 @@ export var event_handlers = {
       game.effects.print(a.effect_id);
       // weapon_odds field is used to store the chance of hitting, as an integer (not a percentage).
       // to make the saving throw, the player rolls 1 d (agility) and has to be above that number.
-      if (game.player.rollSavingThrow('agility', a.weapon_odds)) {
-        game.history.write("You narrowly avoid the trap!");
-      } else {
-        // choose targets and deal damage
-        let monster_ids = game.monsters.visible.map(x => x.id);
-        for (let i = 0; i < a.quantity; i++) {
-          let monster_id = game.diceRoll(1, monster_ids.length) - 1;
-          let monster = game.monsters.get(monster_id);
-          // damage is stored in dice and sides, just like weapons.
-          // the "armor_penalty" field should be either 1 (ignore armor) or 0 (armor absorbs hits)
-          monster.injure(game.diceRoll(a.dice, a.sides), a.armor_penalty);
-          monster_ids.splice(monster_id, 1);
+
+      // choose targets and deal damage
+      let monster_ids = game.monsters.visible.map(x => x.id);
+      monster_ids.push(0);
+      for (let i = 0; i < a.quantity; i++) {
+        let monster_index = game.diceRoll(1, monster_ids.length) - 1;
+        let victim = game.monsters.get(monster_ids[monster_index]);
+        if (victim.rollSavingThrow('agility', a.weapon_odds)) {
+          game.history.write(victim.name + " narrowly avoids the trap!");
+        } else {
+        // damage is stored in dice and sides, just like weapons.
+        // the "armor_penalty" field should be either 1 (ignore armor) or 0 (armor absorbs hits)
+          victim.injure(game.diceRoll(a.dice, a.sides), a.armor_penalty);
         }
+        monster_ids.splice(monster_index, 1);
       }
-      a.reveal();
+      a.embedded = false;
     }
 
     return true;
@@ -108,9 +110,10 @@ export var event_handlers = {
     }
 
     // ring of regen
-    if (game.player.isWearing(64)) {
+    if (game.player.isWearing(64) && game.player.damage > 0) {
       game.data['regeneration counter']++;
       if (game.data['regeneration counter'] % 5 === 0) {
+        game.history.write("The Ring of Regeneration is healing you slowly!");
         game.player.heal(1);
       }
     }
@@ -184,7 +187,7 @@ export var event_handlers = {
         game.history.write("It's acid! It touches your lips and burns you something awful!", "warning");
       } else if (artifact.id === 69) {
         game.history.write("You knew the wine was strong, but you drank it anyway. Now, you're roaring drunk and in no shape for combat.", "special");
-        game.player.agility /= 2;
+        game.player.agility = Math.floor(game.player.agility / 2);
       }
     }
   },
@@ -196,7 +199,7 @@ export var event_handlers = {
     if (roll < 20 || game.player.room_id === 58) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom([58]);
+      let room = game.rooms.getRandom([29,30,31,32,45,46,49,50,51,52,53,55,58]);
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else if (roll <= 40) {
@@ -238,6 +241,16 @@ export var event_handlers = {
     }
   },
 
+  "exit": function() {
+    let game = Game.getInstance();
+    // have to do some artifact checks before the selling happens
+    if (game.player.hasArtifact(37)) {
+      game.data['returned medallion'] = true;
+      game.artifacts.get(37).destroy();
+    }
+    return true;
+  }
+
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
     let game = Game.getInstance();
@@ -251,7 +264,7 @@ export var event_handlers = {
       }
       game.player.gold += reward;
     }
-    if (game.player.hasArtifact(37)) {
+    if (game.data['returned medallion']) {
       game.after_sell_messages.push("You also receive 5,000 GP for the return of the Gold Medallion of Ngurct. The king immediately takes it to his wizard, who destroys it.");
       game.player.gold += 5000;
     } else {
@@ -270,11 +283,9 @@ function summon_wandering_monster() {
     return;
   }
   let index = Math.floor(game.diceRoll(1, game.data["wandering monsters"].length) - 1);
-  console.log('wandering monster index:', index);
   let monster = game.monsters.get(game.data['wandering monsters'][index]);
-  console.log('wandering monster id:', monster.id);
   if (monster.room_id === null) {
-    game.history.write(monster.name + " walks into the room!");
+    game.history.write(monster.name + " walks into the room!", "warning");
     monster.moveToRoom();
     game.data["wandering monsters"].splice(index, 1);
   }
@@ -295,7 +306,6 @@ function fireball() {
           targets.push(m);
         }
       }
-      console.log(targets);
       if (targets.length) {
         game.history.write("The room is filled with an incandescent fireball!", "special2");
         for (let target of targets) {
@@ -304,7 +314,6 @@ function fireball() {
           if (target.rollSavingThrow('hardiness', 14)) {
             damage = Math.floor(damage / 2);
           }
-          console.log(target.name + " takes " + damage + " hits");
           target.injure(damage, true);
         }
 

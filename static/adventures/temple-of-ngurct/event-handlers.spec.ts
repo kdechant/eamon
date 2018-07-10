@@ -97,6 +97,12 @@ describe("Temple of Ngurct tests", function() {
         expect(door1.is_open).toBeFalsy('side 1 did not close');
         expect(door2.is_open).toBeFalsy('side 2 did not close');
 
+        // hieroglyphics
+        game.monsters.get(46).destroy();  // get mummy out of the way
+        game.player.moveToRoom(38);
+        game.command_parser.run('read inscription');
+        expect(game.effects.get(1).seen).toBeTruthy('did not show inscription effects');
+
         // alkanda
         let alk = game.monsters.get(56);
         game.command_parser.run('say annal natthrac');
