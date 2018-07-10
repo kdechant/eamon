@@ -82,7 +82,7 @@ export class MoveCommand implements BaseCommand {
         if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
           let key = game.artifacts.get(door.key_id);
           game.history.write("You unlock the " + door.name + " using the " + key.name + ".");
-          door.is_open = true;
+          door.open();
         }
 
         if (!door.is_open) {

@@ -103,6 +103,14 @@ describe("Temple of Ngurct tests", function() {
         game.command_parser.run('read inscription');
         expect(game.effects.get(1).seen).toBeTruthy('did not show inscription effects');
 
+        // door logic (tests core stuff)
+        game.player.moveToRoom(26);
+        game.artifacts.get(71).moveToInventory();
+        game.player.updateInventory();
+        game.command_parser.run('open cell door');
+        expect(game.artifacts.get(12).is_open).toBeTruthy('west side of cell door did not open');
+        expect(game.artifacts.get(13).is_open).toBeTruthy('east side of cell door did not open');
+
         // alkanda
         let alk = game.monsters.get(56);
         game.command_parser.run('say annal natthrac');
