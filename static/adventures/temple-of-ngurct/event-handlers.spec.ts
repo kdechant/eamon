@@ -103,6 +103,23 @@ describe("Temple of Ngurct tests", function() {
         game.command_parser.run('read inscription');
         expect(game.effects.get(1).seen).toBeTruthy('did not show inscription effects');
 
+        // potion
+        let black_potion = game.artifacts.get(62);
+        black_potion.moveToInventory();
+        game.player.updateInventory();
+        let old_ag = game.player.agility;
+        let old_original_ag = game.data['original ag'];
+        game.command_parser.run('drink black potion');
+        expect(game.player.agility).toBe(old_ag + 1, 'agility did not increase');
+        expect(game.data['original ag']).toBe(old_original_ag + 1, 'original ag var did not increase');
+
+        // carcass
+        let carcass = game.artifacts.get(67);
+        carcass.moveToRoom();
+        game.artifacts.updateVisible();
+        game.command_parser.run('eat carcass');
+        expect(carcass.room_id).toBe(game.player.room_id, 'carcass should still be here');
+
         // door logic (tests core stuff)
         game.player.moveToRoom(26);
         game.artifacts.get(71).moveToInventory();

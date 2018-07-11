@@ -12,15 +12,23 @@ export var event_handlers = {
 
     game.data['oak door shut'] = false;
 
-    // let rooms = game.rooms.rooms.map(x => x.id);
     game.data['wandering monsters'] = [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
-    // for (let i in [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]) {
-    //   game.data['wandering monsters'].push({
-    //     'monster_id': i,
-    //     'rooms': rooms,
-    //     'chance': 0.07
-    //   })
-    // }
+
+    // sir charles
+    game.monsters.get(32).spells = ['heal'];
+    game.monsters.get(32).spell_points = 2;
+
+    // magician
+    game.monsters.get(32).spells = ['blast', 'heal'];
+    game.monsters.get(32).spell_points = 2;
+
+    // high priest
+    game.monsters.get(56).spells = ['blast'];
+    game.monsters.get(56).spell_points = 3;
+
+    // alkanda
+    game.monsters.get(29).spells = ['blast'];
+    game.monsters.get(32).spell_points = 4;
 
     game.data['regeneration counter'] = 0;
     game.data['alkanda summoned'] = false;
@@ -103,8 +111,8 @@ export var event_handlers = {
     let game = Game.getInstance();
 
     // wandering monsters
-    if (game.data['wandering monsters'].length > 0 && game.timer > 1) {
-      if (game.diceRoll(1, 20) === 20) {
+    if (game.data['wandering monsters'].length > 0 && game.timer > 1 && !game.skip_battle_actions) {
+      if (game.diceRoll(1, 100) <= 9) {
         summon_wandering_monster();
       }
     }
@@ -175,6 +183,13 @@ export var event_handlers = {
     }
   },
 
+  "eat": function(arg: string, artifact: Artifact) {
+    if (artifact && artifact.id === 67) {
+      Game.getInstance().history.write("You think you know what kind of animal the carcass came from, and you'd rather not eat it.");
+      return false;
+    }
+  },
+
   "use": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact) {
@@ -185,6 +200,11 @@ export var event_handlers = {
         game.history.write("Aside from feeling grossed out, you suffer no ill effects.");
       } else if (artifact.id === 53) {
         game.history.write("It's acid! It touches your lips and burns you something awful!", "warning");
+      } else if (artifact.id === 62) {
+        // black potion
+        game.history.write("A strange sensation comes over you. Your movements seem to quicken, just a little.");
+        game.player.agility++;
+        game.data["original ag"]++;
       } else if (artifact.id === 69) {
         game.history.write("You knew the wine was strong, but you drank it anyway. Now, you're roaring drunk and in no shape for combat.", "special");
         game.player.agility = Math.floor(game.player.agility / 2);
@@ -233,6 +253,7 @@ export var event_handlers = {
       game.history.write("The ground shakes and a thunderclap slams your ears.", "special");
       hero.moveToRoom();
       hero.showDescription();
+      hero.seen = true;
     } else if (roll <= 90) {
       summon_wandering_monster();
     } else {
@@ -249,12 +270,12 @@ export var event_handlers = {
       game.artifacts.get(37).destroy();
     }
     return true;
-  }
+  },
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
     let game = Game.getInstance();
-    let thera = game.monsters.get(29);
+    let thera = game.monsters.get(33);
     if (thera.isHere() && thera.reaction !== Monster.RX_HOSTILE) {
       let reward = 500 + (thera.hardiness - thera.damage) * 25;
       game.after_sell_messages.push("Additionally, you receive " + reward + " gold pieces as a reward for the return of Princess Thera.");

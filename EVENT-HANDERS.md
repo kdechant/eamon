@@ -197,7 +197,28 @@ Example:
 
 A note on standard doors/gates and containers like chests or bags:
 
-These common types of artifacts are handled by the core game and don't require a custom event handler. Set the artifact type to "Door/Gate" (8) or "Container" (4). Optionally give it a "key id" to lock it using that artifact ID, or put items into a container by setting their "container_id" property to the ID of the container artifact.
+These common types of artifacts are handled by the core game and don't require a custom event handler. Set the artifact type to "Door/Gate" (8) or "Container" (4). Optionally give it a "key_id" to lock it using that artifact ID, or put items into a container by setting their "container_id" property to the ID of the container artifact.
+
+## Eat
+
+This is called when the player tries to eat something. It can be used to handle situations where the player needs
+to eat something that is not an explicit artifact, or to prevent eating an otherwise edible artifact.
+
+Parameters:
+- arg (string) - What the player typed after EAT (e.g., "eat *donut*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
+
+Example:
+
+    "eat": function(arg: string, artifact: Artifact) {
+        let game = Game.getInstance();
+        if (artifact && artifact.name === 'poison donut') {
+          game.history.write("You don't like the smell of that donut. Better not eat it.");
+          return false; // stops the game from running the rest of the "eat" command logic
+        }
+        return true; // normal situation not handled above; resume regular command logic (healing food, etc.) 
+      },
+    },
 
 ## Drink
 
@@ -222,7 +243,7 @@ Example:
       },
     },
 
-A note on healing potions:
+A note on healing potions and healing food items:
 
 These common types of artifacts are handled by the core game and don't require a custom event handler. Set the artifact type to "Edible" (9) or "Drinkable" (6), then set the dice and sides to match the amount of healing effect you want.
 
