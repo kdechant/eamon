@@ -382,14 +382,15 @@ export class Game {
         this.monsters.updateVisible();
       }
     }
-    // clear the "skip battle" flag if it was set
-    this.skip_battle_actions = false;
 
     // the first end turn event triggers here, so we can see any artifacts or monsters that have appeared,
     // but any monsters that have just entered the room won't be able to attack.
     this.triggerEvent("endTurn");
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
+
+    // clear the "skip battle" flag if it was set
+    this.skip_battle_actions = false;
 
     this.endTurn();
   }
