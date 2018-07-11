@@ -69,6 +69,9 @@ export class Monster extends GameObject {
   attack_odds: number;
   defense_bonus: number;
   armor_class: number;
+  spells: string[] = [];  // spells that an NPC knows, e.g., ['blast', 'heal']
+  spell_points: number = 0;  // number of spells the monster can cast (each spell takes 1 SP)
+  spell_frequency: number = 33;  // percent chance the monster will cast a spell instead of other battle actions
 
   // data properties for player only
   charisma: number;
@@ -561,6 +564,30 @@ export class Monster extends GameObject {
         if (typeof i !== 'undefined') {
           this.pickUpWeapon(i);
           return;
+        }
+      }
+
+      // cast spells, if they know any
+      // (to activate this, set their 'spells' and 'spell_points' values in the 'start' event handler (e.g., Ngurct)
+      if (this.spells.length > 0 && this.spell_points > 0) {
+        if (game.diceRoll(1,100) <= this.spell_frequency) {
+          if (this.spells.indexOf('heal') !== -1 && this.damage > this.hardiness * 0.4) {
+            // heal
+            game.history.write(this.name + " casts a heal spell!");
+            let heal_amount = game.diceRoll(2, 6);
+            this.heal(heal_amount);
+            this.spell_points--;
+            return;
+          } else if (this.spells.indexOf('heal') !== -1) {
+            // blast
+            let target = this.chooseTarget();
+            let damage = game.diceRoll(2, 5);
+            game.history.write(this.name + " casts a Blast spell at " + target.name + "!");
+            game.history.write("--a direct hit!", "success");
+            target.injure(damage, true);
+            this.spell_points--;
+            return;
+          }
         }
       }
 
