@@ -20,11 +20,13 @@ The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
 * Load the database from /db.db.sql.gz into MySQL, in the database `eamon`
 * Make sure the database user and password in eamon/settings.py match something that works on your system
 * Open a command prompt and navigate to the repository root
-* Create a Python virtual environment using `virtualenv venv`
-* If your system has both python 2 and python 3 installed, you might need to run this instead: `virtualenv -p /usr/bin/python3 venv`
-* Activate the virtual environment with `source venv/bin/activate` 
-* Install Python packages using `pip install -r requirements.txt`
-    * On Windows, the mysqlclient package might fail. If so, use `pip install -r requirements.txt --find-links=packages`
+* Install pipenv: `pip install pipenv`
+* Install the packages: `pipenv install`
+* If running Windows, and you see an error while installing mysqlclient:
+    * Download the MySQL wheel for your version of Windows and Python from https://www.lfd.uci.edu/~gohlke/pythonlibs/
+    * Install the wheel file manually with `pipenv run pip install ... `
+    * e.g., `pipenv run pip install .\packages\mysqlclient-1.3.13-cp37-cp37m-win_amd64.whl`
+* Activate the pipenv shell with `pipenv shell` 
 * Create a user for the admin: `python manage.py createsuperuser`
 * Run `python manage.py runserver`
     * If you're using PyCharm, skip this step and set up your development server inside PyCharm itself. It makes life a bit easier.
