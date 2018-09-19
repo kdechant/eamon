@@ -24,7 +24,7 @@ import {Adventure} from "../models/adventure";
   
   <p>Eamon contains many different adventures of many different styles. Some are fantasy or sci-fi, contain a quest or just hack-and-slash. Some are aimed at beginners and others are for veteran adventurers only. Choose your fate and perish (or profit)...</p>
   
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       
       <div class="col-md-2">
@@ -75,7 +75,7 @@ import {Adventure} from "../models/adventure";
   </div>
   
   <div class="text-center margin-bottom-lg">
-    <button class="btn"><a (click)="gotoDetail()">Go back to Main Hall</a></button>
+    <button class="btn" (click)="gotoDetail()">Go back to Main Hall</button>
   </div>
   `,
 })
