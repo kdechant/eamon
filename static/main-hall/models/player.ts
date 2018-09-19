@@ -32,7 +32,7 @@ export class Player extends GameObject {
   best_weapon: Artifact;
   best_armor: Artifact;
   best_shield: Artifact;
-  icon: string = 'upg_helmet.png';
+  icon: string = 'helmet2.png';
   armor_class: number;
   armor_penalty: number;
   armor_factor: number;  // total armor penalty - armor expertise
@@ -114,6 +114,13 @@ export class Player extends GameObject {
   }
 
   /**
+   * Gets the charisma adjustment used in shops, as a percentage of the retail price
+   */
+  public getCharismaAdjustment(): number {
+    return 100 - (this.charisma - 12);
+  }
+
+  /**
    * Updates player's calculated stats (best weapon, best armor, armor class and penalty)
    */
   public update(): void {
@@ -142,23 +149,7 @@ export class Player extends GameObject {
 
     // set an icon based on the best weapon the player has
     if (this.best_weapon) {
-      switch (this.best_weapon.weapon_type) {
-        case 1:
-          this.icon = 'upg_axe.png';
-          break;
-        case 2:
-          this.icon = 'upg_bow.png';
-          break;
-        case 3:
-          this.icon = 'upg_hammer.png';
-          break;
-        case 4:
-          this.icon = 'upg_spear.png';
-          break;
-        case 5:
-          this.icon = 'upg_sword.png';
-          break;
-      }
+      this.icon = this.best_weapon.getIcon() + '.png';
     }
 
     // calculate armor class and penalty

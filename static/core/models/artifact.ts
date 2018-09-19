@@ -524,13 +524,13 @@ export class Artifact extends GameObject {
         }
 
         if (this.type === Artifact.TYPE_MAGIC_WEAPON && this.weapon_type !== 4) {
-          t = 'upg_' + t;
+          t = t + '2';
         }
         return t;
       case Artifact.TYPE_WEARABLE:
         switch (this.armor_type) {
           case Artifact.ARMOR_TYPE_ARMOR:
-            return "armor";
+            return this.armor_class < 3 ? "leather" : "armor";
           case Artifact.ARMOR_TYPE_SHIELD:
             return "shield";
         }
@@ -541,7 +541,7 @@ export class Artifact extends GameObject {
       case Artifact.TYPE_READABLE:
         return "scroll";
       case Artifact.TYPE_DRINKABLE:
-        return "potionBlue";
+        return "potion";
       default:
         return "tools";
     }

@@ -15,7 +15,7 @@
       AC: {{ artifact.armor_class }}<br />
       Penalty: {{ artifact.armor_penalty }}%<br />
     </div>
-    <img src="/static/images/ravenmore/128/coin.png"><span *ngIf="action == 'buy'">{{ artifact.value }}</span><span
+    <img src="/static/images/ravenmore/128/coin.png"> <span *ngIf="action == 'buy'">{{ artifact.value }}</span><span
       *ngIf="action == 'sell'">{{ artifact.value | divide:2 }}</span>
   </div>
   <div class="artifact-buttons" *ngIf="action === 'buy'">

@@ -88,7 +88,7 @@ artifact-tile .artifact-tile-inner, saved-game-tile .artifact-tile-inner {
     width: 50%;
     min-height: 72px; }
   artifact-tile .artifact-tile-inner .artifact-data img, saved-game-tile .artifact-tile-inner .artifact-data img {
-    width: 32px;
+    width: 40px;
     margin: -5px; }
   artifact-tile .artifact-tile-inner .message, saved-game-tile .artifact-tile-inner .message {
     background-color: #b97;
@@ -249,6 +249,6 @@ command-prompt .form-control {
   white-space: nowrap; }
 
 .subfooter a {
-  color: #eeeeee;
+  color: #222222;
   font-size: 93%;
   white-space: nowrap; }
