@@ -15,6 +15,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
         <p class="col-6 col-sm-4 col-md-6 col-lg-4"><a (click)="gotoAdventures()"><img src="/static/images/ravenmore/128/map.png"><br /> Go on an adventure</a></p>
         <p class="col-6 col-sm-4 col-md-6 col-lg-4"><a (click)="gotoMarcos()"><img src="/static/images/ravenmore/128/axe2.png"><br /> Visit the weapons shop</a></p>
         <p class="col-6 col-sm-4 col-md-6 col-lg-4"><a (click)="gotoHokas()"><img src="/static/images/ravenmore/128/tome.png"><br /> Find a wizard to teach you some spells</a></p>
+        <p class="col-6 col-sm-4 col-md-6 col-lg-4"><a (click)="gotoWitch()"><img src="/static/images/ravenmore/128/potion.png"><br /> Visit the witch to increase your attributes</a></p>
         <p class="col-6 col-sm-4 col-md-6 col-lg-4"><a (click)="gotoBank()"><img src="/static/images/ravenmore/128/coin.png"><br /> Find the banker to deposit or withdraw some gold</a></p>
         <p class="col-6 col-sm-4 col-md-6 col-lg-4"><a (click)="leaveTheUniverse()"><img src="/static/images/ravenmore/128/x.png"><br /> Temporarily leave the universe</a></p>
       </nav>
@@ -65,6 +66,10 @@ export class PlayerDetailComponent implements OnInit {
 
   gotoHokas() {
     this._router.navigate( ['/wizard']);
+  }
+
+  gotoWitch() {
+    this._router.navigate( ['/witch']);
   }
 
   gotoBank() {

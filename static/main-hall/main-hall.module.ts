@@ -26,6 +26,7 @@ import {SavedGameTileComponent} from "./components/saved-game-tile.component";
 import {BankComponent} from "./components/bank.component";
 import {ShopComponent} from "./components/shop.component";
 import {ArtifactTileComponent} from "./components/artifact-tile.component";
+import {WitchComponent} from "./components/witch.component";
 import {WizardComponent} from "./components/wizard.component";
 import {StatusComponent} from "./components/status.component";
 
@@ -69,6 +70,7 @@ export function getAuthServiceConfigs() {
     ShopComponent,
     ArtifactTileComponent,
     StatusComponent,
+    WitchComponent,
     WizardComponent,
     DividePipe,
     PercentOrNonePipe,

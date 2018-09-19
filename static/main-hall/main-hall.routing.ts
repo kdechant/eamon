@@ -6,6 +6,7 @@ import {PlayerDetailComponent} from './components/player-detail.component';
 import {PlayerAddComponent} from './components/player-add.component';
 import {AdventureListComponent} from "./components/adventure-list.component";
 import {ShopComponent} from "./components/shop.component";
+import {WitchComponent} from "./components/witch.component";
 import {WizardComponent} from "./components/wizard.component";
 import {BankComponent} from "./components/bank.component";
 
@@ -16,6 +17,7 @@ const appRoutes: Routes = [
   {path: 'adventure', component: AdventureListComponent},
   {path: 'bank', component: BankComponent},
   {path: 'shop', component: ShopComponent},
+  {path: 'witch', component: WitchComponent},
   {path: 'wizard', component: WizardComponent},
   {path: '**', component: PlayerListComponent},
 ];

@@ -101,6 +101,10 @@ artifact-tile .artifact-tile-inner, saved-game-tile .artifact-tile-inner {
   artifact-tile .artifact-tile-inner button, saved-game-tile .artifact-tile-inner button {
     margin-top: 5px; }
 
+.spells-list img {
+  width: 48px;
+  margin: -5px; }
+
 .history {
   height: 480px;
   overflow-y: auto;

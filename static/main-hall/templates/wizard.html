@@ -10,9 +10,10 @@
       <td><strong>{{ spell.name | titleCase }}</strong><br />
         <span class="small">{{ spell.description }}</span></td>
       <td>{{ _playerService.player?.spell_abilities_original[spell.name] | percentOrNone }}</td>
-      <td>{{ spell.price }} GP</td>
+      <td><img src="/static/images/ravenmore/128/coin.png"> {{ spell.price }}</td>
       <td>
-        <button class="btn btn-primary" (click)="buy(spell.name)" *ngIf="_playerService.player && spell.price <= _playerService.player.gold">Learn</button>
+        <button class="btn btn-primary" (click)="buy(spell.name)" *ngIf="_playerService.player && !_playerService.player?.spell_abilities_original[spell.name] && spell.price <= _playerService.player.gold">Learn</button>
+        <button class="btn btn-primary" (click)="buy(spell.name)" *ngIf="_playerService.player && _playerService.player?.spell_abilities_original[spell.name] && spell.price <= _playerService.player.gold">Upgrade</button>
         <button class="btn disabled" *ngIf="_playerService.player && spell.price > _playerService.player.gold">Not enough gold</button>
       </td>
     </tr>

@@ -148,6 +148,13 @@ artifact-tile, saved-game-tile {
   }
 }
 
+.spells-list {
+  img {
+    width: 48px;
+    margin: -5px;
+  }
+}
+
 .history {
   height: 480px;
   overflow-y: auto;

@@ -1,0 +1,56 @@
+<h2><img src="/static/images/ravenmore/128/potion.png">The Witch's Shop</h2>
+  <p>A lovely young woman dressed in black says, &quot;Good day, {{ _playerService.player?.name }}! Ah, I see you're
+    surprised I know your name? I also know that your Hardiness is {{ _playerService.player?.hardiness }} your Agility
+    is {{ _playerService.player?.agility }}, and your Charisma is {{ _playerService.player?.charisma }}.&quot;</p>
+  <p>&quot;My magic potions can increase one of your attributes. My prices are:"</p>
+  <table class="table spells-list" *ngIf="!message && !error">
+    <tr>
+      <th>Attribute</th>
+      <th>Current Ability</th>
+      <th>Price</th>
+    </tr>
+    <tr>
+      <td><strong>Hardiness</strong></td>
+      <td>
+        {{ _playerService.player?.hardiness }}
+        <div class="message" [@messageAnimation]="messageState['hardiness']">Increased!</div>
+      </td>
+      <td><img src="/static/images/ravenmore/128/coin.png"> {{ getAttributePrice('hardiness') }}</td>
+      <td>
+        <button class="btn btn-primary" (click)="buy('hardiness')" *ngIf="_playerService.player && getAttributePrice('hardiness') <= _playerService.player.gold">Upgrade</button>
+        <button class="btn disabled" *ngIf="_playerService.player && getAttributePrice('hardiness') > _playerService.player.gold">Not enough gold</button>
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Agility</strong></td>
+      <td>
+        {{ _playerService.player?.agility }}
+        <div class="message" [@messageAnimation]="messageState['agility']">Increased!</div>
+      </td>
+      <td><img src="/static/images/ravenmore/128/coin.png"> {{ getAttributePrice('agility') }}</td>
+      <td>
+        <button class="btn btn-primary" (click)="buy('agility')" *ngIf="_playerService.player && getAttributePrice('agility') <= _playerService.player.gold">Upgrade</button>
+        <button class="btn disabled" *ngIf="_playerService.player && getAttributePrice('agility') > _playerService.player.gold">Not enough gold</button>
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Charisma</strong></td>
+      <td>
+        {{ _playerService.player?.charisma }}
+        <div class="message" [@messageAnimation]="messageState['charisma']">Increased!</div>
+      </td>
+      <td><img src="/static/images/ravenmore/128/coin.png"> {{ getAttributePrice('charisma') }}</td>
+      <td>
+        <button class="btn btn-primary" (click)="buy('charisma')" *ngIf="_playerService.player && getAttributePrice('charisma') <= _playerService.player.gold">Upgrade</button>
+        <button class="btn disabled" *ngIf="_playerService.player && getAttributePrice('charisma') > _playerService.player.gold">Not enough gold</button>
+      </td>
+    </tr>
+  </table>
+  <p>You have {{_playerService.player?.gold}} gold pieces.</p>
+  <p>{{message}}</p>
+  <p class="emphasis">{{error}}</p>
+  <p>
+    <button class="btn" (click)="gotoDetail()">Go back to Main Hall</button>
+  </p>
