@@ -67,6 +67,8 @@ export class WitchComponent implements OnInit  {
 
   buy(attribute_name: string) {
     let player = this._playerService.player;
+    player.gold -= this.getAttributePrice(attribute_name);
+
     switch (attribute_name) {
       case 'hardiness':
         this._playerService.player.hardiness++;
@@ -79,7 +81,6 @@ export class WitchComponent implements OnInit  {
         break;
     }
 
-    player.gold -= this.getAttributePrice(attribute_name);
     let messageState = this.messageState;
     messageState[attribute_name] = 'visible';
     setTimeout(function() {
