@@ -11,7 +11,7 @@ import {PlayerService} from '../services/player.service';
 
 @Component({
   selector: "artifact-tile",
-  templateUrl: "/static/main-hall/templates/artifact-tile.html",
+  templateUrl: "../templates/artifact-tile.html",
   animations: [
     trigger('messageAnimation', [
       state('visible', style({

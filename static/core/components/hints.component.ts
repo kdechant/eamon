@@ -3,7 +3,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "hints",
-  templateUrl: "/static/core/templates/hints.html",
+  templateUrl: "../templates/hints.html",
 })
 export class HintsComponent {
   @Input() game;

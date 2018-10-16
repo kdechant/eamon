@@ -12,7 +12,7 @@ declare var demo: boolean;  // variable is written in HTML source by Django
 
 @Component({
   selector: "adventure",
-  templateUrl: "/static/core/templates/adventure.html",
+  templateUrl: "../templates/adventure.html",
 })
 export class AdventureComponent implements OnInit {
   @ViewChild('welcome_modal') welcome_modal: ElementRef;

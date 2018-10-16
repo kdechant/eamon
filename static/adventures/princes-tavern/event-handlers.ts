@@ -268,6 +268,7 @@ export var event_handlers = {
         q2.choices = ['sip', 'drink', 'guzzle'];
         q2.callback = function (answer) {
           game.history.write("You " + answer + " the " + game.modal.questions[0].answer + ".");
+          // @ts-ignore
           let drink = drinks.find(x => x.name === game.modal.questions[0].answer);
           let str = answer === 'sip' ? 0.5 : (answer === 'drink' ? 1 : 1.5);
           game.data['drinks'] += drink.strength + str;

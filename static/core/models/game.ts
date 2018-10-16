@@ -10,11 +10,13 @@ import {Monster} from "../models/monster";
 import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
-import {event_handlers} from "adventure/event-handlers";
 import {ILoggerService, DummyLoggerService} from "../services/logger.service";
 import {DummySavedGameService, ISavedGameService} from "../services/saved-game.service";
 
 declare var LZString;
+
+// The "Adventure" object contains the event handlers and custom commands defined for the loaded adventure.
+declare var Adventure;
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -256,10 +258,10 @@ export class Game {
     this.command_parser = new CommandParser();
 
     // register the event handlers defined in the adventure
-    for (let i in event_handlers) {
+    for (let i in Adventure.event_handlers) {
       let e = new EventHandler();
       e.name = i;
-      e.run = event_handlers[i];
+      e.run = Adventure.event_handlers[i];
       this.event_handlers.push(e);
     }
 

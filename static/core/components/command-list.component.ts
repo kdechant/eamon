@@ -3,7 +3,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "command-list",
-  templateUrl: "/static/core/templates/command-list.html",
+  templateUrl: "../templates/command-list.html",
 })
 export class CommandListComponent {
   @Input() game;

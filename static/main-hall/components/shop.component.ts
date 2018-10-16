@@ -13,7 +13,7 @@ import {Artifact} from "../../core/models/artifact";
 import {ShopService} from "../services/shop.service";
 
 @Component({
-  templateUrl: "/static/main-hall/templates/shop.html",
+  templateUrl: "../templates/shop.html",
   animations: [
     trigger('sellAnimation', [
       transition(':leave', animate(300, style({opacity: 0})))

@@ -1,15 +1,15 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 // FIXME: importing Observable and/or forkJoin by themselves is not working. Have to import all of rxjs. Blah.
-import Rx from 'rxjs/Rx';
-import {Observable} from 'rxjs/Observable';
+// import Rx from 'rxjs/Rx';
+import { Observable, forkJoin } from 'rxjs';
 // import { forkJoin } from "rxjs/observable/forkJoin";
 import { CookieService } from 'ngx-cookie';
 
 import {Game} from "../models/game";
 import {Monster} from "../models/monster";
 
-// game_id is passed in from the back-end and written in index.html
+// game_id is passed in from the back-end and written in index-unused.html
 declare var game_id: string;
 
 /**
@@ -48,7 +48,7 @@ export class GameLoaderService {
     if (game_id === 'demo1') {
       // load mock data
       let path = "/static/adventures/" + game_id + "/mock-data";
-      return Rx.Observable.forkJoin(
+      return forkJoin(
         this.http.get(path + "/adventure.json"),
         this.http.get(path + "/rooms.json"),
         this.http.get(path + "/artifacts.json"),
@@ -66,7 +66,7 @@ export class GameLoaderService {
       }
 
       // load live data from the back end
-      return Rx.Observable.forkJoin(
+      return forkJoin(
         this.http.get("/api/adventures/" + game_id),
         this.http.get("/api/adventures/" + game_id + "/rooms"),
         this.http.get("/api/adventures/" + game_id + "/artifacts"),

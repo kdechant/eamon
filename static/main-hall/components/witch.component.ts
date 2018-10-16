@@ -11,7 +11,7 @@ import {
 import {PlayerService} from '../services/player.service';
 
 @Component({
-  templateUrl: "/static/main-hall/templates/witch.html",
+  templateUrl: "../templates/witch.html",
   animations: [
     trigger('messageAnimation', [
       state('visible', style({

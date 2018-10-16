@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import { CookieService } from 'ngx-cookie';
 
 import {Game} from "../models/game";

@@ -4,7 +4,7 @@ import { CookieService, CookieModule } from 'ngx-cookie';
 
 import {Game} from "../../core/models/game";
 import {GameLoaderService} from "../../core/services/game-loader.service";
-import {event_handlers} from "adventure/event-handlers";
+// import {event_handlers} from "adventure/event-handlers";
 
 import {
   TestBed, inject

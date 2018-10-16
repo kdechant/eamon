@@ -3,7 +3,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "how-to-play",
-  templateUrl: "/static/core/templates/how-to-play.html",
+  templateUrl: "../templates/how-to-play.html",
 })
 export class HowToPlayComponent {
   @Input() game;

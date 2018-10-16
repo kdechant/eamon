@@ -1,11 +1,11 @@
 import {Component,  OnInit}  from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable }     from 'rxjs/Observable';
+import { throwError }     from 'rxjs';
 import {
     AuthService,
     FacebookLoginProvider,
     GoogleLoginProvider
-} from 'angular5-social-login';
+} from 'angular-6-social-login';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 import {UuidService} from '../services/uuid.service';
@@ -15,7 +15,7 @@ import {PlayerService} from '../services/player.service';
 
 
 @Component({
-  templateUrl: "/static/main-hall/templates/player-list.html",
+  templateUrl: "../templates/player-list.html",
 })
 export class PlayerListComponent implements OnInit  {
 
@@ -77,7 +77,7 @@ export class PlayerListComponent implements OnInit  {
          },
          error => {
            console.error("Error deleting player!");
-           return Observable.throw(error);
+           return throwError(error);
          });
     }
   }

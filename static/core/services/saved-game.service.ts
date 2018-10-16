@@ -1,8 +1,7 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { CookieService } from 'ngx-cookie';
-import Rx from 'rxjs/Rx';
 
 import {Game} from "../models/game";
 
@@ -82,7 +81,8 @@ export class DummySavedGameService implements ISavedGameService {
   }
 
   public listSavedGames(player_id: any, adventure_id: number) {
-    return Rx.Observable.of([]);
+    // this returns a dummy Observable
+    return of([]);
   }
 
   public loadSavedGame(saved_game: any) {

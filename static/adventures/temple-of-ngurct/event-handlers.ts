@@ -87,7 +87,7 @@ export var event_handlers = {
         } else {
         // damage is stored in dice and sides, just like weapons.
         // the "armor_penalty" field should be either 1 (ignore armor) or 0 (armor absorbs hits)
-          victim.injure(game.diceRoll(a.dice, a.sides), a.armor_penalty);
+          victim.injure(game.diceRoll(a.dice, a.sides), a.armor_penalty === 1);
         }
         monster_ids.splice(monster_index, 1);
       }

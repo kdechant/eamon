@@ -149,6 +149,7 @@ export class MonsterRepository {
    * @return Monster
    */
   public get(id) {
+    // @ts-ignore
     let m = this.all.find(x => x.id === id);
     return m || null;
   }
@@ -159,6 +160,7 @@ export class MonsterRepository {
    * @return Monster
    */
   public getByName(name: string) {
+    // @ts-ignore
     let m = this.all.find(x => x.match(name));
     return m || null;
   }
@@ -169,6 +171,7 @@ export class MonsterRepository {
    * @return Monster
    */
   getLocalByName(name: string) {
+    // @ts-ignore
     let mon = this.all.find(m => m.isHere() && m.match(name));
     return mon || null;
   }

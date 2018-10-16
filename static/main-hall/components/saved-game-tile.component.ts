@@ -11,7 +11,7 @@ import {PlayerService} from '../services/player.service';
 
 @Component({
   selector: "saved-game-tile",
-  templateUrl: "/static/main-hall/templates/saved-game-tile.html",
+  templateUrl: "../templates/saved-game-tile.html",
   animations: [
     trigger('messageAnimation', [
       state('visible', style({

@@ -11,7 +11,7 @@ import {
     AuthServiceConfig,
     GoogleLoginProvider,
     FacebookLoginProvider,
-} from "angular5-social-login";
+} from "angular-6-social-login";
 
 import {DividePipe} from "./pipes/divide.pipe";
 import {TitleCasePipe} from "./pipes/title-case.pipe";

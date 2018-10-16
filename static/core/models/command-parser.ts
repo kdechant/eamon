@@ -5,8 +5,8 @@ import {CustomCommand} from "../commands/base-command";
 import {core_commands} from "../commands/core-commands";
 import {CommandException} from "../utils/command.exception";
 
-// import custom commands from the adventure directory.
-import {custom_commands} from "adventure/commands";
+// The "Adventure" object contains the event handlers and custom commands defined for the loaded adventure.
+declare var Adventure;
 
 /**
  * Command Parser class. Handles registration of available commands and parsing
@@ -31,11 +31,11 @@ export class CommandParser {
     }
 
     // register custom commands
-    for (let i in custom_commands) {
+    for (let c of Adventure.custom_commands) {
       let cmd = new CustomCommand();
-      cmd.name = custom_commands[i].name;
-      cmd.verbs = custom_commands[i].verbs;
-      cmd.run = custom_commands[i].run;
+      cmd.name = c.name;
+      cmd.verbs = c.verbs;
+      cmd.run = c.run;
       this.register(cmd);
     }
   }
@@ -91,6 +91,7 @@ export class CommandParser {
     if (command_match.length === 0) {
       let keys: string[] = Object.keys(this.available_verbs);
       for (let k in keys) {
+        // @ts-ignore
         if (keys[k].startsWith(verb)) {
           command_match.push(keys[k]);
         }

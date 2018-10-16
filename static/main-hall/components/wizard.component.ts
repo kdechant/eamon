@@ -5,7 +5,7 @@ import {PlayerService} from '../services/player.service';
 import {Game} from "../../core/models/game";
 
 @Component({
-  templateUrl: "/static/main-hall/templates/wizard.html",
+  templateUrl: "../templates/wizard.html",
 })
 export class WizardComponent implements OnInit  {
   public message: string;

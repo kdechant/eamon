@@ -22,6 +22,7 @@ export var event_handlers = {
     if (artifact) {
       if ([8, 9, 14, 15].indexOf(artifact.id) !== -1) {
         // these buttons free monsters
+        // @ts-ignore
         let a = game.artifacts.all.find(x => x.type === Artifact.TYPE_BOUND_MONSTER && x.isHere());
         if (typeof a !== 'undefined') {
           game.history.write("There is a clanking sound and the prisoner is freed!", "success");

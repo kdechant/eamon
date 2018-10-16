@@ -2,7 +2,7 @@ import {Component, Input} from "@angular/core";
 
 @Component({
   selector: "status",
-  templateUrl: "/static/core/templates/status.html"
+  templateUrl: "../templates/status.html"
 })
 export class StatusComponent {
   @Input() game;
