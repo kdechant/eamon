@@ -4,6 +4,8 @@ import {Artifact} from "../models/artifact";
 import {Room} from "../models/room";
 import {RoomExit} from "../models/room";
 
+declare var Adventure: any;
+
 /**
  * Monster class. Represents all properties of a single monster
  */
@@ -102,6 +104,10 @@ export class Monster extends GameObject {
    * A container for custom data used by specific adventures
    */
   data: { [key: string]: any; } = {};
+
+  constructor (){
+    super();
+  }
 
   /**
    * Moves the monster to a specific room.

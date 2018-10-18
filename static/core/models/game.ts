@@ -15,8 +15,9 @@ import {DummySavedGameService, ISavedGameService} from "../services/saved-game.i
 
 declare var LZString;
 
-// The "Adventure" object contains the event handlers and custom commands defined for the loaded adventure.
+// The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var Adventure;
+declare var game;
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -28,8 +29,6 @@ export class Game {
   static STATUS_WON: number = 1;
   static STATUS_DIED: number = 2;
   static STATUS_SELLING: number = 3;
-
-  private static _instance: Game = new Game();
 
   /**
    * @var {number} The current adventure's id in the database
@@ -128,6 +127,13 @@ export class Game {
   event_handlers: EventHandler[] = [];
 
   /**
+   * Custom commands defined in the adventure's "commands" file. This will be
+   * populated when the object is created and then passed to the CommandParser.
+   * It is not used after that.
+   */
+  custom_commands: any[];
+
+  /**
    * In Battle flag
    */
   in_battle: boolean = false;
@@ -217,21 +223,33 @@ export class Game {
    */
   public saves: any = [];
 
-  constructor() {
-    if (Game._instance) {
-      throw new Error("Error: Instantiation failed: Use Game.getInstance() instead of new.");
-    }
-    Game._instance = this;
+  constructor() { }
+
+  /**
+   * Returns the game instance. Does the same thing as "Adventure.game"
+   * @return {Game} the game instance.
+   */
+  public static getInstance(): Game {
+    return Adventure.game;
   }
 
-  public static getInstance(): Game {
-    return Game._instance;
+  /**
+   * Registers the event handlers defined in the adventure's custom code
+   * @param {any} event_handlers
+   */
+  public registerEventHandlers(event_handlers): void {
+    for (let i in event_handlers) {
+      let e = new EventHandler();
+      e.name = i;
+      e.run = event_handlers[i];
+      this.event_handlers.push(e);
+    }
   }
 
   /**
    * Sets up data received from the GameLoaderService.
    */
-  init(data) {
+  public init(data) {
 
     this.id = data[0].id;
     this.name = data[0].name;
@@ -255,15 +273,7 @@ export class Game {
     this.artifacts.deduplicate();
 
     this.history = new HistoryManager;
-    this.command_parser = new CommandParser();
-
-    // register the event handlers defined in the adventure
-    for (let i in Adventure.event_handlers) {
-      let e = new EventHandler();
-      e.name = i;
-      e.run = Adventure.event_handlers[i];
-      this.event_handlers.push(e);
-    }
+    this.command_parser = new CommandParser(this.custom_commands);
 
     // for unit tests, the logger won't usually be initialized, so create a dummy logger
     if (!this.logger) {

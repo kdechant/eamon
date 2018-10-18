@@ -1,15 +1,12 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-// FIXME: importing Observable and/or forkJoin by themselves is not working. Have to import all of rxjs. Blah.
-// import Rx from 'rxjs/Rx';
 import { Observable, forkJoin } from 'rxjs';
-// import { forkJoin } from "rxjs/observable/forkJoin";
 import { CookieService } from 'ngx-cookie-service';
 
 import {Game} from "../models/game";
 import {Monster} from "../models/monster";
 
-// game_id is passed in from the back-end and written in index-unused.html
+// game_id is passed in from the back-end and written in index.html
 declare var game_id: string;
 
 /**
@@ -41,8 +38,6 @@ export class GameLoaderService {
   }
 
   setupGameData(mock_player: boolean = false): Observable<Object> {
-
-    let game = Game.getInstance();
 
     // load all the game data objects in parallel
     if (game_id === 'demo1') {
@@ -81,7 +76,7 @@ export class GameLoaderService {
   public savePlayer(player: Monster) {
     if (game_id === 'demo1' || Game.getInstance().demo) {
       // can't save the demo player.
-      console.log("The demo player is read-only.")
+      console.log("The demo player is read-only.");
       return;
     } else {
       let player_id = window.localStorage.getItem('player_id');

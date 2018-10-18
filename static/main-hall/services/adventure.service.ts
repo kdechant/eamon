@@ -2,7 +2,6 @@ import { Injectable }     from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import {Adventure} from "../models/adventure";
-import {isNull} from "util";
 
 /**
  * Adventure service. Loads adventure data from the back end.

@@ -1,9 +1,11 @@
 import {Game} from "./game";
 
+declare var Adventure: any;
+
 /**
  * GameObject class. Parent class for monsters and artifacts.
  */
-export abstract class GameObject {
+export class GameObject {
 
   id: number;
   name: string;
@@ -51,13 +53,17 @@ export abstract class GameObject {
    * Shows the description, including any chained effects
    */
   public showDescription() {
-    let game = Game.getInstance();
-    game.history.write(this.description + " ");  // pad with space in case of chained effects
-    if (this.effect) {
-      game.effects.print(this.effect);
-    }
-    if (this.effect_inline) {
-      game.effects.print(this.effect_inline, null, true);
+    // Check for whether the game is running. This prevents the following JS error in the main hall:
+    // "TypeError: Object.setPrototypeOf: expected an object or null, got undefined"
+    if (typeof Adventure.game !== 'undefined') {
+      let game = Adventure.game;
+      game.history.write(this.description + " ");  // pad with space in case of chained effects
+      if (this.effect) {
+        game.effects.print(this.effect);
+      }
+      if (this.effect_inline) {
+        game.effects.print(this.effect_inline, null, true);
+      }
     }
   }
 

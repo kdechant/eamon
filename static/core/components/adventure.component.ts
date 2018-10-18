@@ -6,9 +6,15 @@ import {LoggerService} from "../services/logger.service";
 import {SavedGameService} from "../services/saved-game.service";
 
 import {Game} from "../models/game";
-import {CommandPromptComponent} from "./command.component";
 
 declare var demo: boolean;  // variable is written in HTML source by Django
+
+// "Adventure" contains the instantiated Game object with the
+// commands and event handlers from the individual adventure
+declare var Adventure: any;
+
+// set up the global "game" object which will be used throughout the program
+const game = Adventure.game;
 
 @Component({
   selector: "adventure",
@@ -31,7 +37,7 @@ export class AdventureComponent implements OnInit {
 
   public ngOnInit(): void {
 
-    this.game = Game.getInstance();
+    this.game = game;
     this.game.demo = demo;
 
     this.game.logger = this._loggerService;
