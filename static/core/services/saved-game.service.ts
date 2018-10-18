@@ -5,16 +5,10 @@ import { CookieService } from 'ngx-cookie-service';
 
 import {Game} from "../models/game";
 
+import { ISavedGameService} from "./saved-game.interface";
+
 // compression library loaded using <script> tag
 declare var LZString;
-
-export interface ISavedGameService {
-  saveGame(data: any);
-  listSavedGames(player_id: any, adventure_id: number);
-  loadSavedGame(saved_game: any);
-  loadSavedGameById(id: number);
-  deleteSavedGame(saved_game: any);
-}
 
 /**
  * Saved Game service. Handles saving and restoring saved games.
@@ -68,30 +62,6 @@ export class SavedGameService implements ISavedGameService {
    */
   public deleteSavedGame(saved_game: any): Observable<ArrayBuffer> {
     return this.http.delete("/api/saves/" + saved_game.id + '.json?uuid=' + this.uuid, this.httpOptions);
-  }
-
-}
-
-/**
- * Dummy service used with automated tests
- */
-export class DummySavedGameService implements ISavedGameService {
-
-  public saveGame(data: any) {
-  }
-
-  public listSavedGames(player_id: any, adventure_id: number) {
-    // this returns a dummy Observable
-    return of([]);
-  }
-
-  public loadSavedGame(saved_game: any) {
-  }
-
-  public loadSavedGameById(id: number) {
-  }
-
-  public deleteSavedGame(saved_game: any) {
   }
 
 }

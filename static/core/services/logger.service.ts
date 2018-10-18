@@ -5,9 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import {Game} from "../models/game";
 
-export interface ILoggerService {
-  log(type: string, value?: number);
-}
+import {ILoggerService} from "./logger.interface";
 
 /**
  * Game Loader service. Loads initial adventure, room, artifact, and monster
@@ -59,18 +57,6 @@ export class LoggerService implements ILoggerService {
        return true;
       }
     );
-  }
-
-}
-
-/**
- * Dummy logger used with automated tests
- */
-export class DummyLoggerService implements ILoggerService {
-
-  public log(type: string = "", value: number = null) {
-    // this logger class prints its log entries to the console. It doesn't save anything to the DB.
-    console.log("Log: ", type, value);
   }
 
 }

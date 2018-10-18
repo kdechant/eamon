@@ -10,8 +10,8 @@ import {Monster} from "../models/monster";
 import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
 import {EventHandler} from "../commands/event-handler";
-import {ILoggerService, DummyLoggerService} from "../services/logger.service";
-import {DummySavedGameService, ISavedGameService} from "../services/saved-game.service";
+import {ILoggerService, DummyLoggerService} from "../services/logger.interface";
+import {DummySavedGameService, ISavedGameService} from "../services/saved-game.interface";
 
 declare var LZString;
 
@@ -274,40 +274,43 @@ export class Game {
     }
 
     // load the saved games
-    this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
-      data => {
-        for (let sv of data) {
-          this.saved_games[sv.slot] = sv;
-        }
-
-        // determine if resuming a saved game
-        let saved_game_slot = window.localStorage.getItem('saved_game_slot');
-        if (saved_game_slot) {
-
-          // loading a saved game
-          this.restore(saved_game_slot);
-          window.localStorage.removeItem('saved_game_slot');
-          this.start();
-
-        } else {
-
-          // new game
-          this.logger.log("start adventure");
-
-          // Show the adventure description
-          this.history.push("");
-
-          // if there is no intro text, just start the game
-          if (this.intro_text[0] === "") {
-            this.start();
-          } else {
-            // event handler that can change the intro text
-            this.triggerEvent("intro");
+    let svgames = this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id);
+    if (typeof svgames !== 'undefined') {
+      svgames.subscribe(
+        data => {
+          for (let sv of data) {
+            this.saved_games[sv.slot] = sv;
           }
 
+          // determine if resuming a saved game
+          let saved_game_slot = window.localStorage.getItem('saved_game_slot');
+          if (saved_game_slot) {
+
+            // loading a saved game
+            this.restore(saved_game_slot);
+            window.localStorage.removeItem('saved_game_slot');
+            this.start();
+
+          } else {
+
+            // new game
+            this.logger.log("start adventure");
+
+            // Show the adventure description
+            this.history.push("");
+
+            // if there is no intro text, just start the game
+            if (this.intro_text[0] === "") {
+              this.start();
+            } else {
+              // event handler that can change the intro text
+              this.triggerEvent("intro");
+            }
+
+          }
         }
-      }
-    );
+      );
+    }
 
   }
 
