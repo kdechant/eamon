@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import Rx from 'rxjs/Rx';
 import { Observable, forkJoin } from 'rxjs';
 // import { forkJoin } from "rxjs/observable/forkJoin";
-import { CookieService } from 'ngx-cookie';
+import { CookieService } from 'ngx-cookie-service';
 
 import {Game} from "../models/game";
 import {Monster} from "../models/monster";

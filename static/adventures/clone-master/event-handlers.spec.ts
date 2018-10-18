@@ -3,11 +3,11 @@
  */
 import {async, getTestBed} from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { CookieService, CookieModule } from 'ngx-cookie';
+import { CookieService } from 'ngx-cookie-service';
 
 import {Game} from "../../core/models/game";
 import {GameLoaderService} from "../../core/services/game-loader.service";
-import {event_handlers} from "adventure/event-handlers";
+import {event_handlers} from "./event-handlers";
 import {Monster} from "../../core/models/monster";
 
 import {
@@ -23,7 +23,7 @@ describe("Assault on the Clone Master", function() {
   beforeEach(async(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // avoid errors due to slow api calls
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, CookieModule.forRoot()],
+      imports: [HttpClientModule],
       providers: [
         GameLoaderService, CookieService
       ]

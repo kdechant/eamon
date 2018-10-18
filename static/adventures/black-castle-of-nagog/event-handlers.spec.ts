@@ -3,11 +3,10 @@
  */
 import {async, getTestBed} from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { CookieService, CookieModule } from 'ngx-cookie';
+import { CookieService } from 'ngx-cookie-service';
 
 import {Game} from "../../core/models/game";
 import {GameLoaderService} from "../../core/services/game-loader.service";
-import {event_handlers} from "adventure/event-handlers";
 
 import {
   TestBed, inject
@@ -22,7 +21,7 @@ describe("The Black Castle of Nagog", function() {
   let gameLoaderService = null;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, CookieModule.forRoot()],
+      imports: [HttpClientModule],
       providers: [
         GameLoaderService, CookieService
       ]

@@ -34,7 +34,7 @@
     "bootstrap": "4.0.0",
     "core-js": "^2.5.4",
     "lz-string": "^1.4.4",
-    "ngx-cookie": "^2.0.1",
+    "ngx-cookie-service": "^1.0.10",
     "reflect-metadata": "^0.1.10",
     "rxjs": "~6.2.0",
     "rxjs-compat": "^6.2.2",

@@ -3,8 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { CookieModule } from 'ngx-cookie';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { CookieService } from 'ngx-cookie-service';
 
 import {
     SocialLoginModule,
@@ -55,7 +55,6 @@ export function getAuthServiceConfigs() {
     FormsModule,
     HttpClientModule,
     routing,
-    CookieModule.forRoot(),
     NgbModule.forRoot(),
     SocialLoginModule
   ],
@@ -79,6 +78,7 @@ export function getAuthServiceConfigs() {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [MainHallComponent],
   providers: [
+    CookieService,
     PlayerService,
     AdventureService,
     ShopService,

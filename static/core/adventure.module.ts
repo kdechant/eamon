@@ -3,8 +3,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule}    from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { CookieModule } from 'ngx-cookie';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { CookieService } from 'ngx-cookie-service';
 
 import {Nl2brPipe} from "./pipes/nl2br.pipe";
 import {GameVarsPipe} from "./pipes/gamevars.pipe";
@@ -30,7 +30,6 @@ import {StatusComponent} from "./components/status.component";
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    CookieModule.forRoot(),
     NgbModule.forRoot()
   ],
   declarations: [
@@ -49,7 +48,7 @@ import {StatusComponent} from "./components/status.component";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AdventureComponent],
-  providers: [GameLoaderService, SavedGameService, LoggerService]
+  providers: [CookieService, GameLoaderService, SavedGameService, LoggerService]
 })
 export class AdventureModule {
 }
