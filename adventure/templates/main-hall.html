@@ -6,31 +6,17 @@
 {% block scripts %}
     <base href="/main-hall/">
 
-    <!-- 1. Load libraries -->
-     <!-- Polyfill(s) for older browsers -->
-    <script src="{% static "node_modules/core-js/client/shim.min.js" %}"></script>
-    <script src="{% static "node_modules/web-animations-js/web-animations.min.js" %}"></script>
-
-    <script src="{% static "node_modules/zone.js/dist/zone.js" %}"></script>
-    <script src="{% static "node_modules/reflect-metadata/Reflect.js" %}"></script>
-    <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
-    <script src="{% static "node_modules/lz-string/libs/lz-string.js" %}"></script>
-
-    <!-- 2. Configure SystemJS -->
-    <script src="{% static 'main-hall/systemjs.config.js' %}"></script>
-    <script>
-      // NOTE: need to inject the demo adventure here to avoid errors when creating the Game object.
-      Promise.all([
-        System.import('main_hall/main'),
-        System.import('adventure/commands'),
-        System.import('adventure/event-handlers')
-      ]).then(null, console.error.bind(console));
-    </script>
-
 {% endblock %}
 
 {% block content %}
 
     <main-hall>Welcome to the Wonderful World of Eamon...</main-hall>
 
+{% endblock %}
+
+{% block endscripts %}
+  <script type="text/javascript" src="{% static "dist/main-hall/runtime.js" %}"></script>
+  <script type="text/javascript" src="{% static "dist/main-hall/polyfills.js" %}"></script>
+  <script type="text/javascript" src="{% static "dist/main-hall/vendor.js" %}"></script>
+  <script type="text/javascript" src="{% static "dist/main-hall/main.js" %}"></script>
 {% endblock %}

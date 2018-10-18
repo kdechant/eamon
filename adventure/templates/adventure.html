@@ -4,34 +4,6 @@
 {% block title %}{% endblock %}
 
 {% block scripts %}
-
-    <!-- 1. Load libraries -->
-     <!-- Polyfill(s) for older browsers -->
-    <script src="{% static "node_modules/core-js/client/shim.min.js" %}"></script>
-
-    <script src="{% static "node_modules/zone.js/dist/zone.js" %}"></script>
-    <script src="{% static "node_modules/reflect-metadata/Reflect.js" %}"></script>
-    <script src="{% static "node_modules/systemjs/dist/system.src.js" %}"></script>
-    <script src="{% static "node_modules/lz-string/libs/lz-string.js" %}"></script>
-
-    <!-- 2. Configure SystemJS -->
-    <script>
-      var game_id = "{{ adventure_id }}";
-      {% if request.GET.demo %}
-      var demo = true;
-      {% else %}
-      var demo = false;
-      {% endif %}
-    </script>
-    <script src="{% static 'core/systemjs.config.js' %}"></script>
-    <script>
-      Promise.all([
-        System.import('core/main'),
-        System.import('adventure/commands'),
-        System.import('adventure/event-handlers')
-      ]).then(null, console.error.bind(console));
-    </script>
-
 {% endblock %}
 
 {% block heading %}
@@ -42,3 +14,25 @@
     <adventure>Waking up the monsters...</adventure>
 
 {% endblock %}
+
+{% block endscripts %}
+  {% with adventure_root="dist/adventures/" %}
+    <script type="text/javascript" src="{% static "dist/core/runtime.js" %}"></script>
+    <script type="text/javascript" src="{% static "dist/core/polyfills.js" %}"></script>
+    <script type="text/javascript" src="{% static "dist/core/vendor.js" %}"></script>
+
+    <script type="text/javascript">
+      var game_id = "{{ adventure_id }}";
+      {% if request.GET.demo %}
+        var demo = true;
+      {% else %}
+        var demo = false;
+      {% endif %}
+    </script>
+
+    <script type="text/javascript" src="{% static adventure_root|add:adventure_id|add:".js" %}"></script>
+
+    <script type="text/javascript" src="{% static "dist/core/main.js" %}"></script>
+  {% endwith %}
+{% endblock %}
+

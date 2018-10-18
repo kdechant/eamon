@@ -18,7 +18,4 @@
       "dom"
     ]
   },
-  "exclude": [
-    "../app2/src/app/sasquatch.ts"
-  ]
 }

@@ -11,10 +11,11 @@
     "start-all": "tsc && concurrently \"npm run build:watch\" \"npm run build-css:watch\" \"npm run browser-sync\" ",
     "browser-sync": "browser-sync start --files \"static/css/*.css\" --proxy 127.0.0.1:8000 --serveStatic: static",
     "build": "ng build core && ng build main-hall",
-    "build:watch": "tsc -w",
-    "build:upgrade": "tsc",
+    "build:watch": "concurrently \"ng build core --watch\" \"ng build main-hall --watch\" \"npm run webpack:watch\" ",
     "build-css:watch": "node-sass -w scss -o css",
     "build-css:upgrade": "node-sass scss -o css",
+    "webpack": "cd adventures && webpack --config webpack.config.js --mode development",
+    "webpack:watch": "cd adventures && webpack --config webpack.config.js --mode development --watch",
     "serve:upgrade": "http-server",
     "lint": "tslint app/**/*.ts"
   },
