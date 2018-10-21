@@ -22,16 +22,17 @@
     <script type="text/javascript" src="{% static "dist/core/polyfills.js" %}"></script>
     <script type="text/javascript" src="{% static "dist/core/vendor.js" %}"></script>
 
+    <script type="text/javascript" src="{% static adventure_root|add:slug|add:".js" %}"></script>
+
     <script type="text/javascript">
-      var game_id = "{{ adventure_id }}";
+      var game = Adventure.game;
+      game.slug = "{{ slug }}";
       {% if request.GET.demo %}
-        var demo = true;
+        game.demo = true;
       {% else %}
-        var demo = false;
+        game.demo = false;
       {% endif %}
     </script>
-
-    <script type="text/javascript" src="{% static adventure_root|add:adventure_id|add:".js" %}"></script>
 
     <script type="text/javascript" src="{% static "dist/core/main.js" %}"></script>
   {% endwith %}

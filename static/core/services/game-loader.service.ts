@@ -6,8 +6,7 @@ import { CookieService } from 'ngx-cookie-service';
 import {Game} from "../models/game";
 import {Monster} from "../models/monster";
 
-// game_id is passed in from the back-end and written in index.html
-declare var game_id: string;
+declare var game: Game;
 
 /**
  * Game Loader service. Loads initial adventure, room, artifact, and monster
@@ -40,9 +39,9 @@ export class GameLoaderService {
   setupGameData(mock_player: boolean = false): Observable<Object> {
 
     // load all the game data objects in parallel
-    if (game_id === 'demo1') {
+    if (game.slug === 'demo1') {
       // load mock data
-      let path = "/static/adventures/" + game_id + "/mock-data";
+      let path = "/static/adventures/" + game.slug + "/mock-data";
       return forkJoin(
         this.http.get(path + "/adventure.json"),
         this.http.get(path + "/rooms.json"),
@@ -62,19 +61,19 @@ export class GameLoaderService {
 
       // load live data from the back end
       return forkJoin(
-        this.http.get("/api/adventures/" + game_id),
-        this.http.get("/api/adventures/" + game_id + "/rooms"),
-        this.http.get("/api/adventures/" + game_id + "/artifacts"),
-        this.http.get("/api/adventures/" + game_id + "/effects"),
-        this.http.get("/api/adventures/" + game_id + "/monsters"),
-        this.http.get("/api/adventures/" + game_id + "/hints"),
+        this.http.get("/api/adventures/" + game.slug),
+        this.http.get("/api/adventures/" + game.slug + "/rooms"),
+        this.http.get("/api/adventures/" + game.slug + "/artifacts"),
+        this.http.get("/api/adventures/" + game.slug + "/effects"),
+        this.http.get("/api/adventures/" + game.slug + "/monsters"),
+        this.http.get("/api/adventures/" + game.slug + "/hints"),
         this.http.get(player_path)
       );
     }
   }
 
   public savePlayer(player: Monster) {
-    if (game_id === 'demo1' || Game.getInstance().demo) {
+    if (game.slug === 'demo1' || game.demo) {
       // can't save the demo player.
       console.log("The demo player is read-only.");
       return;

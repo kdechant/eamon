@@ -39,5 +39,5 @@ urlpatterns = [
     url(r'^main-hall', views.main_hall, name='main-hall'),
 
     # the "adventure" angular app
-    url(r'^adventure/(?P<adventure_id>[\w-]+)/$', views.adventure, name='adventure'),
+    url(r'^adventure/(?P<slug>[\w-]+)/$', views.adventure, name='adventure'),
 ]

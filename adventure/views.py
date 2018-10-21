@@ -31,16 +31,16 @@ def privacy_policy(request):
 
 def main_hall(request):
     """
-    The container for the "main hall" angular2 app
+    The container for the "main hall" angular app
     """
     return render(request, 'main-hall.html')
 
 
-def adventure(request, adventure_id):
+def adventure(request, slug):
     """
-    The container for the "core" a.k.a. "adventure" angular2 app
+    The container for the "core" a.k.a. "adventure" angular app
     """
-    return render(request, 'adventure.html', {'adventure_id': adventure_id})
+    return render(request, 'adventure.html', {'slug': slug})
 
 
 def adventure_list(request):

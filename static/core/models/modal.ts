@@ -1,4 +1,4 @@
-import {Game} from "../../core/models/game";
+declare var game: any;
 
 export class Modal {
 
@@ -17,9 +17,9 @@ export class Modal {
    * The game will be paused waiting for player input.
    *
    * Example:
-   * @param (string) question
+   * @param {string} question
    *  The text of the question
-   * @param (Function) callback
+   * @param {Function} callback
    *  The callback function that will be called when the player submits their answer. This takes one parameter, the
    *  answer (as a string).
    */
@@ -36,7 +36,7 @@ export class Modal {
    * Shows a modal prompt (multiple choice version). The game will be paused waiting for player input.
    */
   public run() {
-    Game.getInstance().pause();
+    game.pause();
     if (this.questions) {
       this.visible = true;
       this.current_question = this.questions[0];
@@ -72,7 +72,6 @@ export class Modal {
   }
 
   private close() {
-    let game = Game.getInstance();
     this.visible = false;
     if (!game.won && !game.died) {
       game.resume();

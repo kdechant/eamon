@@ -16,7 +16,6 @@ import {DummySavedGameService, ISavedGameService} from "../services/saved-game.i
 declare var LZString;
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var Adventure;
 declare var game;
 
 /**
@@ -34,6 +33,11 @@ export class Game {
    * @var {number} The current adventure's id in the database
    */
   id: number;
+
+  /**
+   * @var {string} The current adventure's slug, e.g., 'the-beginners-cave'
+   */
+  slug: string;
 
   /**
    * @var {string} The current adventure's name
@@ -125,13 +129,6 @@ export class Game {
    * Game event handlers defined in the adventure's "event-handers" file
    */
   event_handlers: EventHandler[] = [];
-
-  /**
-   * Custom commands defined in the adventure's "commands" file. This will be
-   * populated when the object is created and then passed to the CommandParser.
-   * It is not used after that.
-   */
-  custom_commands: any[];
 
   /**
    * In Battle flag
@@ -226,24 +223,28 @@ export class Game {
   constructor() { }
 
   /**
-   * Returns the game instance. Does the same thing as "Adventure.game"
+   * Returns the game instance. Does the same thing as just using the global var "game"
    * @return {Game} the game instance.
    */
   public static getInstance(): Game {
-    return Adventure.game;
+    return game;
   }
 
   /**
-   * Registers the event handlers defined in the adventure's custom code
+   * Registers the event handlers and custom commands defined in the adventure's custom code
    * @param {any} event_handlers
+   *   The object of event handler functions defined in the adventure
+   * @param {any} commands
+   *   The array of custom commands defined in the adventure
    */
-  public registerEventHandlers(event_handlers): void {
+  public registerAdventureLogic(event_handlers, commands): void {
     for (let i in event_handlers) {
       let e = new EventHandler();
       e.name = i;
       e.run = event_handlers[i];
       this.event_handlers.push(e);
     }
+    this.command_parser = new CommandParser(commands);
   }
 
   /**
@@ -273,7 +274,6 @@ export class Game {
     this.artifacts.deduplicate();
 
     this.history = new HistoryManager;
-    this.command_parser = new CommandParser(this.custom_commands);
 
     // for unit tests, the logger won't usually be initialized, so create a dummy logger
     if (!this.logger) {
@@ -284,9 +284,12 @@ export class Game {
     }
 
     // load the saved games
-    let svgames = this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id);
-    if (typeof svgames !== 'undefined') {
-      svgames.subscribe(
+    if (this.demo) {
+      // demo player with no saved games. just start the game.
+      this.fresh_start();
+    } else {
+      // real player. check if loading a saved game, otherwise init normally
+      this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
         data => {
           for (let sv of data) {
             this.saved_games[sv.slot] = sv;
@@ -304,24 +307,32 @@ export class Game {
           } else {
 
             // new game
-            this.logger.log("start adventure");
-
-            // Show the adventure description
-            this.history.push("");
-
-            // if there is no intro text, just start the game
-            if (this.intro_text[0] === "") {
-              this.start();
-            } else {
-              // event handler that can change the intro text
-              this.triggerEvent("intro");
-            }
+            this.fresh_start();
 
           }
         }
       );
     }
 
+  }
+
+  /**
+   * Helper method to start the game when in demo mode or not loading a saved game
+   */
+  private fresh_start() {
+    // new game
+    this.logger.log("start adventure");
+
+    // Show the adventure description
+    this.history.push("");
+
+    // if there is no intro text, just start the game
+    if (this.intro_text[0] === "") {
+      this.start();
+    } else {
+      // event handler that can change the intro text
+      this.triggerEvent("intro");
+    }
   }
 
   /**
