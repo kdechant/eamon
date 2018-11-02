@@ -1,5 +1,7 @@
 /nbproject/
 /static/node_modules/
+/static/build/
+/client/build/
 **/**/*.js
 **/**/*.js.map
 **/__pycache__/

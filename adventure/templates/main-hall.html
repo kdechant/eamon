@@ -10,13 +10,7 @@
 
 {% block content %}
 
-    <main-hall>Welcome to the Wonderful World of Eamon...</main-hall>
+  <div id="root">Welcome to the Wonderful World of Eamon...</div>
+  <script type="text/javascript" src="{% static react_js_path %}"></script>
 
-{% endblock %}
-
-{% block endscripts %}
-  <script type="text/javascript" src="{% static "dist/main-hall/runtime.js" %}"></script>
-  <script type="text/javascript" src="{% static "dist/main-hall/polyfills.js" %}"></script>
-  <script type="text/javascript" src="{% static "dist/main-hall/vendor.js" %}"></script>
-  <script type="text/javascript" src="{% static "dist/main-hall/main.js" %}"></script>
 {% endblock %}

@@ -54,6 +54,8 @@ insert_final_newline = ignore
 # Use 2 spaces for TypeScript files
 [*.ts]
 indent_size = 2
+[*.tsx]
+indent_size = 2
 
 [*.md]
 insert_final_newline = false

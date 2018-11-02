@@ -1,6 +1,9 @@
+import os
+import json
 from rest_framework import viewsets, filters, permissions, mixins, generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from eamon import settings
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
@@ -31,9 +34,17 @@ def privacy_policy(request):
 
 def main_hall(request):
     """
-    The container for the "main hall" angular app
+    The container for the "main hall" react app
     """
-    return render(request, 'main-hall.html')
+    REACT_BUILD_DIR = os.path.join(settings.BASE_DIR, 'static', 'build')
+
+    # Pull the js and css filenames from the current build
+    path = os.path.join(REACT_BUILD_DIR, "asset-manifest.json")
+    with open(path) as f:
+        data = json.load(f)
+
+    react_js_path = 'build/' + data['main.js']
+    return render(request, 'main-hall.html', {'react_js_path': react_js_path})
 
 
 def adventure(request, slug):

@@ -1,0 +1,30 @@
+{
+  "name": "eamon-remastered",
+  "description": "A rewrite of the classic text adventure game, The Wonderful World of Eamon.",
+  "license": "ISC",
+  "version": "2.0.0",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts-ts": "3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build && npm run build-dist",
+    "build-win": "react-scripts-ts build && npm run build-dist-win",
+    "build-dist": "rm ../static/build/static/js/* && cp -rf build ..\\static\\build",
+    "build-dist-win": "xcopy build ..\\static\\build /S/Y",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.9",
+    "@types/node": "^10.12.2",
+    "@types/react": "^16.4.18",
+    "@types/react-dom": "^16.0.9",
+    "@types/react-router-dom": "^4.3.1",
+    "typescript": "^3.1.6"
+  }
+}
