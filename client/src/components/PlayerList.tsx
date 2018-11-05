@@ -1,6 +1,8 @@
 import axios from 'axios';
 import * as React from 'react';
+import { Player } from '../models/player';
 import PlayerListItem from "./PlayerListItem";
+import { Link } from "react-router-dom";
 
 class PlayerList extends React.Component {
   public state: any = {
@@ -10,16 +12,26 @@ class PlayerList extends React.Component {
 
   public componentDidMount() {
     const uuid = window.localStorage.getItem('eamon_uuid');
-    console.log("uuid", uuid);
     this.setState({ uuid });
     axios.get('/api/players.json?uuid=' + uuid)
       .then(res => {
-        console.log("Loaded something from API", res.data);
-        this.setState({ players: res.data });
+        const players = res.data.map(pl => {
+          let p = new Player();
+          p.init(pl);
+          p.update();
+          return p;
+        });
+        this.setState({ players });
       });
   }
 
   public render() {
+
+    let empty_message = (<span />);
+    if (this.state.players.length === 0) {
+      empty_message = (<p>There are no adventurers in the guest book.</p>)
+    }
+
     return (
       <div id="PlayerList">
         <p>You are in the outer chamber of the hall of the Guild of Free Adventurers. Many men and women are guzzling beer and there is loud singing and laughter.</p>
@@ -29,6 +41,8 @@ class PlayerList extends React.Component {
         <div className="row">
           {this.state.players.map(player => <PlayerListItem key={player.id} player={player} /> )}
         </div>
+        {empty_message}
+        <p className="addplayer"><Link to="/main-hall/register"><strong>Create a New Adventurer</strong></Link></p>
       </div>
     );
   }

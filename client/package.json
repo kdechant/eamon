@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build && npm run build-dist",
+    "build": "react-scripts-ts build",
     "build-win": "react-scripts-ts build && npm run build-dist-win",
     "build-dist": "rm ../static/build/static/js/* && cp -rf build ..\\static\\build",
     "build-dist-win": "xcopy build ..\\static\\build /S/Y",

@@ -1,5 +1,5 @@
-import {GameObject} from "../../core/models/game-object";
-import {Artifact} from "../../core/models/artifact";
+import {Artifact} from "./artifact";
+import {GameObject} from "./game-object";
 
 /**
  * Player class. Represents players in the main hall
@@ -29,9 +29,9 @@ export class Player extends GameObject {
   inventory: Artifact[] = [];
 
   // calculated properties for display on status screen
-  best_weapon: Artifact;
-  best_armor: Artifact;
-  best_shield: Artifact;
+  best_weapon: Artifact | null;
+  best_armor: Artifact | null;
+  best_shield: Artifact | null;
   icon: string = 'helmet2.png';
   armor_class: number;
   armor_penalty: number;
@@ -65,9 +65,9 @@ export class Player extends GameObject {
     };
     // spell_abilities_original is the variable name expected by the API, because that's what the dungeon returns
     this.spell_abilities_original = {
-      "power": this.spl_power,
-      "heal": this.spl_heal,
       "blast": this.spl_blast,
+      "heal": this.spl_heal,
+      "power": this.spl_power,
       "speed": this.spl_speed
     };
   }
@@ -97,7 +97,7 @@ export class Player extends GameObject {
         return this.wpn_club;
       case 4:
         return this.wpn_spear;
-      case 5:
+      default:
         return this.wpn_sword;
     }
   }
@@ -149,7 +149,7 @@ export class Player extends GameObject {
 
     // set an icon based on the best weapon the player has
     if (this.best_weapon) {
-      this.icon = this.best_weapon.getIcon() + '.png';
+      this.icon = this.best_weapon.getIcon();
     }
 
     // calculate armor class and penalty
@@ -159,10 +159,10 @@ export class Player extends GameObject {
       this.armor_class = this.best_armor.armor_class;
       this.armor_penalty = this.best_armor.armor_penalty;
     }
-    if (this.best_shield) {
-      this.armor_class += this.best_shield.armor_class;
-      this.armor_penalty += this.best_shield.armor_penalty;
-    }
+    // if (this.best_shield) {
+    //   this.armor_class += this.best_shield.armor_class;
+    //   this.armor_penalty += this.best_shield.armor_penalty;
+    // }
     this.armor_factor = Math.max(0, this.armor_penalty - this.armor_expertise);
   }
 

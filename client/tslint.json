@@ -8,6 +8,12 @@
     ]
   },
   "rules": {
-    "no-console": false
+    "no-console": false,
+    "member-access": false,
+    "ordered-imports": false,
+    "variable-name": false,
+    "prefer-const": false,
+    "forin": false,
+    "object-literal-sort-keys": false
   }
 }
