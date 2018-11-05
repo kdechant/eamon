@@ -85,11 +85,12 @@ class PlayerArtifactSerializer(serializers.ModelSerializer):
 
 
 class PlayerSerializer(serializers.ModelSerializer):
-    inventory = PlayerArtifactSerializer(many=True, read_only=False)
-    saved_games = SavedGameListSerializer(many=True, read_only=True)
+    inventory = PlayerArtifactSerializer(many=True, read_only=False, required=False)
+    saved_games = SavedGameListSerializer(many=True, read_only=True, required=False)
 
     def create(self, validated_data):
-        inventory_data = validated_data.pop('inventory') # not used here - causes errors if present
+        if 'inventory' in validated_data:
+            inventory_data = validated_data.pop('inventory') # not used here - causes errors if present
         validated_data['gold'] = 200
         player = Player.objects.create(**validated_data)
         player.log("create")
