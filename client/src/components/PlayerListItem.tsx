@@ -1,20 +1,42 @@
 import * as React from "react";
+// import {Player} from "../models/player";
+import {Redirect} from "react-router";
 
-function PlayerListItem(props: any) {
+class PlayerListItem extends React.Component<any, any> {
+  constructor(props: any){
+    super(props);
+    this.state = {
+      player: this.props.player,
+      ready: false
+    };
+  }
 
-  const weapon_name = props.player.best_weapon ? props.player.best_weapon.name : "";
-  const icon_url = '/static/images/ravenmore/128/' + props.player.icon + '.png';
+  public loadPlayer = () => {
+    console.log('loading player', this.state.player);
+    window.localStorage.setItem('player_id', this.state.player.id);
+    this.setState({ready: true});
+  };
 
-  return (
-    <div className="player col-sm-4" key={props.player.id}>
-      <div className="icon"><img src={icon_url} width="96" height="96" /></div>
-      <div className="name"><a><strong>{ props.player.name }</strong></a>
-      <br/>
-      HD: {props.player.hardiness} AG: {props.player.agility} CH: {props.player.charisma} <br/>
-        {weapon_name}</div>
-      <div className="delete"><a><span className="glyphicon glyphicon-trash" /></a></div>
-    </div>
-  );
+  public render() {
+
+    if (this.state.ready === true) {
+      return <Redirect to='/main-hall/hall' />
+    }
+
+    const weapon_name = this.state.player.best_weapon ? this.state.player.best_weapon.name : "";
+    const icon_url = '/static/images/ravenmore/128/' + this.state.player.icon + '.png';
+
+    return (
+      <div className="player col-sm-4" key={this.state.player.id}>
+        <div className="icon"><img src={icon_url} width="96" height="96"/></div>
+        <div className="name"><a className="player_name" onClick={() => this.loadPlayer()}><strong>{this.state.player.name}</strong></a>
+          <br/>
+          HD: {this.state.player.hardiness} AG: {this.state.player.agility} CH: {this.state.player.charisma} <br/>
+          {weapon_name}</div>
+        <div className="delete"><a><span className="glyphicon glyphicon-trash"/></a></div>
+      </div>
+    );
+  }
 }
 
 export default PlayerListItem;

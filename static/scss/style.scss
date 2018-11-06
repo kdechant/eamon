@@ -95,6 +95,22 @@ a {
     padding-left: 15px;
   }
 
+  &.inventory {
+    .row {
+      border-bottom: 1px solid #ccbbaa;
+      margin-bottom: 7px;
+      padding-bottom: 4px;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .artifact-info {
+        color: #333333;
+        font-size: 85%;
+      }
+    }
+  }
 }
 
 .artifacts-list {

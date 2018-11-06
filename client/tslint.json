@@ -15,6 +15,7 @@
     "prefer-const": false,
     "forin": false,
     "object-literal-sort-keys": false,
-    "member-ordering": false
+    "member-ordering": false,
+    "jsx-no-lambda": false
   }
 }

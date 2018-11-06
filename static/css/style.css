@@ -64,6 +64,15 @@ a {
     border-top: none; }
   .status-widget .artifact-contents {
     padding-left: 15px; }
+  .status-widget.inventory .row {
+    border-bottom: 1px solid #ccbbaa;
+    margin-bottom: 7px;
+    padding-bottom: 4px; }
+    .status-widget.inventory .row:last-child {
+      border-bottom: none; }
+    .status-widget.inventory .row .artifact-info {
+      color: #333333;
+      font-size: 85%; }
 
 .artifacts-list th {
   border-top: none; }

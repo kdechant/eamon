@@ -32,7 +32,7 @@ export class Player extends GameObject {
   best_weapon: Artifact | null;
   best_armor: Artifact | null;
   best_shield: Artifact | null;
-  icon: string = 'helmet2.png';
+  icon: string = 'helmet2';
   armor_class: number;
   armor_penalty: number;
   armor_factor: number;  // total armor penalty - armor expertise

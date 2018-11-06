@@ -56,6 +56,7 @@ class PlayerCreate extends React.Component {
     axios.post("/api/players", player)
       .then((res) => {
         this.setState({id: res.data.id});
+        window.localStorage.setItem('player_id', res.data.id);
       }).catch((err) => {
         console.error(err);
         this.setState({error: true});
