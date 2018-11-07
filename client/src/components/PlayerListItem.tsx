@@ -12,7 +12,6 @@ class PlayerListItem extends React.Component<any, any> {
   }
 
   public loadPlayer = () => {
-    console.log('loading player', this.state.player);
     window.localStorage.setItem('player_id', this.state.player.id);
     this.setState({ready: true});
   };

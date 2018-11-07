@@ -3,19 +3,14 @@ import { Link } from "react-router-dom";
 import Status from "./Status";
 
 class PlayerMenu extends React.Component<any, any> {
-  // constructor(props: any){
-  //   super(props);
-  //   this.state = { player: this.props.player };
-  // }
 
   // TODO: show the saved game list here...
 
-  public exit = () => {
+  public exit = (ev) => {
     console.log('exit');
   };
 
   public render() {
-    console.log('render PlayerMenu', this.props.player);
     return (
       <div className="row">
         <div className="col-sm">

@@ -3,7 +3,6 @@ import * as React from 'react';
 class Status extends React.Component<any, any> {
 
   public render() {
-    console.log('render Status', this.props.player);
 
     if (!this.props.player) {
       return (

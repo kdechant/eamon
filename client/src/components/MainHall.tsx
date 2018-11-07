@@ -13,7 +13,8 @@ class MainHall extends React.Component {
             <Router>
               <Switch>
                 <Route path="/main-hall/" exact={true} component={PlayerList}/>
-                <Route path="/main-hall/hall" component={PlayerDetail}/>
+                {/* non-exact route below is used so we can have child routes inside the component */}
+                <Route path="/main-hall/" component={PlayerDetail}/>
                 <Route path="/main-hall/register" component={PlayerCreate}/>
               </Switch>
             </Router>
