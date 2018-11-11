@@ -8,6 +8,15 @@ class PlayerMenu extends React.Component<any, any> {
 
   public exit = (ev) => {
     console.log('exit');
+    this.props.player.save()
+      .then((res) => {
+        window.localStorage.removeItem('player_id');
+        window.location.href = "/main-hall";
+      })
+      .catch((err) => {
+        console.error(err);
+        this.setState({error: true});
+      });
   };
 
   public render() {

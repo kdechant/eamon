@@ -4,12 +4,18 @@ import PlayerMenu from "./PlayerMenu";
 import {Player} from "../models/player";
 import axios from "axios";
 import AdventureList from "./AdventureList";
+import Shop from "./Shop";
 
 class PlayerDetail extends React.Component {
   public state: any = {
     player: null,
     player_id: null,
     uuid: ""
+  };
+
+  public setPlayerState = (player: Player) => {
+    console.log('setPlayerState', player);
+    this.setState({ player });
   };
 
   public componentDidMount() {
@@ -39,6 +45,9 @@ class PlayerDetail extends React.Component {
         )}/>
         <Route path="/main-hall/adventure" render={(props) => (
           <AdventureList {...props} player={this.state.player}/>
+        )}/>
+        <Route path="/main-hall/shop" render={(props) => (
+          <Shop {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
         )}/>
       </div>
     );

@@ -8,14 +8,16 @@
     ]
   },
   "rules": {
-    "no-console": false,
-    "member-access": false,
-    "ordered-imports": false,
-    "variable-name": false,
-    "prefer-const": false,
     "forin": false,
-    "object-literal-sort-keys": false,
+    "jsx-no-lambda": false,
+    "member-access": false,
     "member-ordering": false,
-    "jsx-no-lambda": false
+    "no-console": false,
+    "no-debugger": false,
+    "no-empty": false,
+    "object-literal-sort-keys": false,
+    "ordered-imports": false,
+    "prefer-const": false,
+    "variable-name": false
   }
 }

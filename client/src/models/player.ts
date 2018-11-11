@@ -1,5 +1,6 @@
 import {Artifact} from "./artifact";
 import {GameObject} from "./game-object";
+import axios, {AxiosPromise} from "axios";
 
 /**
  * Player class. Represents players in the main hall
@@ -164,6 +165,15 @@ export class Player extends GameObject {
     //   this.armor_penalty += this.best_shield.armor_penalty;
     // }
     this.armor_factor = Math.max(0, this.armor_penalty - this.armor_expertise);
+  }
+
+  /**
+   * Saves the player to the database. (Currently this only handles updates.)
+   *
+   * @return {AxiosPromise} the promise from the API call
+   */
+  public save(): AxiosPromise {
+    return axios.put("/api/players/" + this.id, this);
   }
 
 }

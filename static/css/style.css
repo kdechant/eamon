@@ -80,26 +80,26 @@ a {
 .artifacts-list .weapon-icon img {
   width: 32px; }
 
-artifact-tile .artifact-tile-inner, saved-game-tile .artifact-tile-inner {
+.artifact-tile .artifact-tile-inner, .saved-game-tile .artifact-tile-inner {
   border: 1px solid #b97;
   height: 210px;
   margin: 15px 0;
   padding: 5%;
   position: relative;
   text-align: center; }
-  artifact-tile .artifact-tile-inner .artifact-icon img, saved-game-tile .artifact-tile-inner .artifact-icon img {
+  .artifact-tile .artifact-tile-inner .artifact-icon img, .saved-game-tile .artifact-tile-inner .artifact-icon img {
     position: absolute;
     top: 0;
     right: 0;
     width: 90px; }
-  artifact-tile .artifact-tile-inner .artifact-name, saved-game-tile .artifact-tile-inner .artifact-name {
+  .artifact-tile .artifact-tile-inner .artifact-name, .saved-game-tile .artifact-tile-inner .artifact-name {
     text-align: left;
     width: 50%;
     min-height: 72px; }
-  artifact-tile .artifact-tile-inner .artifact-data img, saved-game-tile .artifact-tile-inner .artifact-data img {
+  .artifact-tile .artifact-tile-inner .artifact-data img, .saved-game-tile .artifact-tile-inner .artifact-data img {
     width: 40px;
     margin: -5px; }
-  artifact-tile .artifact-tile-inner .message, saved-game-tile .artifact-tile-inner .message {
+  .artifact-tile .artifact-tile-inner .message, .saved-game-tile .artifact-tile-inner .message {
     background-color: #b97;
     color: white;
     padding-bottom: 5px;
@@ -107,7 +107,7 @@ artifact-tile .artifact-tile-inner, saved-game-tile .artifact-tile-inner {
     top: 45%;
     left: 0;
     width: 100%; }
-  artifact-tile .artifact-tile-inner button, saved-game-tile .artifact-tile-inner button {
+  .artifact-tile .artifact-tile-inner button, .saved-game-tile .artifact-tile-inner button {
     margin-top: 5px; }
 
 .spells-list img {
