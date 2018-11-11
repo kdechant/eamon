@@ -6,7 +6,6 @@ class ArtifactTile extends React.Component<any, any> {
   };
 
   public buy = () => {
-    console.log('buy');
     this.setState({message: "Bought!"});
     setTimeout(() => {
       // TODO: animations
@@ -22,8 +21,6 @@ class ArtifactTile extends React.Component<any, any> {
   public sell = () => {
     this.setState({message: "Sold!"});
     setTimeout(() => {
-      // TODO: animations
-      this.setState({message: ""});
       let player = this.props.player;
       let index = player.inventory.indexOf(this.props.artifact);
       if (index > -1) {

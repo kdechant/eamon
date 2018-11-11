@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Link, Route} from "react-router-dom";
 import ArtifactTile from "./ArtifactTile";
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 // the shop inventory is kept outside the component, so it will persist
 // if the player leaves the shop and comes back.
@@ -42,14 +43,14 @@ class Shop extends React.Component<any, any> {
             <p className="heading">Weapons:</p>
             <div className="container-fluid">
               <div className="row">{this.state.weapons.map(artifact =>
-                <ArtifactTile key={artifact.id} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
+                <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
               )}
               </div>
             </div>
             <p className="heading">Armor and Shields:</p>
             <div className="container-fluid">
               <div className="row">{this.state.armors.map(artifact =>
-                <ArtifactTile key={artifact.id} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
+                <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
               )}
               </div>
             </div>
@@ -62,11 +63,13 @@ class Shop extends React.Component<any, any> {
             <p>What do you want to sell?</p>
             <p>You have {this.props.player.gold} gold pieces.</p>
             <div className="container-fluid">
-              <div className="row">
-            {this.props.player.inventory.map(artifact =>
-              <ArtifactTile key={artifact.id} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="sell" />
-            )}
-              </div>
+              <TransitionGroup className="row">
+                {this.props.player.inventory.map(artifact =>
+                  <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
+                    <ArtifactTile player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="sell" />
+                  </CSSTransition>
+                )}
+              </TransitionGroup>
             </div>
 
             <Link to="/main-hall/shop" className="btn btn-primary">Done</Link>

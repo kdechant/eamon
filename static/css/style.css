@@ -110,6 +110,21 @@ a {
   .artifact-tile .artifact-tile-inner button, .saved-game-tile .artifact-tile-inner button {
     margin-top: 5px; }
 
+/* Generic fade classes used for animations, when elements enter or exit the DOM */
+.fade-enter {
+  opacity: 0.01; }
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in; }
+
+.fade-exit {
+  opacity: 1; }
+
+.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 500ms ease-in; }
+
 .spells-list img {
   width: 48px;
   margin: -5px; }
