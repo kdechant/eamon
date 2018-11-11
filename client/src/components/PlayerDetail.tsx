@@ -5,7 +5,7 @@ import {Player} from "../models/player";
 import axios from "axios";
 import AdventureList from "./AdventureList";
 import Shop from "./Shop";
-import Wizard from "./Wizard";
+import Wizard from "./Wizard/Wizard";
 
 class PlayerDetail extends React.Component {
   public state: any = {
@@ -15,7 +15,6 @@ class PlayerDetail extends React.Component {
   };
 
   public setPlayerState = (player: Player) => {
-    console.log('setPlayerState', player);
     this.setState({ player });
   };
 

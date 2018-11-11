@@ -121,78 +121,8 @@ a {
     width: 32px;
   }
 }
-.artifact-tile, .saved-game-tile {
 
-  .artifact-tile-inner {
-    border: 1px solid #b97;
-    height: 210px;
-    margin: 15px 0;
-    padding: 5%;
-    position: relative;
-    text-align: center;
-    .artifact-icon img {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 90px;
-    }
-    .artifact-name {
-      text-align: left;
-      width: 50%;
-      min-height: 72px;
-    }
-    .artifact-data {
-      img {
-        width: 40px;
-        margin: -5px;
-      }
-    }
-
-    .message {
-      background-color: #b97;
-      color: white;
-      // opacity is controlled in animation, not in CSS
-      padding-bottom: 5px;
-      position: absolute;
-      top: 45%;
-      left: 0;
-      width: 100%;
-    }
-    button {
-      margin-top: 5px;
-    }
-  }
-}
-
-.wizard-shop {
-  .current-ability {
-    display: inline-block;
-    padding-top: 12px;
-  }
-}
-
-/* Generic fade classes used for animations, when elements enter or exit the DOM */
-.fade-enter {
-  opacity: 0.01;
-}
-.fade-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
-}
-.fade-exit {
-  opacity: 1;
-}
-.fade-exit-active {
-  opacity: 0.01;
-  transition: opacity 500ms ease-in;
-}
-
-.spells-list {
-  img {
-    width: 48px;
-    margin: -5px;
-  }
-}
+/** ADVENTURE UI STYLES **/
 
 .history {
   height: 480px;
@@ -340,6 +270,69 @@ command-prompt {
   }
 }
 
+.artifact-tile, .saved-game-tile {
+
+  .artifact-tile-inner {
+    border: 1px solid #b97;
+    height: 210px;
+    margin: 15px 0;
+    padding: 5%;
+    position: relative;
+    text-align: center;
+    .artifact-icon img {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 90px;
+    }
+    .artifact-name {
+      text-align: left;
+      width: 50%;
+      min-height: 72px;
+    }
+    .artifact-data {
+      img {
+        width: 40px;
+        margin: -5px;
+      }
+    }
+
+    .message {
+      background-color: #b97;
+      color: white;
+      // opacity is controlled in animation, not in CSS
+      padding-bottom: 5px;
+      position: absolute;
+      top: 45%;
+      left: 0;
+      width: 100%;
+    }
+    button {
+      margin-top: 5px;
+    }
+  }
+}
+
+.spells-list {
+  img {
+    width: 48px;
+    margin: -5px;
+  }
+}
+
+.wizard-shop {
+  .current-ability {
+    display: inline-block;
+    padding-top: 12px;
+  }
+}
+
+.message-inner {
+  background-color: #b97;
+  color: #fff;
+  padding: 0.375rem;
+}
+
 .adventure-list-item {
 
   padding-top: 5px;
@@ -375,6 +368,44 @@ command-prompt {
   font-weight: bold;
   margin-right: 25px;
   padding: 5px;
+}
+
+/** ANIMATION RELATED CLASSES **/
+
+/* Generic fade classes used for animations, when elements enter or exit the DOM */
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 500ms ease-in;
+}
+
+/* More fade classes, used for animating message banners */
+.message-enter {
+  opacity: 0.01;
+  transform: scale(0.9) translateY(50%);
+}
+.message-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0%);
+  transition: all 500ms ease-out;
+}
+.message-exit {
+  opacity: 1;
+  transform: scale(1) translateY(0%);
+}
+.message-exit-active {
+  opacity: 0.01;
+  transform: scale(0.9) translateY(50%);
+  transition: all 500ms ease-out;
 }
 
 // Utility classes
