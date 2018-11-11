@@ -164,6 +164,13 @@ a {
   }
 }
 
+.wizard-shop {
+  .current-ability {
+    display: inline-block;
+    padding-top: 12px;
+  }
+}
+
 /* Generic fade classes used for animations, when elements enter or exit the DOM */
 .fade-enter {
   opacity: 0.01;
@@ -226,8 +233,8 @@ command-prompt {
 }
 
 .btn {
-  padding-top: 4px;
   font-size: 18px;
+  padding-bottom: 0;
 }
 .game-modal .btn {
   margin-right: 12px;
