@@ -6,6 +6,7 @@ import axios from "axios";
 import AdventureList from "./AdventureList";
 import Shop from "./Shop";
 import Wizard from "./Wizard/Wizard";
+import Witch from "./Witch/Witch";
 
 class PlayerDetail extends React.Component {
   public state: any = {
@@ -51,6 +52,9 @@ class PlayerDetail extends React.Component {
         )}/>
         <Route path="/main-hall/wizard" render={(props) => (
           <Wizard {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
+        )}/>
+        <Route path="/main-hall/witch" render={(props) => (
+          <Witch {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
         )}/>
       </div>
     );

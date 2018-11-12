@@ -26,18 +26,6 @@ class Wizard extends React.Component<any, any> {
         'price': 4000
       },
     ],
-    messages: {
-      blast: '',
-      heal: '',
-      power: '',
-      speed: '',
-    },
-    messageStates: {
-      blast: false,
-      heal: false,
-      power: false,
-      speed: false,
-    },
   };
 
   public render() {
@@ -60,10 +48,11 @@ class Wizard extends React.Component<any, any> {
             <th className="col-sm-2 col-md-2 col-xl-1" />
           </tr>
           {this.state.spells.map(spell =>
-            <SpellListRow key={spell.name} player={this.props.player} setPlayerState={this.props.setPlayerState} spell={spell} />
+            <SpellListRow key={spell.name} {...this.props} spell={spell} />
           )}
         </table>
-    
+        <p>You have {this.props.player.gold} gold pieces.</p>
+
         <Link to="/main-hall/hall" className="btn btn-primary">Done</Link>
       </div>
     );
