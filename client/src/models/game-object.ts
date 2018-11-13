@@ -1,9 +1,9 @@
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 
 /**
  * GameObject class. Parent class for monsters and artifacts.
  */
-export class GameObject {
+export default class GameObject {
 
   /**
    * The "id" is the database ID. Objects will only have a value for this if

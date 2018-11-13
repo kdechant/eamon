@@ -1,7 +1,8 @@
 import axios from 'axios';
 import * as React from 'react';
 import { Link } from "react-router-dom";
-import {Adventure} from "../models/adventure";
+
+import Adventure from "../models/adventure";
 
 class AdventureList extends React.Component<any, any> {
   public state: any = {

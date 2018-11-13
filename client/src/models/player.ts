@@ -1,11 +1,11 @@
-import {Artifact} from "./artifact";
-import {GameObject} from "./game-object";
+import Artifact from "./artifact";
+import GameObject from "./game-object";
 import axios, {AxiosPromise} from "axios";
 
 /**
  * Player class. Represents players in the main hall
  */
-export class Player extends GameObject {
+export default class Player extends GameObject {
 
   gender: string;
   hardiness: number;
@@ -112,13 +112,6 @@ export class Player extends GameObject {
     } else {
       return "fair";
     }
-  }
-
-  /**
-   * Gets the charisma adjustment used in shops, as a percentage of the retail price
-   */
-  public getCharismaAdjustment(): number {
-    return 100 - (this.charisma - 12);
   }
 
   /**

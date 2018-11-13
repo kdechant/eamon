@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Route} from "react-router";
 import PlayerMenu from "./PlayerMenu";
-import {Player} from "../models/player";
+import Player from "../models/player";
 import axios from "axios";
 import AdventureList from "./AdventureList";
 import Shop from "./Shop";

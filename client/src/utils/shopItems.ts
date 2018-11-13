@@ -1,6 +1,6 @@
-import {Artifact} from "../models/artifact";
+import Artifact from "../models/artifact";
 import diceRoll from "./dice";
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 
 export let weapons: Artifact[] = [];
 export const armors: Artifact[] = [];

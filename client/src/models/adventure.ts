@@ -1,9 +1,9 @@
-import {GameObject} from "./game-object";
+import GameObject from "./game-object";
 
 /**
  * Adventure class. Represents adventures the player can go on.
  */
-export class Adventure extends GameObject {
+export default class Adventure extends GameObject {
 
   description: string;
   full_description: string;

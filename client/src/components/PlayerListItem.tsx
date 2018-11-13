@@ -1,5 +1,4 @@
 import * as React from "react";
-// import {Player} from "../models/player";
 import {Redirect} from "react-router";
 
 class PlayerListItem extends React.Component<any, any> {

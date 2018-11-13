@@ -1,9 +1,9 @@
-import {GameObject} from "./game-object";
+import GameObject from "./game-object";
 
 /**
  * Artifact class. Represents all properties of a single artifact
  */
-export class Artifact extends GameObject {
+export default class Artifact extends GameObject {
 
   // constants
   static TYPE_GOLD: number = 0;

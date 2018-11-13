@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as React from 'react';
-import { Player } from '../models/player';
+import Player from '../models/player';
 import PlayerListItem from "./PlayerListItem";
 import { Link } from "react-router-dom";
 
