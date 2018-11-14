@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {Route} from "react-router";
+import axios from "axios";
+
 import PlayerMenu from "./PlayerMenu";
 import Player from "../models/player";
-import axios from "axios";
 import AdventureList from "./AdventureList";
+import Bank from "./Bank";
 import Shop from "./Shop/Shop";
-import Wizard from "./Wizard/Wizard";
 import Witch from "./Witch/Witch";
+import Wizard from "./Wizard/Wizard";
 
 class PlayerDetail extends React.Component {
   public state: any = {
@@ -46,6 +48,9 @@ class PlayerDetail extends React.Component {
         )}/>
         <Route path="/main-hall/adventure" render={(props) => (
           <AdventureList {...props} player={this.state.player}/>
+        )}/>
+        <Route path="/main-hall/bank" render={(props) => (
+          <Bank {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
         )}/>
         <Route path="/main-hall/shop" render={(props) => (
           <Shop {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
