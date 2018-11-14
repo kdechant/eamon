@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ucFirst } from "../../utils";
 
 class ArtifactTile extends React.Component<any, any> {
   public state: any = {
@@ -71,7 +72,7 @@ class ArtifactTile extends React.Component<any, any> {
             <img src={icon_url} title="{ this.props.artifact.getTypeName() }" />
           </div>
           <div className="artifact-name">
-            <strong>{ this.props.artifact.name }</strong><br />
+            <strong>{ ucFirst(this.props.artifact.name) }</strong><br />
           </div>
           <div className="artifact-data">
             {stats}

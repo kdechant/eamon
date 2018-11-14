@@ -110,7 +110,7 @@ command-prompt .form-control {
 
 .btn {
   font-size: 18px;
-  padding-bottom: 0; }
+  padding-top: 4px; }
 
 .game-modal .btn {
   margin-right: 12px;

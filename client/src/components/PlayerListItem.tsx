@@ -1,5 +1,6 @@
 import * as React from "react";
 import {Redirect} from "react-router";
+import { ucFirst } from "../utils";
 
 class PlayerListItem extends React.Component<any, any> {
   constructor(props: any){
@@ -30,7 +31,7 @@ class PlayerListItem extends React.Component<any, any> {
         <div className="name"><a className="player_name" onClick={() => this.loadPlayer()}><strong>{this.state.player.name}</strong></a>
           <br/>
           HD: {this.state.player.hardiness} AG: {this.state.player.agility} CH: {this.state.player.charisma} <br/>
-          {weapon_name}</div>
+          {ucFirst(weapon_name)}</div>
         <div className="delete"><a><span className="glyphicon glyphicon-trash"/></a></div>
       </div>
     );

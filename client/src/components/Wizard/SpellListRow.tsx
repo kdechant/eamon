@@ -38,9 +38,9 @@ class SpellListRow extends React.Component<any, any> {
 
     return (
       <tr className="d-flex" key={this.props.spell.name}>
-        <td className="col-sm-4 col-md-6 col-xl-8"><strong>{ titleCase(this.props.spell.name) }</strong><br />
+        <td className="col-sm-4 col-md-6"><strong>{ titleCase(this.props.spell.name) }</strong><br />
           <span className="small">{ this.props.spell.description }</span></td>
-        <td className="col-sm-3 col-md-2 col-xl-2 text-center">
+        <td className="col-sm-3 col-md-2 text-center">
           <span className="current-ability">
             { percentOrNone(this.props.player.spell_abilities_original[this.props.spell.name]) }
             <CSSTransition
@@ -53,10 +53,10 @@ class SpellListRow extends React.Component<any, any> {
             </CSSTransition>
           </span>
           </td>
-        <td className="col-sm-3 col-md-2 col-xl-1 text-center">
+        <td className="col-sm-3 col-md-2 text-center">
           <img src="/static/images/ravenmore/128/coin.png" /> { this.props.spell.price }
         </td>
-        <td className="col-sm-2 col-md-2 col-xl-1 text-right">
+        <td className="col-sm-2 col-md-2 text-center">
           {button}
         </td>
       </tr>

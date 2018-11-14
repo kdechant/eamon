@@ -5,7 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 // the shop inventory is kept outside the component, so it will persist
 // if the player leaves the shop and comes back.
-import { weapons, armors } from "../utils/shopItems";
+import { weapons, armors } from "./shopItems";
 
 class Shop extends React.Component<any, any> {
 

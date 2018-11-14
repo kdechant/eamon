@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as React from 'react';
 import { Link } from "react-router-dom";
 import diceRoll from "../utils/dice";
+import * as uuid from 'uuid';
 
 class PlayerCreate extends React.Component {
   public state: any = {
@@ -15,6 +16,11 @@ class PlayerCreate extends React.Component {
 
   public componentDidMount() {
     this.rollStats();
+
+    // set the UUID if it's not already in local storage
+    if (!window.localStorage.getItem('eamon_uuid')) {
+      window.localStorage.setItem('eamon_uuid', uuid());
+    }
   }
 
   /**
@@ -63,6 +69,8 @@ class PlayerCreate extends React.Component {
   };
 
   public render() {
+
+
 
     if (this.state.id) {
       return (

@@ -9,8 +9,8 @@
  *
  * ```
  * import { titleCase } from "../utils"
- * const str = 'foo';
- * console.log(titleCase(str));  // outputs "Foo"
+ * const str = 'foo bar';
+ * console.log(titleCase(str));  // outputs "Foo Bar"
  * ```
  *
  * @param {string} input
@@ -22,6 +22,16 @@ export function titleCase(input: string): string {
   } else {
     return input.replace(/\w\S*/g, (txt => txt[0].toUpperCase() + txt.substr(1).toLowerCase() ));
   }
+}
+
+/**
+ * Capitalizes the first letter of a string.
+ * From https://dzone.com/articles/how-to-capitalize-the-first-letter-of-a-string-in
+ * @param string
+ * @return string
+ */
+export function ucFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**

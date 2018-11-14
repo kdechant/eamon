@@ -107,6 +107,7 @@ a {
 
       .artifact-info {
         color: #333333;
+        display: inline-block;
         font-size: 85%;
       }
     }
@@ -164,8 +165,9 @@ command-prompt {
 
 .btn {
   font-size: 18px;
-  padding-bottom: 0;
+  padding-top: 4px;
 }
+
 .game-modal .btn {
   margin-right: 12px;
   margin-bottom: 10px;

@@ -40,12 +40,12 @@ class Wizard extends React.Component<any, any> {
         <p>After a few minutes of diligent searching, you find Hokas Tokas, the old Mage. He looks at you and says, &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you. Here are the spells I teach. Which will it be?&quot;</p>
         <table className="table spells-list">
           <tr className="d-flex">
-            <th className="col-sm-4 col-md-6 col-xl-8">Spell</th>
-            <th className="col-sm-3 col-md-2 col-xl-2 text-center">Current Ability<br />
+            <th className="col-sm-4 col-md-6">Spell</th>
+            <th className="col-sm-3 col-md-2 text-center">Current Ability<br />
               <span className="small">Odds to cast successfully</span>
             </th>
-            <th className="col-sm-3 col-md-2 col-xl-1 text-center">Price</th>
-            <th className="col-sm-2 col-md-2 col-xl-1" />
+            <th className="col-sm-3 col-md-2 text-center">Price</th>
+            <th className="col-sm-2 col-md-2" />
           </tr>
           {this.state.spells.map(spell =>
             <SpellListRow key={spell.name} {...this.props} spell={spell} />

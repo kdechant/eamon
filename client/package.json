@@ -36,5 +36,5 @@
     "not op_mini all"
   ],
   "proxy": "http://localhost:8000/",
-  "homepage" : "http://localhost:3000/main-hall"
+  "homepage": "http://localhost:3000/main-hall"
 }

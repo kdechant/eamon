@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ucFirst } from "../utils";
 
 class Status extends React.Component<any, any> {
 
@@ -55,17 +56,20 @@ class Status extends React.Component<any, any> {
         <p className="heading">Inventory</p>
 
         <div className="container">
+          {this.props.player.inventory.length === 0 && <div className="row">No items</div>}
+
           {this.props.player.inventory.map(artifact => {
             const icon_url = '/static/images/ravenmore/128/' + artifact.getIcon() + '.png';
 
             if (artifact.isWeapon()) {
               const odds = (artifact.weapon_odds > 0 ? "+" : "") + artifact.weapon_odds;
               return (
-                <div key={artifact.id} className="row">
+                <div key={artifact.uuid} className="row">
                   <div className="icon col-sm-2"><img src={icon_url} width="48" height="48"/></div>
                   <div className="col-sm-10">
-                    <span className="artifact-name">{artifact.name}</span><br />
-                    <span className="artifact-info">{artifact.dice}d{artifact.sides}, {odds}% to hit</span>
+                    <span className="artifact-name">{ucFirst(artifact.name)}</span><br />
+                    <span className="artifact-info mr-4">{artifact.dice}d{artifact.sides}</span>
+                    <span className="artifact-info">{odds}% to hit</span>
                   </div>
                 </div>
               )
@@ -73,11 +77,12 @@ class Status extends React.Component<any, any> {
 
             // otherwise, it's armor
             return (
-              <div key={artifact.id} className="row">
+              <div key={artifact.uuid} className="row">
                 <div className="icon col-sm-2"><img src={icon_url} width="48" height="48"/></div>
                 <div className="col-sm-10">
-                  <span className="artifact-name">{artifact.name}</span><br />
-                  <span className="artifact-info">AC: {artifact.armor_class} Penalty: {artifact.armor_penalty}%</span>
+                  <span className="artifact-name">{ucFirst(artifact.name)}</span><br />
+                  <span className="artifact-info mr-4">AC: {artifact.armor_class}</span>
+                  <span className="artifact-info">Penalty: {artifact.armor_penalty}%</span>
                 </div>
               </div>
             );

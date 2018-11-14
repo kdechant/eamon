@@ -4,7 +4,7 @@ import PlayerMenu from "./PlayerMenu";
 import Player from "../models/player";
 import axios from "axios";
 import AdventureList from "./AdventureList";
-import Shop from "./Shop";
+import Shop from "./Shop/Shop";
 import Wizard from "./Wizard/Wizard";
 import Witch from "./Witch/Witch";
 
