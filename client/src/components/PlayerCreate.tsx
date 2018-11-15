@@ -1,8 +1,10 @@
-import axios from 'axios';
 import * as React from 'react';
 import { Link } from "react-router-dom";
-import diceRoll from "../utils/dice";
+import axios from 'axios';
 import * as uuid from 'uuid';
+
+import diceRoll from "../utils/dice";
+import {getHeaders} from '../utils/api';
 
 class PlayerCreate extends React.Component {
   public state: any = {
@@ -58,7 +60,7 @@ class PlayerCreate extends React.Component {
     // save new player to the API
     let {id, error, ...player} = this.state;
     player.uuid = window.localStorage.getItem('eamon_uuid');
-    axios.post("/api/players", player)
+    axios.post("/api/players", player, {headers: getHeaders()})
       .then((res) => {
         this.setState({id: res.data.id});
         window.localStorage.setItem('player_id', res.data.id);
@@ -69,8 +71,6 @@ class PlayerCreate extends React.Component {
   };
 
   public render() {
-
-
 
     if (this.state.id) {
       return (

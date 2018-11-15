@@ -1,6 +1,7 @@
+import axios, {AxiosPromise} from "axios";
 import Artifact from "./artifact";
 import GameObject from "./game-object";
-import axios, {AxiosPromise} from "axios";
+import { getHeaders } from "../utils/api";
 
 /**
  * Player class. Represents players in the main hall
@@ -166,7 +167,9 @@ export default class Player extends GameObject {
    * @return {AxiosPromise} the promise from the API call
    */
   public save(): AxiosPromise {
-    return axios.put("/api/players/" + this.id, this);
+    // Note: Logging is not done here. Main Hall logging (player creation, enter hall, exit hall)
+    // is handled in Django.
+    return axios.put("/api/players/" + this.id, this, {headers: getHeaders()});
   }
 
 }
