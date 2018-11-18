@@ -11,16 +11,13 @@
 
 {% block content %}
 
-    <adventure>Waking up the monsters...</adventure>
+    <div id="root"></div>
 
 {% endblock %}
 
 {% block endscripts %}
   {% with adventure_root="dist/adventures/" %}
     <script src="{% static "node_modules/lz-string/libs/lz-string.js" %}"></script>
-    <script type="text/javascript" src="{% static "dist/core/runtime.js" %}"></script>
-    <script type="text/javascript" src="{% static "dist/core/polyfills.js" %}"></script>
-    <script type="text/javascript" src="{% static "dist/core/vendor.js" %}"></script>
 
     <script type="text/javascript" src="{% static adventure_root|add:slug|add:".js" %}"></script>
 
@@ -34,7 +31,7 @@
       {% endif %}
     </script>
 
-    <script type="text/javascript" src="{% static "dist/core/main.js" %}"></script>
+    <script type="text/javascript" src="{% static "core.js" %}"></script>
   {% endwith %}
 {% endblock %}
 

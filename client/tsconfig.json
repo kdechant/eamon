@@ -9,6 +9,7 @@
         "lib": ["es5", "es6", "dom"]
     },
     "include": [
-        "./src/**/*"
+        "./main-hall/**/*",
+        "./core/**/*"
     ]
 }
