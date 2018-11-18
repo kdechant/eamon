@@ -36,16 +36,7 @@ def main_hall(request):
     """
     The container for the "main hall" react app
     """
-    REACT_BUILD_DIR = os.path.join(settings.BASE_DIR, 'client', 'build')
-
-    # Pull the js and css filenames from the current build
-    path = os.path.join(REACT_BUILD_DIR, "asset-manifest.json")
-    with open(path) as f:
-        data = json.load(f)
-
-    react_js_path = data['main.js'].replace('static/', '')
-    print(react_js_path)
-    return render(request, 'main-hall.html', {'react_js_path': react_js_path})
+    return render(request, 'main-hall.html')
 
 
 def adventure(request, slug):
