@@ -1,5 +1,5 @@
 import {Hint} from "../models/hint";
-import {Game} from "../models/game";
+import Game from "../models/game";
 
 /**
  * Class HintRepository.

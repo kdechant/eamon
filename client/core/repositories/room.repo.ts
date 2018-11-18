@@ -1,5 +1,5 @@
 import {Room} from "../models/room";
-import {Game} from "../models/game";
+import Game from "../models/game";
 
 /**
  * Class RoomRepository.

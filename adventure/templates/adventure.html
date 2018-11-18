@@ -22,7 +22,8 @@
     <script type="text/javascript" src="{% static adventure_root|add:slug|add:".js" %}"></script>
 
     <script type="text/javascript">
-      var game = window['adventures/{{ slug }}'];
+      var game = window['adventures/{{ slug }}'].game;
+
       game.slug = "{{ slug }}";
       {% if request.GET.demo %}
         game.demo = true;

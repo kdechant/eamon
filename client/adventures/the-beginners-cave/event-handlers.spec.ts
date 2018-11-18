@@ -5,7 +5,7 @@ import {async, getTestBed} from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
-import {Game} from "../../core/models/game";
+import Game from "../../core/models/game";
 import {GameLoaderService} from "../../core/services/game-loader.service";
 import {event_handlers} from "./event-handlers";
 

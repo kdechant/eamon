@@ -1,5 +1,5 @@
 import {Effect} from "../models/effect";
-import {Game} from "../models/game";
+import Game from "../models/game";
 
 /**
  * Class EffectRepository.

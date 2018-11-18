@@ -1,5 +1,5 @@
 import {Loadable} from "./loadable";
-import {Game} from "./game";
+import Game from "./game";
 
 export class RoomExit extends Loadable {
 

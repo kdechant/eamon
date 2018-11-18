@@ -1,4 +1,4 @@
-import {Game} from "../models/game";
+import Game from "../models/game";
 import {GameObject} from "../models/game-object";
 import {Artifact} from "../models/artifact";
 import {Room} from "../models/room";

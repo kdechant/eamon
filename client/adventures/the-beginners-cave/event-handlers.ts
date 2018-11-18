@@ -1,4 +1,4 @@
-import {Game} from "../../core/models/game";
+import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";

@@ -1,4 +1,4 @@
-import {Game} from "../models/game";
+import Game from "../models/game";
 // import {initMockGame} from "../utils/testing";
 
 describe("Artifact Repo", function() {

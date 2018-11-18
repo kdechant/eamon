@@ -1,4 +1,4 @@
-import {Game} from "../models/game";
+import Game from "../models/game";
 import {Artifact} from "../models/artifact";
 // import {initMockGame} from "../utils/testing";
 

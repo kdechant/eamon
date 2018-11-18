@@ -1,4 +1,4 @@
-import {Game} from "../models/game";
+import Game from "../models/game";
 
 import {BaseCommand} from "../commands/base-command";
 import {CustomCommand} from "../commands/base-command";

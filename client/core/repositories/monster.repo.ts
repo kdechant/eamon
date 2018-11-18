@@ -1,5 +1,5 @@
 import {Monster} from "../models/monster";
-import {Game} from "../models/game";
+import Game from "../models/game";
 import {Artifact} from "../models/artifact";
 
 /**

@@ -21,7 +21,7 @@ declare var game;
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
  */
-export class Game {
+export default class Game {
 
   // constants
   static STATUS_ACTIVE: number = 0;
@@ -250,25 +250,25 @@ export class Game {
   /**
    * Sets up data received from the GameLoaderService.
    */
-  public init(data) {
+  public init(adv, rooms, artifacts, effects, monsters, hints, player) {
 
-    this.id = data[0].id;
-    this.name = data[0].name;
-    this.description = data[0].description;
-    this.intro_text = data[0].intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
+    this.id = adv.id;
+    this.name = adv.name;
+    this.description = adv.description;
+    this.intro_text = adv.intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
     this.intro_index = 0;
-    this.intro_question = data[0].intro_question;
-    this.dead_body_id = data[0].dead_body_id;
+    this.intro_question = adv.intro_question;
+    this.dead_body_id = adv.dead_body_id;
 
-    this.rooms = new RoomRepository(data[1]);
-    this.artifacts = new ArtifactRepository(data[2]);
-    this.effects = new EffectRepository(data[3]);
-    this.monsters = new MonsterRepository(data[4]);
-    this.hints = new HintRepository(data[5]);
+    this.rooms = new RoomRepository(rooms);
+    this.artifacts = new ArtifactRepository(artifacts);
+    this.effects = new EffectRepository(effects);
+    this.monsters = new MonsterRepository(monsters);
+    this.hints = new HintRepository(hints);
 
     this.modal = new Modal;
 
-    this.monsters.addPlayer(data[6]);
+    this.monsters.addPlayer(player);
 
     // de-duplicate the artifact names
     this.artifacts.deduplicate();
@@ -288,30 +288,31 @@ export class Game {
       // demo player with no saved games. just start the game.
       this.fresh_start();
     } else {
+      // FIXME: reimplement saved game loader using axios
       // real player. check if loading a saved game, otherwise init normally
-      this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
-        data => {
-          for (let sv of data) {
-            this.saved_games[sv.slot] = sv;
-          }
-
-          // determine if resuming a saved game
-          let saved_game_slot = window.localStorage.getItem('saved_game_slot');
-          if (saved_game_slot) {
-
-            // loading a saved game
-            this.restore(saved_game_slot);
-            window.localStorage.removeItem('saved_game_slot');
-            this.start();
-
-          } else {
+      // this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
+      //   data => {
+      //     for (let sv of data) {
+      //       this.saved_games[sv.slot] = sv;
+      //     }
+      //
+      //     // determine if resuming a saved game
+      //     let saved_game_slot = window.localStorage.getItem('saved_game_slot');
+      //     if (saved_game_slot) {
+      //
+      //       // loading a saved game
+      //       this.restore(saved_game_slot);
+      //       window.localStorage.removeItem('saved_game_slot');
+      //       this.start();
+      //
+      //     } else {
 
             // new game
             this.fresh_start();
 
-          }
-        }
-      );
+          // }
+        // }
+      // );
     }
 
   }

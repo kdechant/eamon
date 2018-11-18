@@ -1,4 +1,4 @@
-import {Game} from "../../core/models/game";
+import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {light_trollsfire, put_out_trollsfire} from "./event-handlers";
 
