@@ -5,7 +5,7 @@ import {Game} from "../models/game";
  * Class RoomRepository.
  * Storage class for all room data.
  */
-export class RoomRepository {
+export default class RoomRepository {
 
   /**
    * An array of all the Room objects

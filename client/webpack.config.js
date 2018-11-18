@@ -17,8 +17,8 @@ let entry_scripts = {
 // and 'folder2.js' with the contents of folder2, etc.
 const glob = require('glob');
 for (let file of glob.sync('adventures/**/index.ts')) {
-  let name = file.split('/')[0];
-  entry_scripts[name] = './' + file;
+  let name = file.split('/')[1];
+  entry_scripts['adventures/' + name] = './' + file;
 }
 
 module.exports = {
@@ -48,8 +48,8 @@ module.exports = {
       // TODO: look at using file hashes for cache busting. Though that might be easier to do in Django's staticfiles.
     filename: '[name].js',   // replace [name] with the key of the object from 'entry' above.
     path: path.resolve(__dirname, './build/static'),
-    libraryTarget: "var", // puts the exports in a var (other options are 'window', 'global', and many others)
-    library: "Adventure"  // the name of the exported variable.
+    libraryTarget: "window", // puts the exports in a var (other options are 'window', 'global', and many others)
+    library: "[name]"  // the name of the exported variable.
   },
   plugins: [
       htmlPluginMainHall

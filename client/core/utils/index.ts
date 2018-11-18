@@ -1,6 +1,6 @@
-import {Game} from "../../../static/core/models/game";
+import {Game} from "../models/game";
 
-declare var game;
+declare var game: Game;
 
 export function gamevars(value) {
   if (typeof value === "undefined") {

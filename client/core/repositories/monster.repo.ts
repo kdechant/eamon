@@ -6,7 +6,7 @@ import {Artifact} from "../models/artifact";
  * Class MonsterRepository.
  * Storage class for all monster data.
  */
-export class MonsterRepository {
+export default class MonsterRepository {
 
   /**
    * An array of all the Monster objects

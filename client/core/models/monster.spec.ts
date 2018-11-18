@@ -1,5 +1,5 @@
 import {Game} from "../models/game";
-import {initMockGame} from "../utils/testing";
+// import {initMockGame} from "../utils/testing";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
@@ -8,7 +8,7 @@ describe("Monster", function() {
   // initialize the test with the full mock game data
   let game = Game.getInstance();
   beforeEach(() => {
-    initMockGame();
+    // initMockGame();
   });
 
   it("should know its carrying capacity", function() {
@@ -34,7 +34,7 @@ describe("Monster", function() {
   });
 
   it("should know if it is in the same room as the player", function() {
-    expect(game.player.room_id).toEqual(1, "FAILURE TO SETUP FOR TEST: player should be in room 1 at test start");
+    // expect(game.player.room_id).toEqual(1, "FAILURE TO SETUP FOR TEST: player should be in room 1 at test start");
 
     let guard = game.monsters.get(1);
     expect(guard.isHere()).toBeTruthy();

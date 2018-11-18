@@ -16,13 +16,13 @@
 {% endblock %}
 
 {% block endscripts %}
-  {% with adventure_root="dist/adventures/" %}
+  {% with adventure_root="adventures/" %}
     <script src="{% static "node_modules/lz-string/libs/lz-string.js" %}"></script>
 
     <script type="text/javascript" src="{% static adventure_root|add:slug|add:".js" %}"></script>
 
     <script type="text/javascript">
-      var game = Adventure.game;
+      var game = window['adventures/{{ slug }}'];
       game.slug = "{{ slug }}";
       {% if request.GET.demo %}
         game.demo = true;

@@ -5,7 +5,7 @@ import {Game} from "../models/game";
  * Class HintRepository.
  * Storage class for all hint data.
  */
-export class HintRepository {
+export default class HintRepository {
 
   /**
    * An array of all the Hint objects

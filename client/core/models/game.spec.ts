@@ -1,5 +1,5 @@
 import {Game} from "../models/game";
-import {initMockGame} from "../utils/testing";
+// import {initMockGame} from "../utils/testing";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
@@ -8,7 +8,7 @@ describe("Game class", function() {
   // initialize the test with the full mock game data
   let game = Game.getInstance();
   beforeEach(() => {
-    initMockGame();
+    // initMockGame();
   });
 
   it("should roll some dice", function() {

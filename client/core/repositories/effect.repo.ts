@@ -5,7 +5,7 @@ import {Game} from "../models/game";
  * Class EffectRepository.
  * Storage class for all effect data.
  */
-export class EffectRepository {
+export default class EffectRepository {
 
   /**
    * An array of all the Effect objects

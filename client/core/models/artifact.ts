@@ -2,7 +2,7 @@ import {GameObject} from "./game-object";
 import {Game} from "./game";
 import {Monster} from "./monster";
 import {CommandException} from "../utils/command.exception";
-import {ArtifactRepository} from "../repositories/artifact.repo";
+import ArtifactRepository from "../repositories/artifact.repo";
 
 /**
  * Artifact class. Represents all properties of a single artifact

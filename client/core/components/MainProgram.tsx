@@ -13,7 +13,7 @@ class MainProgram extends React.Component<any, any> {
 
   public render() {
 
-    const game = this.props.game;
+    const game = this.state.game;
 
     if (!game.player) {
       return <div>Waking up the monsters...</div>

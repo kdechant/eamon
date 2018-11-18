@@ -1,17 +1,17 @@
-import {RoomRepository} from "../repositories/room.repo";
-import {ArtifactRepository} from "../repositories/artifact.repo";
-import {EffectRepository} from "../repositories/effect.repo";
-import {MonsterRepository} from "../repositories/monster.repo";
-import {HintRepository} from "../repositories/hint.repo";
+import RoomRepository from "../repositories/room.repo";
+import ArtifactRepository from "../repositories/artifact.repo";
+import EffectRepository from "../repositories/effect.repo";
+import MonsterRepository from "../repositories/monster.repo";
+import HintRepository from "../repositories/hint.repo";
 import {Modal} from "../models/modal";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
 import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
-import {EventHandler} from "../commands/event-handler";
-import {ILoggerService, DummyLoggerService} from "../services/logger.interface";
-import {DummySavedGameService, ISavedGameService} from "../services/saved-game.interface";
+import EventHandler from "../commands/event-handler";
+import {ILoggerService, DummyLoggerService} from "../utils/logger.interface";
+import {DummySavedGameService, ISavedGameService} from "../utils/saved-game.interface";
 
 declare var LZString;
 

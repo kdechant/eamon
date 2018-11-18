@@ -12,7 +12,7 @@ import {Monster} from "../models/monster";
  *
  * The EventHandler objects should be instantiated in an adventure's "event-handlers" file.
  */
-export class EventHandler {
+export default class EventHandler {
   name: string;
   game: Game;
   run(arg1: number | string | Artifact | Monster, arg2?: Artifact | Monster, arg3?: Artifact | Monster) { }
