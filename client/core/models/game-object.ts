@@ -1,6 +1,6 @@
 import Game from "./game";
 
-declare var Adventure: any;
+declare var game: Game;
 
 /**
  * GameObject class. Parent class for monsters and artifacts.
@@ -55,8 +55,7 @@ export class GameObject {
   public showDescription() {
     // Check for whether the game is running. This prevents the following JS error in the main hall:
     // "TypeError: Object.setPrototypeOf: expected an object or null, got undefined"
-    if (typeof Adventure.game !== 'undefined') {
-      let game = Adventure.game;
+    if (typeof game !== 'undefined') {
       game.history.write(this.description + " ");  // pad with space in case of chained effects
       if (this.effect) {
         game.effects.print(this.effect);
