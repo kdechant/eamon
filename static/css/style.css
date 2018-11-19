@@ -108,6 +108,8 @@ command-prompt .form-control {
 
 .hints-command-list {
   margin-top: 20px; }
+  .hints-command-list button {
+    margin-right: 0.5rem; }
 
 .hint-next-prev {
   margin-bottom: 15px; }

@@ -10,12 +10,7 @@ class Hints extends React.Component<any, any> {
     this.setState({ show: !this.state.show });
   };
 
-  public handleClose = () => {
-    this.setState({ show: false });
-  };
-
   public handleShow = () => {
-    console.log('here')
     this.setState({ show: true });
   };
 
@@ -30,7 +25,6 @@ class Hints extends React.Component<any, any> {
     } else {
       hint.current_index++;
     }
-    console.log('next', hint.current_index)
     this.setState({show: true}); // force re-render
   };
 
@@ -40,15 +34,14 @@ class Hints extends React.Component<any, any> {
     } else {
       hint.current_index--;
     }
-    console.log('prev', hint.current_index)
     this.setState({show: true}); // force re-render
   };
 
   public render() {
     const game = this.props.game;
     return (
-      <div id="hints">
-        <button type="button" className="btn btn-default" onClick={this.handleShow}>
+      <span id="hints">
+        <button type="button" className="btn btn-secondary" onClick={this.handleShow}>
           Hints
         </button>
 
@@ -83,7 +76,7 @@ class Hints extends React.Component<any, any> {
             <button type="button" className="btn btn-primary" onClick={this.toggle}>Close</button>
           </ModalFooter>
         </Modal>
-      </div>
+      </span>
     );
   }
 

@@ -161,6 +161,9 @@ command-prompt {
 }
 .hints-command-list {
   margin-top: 20px;
+  button {
+    margin-right: 0.5rem;
+  }
 }
 .hint-next-prev {
   margin-bottom: 15px;
