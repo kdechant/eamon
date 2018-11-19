@@ -12,7 +12,3 @@ export function gamevars(value) {
     return value;
   }
 }
-
-export function nl2br(value) {
-  return (typeof value === "undefined") ? "" : value.replace(/\n/g, "<br />");
-}

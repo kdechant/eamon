@@ -1,7 +1,14 @@
 import * as React from 'react';
-import {gamevars, nl2br} from "../utils";
 import axios from "axios";
 import Game from "../models/game";
+import IntroText from "./IntroText";
+import Player from "../../main-hall/models/player";
+import Hints from "./Hints";
+import History from "./History";
+import CommandPrompt from "./CommandPrompt";
+import HowToPlay from "./HowToPlay";
+import CommandList from "./CommandList";
+import Status from "./Status";
 
 declare var game;
 
@@ -50,6 +57,15 @@ class MainProgram extends React.Component<any, any> {
 
   };
 
+  /**
+   * Persists the game object to the state. Pass this as a prop
+   * to a child element to allow it to alter the game state.
+   * @param {Game} game The game object
+   */
+  public setGameState = (game: Game) => {
+    this.setState({ game });
+  };
+
   public render() {
 
     const game = this.state.game;
@@ -57,6 +73,8 @@ class MainProgram extends React.Component<any, any> {
     if (!game || !game.player) {
       return (
         <div className="container-fluid" id="game">
+          <h1>{game.name}</h1>
+
           <div className="parchment">
             <div className="parchment-inner">
               Waking up the monsters...
@@ -70,22 +88,53 @@ class MainProgram extends React.Component<any, any> {
     if (!game.started && game.intro_text) {
       return (
         <div className="container-fluid" id="game">
+          <h1>{game.name}</h1>
+
           <div className="parchment">
             <div className="parchment-inner">
-              <p>{nl2br(gamevars(game.intro_text))}</p>
+        <IntroText game={this.state.game} setGameState={this.setGameState}/>
             </div>
           </div>
         </div>
       );
     }
 
+    if (game.selling) {
+      // TODO: put the selling component here
+    }
+
     // the regular game engine
     return (
       <div className="container-fluid" id="game">
-        <div className="parchment">
-          <div className="parchment-inner">
-            {game.name}
+
+        <h1>{game.name}</h1>
+
+        <div className="game row">
+
+          {/* history parchment and command prompt */}
+          <div className="command col-md-7">
+            <div className="parchment">
+              <div className="parchment-inner">
+                <History game={this.state.game}/>
+                {!game.modal.visible && (
+                  <div>
+                    <CommandPrompt game={this.state.game} setGameState={this.setGameState}/>
+                    <div className="hints-command-list">
+                      <HowToPlay game={this.state.game}/>
+                      <Hints game={this.state.game}/>
+                      <CommandList game={this.state.game}/>
+                    </div>
+                  </div>
+                )}
+
+                {/* TODO: modal */}
+              </div>
+            </div>
           </div>
+
+          {/* status box (outside the parchment */}
+          <Status game={this.state.game}/>
+
         </div>
       </div>
     );

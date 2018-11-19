@@ -256,7 +256,6 @@ export default class Game {
     this.name = adv.name;
     this.description = adv.description;
     this.intro_text = adv.intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
-    this.intro_index = 0;
     this.intro_question = adv.intro_question;
     this.dead_body_id = adv.dead_body_id;
 
