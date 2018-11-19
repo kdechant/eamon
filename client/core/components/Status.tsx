@@ -73,9 +73,9 @@ class Status extends React.Component<any, any> {
 
           {/*   [class.hidden]="hiddenDesc" */}
             <p className="room-description">{ game.rooms.current_room.description }</p>
-            <div className="room-exits">Visible Exits:
-              {game.rooms.current_room.exits.map(exit => (
-                <span key={exit.id}>{exit.direction}&nbsp;</span>
+            <div className="room-exits">Visible Exits:&nbsp;
+              {game.rooms.current_room.exits.map((exit, index) => (
+                <span key={index}>{exit.direction}&nbsp;</span>
               ))}
             </div>
           </div>

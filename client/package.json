@@ -10,6 +10,7 @@
     "react-dom": "^16.6.1",
     "react-router-dom": "^4.3.1",
     "react-transition-group": "^2.5.0",
+    "reactstrap": "^6.5.0",
     "uuid": "^3.3.2"
   },
   "scripts": {

@@ -72,6 +72,7 @@ a {
       border-bottom: none; }
     .status-widget.inventory .row .artifact-info {
       color: #333333;
+      display: inline-block;
       font-size: 85%; }
 
 .artifacts-list th {
@@ -107,6 +108,11 @@ command-prompt .form-control {
 
 .hints-command-list {
   margin-top: 20px; }
+
+.hint-next-prev {
+  margin-bottom: 15px; }
+  .hint-next-prev .next {
+    float: right; }
 
 .btn {
   font-size: 18px;

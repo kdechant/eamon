@@ -6,7 +6,7 @@ import {HistoryEntry} from "../models/history-entry";
 export class HistoryManager {
   history: HistoryEntry[];
   index: number;
-  delay: number = 100;
+  delay: number = 0;  // TODO: reimplement the delay (how to trigger React re-render though?)
   total_delay: number = 0;
   suppressNextMessage: boolean = false;
 

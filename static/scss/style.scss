@@ -162,6 +162,13 @@ command-prompt {
 .hints-command-list {
   margin-top: 20px;
 }
+.hint-next-prev {
+  margin-bottom: 15px;
+  .next {
+    float: right;
+  }
+}
+
 
 .btn {
   font-size: 18px;
