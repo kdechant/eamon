@@ -282,6 +282,9 @@ export default class Game {
       this.savedGameService = new DummySavedGameService();
     }
 
+    // for testing only! turns on debug mode.
+    this.data["bort"] = true;
+
     // load the saved games
     if (this.demo) {
       // demo player with no saved games. just start the game.
@@ -592,20 +595,20 @@ export default class Game {
       }
 
       // delete the saved games
-      for (let slot=1; slot <= 10; slot++) {
-        let saved_game = this.saved_games[slot];
-        if (saved_game) {
-          this.savedGameService.deleteSavedGame(saved_game).subscribe(
-            data => {
-              delete this.saved_games[slot];
-              this.logger.log("delete saved game #" + saved_game.id);
-            },
-            err => {
-              console.error(err);
-            }
-          );
-        }
-      }
+      // for (let slot=1; slot <= 10; slot++) {
+      //   let saved_game = this.saved_games[slot];
+      //   if (saved_game) {
+      //     this.savedGameService.deleteSavedGame(saved_game).subscribe(
+      //       data => {
+      //         delete this.saved_games[slot];
+      //         this.logger.log("delete saved game #" + saved_game.id);
+      //       },
+      //       err => {
+      //         console.error(err);
+      //       }
+      //     );
+      //   }
+      // }
     }
   }
 

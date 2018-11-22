@@ -9,6 +9,7 @@ import CommandPrompt from "./CommandPrompt";
 import HowToPlay from "./HowToPlay";
 import CommandList from "./CommandList";
 import Status from "./Status";
+import SamSlicker from "./SamSlicker";
 
 declare var game;
 
@@ -100,13 +101,22 @@ class MainProgram extends React.Component<any, any> {
     }
 
     if (game.selling) {
-      // TODO: put the selling component here
+      return (
+        <div className="container-fluid" id="game">
+          <h1>{game.name}</h1>
+
+          <div className="parchment">
+            <div className="parchment-inner">
+              <SamSlicker game={this.state.game} setGameState={this.setGameState} />
+            </div>
+          </div>
+        </div>
+      );
     }
 
     // the regular game engine
     return (
       <div className="container-fluid" id="game">
-
         <h1>{game.name}</h1>
 
         <div className="game row">

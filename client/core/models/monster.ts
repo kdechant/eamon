@@ -98,7 +98,6 @@ export class Monster extends GameObject {
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
   profit: number = 0; // the money the player makes for selling items when they leave the adventure
   group_monster_index: number = 0;  // for combat logic involving group monsters, which group member is active
-  weapons: Artifact[]; // list of weapons, used when selling at game exit
 
   /**
    * A container for custom data used by specific adventures
@@ -1105,14 +1104,12 @@ export class Monster extends GameObject {
       }
     }
 
-    this.weapons = this.inventory.filter(x => x.is_weapon);
     // a copy of inventory, needed to prevent looping errors when we destroy artifacts
     let treasures = this.inventory.filter(x => !x.is_weapon && !x.isArmor());
     for (let a of treasures) {
       this.profit += a.value;
       a.destroy();
     }
-    this.gold += this.profit;
 
     Game.getInstance().triggerEvent("afterSell");
 

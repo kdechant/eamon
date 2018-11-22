@@ -123,8 +123,14 @@ class AdventureList extends React.Component<any, any> {
    */
   public gotoAdventure = (adv: Adventure, event) => {
     event.preventDefault();
-    // todo: save player
-    window.location.href = '/adventure/' + adv.slug;
+    this.props.player.save()
+      .then((res) => {
+        window.location.href = '/adventure/' + adv.slug;
+      })
+      .catch((err) => {
+        // TODO: show error to player
+        console.error(err);
+      });
   };
 
   public render() {

@@ -74,8 +74,9 @@ class CommandPrompt extends React.Component<any, any> {
   };
 
   public exit = () => {
-    // TODO: implement this
-    console.log('exit');
+    const game = this.props.game;
+    game.player.sellItems();
+    this.props.setGameState(game);
   };
 
   public render() {
