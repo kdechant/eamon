@@ -18,7 +18,7 @@ class CommandPrompt extends React.Component<any, any> {
     const game = this.props.game;
     switch (event.key) {
       case 'Enter':
-        if (!game.ready) return;
+        if (!game.ready) { return; }
 
         let command = this.state.command;
 
@@ -46,6 +46,10 @@ class CommandPrompt extends React.Component<any, any> {
           this.props.setGameState(game);
         }, 25);
 
+        // setTimeout(() => {
+        //   console.log('delayed render');
+        //   this.props.setGameState(game);
+        // }, 1500);
         break;
       case 'ArrowUp':
         // up arrow moves back through the history
@@ -77,6 +81,19 @@ class CommandPrompt extends React.Component<any, any> {
     const game = this.props.game;
     game.player.sellItems();
     this.props.setGameState(game);
+  };
+
+  public restoreSavedGame = (sv) => {
+    let slot = parseInt(sv, 10);
+    const game = this.props.game;
+    game.restore(slot);
+    game.tick();
+    this.setState({restore: false});
+    this.props.setGameState({game});
+  };
+
+  public hideSaves = () => {
+    this.setState({restore: false});
   };
 
   public render() {
@@ -121,7 +138,13 @@ class CommandPrompt extends React.Component<any, any> {
     if (game.died && this.state.restore) {
       return (
         <div className="return-button-container">
-          TODO: reimplement the saved game feature
+          {game.saves.map(sv => (
+            <button key={sv.slot} className="btn btn-success" onClick={() => this.restoreSavedGame(sv)}>{sv}</button>
+          ))}
+          {game.saves.length === 0 && (
+            <span>You have no saved games.</span>
+          )}
+          <button className="btn btn-success" onClick={this.hideSaves}>Cancel</button>
         </div>
       )
     }

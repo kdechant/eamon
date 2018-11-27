@@ -28,6 +28,9 @@ class SavedGameViewSet(viewsets.ModelViewSet):
         adv_id = self.request.query_params.get('adventure_id', None)
         if adv_id is not None:
             queryset = queryset.filter(adventure_id=adv_id)
+        slug = self.request.query_params.get('slug', None)
+        if slug is not None:
+            queryset = queryset.filter(adventure__slug=slug)
         return queryset
 
     def retrieve(self, request, *args, **kwargs):

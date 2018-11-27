@@ -1399,11 +1399,11 @@ export class RestoreCommand implements BaseCommand {
       }
     }
     q1.choices.push('cancel');
-    q1.callback = function (answer) {
+    q1.callback = answer => {
       if (answer === 'cancel') {
         return false;
       }
-      let slot = parseInt(answer);
+      let slot = parseInt(answer, 10);
       game.restore(slot);
       return true;
     };

@@ -1,3 +1,5 @@
+import { compressToBase64, decompressFromBase64 } from 'lz-string';
+
 import RoomRepository from "../repositories/room.repo";
 import ArtifactRepository from "../repositories/artifact.repo";
 import EffectRepository from "../repositories/effect.repo";
@@ -12,8 +14,7 @@ import {CommandParser} from "../models/command-parser";
 import EventHandler from "../commands/event-handler";
 import {ILoggerService, DummyLoggerService} from "../utils/logger.interface";
 import {DummySavedGameService, ISavedGameService} from "../utils/saved-game.interface";
-
-declare var LZString;
+import {getAxios} from "../../main-hall/utils/api";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game;
@@ -213,12 +214,18 @@ export default class Game {
   logger: ILoggerService;
 
   // Saved game stuff
-  savedGameService: ISavedGameService;
   public saved_games: any = {};
+
   /**
    * Saved games used only when player died
    */
   public saves: any = [];
+
+  /**
+   * Function to refresh the React components
+   * (This is kind of a hack. Wish I knew of a nicer way.)
+   */
+  public refresh: any;
 
   constructor() { }
 
@@ -250,7 +257,7 @@ export default class Game {
   /**
    * Sets up data received from the GameLoaderService.
    */
-  public init(adv, rooms, artifacts, effects, monsters, hints, player) {
+  public init(adv, rooms, artifacts, effects, monsters, hints, player, saved_games) {
 
     this.id = adv.id;
     this.name = adv.name;
@@ -278,43 +285,31 @@ export default class Game {
     if (!this.logger) {
       this.logger = new DummyLoggerService;
     }
-    if (!this.savedGameService || this.demo) {
-      this.savedGameService = new DummySavedGameService();
-    }
 
     // for testing only! turns on debug mode.
-    this.data["bort"] = true;
+    this.data.bort = true;
 
     // load the saved games
     if (this.demo) {
       // demo player with no saved games. just start the game.
       this.fresh_start();
     } else {
-      // FIXME: reimplement saved game loader using axios
       // real player. check if loading a saved game, otherwise init normally
-      // this.savedGameService.listSavedGames(window.localStorage.getItem('player_id'), this.id).subscribe(
-      //   data => {
-      //     for (let sv of data) {
-      //       this.saved_games[sv.slot] = sv;
-      //     }
-      //
-      //     // determine if resuming a saved game
-      //     let saved_game_slot = window.localStorage.getItem('saved_game_slot');
-      //     if (saved_game_slot) {
-      //
-      //       // loading a saved game
-      //       this.restore(saved_game_slot);
-      //       window.localStorage.removeItem('saved_game_slot');
-      //       this.start();
-      //
-      //     } else {
+      for (let sv of saved_games) {
+        this.saved_games[sv.slot] = sv;
+      }
+      // determine if resuming a saved game
+      let saved_game_slot = window.localStorage.getItem('saved_game_slot');
+      if (saved_game_slot) {
 
-            // new game
-            this.fresh_start();
+        // loading a saved game
+        this.restore(saved_game_slot);
+        window.localStorage.removeItem('saved_game_slot');
+      } else {
+        // new game
+        this.fresh_start();
+      }
 
-          // }
-        // }
-      // );
     }
 
   }
@@ -595,20 +590,20 @@ export default class Game {
       }
 
       // delete the saved games
-      // for (let slot=1; slot <= 10; slot++) {
-      //   let saved_game = this.saved_games[slot];
-      //   if (saved_game) {
-      //     this.savedGameService.deleteSavedGame(saved_game).subscribe(
-      //       data => {
-      //         delete this.saved_games[slot];
-      //         this.logger.log("delete saved game #" + saved_game.id);
-      //       },
-      //       err => {
-      //         console.error(err);
-      //       }
-      //     );
-      //   }
-      // }
+      const axios = getAxios();
+      for (let slot=1; slot <= 10; slot++) {
+        let saved_game = this.saved_games[slot];
+        if (saved_game) {
+          axios.delete("/saves" + saved_game.id + '.json?uuid=' + window.localStorage.getItem('eamon_uuid'))
+            .then(res => {
+              delete this.saved_games[slot];
+              this.logger.log("deleted saved game #" + saved_game.id);
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+      }
     }
   }
 
@@ -655,8 +650,8 @@ export default class Game {
       player_id: window.localStorage.getItem('player_id'),
       uuid: window.localStorage.getItem('eamon_uuid'),
       adventure_id: this.id,
-      slot: slot,
-      description: description,
+      slot,
+      description,
       data: {
         rooms: this.rooms.rooms,
         artifacts: this.artifacts.serialize(),
@@ -668,12 +663,14 @@ export default class Game {
     };
 
     // save to the API
-    this.savedGameService.saveGame(sv).subscribe(
-      sv => {
-        this.saved_games[slot] = sv;
+    // this.savedGameService.saveGame(sv).subscribe(
+    const axios = getAxios();
+    sv.data = compressToBase64(JSON.stringify(sv.data));
+    axios.post("/saves?uuid=" + window.localStorage.getItem('eamon_uuid'), sv)
+      .then(res => {
+        this.saved_games[slot] = res.data;
         console.log(this.saved_games);
-      },
-      err => {
+      }).catch(err => {
         this.history.write("Error saving game!");
         console.log(err);
       }
@@ -687,9 +684,12 @@ export default class Game {
    */
   public restore(slot) {
     this.logger.log('restore game from slot ' + slot);
-    this.savedGameService.loadSavedGame(this.saved_games[slot]).subscribe(
-      sv => {
-        let data = JSON.parse(LZString.decompressFromBase64(sv['data']));
+    const axios = getAxios();
+    const save_id = this.saved_games[slot].id;
+    axios.get("/saves/" + save_id + ".json?uuid=" + window.localStorage.getItem('eamon_uuid'))
+      .then(
+      res => {
+        let data = JSON.parse(decompressFromBase64(res.data.data));
         // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
         this.rooms = new RoomRepository(data.rooms);
         this.artifacts = new ArtifactRepository(data.artifacts);
@@ -705,6 +705,7 @@ export default class Game {
 
         this.died = false;
         this.active = true;
+        this.started = true;
         this.ready = true;
 
         this.history = new HistoryManager;
@@ -713,6 +714,9 @@ export default class Game {
 
         // run end turn method to show location, monsters, and artifacts
         this.endTurn();
+
+        // this forces the React component to re-render
+        this.refresh(this);
       }
     );
   }

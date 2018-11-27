@@ -9,6 +9,7 @@ import Bank from "./Bank";
 import Shop from "./Shop/Shop";
 import Witch from "./Witch/Witch";
 import Wizard from "./Wizard/Wizard";
+import SavedGameTile from "./SavedGameTile";
 
 class PlayerDetail extends React.Component {
   public state: any = {
@@ -40,7 +41,32 @@ class PlayerDetail extends React.Component {
   }
 
   public render() {
-    // TODO: show the saved game list here...
+
+    if (!this.state.player) {
+      return <p>Loading...</p>;
+    }
+
+    if (this.state.player.saved_games.length > 0) {
+      return (
+      <div className="container-fluid" id="SavedGameList">
+        <div className="row">
+          <div className="col-sm">
+            <h2>Continue Your Adventures</h2>
+            <p>Welcome back, {this.state.player.name}! It looks like you were on an adventure the last time we saw you.
+              Choose a saved game to restore:</p>
+            <div className="container-fluid">
+              <div className="row">
+                {this.state.player.saved_games.map((sv, index) =>
+                  <SavedGameTile key={index} savedGame={sv} player={this.state.player} setPlayerState={this.setPlayerState} />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      );
+    }
+
     return (
       <div className="container-fluid" id="PlayerDetail">
         <Route path="/main-hall/hall" render={(props) => (

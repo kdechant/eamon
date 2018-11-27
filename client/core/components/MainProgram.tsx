@@ -2,10 +2,10 @@ import * as React from 'react';
 import axios from "axios";
 import Game from "../models/game";
 import IntroText from "./IntroText";
-import Player from "../../main-hall/models/player";
 import Hints from "./Hints";
 import History from "./History";
 import CommandPrompt from "./CommandPrompt";
+import Question from "./Question";
 import HowToPlay from "./HowToPlay";
 import CommandList from "./CommandList";
 import Status from "./Status";
@@ -26,6 +26,7 @@ class MainProgram extends React.Component<any, any> {
 
   public componentDidMount() {
     const game: Game = this.state.game;
+    game.refresh = this.setGameState;  // allows the game object's methods to trigger re-render of components. hacky...
     if (game.slug === 'demo1') {
       let path = "/static/adventures/" + game.slug + "/mock-data";
       // TODO: special calls for loading mock data
@@ -46,12 +47,13 @@ class MainProgram extends React.Component<any, any> {
         axios.get("/api/adventures/" + game.slug + "/effects"),
         axios.get("/api/adventures/" + game.slug + "/monsters"),
         axios.get("/api/adventures/" + game.slug + "/hints"),
-        axios.get(player_path)
+        axios.get(player_path),
+        axios.get('/api/saves.json?player_id=' + player_id + '&slug=' + game.slug)
       ])
       // Note: I tried using axios.spread as shown in the axios documentation but it seemed to hang
       // at the end of the callback. Just using regular callback instead.
        .then(responses => {
-          game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, responses[5].data, responses[6].data);
+          game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, responses[5].data, responses[6].data, responses[7].data);
           this.setState({game});
         });
     }
@@ -137,7 +139,9 @@ class MainProgram extends React.Component<any, any> {
                   </div>
                 )}
 
-                {/* TODO: modal */}
+                {game.modal.visible && (
+                  <Question game={this.state.game} setGameState={this.setGameState}/>
+                )}
               </div>
             </div>
           </div>
