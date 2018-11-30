@@ -32,7 +32,24 @@ To create an account in the adventure designer, run the following:
 
 ### Running the unit tests
 
-* In your browser, open a new tab and enter the address 'http://localhost:8000/static/unit-tests.html'
+Eamon contains one set of tests for the core logic, and (optionally) one set of tests per adventure. These are all runnable using the Jest test runner.
+
+The tests do depend on API calls, so the back-end must be running. (`python manage.py runserver`)
+
+```
+cd client
+yarn test
+```
+
+To run just one test, you can specify the file name after `yarn test`. It must use forward slashes, even on Windows.
+
+```
+yarn test adventures/the-beginners-cave/event-handlers.spec.ts
+```
+
+To keep watching and compiling the Typescript files between test runs, the easiest way is to have two terminals open.
+In the first terminal, kick off `yarn start` and leave it running. In the second terminal, run the tests via the commands
+above. You can then edit some code and run the tests again to see the result.
 
 ### Manual setup
 

@@ -1,11 +1,17 @@
 import Game from "../models/game";
-// import {initMockGame} from "../utils/testing";
+import {initMockGame} from "../utils/testing";
+import {Monster} from "../models/monster";
 
-describe("Artifact Repo", function() {
+var game = new Game();
 
-  let game = Game.getInstance();
+describe("Monster", function() {
+
+  beforeAll(() => { global['game'] = game; });
+  afterAll(() => { delete global['game']; });
+
+  // initialize the test with the full mock game data
   beforeEach(() => {
-    // initMockGame();
+    return initMockGame(game);
   });
 
   it("should know if an artifact is within reach of the player", function() {

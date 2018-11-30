@@ -1,17 +1,10 @@
-import Game from "../models/game";
-// import {initMockGame} from "../utils/testing";
-import {Artifact} from "../models/artifact";
-import {Monster} from "../models/monster";
+import Game from "./game";
+
+let game = new Game();
 
 describe("Game class", function() {
 
-  // initialize the test with the full mock game data
-  let game = Game.getInstance();
-  beforeEach(() => {
-    // initMockGame();
-  });
-
-  it("should roll some dice", function() {
+  test("should roll some dice", () => {
     let roll: number;
     // using sides = 1 to avoid having to worry about random numbers
     expect(game.diceRoll(1, 1)).toBe(1);

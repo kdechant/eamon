@@ -1,14 +1,19 @@
 import Game from "../models/game";
-// import {initMockGame} from "../utils/testing";
+import {initMockGame} from "../utils/testing";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
+var game = new Game();
+
 describe("Monster Combat", function() {
 
+  // global handling
+  beforeAll(() => { global['game'] = game; });
+  afterAll(() => { delete global['game']; });
+
   // initialize the test with the full mock game data
-  let game = Game.getInstance();
   beforeEach(() => {
-    // initMockGame();
+    return initMockGame(game);
   });
 
   it("should know if it's able to attack (single monster)", function () {

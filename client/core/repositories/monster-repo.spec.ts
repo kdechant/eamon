@@ -1,11 +1,17 @@
 import Game from "../models/game";
+import {initMockGame} from "../utils/testing";
 import {Monster} from "../models/monster";
-// import {initMockGame} from "../utils/testing";
+
+var game = new Game();
 
 describe("Monster Repo", function() {
 
+  beforeAll(() => { global['game'] = game; });
+  afterAll(() => { delete global['game']; });
+
+  // initialize the test with the full mock game data
   beforeEach(() => {
-    // initMockGame();
+    return initMockGame(game);
   });
 
   it("should read the monster data", function() {

@@ -1,16 +1,24 @@
 import Game from "../models/game";
 import {Artifact} from "../models/artifact";
-// import {initMockGame} from "../utils/testing";
+import {initMockGame} from "../utils/testing";
+
+var game = new Game();
 
 describe("Artifact", function() {
 
   // initialize the test with the full mock game data
-  let game = Game.getInstance();
   beforeEach(() => {
-    // initMockGame();
+    return initMockGame(game);
   });
 
-  it("should know its max damage", function() {
+  beforeAll(() => {
+    global['game'] = game;
+  });
+  afterAll(() => {
+    delete global['game'];
+  });
+
+  test("max damage", function() {
     // non-weapon
     expect(game.artifacts.get(1).maxDamage()).toEqual(0);
     // magic sword
@@ -19,7 +27,7 @@ describe("Artifact", function() {
     expect(game.artifacts.get(4).maxDamage()).toEqual(5);
   });
 
-  it("should match synonyms and partial names", function() {
+  test("match synonyms and partial names", function() {
     expect(game.artifacts.get(5).match('gold key')).toBeTruthy(); // real name
     expect(game.artifacts.get(5).match('gold')).toBeTruthy(); // partial match (beginning)
     expect(game.artifacts.get(5).match('go')).toBeTruthy(); // partial match (beginning)
@@ -38,7 +46,7 @@ describe("Artifact", function() {
     expect(game.artifacts.get(1).match('not a match')).toBeFalsy();
   });
 
-  it("should go into and out of containers", function() {
+  test("go into and out of containers", function() {
     let torch = game.artifacts.get(9);
     let chest = game.artifacts.get(12);
     expect(torch.monster_id).toBe(0);
@@ -51,13 +59,9 @@ describe("Artifact", function() {
     let jewels = game.artifacts.get(13);
     expect(jewels.container_id).toBe(12);
     jewels.removeFromContainer();
-    // expect(jewels.container_id).toBeNull("Container ID should be null");
-    // expect(game.player.hasArtifact(jewels.id)).toBeTruthy("Player doesn't have jewels");
-    // expect(jewels.monster_id).toBe(0, "Jewels should have monster ID 0");
-
   });
 
-  it("should move to the correct room", function() {
+  test("move to the correct room", function() {
     let torch = game.artifacts.get(9);
     expect(torch.room_id).toBeNull();
     expect(torch.monster_id).toBe(0);

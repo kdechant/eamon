@@ -19,8 +19,9 @@
     "build": "yarn run webpack && yarn run build-css",
     "build-css": "node-sass scss -o build/static/css",
     "build-css:watch": "node-sass -w scss -o build/static/css",
-    "test": "react-scripts-ts test --env=jsdom",
+    "test": "jest",
     "webpack": "webpack --mode production",
+    "webpack:dev": "webpack --mode development",
     "webpack:watch": "webpack --mode development --watch"
   },
   "devDependencies": {
@@ -30,12 +31,16 @@
     "@types/react-dom": "^16.0.9",
     "@types/react-router-dom": "^4.3.1",
     "babel-core": "6.26.3",
+    "babel-jest": "^23.6.0",
     "babel-loader": "7",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "concurrently": "^4.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^23.6.0",
     "node-sass": "^4.10.0",
+    "react-test-renderer": "^16.6.3",
+    "ts-jest": "^23.10.5",
     "ts-loader": "^5.2.2",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.16.0",
@@ -50,6 +55,13 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://localhost:8000/",
-  "homepage": "http://localhost:3000/main-hall"
+  "jest": {
+    "moduleFileExtensions": ["js", "jsx", "ts", "tsx"],
+    "preset": "ts-jest",
+    "testMatch": [
+      "**/__tests__/**/*.ts?(x)",
+      "**/?(*.)+(spec|test).ts?(x)"
+    ],
+    "testURL": "http://localhost:8000/"
+  }
 }

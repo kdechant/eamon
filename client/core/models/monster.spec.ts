@@ -1,22 +1,25 @@
 import Game from "../models/game";
-// import {initMockGame} from "../utils/testing";
-import {Artifact} from "../models/artifact";
+import {initMockGame} from "../utils/testing";
 import {Monster} from "../models/monster";
+
+var game = new Game();
 
 describe("Monster", function() {
 
+  beforeAll(() => { global['game'] = game; });
+  afterAll(() => { delete global['game']; });
+
   // initialize the test with the full mock game data
-  let game = Game.getInstance();
   beforeEach(() => {
-    // initMockGame();
+    return initMockGame(game);
   });
 
-  it("should know its carrying capacity", function() {
+  it("should know its carrying capacity", () => {
     expect(game.monsters.get(1).maxWeight()).toEqual(400);
     expect(game.monsters.get(2).maxWeight()).toEqual(100);
   });
 
-  it("should match synonyms and partial names", function() {
+  it("should match synonyms and partial names", () => {
     expect(game.monsters.get(3).match('alfred')).toBeTruthy(); // real name, but lowercase
     expect(game.monsters.get(3).match('al')).toBeTruthy(); // partial match
     expect(game.monsters.get(3).match('fred')).toBeTruthy(); // partial match
@@ -33,7 +36,7 @@ describe("Monster", function() {
     expect(king.match('grand duke')).toBeFalsy();
   });
 
-  it("should know if it is in the same room as the player", function() {
+  it("should know if it is in the same room as the player", () => {
     // expect(game.player.room_id).toEqual(1, "FAILURE TO SETUP FOR TEST: player should be in room 1 at test start");
 
     let guard = game.monsters.get(1);
@@ -47,7 +50,7 @@ describe("Monster", function() {
     // king.moveToRoom(3);
   });
 
-  it("should decide if it wants to pick up a weapon", function () {
+  it("should decide if it wants to pick up a weapon", () => {
     let m = new Monster();
 
     // "special" combat code
@@ -86,7 +89,7 @@ describe("Monster", function() {
 
   });
 
-  it("should know how to pick up and ready a weapon", function () {
+  it("should know how to pick up and ready a weapon", () => {
     let m = game.monsters.get(1);
     m.pickUpWeapon(game.artifacts.get(3));
     expect(m.hasArtifact(3)).toBe(true);
@@ -94,7 +97,7 @@ describe("Monster", function() {
     expect(game.history.getLastOutput().text).toBe("Guard picks up magic sword.");
   });
 
-  it("should know how to ready its best weapon", function () {
+  it("should know how to ready its best weapon", () => {
     let m = game.monsters.get(1);
     m.weapon = null;
     m.weapon_id = null;
@@ -111,7 +114,7 @@ describe("Monster", function() {
   });
 
 
-  it("should get its current weapon (single monster)", function () {
+  it("should get its current weapon (single monster)", () => {
     let guard = game.monsters.get(1);
     let w = guard.getWeapon();
     expect(w.id).toBe(4);
@@ -132,7 +135,7 @@ describe("Monster", function() {
     expect(w.id).toBe(16);
   });
 
-  it("should get its current weapon (group monster)", function () {
+  it("should get its current weapon (group monster)", () => {
     let kobolds = game.monsters.get(5);
     kobolds.group_monster_index = 0;
     let w = kobolds.getWeapon();
@@ -191,30 +194,26 @@ describe("Monster", function() {
 
     // this value is getting changed somehow from the fixture data. set it back to 10
     game.artifacts.get(4).weapon_odds = 10;
-    expect(guard.getToHitOdds(thief)).toBe(41);
-    expect(thief.getToHitOdds(guard)).toBe(64);
+    expect(guard.getToHitOdds(thief)).toBe(49);
+    expect(thief.getToHitOdds(guard)).toBe(24);
 
     // halberd is -10% to hit
     thief.pickUpWeapon(game.artifacts.get(16));
-    expect(thief.getToHitOdds(guard)).toBe(59);
+    expect(thief.getToHitOdds(guard)).toBe(14);
 
     // test the upper limit to wpn odds
     game.artifacts.get(4).weapon_odds = 42; // capped to 30%
-    expect(guard.getToHitOdds(thief)).toBe(51);
+    expect(guard.getToHitOdds(thief)).toBe(69);
 
     // test the upper limit to agility
     guard.agility = 33; // capped to 30
-    expect(guard.getToHitOdds(thief)).toBe(91);
-
-    // test the upper limit to armor
-    guard.armor_class = 10;  // capped to 7
-    expect(guard.getToHitOdds(thief)).toBe(81);
+    expect(guard.getToHitOdds(thief)).toBe(99);
 
     // player with battle axe (25% odds, 25% ability)
-    expect(game.player.getToHitOdds(thief)).toBe(62.75);
+    expect(game.player.getToHitOdds(thief)).toBe(79);
     // player with club (10% odds, 30% ability)
     game.player.ready(game.artifacts.get(22));
-    expect(game.player.getToHitOdds(thief)).toBe(56.5);
+    expect(game.player.getToHitOdds(thief)).toBe(69);
   });
 
   it("should move", function() {
