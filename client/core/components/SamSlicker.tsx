@@ -78,9 +78,11 @@ class SamSlicker extends React.Component<any, any> {
     if (game.demo) {
       exitButtons = (
         <div>
-          You have completed the adventure with the demo character. The demo character cannot be saved.
-          <button className="btn" onClick={() => { window.location.href = "/main-hall" }}>Create your own character</button>
-          <button className="btn" onClick={() => { window.location.href = "/adventure-list" }}>Back to adventure list</button>
+          <p>You have completed the adventure with the demo character. The demo character cannot be saved.</p>
+          <p>
+            <button className="btn btn-primary mr-2" onClick={() => { window.location.href = "/main-hall" }}>Create your own character</button>
+            <button className="btn btn-primary" onClick={() => { window.location.href = "/adventure-list" }}>Back to adventure list</button>
+          </p>
         </div>
       )
     }

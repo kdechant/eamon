@@ -28,8 +28,19 @@ class MainProgram extends React.Component<any, any> {
     const game: Game = this.state.game;
     game.refresh = this.setGameState;  // allows the game object's methods to trigger re-render of components. hacky...
     if (game.slug === 'demo1') {
-      let path = "/static/adventures/" + game.slug + "/mock-data";
-      // TODO: special calls for loading mock data
+      let path = "/static/mock-data";
+      axios.all([
+        axios.get(path + '/adventure.json'),
+        axios.get(path + '/rooms.json'),
+        axios.get(path + '/artifacts.json'),
+        axios.get(path + '/effects.json'),
+        axios.get(path + '/monsters.json'),
+        axios.get(path + '/player.json'),
+      ])
+       .then(responses => {
+          game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, [], responses[5].data, []);
+          this.setState({game});
+        });
     } else {
       let player_id = window.localStorage.getItem('player_id');
 
@@ -37,7 +48,7 @@ class MainProgram extends React.Component<any, any> {
       let player_path = "/api/players/" + player_id + '.json?uuid=' + this.state.uuid;
       if (game.demo) {
         // playing a normal adventure with the demo player
-        player_path = "/static/adventures/demo1/mock-data/player.json";
+        player_path = "/static/mock-data/player.json";
       }
 
       axios.all([

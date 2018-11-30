@@ -22,7 +22,7 @@ export class RoomExit extends Loadable {
     "w": "west",
     "nw": "northwest",
     "u": "up",
-    "d:": "down"
+    "d": "down"
   };
 
   /**
@@ -86,10 +86,10 @@ export class Room extends Loadable {
   public show_description() {
     let game = Game.getInstance();
     game.history.write(this.description);
-    if (this.effect !== null) {
+    if (this.effect != null) {
       game.effects.print(this.effect);
     }
-    if (this.effect_inline !== null) {
+    if (this.effect_inline != null) {
       game.effects.print(this.effect_inline, null, true);
     }
   }

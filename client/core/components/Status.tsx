@@ -171,7 +171,7 @@ class StatusMonster extends React.Component<any, any> {
         )}
         {monster.count > 1 && (
         <span>{ monster.count } { monster.name }s</span>
-        )}
+        )}{' '}
         - { monster.reaction }
       </div>
     );
