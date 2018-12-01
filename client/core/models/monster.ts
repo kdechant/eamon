@@ -849,10 +849,8 @@ export class Monster extends GameObject {
    *   The number that must be rolled for the throw to succeed
    */
   public rollSavingThrow(stat, difficulty) {
-    console.log(this.name + " saving throw: " + stat + ' vs. ' + difficulty);
     let roll = Game.getInstance().diceRoll(1, 20);
     let success = roll + Math.floor((this[stat] - 10) / 2) >= difficulty;
-    console.log("rolled " + roll + " + bonus of " + this[stat] / 3 + " = " + (success ? "success" : "fail"));
     return success;
   }
 

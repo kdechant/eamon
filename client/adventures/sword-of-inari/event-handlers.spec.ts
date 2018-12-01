@@ -21,6 +21,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -214,8 +217,5 @@ it("should have working event handlers", () => {
   expect(amulet.room_id).toBeNull();
   expect(game.artifacts.get(13).monster_id).toBeNull();
   expect(game.artifacts.get(14).monster_id).toBeNull();
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

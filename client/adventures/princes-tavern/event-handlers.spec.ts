@@ -24,6 +24,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -150,44 +153,37 @@ it("should have working event handlers", () => {
   expect(game.effects.get(6).seen).toBeTruthy();
   expect(game.died).toBeTruthy();
 
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
-
 });
 
 it("should handle the strange brew", () => {
-        // distillery/strange brew
-        game.player.moveToRoom(51);
-        game.monsters.get(17).moveToRoom(50);  // get fire worm out of the way
-        game.mock_random_numbers = [1, 2, 3, 4, 5];
-        let original_ag = game.player.agility;
-        let original_ch = game.player.charisma;
-        let original_sword = game.player.weapon_abilities[5];
-        let original_ae = game.player.armor_expertise;
+  // distillery/strange brew
+  game.player.moveToRoom(51);
+  game.monsters.get(17).moveToRoom(50);  // get fire worm out of the way
+  game.mock_random_numbers = [1, 2, 3, 4, 5];
+  let original_ag = game.player.agility;
+  let original_ch = game.player.charisma;
+  let original_sword = game.player.weapon_abilities[5];
+  let original_ae = game.player.armor_expertise;
 
-        game.command_parser.run("drink strange brew");
-        console.log(game.history.history)
-        expect(game.effects.get(28).seen).toBeTruthy();
-        expect(game.player.charisma).toBe(original_ch - 3);
+  game.command_parser.run("drink strange brew");
+  expect(game.effects.get(28).seen).toBeTruthy();
+  expect(game.player.charisma).toBe(original_ch - 3);
 
-        game.command_parser.run("drink strange brew");
-        expect(game.effects.get(29).seen).toBeTruthy();
-        expect(game.player.charisma).toBe(original_ch);  // -3 above, +3 here
+  game.command_parser.run("drink strange brew");
+  expect(game.effects.get(29).seen).toBeTruthy();
+  expect(game.player.charisma).toBe(original_ch);  // -3 above, +3 here
 
-        game.command_parser.run("drink strange brew");
-        expect(game.effects.get(30).seen).toBeTruthy();
-        expect(game.player.agility).toBe(original_ag - 3);
+  game.command_parser.run("drink strange brew");
+  expect(game.effects.get(30).seen).toBeTruthy();
+  expect(game.player.agility).toBe(original_ag - 3);
 
-        game.command_parser.run("drink strange brew");
-        expect(game.effects.get(31).seen).toBeTruthy();
-        expect(game.player.weapon_abilities[5]).toBe(original_sword + 7);
+  game.command_parser.run("drink strange brew");
+  expect(game.effects.get(31).seen).toBeTruthy();
+  expect(game.player.weapon_abilities[5]).toBe(original_sword + 7);
 
-        game.command_parser.run("drink strange brew");
-        expect(game.effects.get(32).seen).toBeTruthy();
-        expect(game.player.armor_expertise).toBe(original_ae + 10);
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
+  game.command_parser.run("drink strange brew");
+  expect(game.effects.get(32).seen).toBeTruthy();
+  expect(game.player.armor_expertise).toBe(original_ae + 10);
 
 });
 
@@ -207,8 +203,5 @@ it("should handle the exit logic", () => {
   game.command_parser.run('s');
   expect(game.effects.get(41).seen).toBeTruthy();
   expect(game.won).toBeTruthy();
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

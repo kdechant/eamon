@@ -21,6 +21,13 @@ describe("Game class", function() {
       expect(roll).toBeGreaterThan(-6);
       expect(roll).toBeLessThan(0);
     }
+
+    // test the mock random numbers feature
+    game.mock_random_numbers = [42, 5, 99];
+    expect(game.diceRoll(1, 100)).toBe(42);
+    expect(game.diceRoll(1, 100)).toBe(5);
+    expect(game.diceRoll(1, 100)).toBe(99);
+
   });
 
 });

@@ -6,6 +6,8 @@ import {initLiveGame} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
+// SETUP
+
 var game = new Game();
 
 beforeAll(() => { global['game'] = game; });
@@ -18,6 +20,11 @@ beforeEach(() => {
   game.slug = 'abductors-quarters';
   return initLiveGame(game);
 });
+
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
+// TESTS
 
 it("should have working event handlers", () => {
 

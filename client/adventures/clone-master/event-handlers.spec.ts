@@ -22,6 +22,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -104,8 +107,5 @@ it("should have working event handlers", () => {
   // expect(game.artifacts.get(34).room_id).toBeNull();
   // expect(game.artifacts.get(35).room_id).toBe(30);
   // also add the other artifacts that can destroy it
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

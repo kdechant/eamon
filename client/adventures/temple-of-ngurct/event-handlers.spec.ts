@@ -22,18 +22,20 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
 
   // wandering monsters
-  game.mock_random_numbers = [1,20,12]; // first turn will not summon a monster (rnd < 20), second turn will summon monster #18
+  game.mock_random_numbers = [20,1,12]; // first turn will not summon a monster (rnd > 8), second turn will summon monster #18
   let joubert = game.monsters.get(18);
   game.command_parser.run('look');
   expect(joubert.room_id).toBeNull();
   game.command_parser.run('look');
-  // FIXME: this next assertion is failing. maybe the mock random numbers?
-  // expect(joubert.room_id).toBe(game.player.room_id);
+  expect(joubert.room_id).toBe(game.player.room_id);
   joubert.reaction = Monster.RX_NEUTRAL; // needed for fireball wand test below
 
   // wandering monsters will be a pain for the remaining tests. remove them.
@@ -159,8 +161,5 @@ it("should have working event handlers", () => {
   game.history.push('power 6');
   game.triggerEvent('power', 25);
   expect(game.died).toBeTruthy();
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

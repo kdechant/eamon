@@ -21,6 +21,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -91,8 +94,5 @@ it("should have working event handlers", () => {
   game.tick();
   expect(game.data['balor appeared']).toBeTruthy();
   expect(game.monsters.get(30).isHere()).toBeTruthy();
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

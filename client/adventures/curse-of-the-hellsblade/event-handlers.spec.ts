@@ -22,6 +22,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -91,8 +94,5 @@ it("should have working event handlers", () => {
   game.command_parser.run("give gold key to guardian");
   expect(game.data['hb safe']).toBeTruthy();
   expect(game.artifacts.get(71).room_id).toBe(64);
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

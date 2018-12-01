@@ -18,6 +18,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -43,7 +46,6 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(13).room_id).toBeNull();
 
   // power stuff
-  console.log(game.player);
   game.triggerEvent('power', 85);
   expect(game.player.damage).toBe(Math.floor(game.player.hardiness / 2));
   game.triggerEvent('power', 99);
@@ -57,8 +59,5 @@ it("should have working event handlers", () => {
   game.modal.mock_answers = ['yes'];
   game.command_parser.run('n');
   expect(game.won).toBeTruthy();
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

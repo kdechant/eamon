@@ -23,6 +23,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -52,8 +55,5 @@ it("should have working event handlers", () => {
   game.command_parser.run('say pickle');
   expect(game.artifacts.get(19).room_id).toBeNull();
   expect(game.artifacts.get(41).room_id).toBe(7);
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

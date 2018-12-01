@@ -23,6 +23,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -132,8 +135,5 @@ it("should have working event handlers", () => {
   expect(game.effects.get(2).seen).toBeTruthy();
   expect(game.artifacts.get(37).sides).toBe(10);
   expect(game.player.room_id).toBe(63);
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

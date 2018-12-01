@@ -6,6 +6,8 @@ import {initLiveGame} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
+// SETUP
+
 var game = new Game();
 
 beforeAll(() => { global['game'] = game; });
@@ -18,6 +20,11 @@ beforeEach(() => {
   game.slug = 'the-beginners-cave';
   return initLiveGame(game);
 });
+
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
+// TESTS
 
 it("should have working event handlers", () => {
   expect(game.rooms.rooms.length).toBe(26);
@@ -60,5 +67,4 @@ it("should have working event handlers", () => {
   game.command_parser.run("open jewels");
   expect(game.history.getOutput().text).toBe("That's not something you can open.");
 
-  // console.log(game.history.history);
 });

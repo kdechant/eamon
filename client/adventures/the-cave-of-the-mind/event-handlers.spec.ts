@@ -23,6 +23,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -63,8 +66,5 @@ it("should have working event handlers", () => {
   game.triggerEvent("power", 51);
   expect(game.history.getLastOutput().text).toBe("You are being teleported...");
   expect(game.player.room_id).toBe(16);
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

@@ -22,6 +22,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -101,8 +104,5 @@ it("should have working event handlers", () => {
   game.exit();
   expect(game.effects.get(14).seen).toBeTruthy();
   expect(game.player.gold).toBe(0);
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

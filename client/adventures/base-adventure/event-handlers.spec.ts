@@ -23,6 +23,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working event handlers", () => {
@@ -30,8 +33,5 @@ it("should have working event handlers", () => {
 
   // for example:
   expect(game.rooms.getRoomById(1)).not.toBeNull();
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });

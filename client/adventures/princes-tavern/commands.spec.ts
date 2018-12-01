@@ -24,6 +24,9 @@ beforeEach(() => {
   return initLiveGame(game);
 });
 
+// uncomment the following for debugging
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
 // TESTS
 
 it("should have working custom commands", () => {
@@ -44,8 +47,5 @@ it("should have working custom commands", () => {
   expect(game.history.getLastOutput().text).toBe("Pink elephant could not be located.");
   game.command_parser.run("locate asdf", false);
   expect(game.history.getLastOutput().text).toBe("Asdf could not be located.");
-
-  // uncomment the following for debugging
-  // game.history.history.map(() => console.log(h); });
 
 });
