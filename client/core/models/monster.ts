@@ -671,10 +671,13 @@ export class Monster extends GameObject {
       // deal the damage
       damage = Math.floor(damage * multiplier);
       let damage_adjusted = game.triggerEvent('attackDamage', this, target, damage);
-      if (damage_adjusted !== true) {
+      if (damage_adjusted !== true) { // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
         damage = damage_adjusted;
       }
       let damage_dealt = target.injure(damage, ignore_armor, this);
+
+      // effects that come after the damage is dealt
+      game.triggerEvent('attackDamageAfter', this, target, damage_dealt);
 
       // check for weapon ability increase
       if (this.id === Monster.PLAYER) {

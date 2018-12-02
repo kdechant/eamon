@@ -34,6 +34,39 @@ export var event_handlers = {
 
   },
 
+  "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
+    let game = Game.getInstance();
+    // gelatinous cube
+    if (attacker.id === 9) {
+      if (game.diceRoll(1,6) > 1) {
+        // pick a random armor item the player is wearing
+        let armors = defender.inventory.filter(a => a.isArmor() && a.is_worn);
+        if (armors.length === 0) {
+          if (defender.id === Monster.PLAYER || defender.armor_class === 0) {
+            return true; // can't do anything in this case
+          }
+          // NPC with armor class but no actual armor items
+          game.history.write("The gelatinous cube burns a hole through " + defender.name + "'s armor!", "warning");
+          defender.armor_class--;
+          return true;
+        }
+        let roll = game.diceRoll(1, armors.length) - 1;
+        let target_armor = armors[roll];
+        target_armor.armor_class--;
+        let defender_name = defender.id === Monster.PLAYER ? 'your' : defender.name + "'s";
+        if (target_armor.armor_class <= 0) {
+          game.history.write("The gelatinous cube burns a hole through " + defender_name + " " + target_armor.name + "! It's now useless!", "warning");
+          target_armor.destroy();
+          defender.updateInventory();
+          return true;
+        }
+        game.history.write("The gelatinous cube dissolves part of " + defender_name + " " + target_armor.name + "!", "warning");
+        defender.updateInventory();
+      }
+    }
+    return true;
+  },
+
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
 
