@@ -22,6 +22,9 @@ class IntroText extends React.Component<any, any> {
 
   public startGame = () => {
     const game = this.props.game;
+    if (game.intro_question) {
+      game.intro_answer = this.state.introAnswer;
+    }
     game.start();
     this.props.setGameState(game);
   };
@@ -42,11 +45,10 @@ class IntroText extends React.Component<any, any> {
           <div className="intro-start">
 
             {game.intro_question && (
-              <div className="intro-question">
-                {game.intro_question}
+              <p className="intro-question">
+                {game.intro_question}{' '}
                 <input type="text" id="introAnswer" name="introAnswer" onChange={this.handleChange} />
-              )}
-              </div>
+              </p>
             )}
 
             <div className="intro-confirm">
