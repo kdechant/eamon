@@ -10,6 +10,7 @@ import HowToPlay from "./HowToPlay";
 import CommandList from "./CommandList";
 import Status from "./Status";
 import SamSlicker from "./SamSlicker";
+import Logger from "../utils/logger";
 
 declare var game;
 
@@ -26,7 +27,13 @@ class MainProgram extends React.Component<any, any> {
 
   public componentDidMount() {
     const game: Game = this.state.game;
-    game.refresh = this.setGameState;  // allows the game object's methods to trigger re-render of components. hacky...
+    // set up the real logger
+    game.logger = new Logger;
+    // pass this component's "set state" method into the game class to
+    // allow the object's methods to trigger re-render of components. hacky...
+    game.refresh = this.setGameState;
+    // load game data from the API
+    // TODO: this could be refactored into a method on the Game class.
     if (game.slug === 'demo1') {
       let path = "/static/mock-data";
       axios.all([
