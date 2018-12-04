@@ -129,6 +129,7 @@ a {
   height: 480px;
   overflow-y: auto;
   margin: 0 5px;
+  scroll-behavior: smooth;
 
   @media (min-height: 880px) {
     height: 550px;

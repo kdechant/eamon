@@ -44,6 +44,7 @@ class HowToPlay extends React.Component<any, any> {
               <li>You may remove something you are wearing with the REMOVE command. For example, 'remove chain mail' or 'remove pirate hat'</li>
               <li>To initiate combat, use the ATTACK command. For example, 'attack orc'</li>
               <li>If you ATTACK a neutral or friendly monster, they're likely to get angry and attack you right back.</li>
+              <li>To see an NPC's health and what they are carrying, you can LOOK at them. For example, 'look eddie'</li>
               <li>Some items are containers which can be OPENed. For example, 'open chest'</li>
               <li>Chests and doors may be locked. You can unlock them using the UNLOCK command ('unlock door') or by trying to OPEN them if you have the correct key in your inventory.</li>
               <li>Containers may have things inside them, which can be removed using the REMOVE command. For example, 'remove jewels from chest'</li>
