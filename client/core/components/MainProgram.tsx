@@ -66,7 +66,7 @@ class MainProgram extends React.Component<any, any> {
         axios.get("/api/adventures/" + game.slug + "/monsters"),
         axios.get("/api/adventures/" + game.slug + "/hints"),
         axios.get(player_path),
-        axios.get('/api/saves.json?player_id=' + player_id + '&slug=' + game.slug)
+        axios.get('/api/saves.json?player_id=' + (game.demo ? 0 : player_id) + '&slug=' + game.slug)
       ])
       // Note: I tried using axios.spread as shown in the axios documentation but it seemed to hang
       // at the end of the callback. Just using regular callback instead.
