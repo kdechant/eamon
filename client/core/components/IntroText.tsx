@@ -47,7 +47,7 @@ class IntroText extends React.Component<any, any> {
             {game.intro_question && (
               <p className="intro-question">
                 {game.intro_question}{' '}
-                <input type="text" id="introAnswer" name="introAnswer" onChange={this.handleChange} />
+                <input type="text" id="introAnswer" name="introAnswer" autoFocus={true} onChange={this.handleChange} />
               </p>
             )}
 

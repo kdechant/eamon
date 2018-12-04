@@ -103,15 +103,16 @@ class CommandPrompt extends React.Component<any, any> {
       return (
         <div className="form-inline">
           <div className="command-prompt form-group">
-            <span className="prompt">Your Command: </span>
+            <span className="prompt">Your Command:</span>
             <input name="command"
                    type="text"
                    value={this.state.command}
                    onChange={this.handleChange}
                    onKeyUp={this.handleKeyPress}
-                   className="form-control"
+                   className="form-control ml-2"
                    placeholder={this.state.last_command}
                    autoComplete="off"
+                   autoFocus={true}
             />
           </div>
         </div>
