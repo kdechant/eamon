@@ -13,7 +13,6 @@ import {HistoryManager} from "../models/history-manager";
 import {CommandParser} from "../models/command-parser";
 import EventHandler from "../commands/event-handler";
 import {ILoggerService, DummyLoggerService} from "../utils/logger.interface";
-import {DummySavedGameService, ISavedGameService} from "../utils/saved-game.interface";
 import {getAxios} from "../../main-hall/utils/api";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.

@@ -1,12 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require('path');
 
-const htmlPluginMainHall = new HtmlWebPackPlugin({
-  template: "./public/index.html",
-  filename: "./main-hall.html"
-});
-// TODO: add another one for core (if needed)
-
 let entry_scripts = {
     'main-hall': './main-hall/index.tsx',
     'core': './core/index.tsx'
@@ -51,7 +45,4 @@ module.exports = {
     libraryTarget: "window", // puts the exports in a var (other options are 'window', 'global', and many others)
     library: "[name]"  // the name of the exported variable.
   },
-  plugins: [
-      htmlPluginMainHall
-  ],
 };
