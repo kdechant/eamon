@@ -1,3 +1,4 @@
+import "ie-array-find-polyfill";
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import MainProgram from './components/MainProgram';
