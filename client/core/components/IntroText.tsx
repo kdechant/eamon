@@ -34,7 +34,12 @@ class IntroText extends React.Component<any, any> {
     return (
       <div id="intro-text">
         <p>{gamevars(game.intro_text[this.state.index]).split('\n').map((item, key) => {
-          return <span key={key}>{item}<br/></span>
+          // usually the paragraphs are text, but any line starting with "img:" should be followed by
+          // an image URL and will be rendered as an image. (See Caves of Treasure Island)
+          // if using this, the actual image file needs to be in /static
+          return item.slice(0,4) == 'img:'
+            ? <span key={key}><img src={item.slice(4)} /><br /></span>
+            : <span key={key}>{item}<br/></span>
         })}</p>
         {this.state.index < game.intro_text.length - 1 && (
         <p className="intro-next">
