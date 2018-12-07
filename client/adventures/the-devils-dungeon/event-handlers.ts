@@ -19,6 +19,9 @@ export var event_handlers = {
     if (value < 0 || isNaN(value)) {
       value = 0;
     }
+    if (value > game.player.gold) {
+      value = game.player.gold;
+    }
 
     // dwarf's reaction depends on the amount of gold you give him
     if (value < 25) {
