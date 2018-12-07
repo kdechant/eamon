@@ -254,8 +254,25 @@ command-prompt {
     // this should fill up all available space. other divs in this box should not expand.
     flex-grow: 1;
   }
-  .glyphicon {
-    font-size: 12px;
+  .delete {
+    button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+
+      img {
+        width: 32px;
+        height: 32px;
+        opacity: 0.5;
+        filter: grayscale(50%);
+
+        // Note: as of 2018-12-06 the hover wasn't working in Firefox
+        &:hover {
+          opacity: 1;
+          filter: grayscale(0%);
+        }
+      }
+    }
   }
 }
 .adventure-list {

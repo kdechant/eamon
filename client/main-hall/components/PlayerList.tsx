@@ -32,7 +32,6 @@ class PlayerList extends React.Component {
   }
 
   public loadPlayers = () => {
-    console.log(this.state);
     const uuid = window.localStorage.getItem('eamon_uuid');
     axios.get('/api/players.json?uuid=' + uuid)
       .then(res => {
@@ -112,7 +111,7 @@ class PlayerList extends React.Component {
         <p>Behind the desk is a burly Irishman who looks at you with a scowl and asks, &quot;What's your name?&quot;</p>
         <p>The guest book on the desk lists the following adventurers:</p>
         <div className="row">
-          {this.state.players.map(player => <PlayerListItem key={player.id} player={player} /> )}
+          {this.state.players.map(player => <PlayerListItem key={player.id} player={player} loadPlayers={this.loadPlayers} /> )}
         </div>
         {empty_message}
         <p className="addplayer"><Link to="/main-hall/register"><strong>Create a New Adventurer</strong></Link></p>
