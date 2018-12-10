@@ -27,17 +27,11 @@ export var event_handlers = {
     game.data["sounds_room_26"] = false;
     game.data["sex_change_counter"] = 0;
     game.data["charisma_boost"] = false;
+    game.data["emerald warrior appeared"] = false;
     // old variables from EDX no longer used: sylvani_speaks, red_sun_speaks
 
-    // set the "seen" flag on kobold6 and the dummy obsidian scroll case
+    // set the "seen" flag on kobold6
     game.monsters.get(11).seen = true;
-    game.artifacts.get(51).seen = true;
-    game.artifacts.get(51).name = game.artifacts.get(30).name;
-
-    // rename the "graffiti" artifacts
-    for (let a = 46; a <= 50; a++) {
-      game.artifacts.get(a).name = game.artifacts.get(46).name;
-    }
 
   },
 
@@ -94,17 +88,6 @@ export var event_handlers = {
     }
   },
 
-  "beforeGet": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
-    // special handling for the obsidian scroll case, which is a concealed monster and is replaced with a
-    // dummy artifact when you try to get it.
-    // (#30 is the "concealed monster" version which summons the emerald warrior. #51 is the dummy version.)
-    if (artifact && artifact.id === 30) {
-      game.artifacts.get(51).room_id = game.player.room_id;
-    }
-    return true;
-  },
-
   "afterGet": function (arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     // Taking Purple book reveals secret passage
@@ -116,6 +99,12 @@ export var event_handlers = {
       game.rooms.getRoomById(24).addExit(exit);
       game.rooms.getRoomById(24).name = "You are in the library. (E/W)";
       game.data["secret_library"] = true;
+    }
+    // Taking obsidian scroll case makes emerald warrior appear
+    if (artifact && artifact.id === 30 && !game.data["emerald warrior appeared"]) {
+      game.effects.print(13, "special");
+      game.monsters.get(14).moveToRoom();
+      game.data["emerald warrior appeared"] = true;
     }
   },
 
@@ -151,7 +140,7 @@ export var event_handlers = {
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
     // Give obsidian scroll case to Emerald Warrior
-    if (recipient.id === 14 && artifact.id === 51) {
+    if (recipient.id === 14 && artifact.id === 30) {
       game.effects.print(14, "special");
       game.monsters.get(14).room_id = null;
       game.history.suppressNextMessage = true;  // don't print the standard "monster takes item" message
