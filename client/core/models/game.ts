@@ -221,12 +221,24 @@ export default class Game {
   public saves: any = [];
 
   /**
-   * Function to refresh the React components
-   * (This is kind of a hack. Wish I knew of a nicer way.)
+   * Function to refresh the React display
+   * (This is a function that is passed in from the React components)
    */
-  public refresh: any;
+  public refresher: any;
 
   constructor() { }
+
+  /**
+   * Re-renders the game display on the screen
+   *
+   * This calls a method on the React MainProgram component, which is passed in to the model class at runtime.
+   * It's kind of a hack. Wish I knew of a nicer way. Maybe Redux could help, someday.
+   */
+  public refresh() {
+    if (this.refresher) {
+      this.refresher(this);
+    }
+  }
 
   /**
    * Returns the game instance. Does the same thing as just using the global var "game"
@@ -486,8 +498,12 @@ export default class Game {
    * Resets the "ready" state
    */
   public setReady() {
-    // set a timeout to activate the command prompt once everything finishes
-    setTimeout(() => { this.ready = true; }, this.history.total_delay);
+    // set a timeout to activate the command prompt, so the player can't spam the enter key
+    setTimeout(() => { this.ready = true; }, 100);
+
+    // the old version, saved for later.
+    //setTimeout(() => { this.ready = true; }, this.history.total_delay);
+
   }
 
   /**
@@ -570,9 +586,7 @@ export default class Game {
    *   The amount of time to delay, in seconds
    */
   public delay(time: number = 3) {
-    if (this.history.delay > 0) {
-      this.history.total_delay += time * 1000;
-    }
+    // this is currently a no-op until I can further research re-implementing the history timer.
   }
 
   /**
@@ -668,10 +682,9 @@ export default class Game {
     axios.post("/saves?uuid=" + window.localStorage.getItem('eamon_uuid'), sv)
       .then(res => {
         this.saved_games[slot] = res.data;
-        console.log(this.saved_games);
       }).catch(err => {
         this.history.write("Error saving game!");
-        console.log(err);
+        console.error(err);
       }
     );
   }
@@ -715,7 +728,7 @@ export default class Game {
         this.endTurn();
 
         // this forces the React component to re-render
-        this.refresh(this);
+        this.refresh();
       }
     );
   }

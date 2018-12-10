@@ -27,14 +27,19 @@ class MainProgram extends React.Component<any, any> {
 
   public componentDidMount() {
     const game: Game = this.state.game;
-    // set up the real logger
+
+    // In a real game we want to log to the API, so pass in a live Logger class.
+    // This replaces the dummy logger class which is the default in the Game object.
     game.logger = new Logger;
+
     // pass this component's "set state" method into the game class to
     // allow the object's methods to trigger re-render of components. hacky...
-    game.refresh = this.setGameState;
+    game.refresher = this.setGameState;
+
     // load game data from the API
     // TODO: this could be refactored into a method on the Game class.
     if (game.slug === 'demo1') {
+      // The "demo" adventure. Load everything from the mock data.
       let path = "/static/mock-data";
       axios.all([
         axios.get(path + '/adventure.json'),
@@ -49,6 +54,8 @@ class MainProgram extends React.Component<any, any> {
           this.setState({game});
         });
     } else {
+      // All "real" adventures. We load adventure data from the API, and the player data comes from either
+      // the API (for "real" players) or from mock data (if running in "demo" mode)
       let player_id = window.localStorage.getItem('player_id');
 
       // check if we're using mock or real player data

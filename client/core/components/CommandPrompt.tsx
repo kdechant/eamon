@@ -36,20 +36,10 @@ class CommandPrompt extends React.Component<any, any> {
         // clear the input box
         this.setState({ command: '', last_command: command });
 
-        // TODO: investigate this to fix the history delay
-        // setTimeout(() => {
-        //   this.props.setGameState(game);
-        //   this.setState({ready: true});
-        // }, game.history.total_delay);
-
         setTimeout(() => {
           this.props.setGameState(game);
         }, 25);
 
-        // setTimeout(() => {
-        //   console.log('delayed render');
-        //   this.props.setGameState(game);
-        // }, 1500);
         break;
       case 'ArrowUp':
         // up arrow moves back through the history
