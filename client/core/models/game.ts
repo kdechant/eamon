@@ -298,7 +298,7 @@ export default class Game {
     }
 
     // for testing only! turns on debug mode.
-    this.data.bort = true;
+    // this.data.bort = true;
 
     // load the saved games
     if (this.demo) {

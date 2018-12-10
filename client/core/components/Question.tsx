@@ -46,6 +46,8 @@ class Question extends React.Component<any, any> {
             <p><input type="text"
                       name="modalText"
                       id="modalText"
+                      className="form-control"
+                      autoFocus={true}
                       onChange={this.handleChange}
                       onKeyUp={this.handleKeyPress}
             /></p>

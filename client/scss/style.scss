@@ -152,7 +152,7 @@ a {
   }
 }
 
-command-prompt {
+.command-prompt {
   .form-inline .form-control {
     vertical-align: baseline;
   }
@@ -179,10 +179,16 @@ command-prompt {
   padding-top: 4px;
 }
 
-.game-modal .btn {
-  margin-right: 12px;
-  margin-bottom: 10px;
+.game-modal {
+  .form-control {
+    font-size: 20px;
+  }
+  .btn {
+    margin-right: 12px;
+    margin-bottom: 10px;
+  }
 }
+
 .return-button-container {
   margin-top: 10px;
 }
@@ -236,6 +242,13 @@ command-prompt {
   p {
     text-align: center;
     a {
+      // bootstrap removes color from links without href. this puts it back.
+      &.link {
+        color: #007bff;
+        &:hover {
+          color: #0056b3;
+        }
+      }
       img {
         width: 96px;
       }

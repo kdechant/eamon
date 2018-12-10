@@ -46,7 +46,7 @@ class PlayerMenu extends React.Component<any, any> {
                 Find the banker to deposit or withdraw some gold</Link>
             </p>
             <p className="col-6 col-sm-4 col-md-6 col-lg-4">
-              <a onClick={this.exit}><img src="/static/images/ravenmore/128/x.png" /><br />
+              <a onClick={this.exit} className="link"><img src="/static/images/ravenmore/128/x.png" /><br />
                 Temporarily leave the universe</a></p>
           </nav>
         </div>

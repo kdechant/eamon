@@ -161,7 +161,7 @@ class StatusMonster extends React.Component<any, any> {
   public render() {
     let monster = this.props.monster;
     let className = "monster ";
-    if (monster.reaction === Monster.RX_FRIEND) { className += "friend" }
+    if (monster.reaction === Monster.RX_FRIEND) { className += "friendly" }
     if (monster.reaction === Monster.RX_HOSTILE) { className += "hostile" }
 
     return (
