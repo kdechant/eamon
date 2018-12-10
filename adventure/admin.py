@@ -47,7 +47,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 @admin.register(Artifact)
 class ArtifactAdmin(admin.ModelAdmin):
-    list_display = ('adventure', 'artifact_id', 'name', 'room_id', 'container_id', 'monster_id')
+    list_display = ('adventure', 'artifact_id', 'name', 'room_id', 'container_id', 'monster_id', 'type', 'weight', 'value')
     list_display_links = ('artifact_id', 'name')
     list_filter = ['adventure']
     ordering = ['adventure', 'artifact_id']
@@ -65,7 +65,7 @@ class EffectAdmin(admin.ModelAdmin):
 
 @admin.register(Monster)
 class MonsterAdmin(admin.ModelAdmin):
-    list_display = ('adventure', 'monster_id', 'name', 'room_id')
+    list_display = ('adventure', 'monster_id', 'name', 'room_id', 'hardiness', 'agility')
     list_display_links = ('name', )
     list_filter = ['adventure']
     ordering = ['adventure_id', 'monster_id']
