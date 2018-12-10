@@ -11,6 +11,13 @@ class Status extends React.Component<any, any> {
       )
     }
 
+    // sort artifacts by type - weapons first, then armor
+    let artifacts = this.props.player.inventory.sort((a, b) => {
+      let typeA = a.type === 2 || a.type === 3 ? 2 : a.type;
+      let typeB = b.type === 2 || b.type === 3 ? 2 : b.type;
+      return typeA - typeB;
+    });
+
     return (
       <div>
         <div className="status-widget player">
@@ -56,9 +63,9 @@ class Status extends React.Component<any, any> {
         <p className="heading">Inventory</p>
 
         <div className="container">
-          {this.props.player.inventory.length === 0 && <div className="row">No items</div>}
+          {artifacts.length === 0 && <div className="row">No items</div>}
 
-          {this.props.player.inventory.map(artifact => {
+          {artifacts.map(artifact => {
             const icon_url = '/static/images/ravenmore/128/' + artifact.getIcon() + '.png';
 
             if (artifact.isWeapon()) {
