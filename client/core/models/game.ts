@@ -607,7 +607,7 @@ export default class Game {
       for (let slot=1; slot <= 10; slot++) {
         let saved_game = this.saved_games[slot];
         if (saved_game) {
-          axios.delete("/saves" + saved_game.id + '.json?uuid=' + window.localStorage.getItem('eamon_uuid'))
+          axios.delete("/saves/" + saved_game.id + '.json?uuid=' + window.localStorage.getItem('eamon_uuid'))
             .then(res => {
               delete this.saved_games[slot];
               this.logger.log("deleted saved game #" + saved_game.id);
