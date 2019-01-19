@@ -285,6 +285,7 @@ class Monster(models.Model):
         help_text="no longer used"
     )
     armor_class = models.IntegerField(default=0)
+    special = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.name

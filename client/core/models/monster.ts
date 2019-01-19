@@ -74,6 +74,7 @@ export class Monster extends GameObject {
   spells: string[] = [];  // spells that an NPC knows, e.g., ['blast', 'heal']
   spell_points: number = 0;  // number of spells the monster can cast (each spell takes 1 SP)
   spell_frequency: number = 33;  // percent chance the monster will cast a spell instead of other battle actions
+  special: string;  // special flags used for special effects.
 
   // data properties for player only
   charisma: number;
