@@ -25,12 +25,26 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
 it("should have working event handlers", () => {
   // do some game actions and write assertions here
+
+  // exit should be blocked
+  game.command_parser.run('n');
+  expect(game.effects.get(5).seen).toBeTruthy();
+  expect(game.won).toBeFalsy();
+
+  // the freeze counter (testing this first, so player doesn't die in later steps)
+  expect(game.data['freezing']).toBe(2);
+  game.player.moveToRoom(37);
+  game.command_parser.run('e');
+  expect(game.data['freezing']).toBe(3);
+  game.command_parser.run("get fur coat");
+  game.command_parser.run("wear fur coat");
+  expect(game.data['freezing']).toBe(0);
 
   // testing thawing some things
   game.player.moveToRoom(27);
@@ -91,7 +105,7 @@ it("should have working event handlers", () => {
   let polaris = game.monsters.get(1);
   let orb = game.artifacts.get(19);
   game.player.moveToRoom(polaris.room_id);
-  game.tick();
+  game.command_parser.run("look");
   game.player.weapon_abilities[2] = 100;
   expect(game.effects.get(9).seen).toBeTruthy();
   expect(polaris.reaction).toBe(Monster.RX_HOSTILE);
@@ -100,10 +114,34 @@ it("should have working event handlers", () => {
   expect(game.effects.get(2).seen).toBeTruthy();
   expect(polaris.reaction).toBe(Monster.RX_NEUTRAL);
   expect(orb.room_id).toBe(game.player.room_id);
+  game.command_parser.run("get orb");
 
   // orb / magic word
   game.command_parser.run("say " + game.data['magic word']);
   expect(orb.room_id).toBeNull();
   expect(game.artifacts.get(20).room_id).toBe(game.player.room_id);
+  expect(game.data['shattered orb']).toBeTruthy();
 
+  // orb + warlock
+  let warlock = game.monsters.get(22);
+  orb.moveToInventory();
+  game.artifacts.get(20).destroy();
+  game.data['shattered orb'] = false;
+  game.player.moveToRoom(2);
+  game.command_parser.run("n");
+  expect(warlock.room_id).toBe(1);
+  expect(game.effects.get(3).seen).toBeTruthy();
+  expect(game.effects.get(4).seen).toBeTruthy();
+  game.command_parser.run("give orb of polaris to warlock");
+  expect(game.effects.get(6).seen).toBeTruthy();
+  expect(warlock.isHere()).toBeTruthy();
+  game.command_parser.run("say " + game.data['magic word']);
+  expect(orb.room_id).toBeNull();
+  expect(orb.monster_id).toBeNull();
+  expect(game.artifacts.get(20).room_id).toBe(game.player.room_id);
+  expect(warlock.isHere()).toBeFalsy();
+
+  // exit
+  game.command_parser.run('n');
+  expect(game.won).toBeTruthy();
 });

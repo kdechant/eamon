@@ -4,27 +4,36 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
+import {ModalQuestion} from "../../core/models/modal";
+import {put_out_trollsfire} from "../the-beginners-cave/event-handlers";
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function (arg: string) {
     let game = Game.getInstance();
 
     game.data['freezing'] = 0;
     game.data['flamethrower instructions'] = false;
+    game.data['shattered orb'] = false;
     game.data['warlock appeared'] = false;
-    game.data['warlock speaks 1'] = false;
+    game.data['warlock speaks'] = false;
+    game.data['exit open'] = false;
 
     // random word of power to shatter the orb
-    let power_words = ["pokaris","freonis","chinara","requess","planoris"];
+    let power_words = ["pokaris", "freonis", "chinara", "requess", "planoris"];
     game.data['magic word'] = power_words[game.diceRoll(1, power_words.length) - 1];
 
     game.data['power counter'] = 0;
+
+    game.monsters.get(22).combat_verbs = ["shoots fire at", "casts a magic bolt at", "mentally blasts"];
+
+    game.exit_message = 'You trudge through the snow for miles, until you reach a fishing village. You are able to find a boat that takes you back to the Main Hall.';
   },
 
-  "endTurn": function() {
+  "endTurn1": function () {
+    // stuff that happens after room desc is shown, but before monster/artifacts
     let game = Game.getInstance();
-    if (game.player.room_id >= 29 && game.player.room_id <= 32) {
+    if (!in_cold_room()) {
       // warm room effects
       if (game.monsters.get(2).isHere()) {
         game.history.write("Frosty just melted!", "special2");
@@ -44,34 +53,45 @@ export var event_handlers = {
         game.monsters.get(19).moveToRoom();
       }
     }
+
+    // warlock appears at exit (if you have orb or if you destroyed it
+    if (game.player.room_id === 1 && !game.data['warlock appeared']
+      && (game.player.hasArtifact(19) || game.data['shattered orb'])) {
+      game.monsters.get(22).moveToRoom(1);
+      game.data['exit open'] = true;  // if you can get past the warlock...
+      game.data['warlock appeared'] = true;
+    }
+
+    game.monsters.updateVisible();
+    game.artifacts.updateVisible();
   },
 
-  "endTurn2": function() {
+  "endTurn2": function () {
     let game = Game.getInstance();
     // special logic for cold rooms
-    if (game.player.room_id < 29 || game.player.room_id > 32) {
+    if (in_cold_room()) {
       // freezing
       if (game.player.isWearing(4) || game.player.isWearing(9)) {
         game.data['freezing'] = 0;
       } else {
         game.data['freezing']++;
         if (game.data['freezing'] > game.player.hardiness) {
-          game.history.write("You have frozen to death!", "special");
+          game.history.write("You can't survive the cold any longer. You slump down onto the icy floor and drift off to sleep, never to wake up.", "special");
           game.die();
         } else if (game.data['freezing'] > game.player.hardiness * 0.8) {
           game.history.write("You are nearly freezing to death!", "special");
         } else if (game.data['freezing'] > game.player.hardiness * 0.6) {
           game.history.write("You are freezing!", "special");
         } else if (game.data['freezing'] > game.player.hardiness * 0.4) {
-          game.history.write("You are extremely cold!", "special");
+          game.history.write("You are extremely cold!", "emphasis");
         } else {
-          game.history.write("Brrr! You are very cold.", "special");
+          game.history.write("Brrr! You are very cold.");
         }
       }
       // icicles fall
-      if (game.diceRoll(1, 20) === 20) {
+      if (game.player.room_id > 1 && game.diceRoll(1, 20) === 20) {
         game.history.write("Some large icicles have fallen from the ceiling!", 'warning');
-        if (game.diceRoll(1,2) === 2) {
+        if (game.diceRoll(1, 2) === 2) {
           game.player.injure(2, true);
         } else {
           game.history.write("A near miss! The icicles shatter harmlessly on the cavern floor.");
@@ -81,11 +101,11 @@ export var event_handlers = {
 
     // warlock effects
     if (game.monsters.get(22).isHere()) {
-      if (game.player.hasArtifact(19) && !game.data['warlock speaks 1']) {
+      if (game.player.hasArtifact(19) && !game.data['warlock speaks']) {
         game.effects.print(3);
-        game.data['warlock speaks 1'] = true;
+        game.data['warlock speaks'] = true;
       }
-      if (game.player.hasArtifact(20)) {
+      if (game.data['shattered orb']) {
         game.effects.print(7);
         game.monsters.get(22).destroy();
       }
@@ -113,7 +133,17 @@ export var event_handlers = {
     return true;
   },
 
-  "beforeGet": function(arg, artifact) {
+  "attackMonster": function (arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // you can slip on the ice and lose your turn
+    if (in_cold_room() && game.diceRoll(1, 10) === 1) {
+      game.history.write("You slipped on a patch of ice and fell down!", "warning");
+      return false;
+    }
+    return true;
+  },
+
+  "beforeGet": function (arg, artifact) {
     let game = Game.getInstance();
 
     if (arg === 'icicle' || arg === 'icicles') {
@@ -134,17 +164,38 @@ export var event_handlers = {
     return true;
   },
 
-  "afterGet": function(arg, artifact) {
+  // "afterGet": function (arg, artifact) {
+  //   let game = Game.getInstance();
+  //   // warlock
+  //   if (artifact && artifact.id == 19 && !game.data['warlock appeared']) {
+  //     game.monsters.get(22).moveToRoom(1);
+  //     game.data['exit open'] = true;  // if you can get past the warlock...
+  //     game.data['warlock appeared'] = true;
+  //   }
+  //   return true;
+  // },
+
+  "afterGive": function (arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
-    // warlock
-    if (artifact && artifact.id == 19 && !game.data['warlock appears']) {
-      game.monsters.get(22).moveToRoom(1);
-      game.data['warlock appeared'] = true;
+    if (recipient.id === 22 && artifact.id === 19) {
+      // give orb to warlock
+      game.effects.print(6);
+    }
+  },
+
+  "beforeMove": function (arg: string, room: Room, exit: RoomExit): boolean {
+    let game = Game.getInstance();
+
+    if (exit.room_to === RoomExit.EXIT) {
+      if (!game.data['exit open']) {
+        game.effects.print(5, "special");
+        return false;
+      }
     }
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "read": function (arg: string, artifact: Artifact, command: ReadCommand) {
     let game = Game.getInstance();
 
     if (artifact && artifact.id === 13) {
@@ -152,7 +203,7 @@ export var event_handlers = {
     }
   },
 
-  "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact) {
+  "ready": function (arg: string, old_wpn: Artifact, new_wpn: Artifact) {
     let game = Game.getInstance();
     // flamethrower
     if (new_wpn.id === 12 && !game.data['flamethrower instructions']) {
@@ -162,18 +213,29 @@ export var event_handlers = {
     return true;
   },
 
-  "say": function(arg) {
+  "say": function (arg) {
     let game = Game.getInstance();
     arg = arg.toLowerCase();
-    if (game.artifacts.get(19).isHere() && arg === game.data['magic word']) {
+    let orb = game.artifacts.get(19);
+    if ((orb.isHere() || orb.monster_id === 22) && arg === game.data['magic word']) {
       game.history.write("Cracks appear in the orb. They grow rapidly, spreading across the surface.", "emphasis");
       game.history.write("The orb shatters with a great crash!", "special2");
-      game.artifacts.get(19).destroy();
+      orb.destroy();
+      game.data['shattered orb'] = true;
       game.artifacts.get(20).moveToRoom();
+
+      if (game.monsters.get(22).isHere()) {
+        game.effects.print(7);
+        game.monsters.get(22).destroy();
+      }
+    }
+
+    if (arg === '*info') {
+      game.history.write("The word '" + game.data['magic word'].toUpperCase() + "' just popped into your head!", "special");
     }
   },
 
-  "see_monster": function(monster: Monster): void {
+  "see_monster": function (monster: Monster): void {
     let game = Game.getInstance();
     // some monsters speak when you first see them.
 
@@ -183,17 +245,18 @@ export var event_handlers = {
     }
   },
 
-  "use": function(artifact) {
+  "use": function (artifact) {
     let game = Game.getInstance();
     if (artifact.id === 12) {
       game.history.write("To use the flamethrower, READY it and ATTACK with it.")
     }
+    return true;
   },
 
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
-  "power": function(roll) {
+  "power": function (roll) {
     let game = Game.getInstance();
 
     // frosty
@@ -219,11 +282,12 @@ export var event_handlers = {
     game.data['power counter']++;
     switch (game.data['power counter'] % 3) {
       case 1:
-        game.history.write("The word " + game.data['magic word'] + " just popped into your head!", "special");
+        game.history.write("The word '" + game.data['magic word'].toUpperCase() + "' just popped into your head!", "special");
         break;
       case 2:
         game.history.write('You hear a voice boom out of nowhere:', "emphasis");
         game.history.write("Destroy the Orb or know the everlasting peace of death!", "special2");
+        break;
       case 3:
         game.history.write("All your wounds are healed!");
         game.player.heal(1000);

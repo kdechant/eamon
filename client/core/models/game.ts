@@ -455,6 +455,9 @@ export default class Game {
       }
     }
 
+    // special effects that happen after room name/desc is shown, but before monster/artifact name/desc
+    this.triggerEvent("endTurn1");
+
     // show monster and artifact descriptions
     if (light || !this.rooms.current_room.is_dark) {
       this.history.write(""); // blank line for white space
@@ -487,7 +490,7 @@ export default class Game {
       }
     }
 
-    // the second end turn event triggers here, so things can happen after we have seen the artifact
+    // the third end-turn event triggers here, so things can happen after we have seen the artifact
     // and monster descriptions (e.g., some monsters may speak when you see them)
     this.triggerEvent("endTurn2");
 
