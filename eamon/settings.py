@@ -149,6 +149,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "client/build/static"),
 ]
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
