@@ -10,7 +10,7 @@ The original Eamon was written by Donald Brown and released around 1980 for the 
 
 ## For Developers
 
-This project is not really a port, so much as it is a complete rewrite using the most modern web technologies. When Eamon was originally written, BASIC was the one of the most widely-used languages. These days, BASIC has fallen out of favor and it's time to convert it to a new language. And, for the best user experience, it should run in a browser instead of requiring an emulator. For these reasons, it made sense to convert the game logic to JavaScript. Specifically, Angular 2 with TypeScript, and a Django back-end to store the player and adventure data.
+This project is not really a port, so much as it is a complete rewrite using the most modern web technologies. When Eamon was originally written, BASIC was the one of the most widely-used languages. These days, BASIC has fallen out of favor and it's time to convert it to a new language. And, for the best user experience, it should run in a browser instead of requiring an emulator. For these reasons, it made sense to convert the game logic to JavaScript. Specifically, ReactJS with TypeScript, and a Django back-end to store the player and adventure data.
 
 The main program was redesigned, as well. No longer do adventure authors hack the main program to add special effects. The game is built on a system of event handlers. All adventures use the same shared main program code. Each adventure has its own set of event handlers, such as "read" to activate a special effect when the player reads a book, and "use" to run a special effect when the player drinks a potion. Each adventure can also declare custom commands. Both the commands and the event handlers are easy-to-write JavaScript functions.
 

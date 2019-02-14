@@ -2,7 +2,7 @@
 
 So you want to build an Eamon adventure? This requires some basic knowledge of databases, JavaScript programming, and using a command-line terminal.
 
-Eamon is built on Angular and Django, but you don't need in-depth knowledge about either to contribute. You can build an entire adventure with no programming if you use the built-in features. Or, to add custom special effects, all you need to know is a bit of JavaScript. (Eamon is written in TypeScript, which is just a fancier version of JavaScript and is easy to learn if you already know JavaScript.)
+Eamon is built on ReactJS and Django, but you don't need in-depth knowledge about either to contribute. You can build an entire adventure with no programming if you use the built-in features. Or, to add custom special effects, all you need to know is a bit of JavaScript. (Eamon is written in TypeScript, which is just a fancier version of JavaScript and is easy to learn if you already know JavaScript.)
 
 ## Getting started
  

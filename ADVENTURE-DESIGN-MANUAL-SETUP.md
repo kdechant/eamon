@@ -9,7 +9,7 @@ If you can't use Docker or prefer to do a manual setup, follow the instructions 
 For the manual install, you'll need the following:
 
 * Python v3.4 or higher
-* Node.js v6.x or higher (v7.x recommended)
+* Node.js v8.x or higher
 * MySQL or MariaDB v5.6 or higher
 
 The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
