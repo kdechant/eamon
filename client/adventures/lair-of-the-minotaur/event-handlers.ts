@@ -31,6 +31,7 @@ export var event_handlers = {
     game.data['in boat'] = false;
     game.data["open coffin"] = false;
     game.data['water rooms'] = [9, 10, 11, 12, 13, 14, 15, 16];
+    game.data['shore rooms'] = [6, 7, 8, 17, 23, 27];
     game.data['found coins'] = false;
   },
 
@@ -63,6 +64,15 @@ export var event_handlers = {
     if (game.data['in boat']) {
       game.history.write("(You are in the boat.)");
     }
+  },
+
+  "drink": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if ((arg === 'water' || arg === 'river') && near_water()) {
+      game.history.write("The water tastes a little muddy, but is otherwise unremarkable.");
+      return false;
+    }
+    return true;
   },
 
   "beforeGet": function(arg, artifact) {
@@ -106,6 +116,15 @@ export var event_handlers = {
     return true;
   },
 
+  "look": function(arg: string) {
+    let game = Game.getInstance();
+    if ((arg === 'water' || arg === 'river') && near_water()) {
+      game.history.write("The river flows from north to south. It's too swift to navigate without a boat.");
+      return false;
+    }
+    return true;
+  },
+
   "say": function(arg) {
     let game = Game.getInstance();
     arg = arg.toLowerCase();
@@ -124,10 +143,14 @@ export var event_handlers = {
         if (game.player.room_id === 27 && !game.data["found coins"]) {
           game.history.write("Found something!");
           game.data["found coins"] = true;
-          game.artifacts.get(6).reveal();
+          game.artifacts.get(6).moveToRoom();
         } else {
           game.history.write("You find nothing.");
         }
+      }
+      if (artifact.id === 3) {
+        // boat
+        game.history.write("To get into the boat, just move onto the river.");
       }
     }
   },
@@ -153,5 +176,8 @@ export var event_handlers = {
 
 }; // end event handlers
 
-
-// declare any functions used by event handlers and custom commands
+function near_water(): boolean {
+  let game = Game.getInstance();
+  return game.data['water rooms'].indexOf(game.player.room_id) !== -1
+    || game.data['shore rooms'].indexOf(game.player.room_id) !== -1;
+}
