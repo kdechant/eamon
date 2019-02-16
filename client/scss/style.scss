@@ -173,7 +173,6 @@ a {
   }
 }
 
-
 .btn {
   font-size: 18px;
   padding-top: 4px;
@@ -484,3 +483,24 @@ a {
   }
 }
 
+.blur {
+  color: transparent;
+  text-shadow: 0 0 8px #000;
+}
+
+// Bootstrap modal
+.modal-dialog {
+  background-color: $status-bg;
+  // apply fancy border with "border" and "box-shadow"
+	border: 3px dotted $status-border;
+  border-radius: 5px;
+	box-shadow: inset 0 -1px 0 0 $status-border, inset 0 1px 0 0 $status-border, 0 1px 0 0 $status-border, 0 -1px 0 0 $status-border, inset -1px 0 0 0 $status-border, inset 1px 0 0 0 $status-border, 1px 0 0 0 $status-border, -1px 0 0 0 $status-border;
+
+  .modal-content {
+    background-color: $status-bg;
+
+    .modal-header, .modal-body {
+      border-bottom: 1px solid $status-border;
+    }
+  }
+}

@@ -37,6 +37,13 @@ class Hints extends React.Component<any, any> {
     this.setState({show: true}); // force re-render
   };
 
+  public reveal = (hint) => {
+    // console.log(hint);
+    hint.answers[hint.current_index].spoiler = false;
+    // console.log(hint);
+    this.setState({show: true}); // force re-render
+  };
+
   public render() {
     const game = this.props.game;
     return (
@@ -59,7 +66,12 @@ class Hints extends React.Component<any, any> {
                 {h.is_open && (
                   <div className="hint-answers">
                     <p className="hint-answer">
-                      { h.answers[h.current_index].answer }
+                      { h.answers[h.current_index].spoiler ?
+                        <span>
+                          <span className="blur">{h.answers[h.current_index].answer}</span><br />
+                          <span className="small">Spoiler alert! <a onClick={() => this.reveal(h)}>Click here to show the answer</a>.</span>
+                        </span> :
+                        h.answers[h.current_index].answer }
                     </p>
                     {h.answers.length > 1 && (
                     <div className="hint-next-prev">

@@ -65,7 +65,7 @@ class MonsterSerializer(serializers.ModelSerializer):
 class HintAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = HintAnswer
-        fields = ('index', 'answer')
+        fields = ('index', 'answer', 'spoiler')
 
 
 class HintSerializer(serializers.ModelSerializer):

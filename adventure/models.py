@@ -297,7 +297,7 @@ class Hint(models.Model):
     """
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='hints', null=True)
     index = models.IntegerField(null=True)
-    edx = models.CharField(null=True,max_length=50)
+    edx = models.CharField(max_length=50,null=True,blank=True)
     question = models.CharField(max_length=255)
 
     def __str__(self):
@@ -311,6 +311,7 @@ class HintAnswer(models.Model):
     hint = models.ForeignKey(Hint, on_delete=models.CASCADE, related_name='answers')
     index = models.IntegerField(null=True)
     answer = models.TextField(max_length=1000)
+    spoiler = models.BooleanField(default=False, help_text="Obscure the answer until the user shows it.")
 
 
 class PlayerProfile(models.Model):
