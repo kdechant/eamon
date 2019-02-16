@@ -16,6 +16,9 @@ class Status extends React.Component<any, any> {
 
     if (game.player.speed_multiplier > 1) { agilityClass += " success" }
 
+    // visible exits (normal exits and ones with non-hidden doors)
+    const visible_exits = game.rooms.current_room.getVisibleExits();
+
     return (
       <div className="status d-none d-md-block col-md-5">
       <div className="status-widget player">
@@ -74,7 +77,7 @@ class Status extends React.Component<any, any> {
           {/*   [class.hidden]="hiddenDesc" */}
             <p className="room-description">{ game.rooms.current_room.description }</p>
             <div className="room-exits">Visible Exits:&nbsp;
-              {game.rooms.current_room.exits.map((exit, index) => (
+              {visible_exits.map((exit, index) => (
                 <span key={index}>{exit.direction}&nbsp;</span>
               ))}
             </div>

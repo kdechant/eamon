@@ -182,9 +182,24 @@ See the Devil's Dungeon for an example.
 
 If more than one of your event handlers use the same shared logic, you can define additional JavaScript functions at the end of your event-handlers.ts file. These can be called from anywhere within your event handlers. (See the Trollsfire routine in the Beginner's Cave for an example.)
 
-### Writing tests for your event handlers
+## Automated testing
 
-TODO
+Eamon has a suite of tests which test both the core game logic and also the custom logic for many of the adventures. These tests use the Jest test framework and can be called from the terminal or PowerShell.
+
+Make sure the Django development server is running, then run:
+
+```
+cd client
+yarn test
+```
+
+Note: A couple of the tests can be a bit finicky and produce false positives. If you get a sporadic error, try running the tests again. 
+
+Tests can also be run one file at a time, which is much faster than running the whole suite. To run a single test, append a filename to the command, like this:
+
+```
+yarn test adventures/the-beginners-cave/event-handlers.spec.ts
+```
 
 ## Running your adventure
 

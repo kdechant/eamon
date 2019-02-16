@@ -94,6 +94,15 @@ export class Room extends Loadable {
     }
   }
 
+  /**
+   * Gets the exit from the room in a given direction
+   */
+  public getVisibleExits(): RoomExit[] {
+    let game = Game.getInstance();
+    return this.exits.filter(r =>
+      !r.door_id || !game.artifacts.get(r.door_id).hidden
+    );
+  }
 
   /**
    * Gets the exit from the room in a given direction
