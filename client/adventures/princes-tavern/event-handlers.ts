@@ -225,10 +225,10 @@ export var event_handlers = {
     return true;
   },
 
-  "afterMove": function(arg: string, room_from: Room, room_to: Room) {
+  "endTurn1": function() {
     let game = Game.getInstance();
     // drinking contest
-    if (room_to.id === 22 && game.data['drinking contest active'] === null) {
+    if (game.player.room_id === 22 && game.data['drinking contest active'] === null) {
       game.data["drinking contest active"] = true;
       game.effects.print(1);
     }
@@ -315,6 +315,7 @@ export var event_handlers = {
             game.history.write("The drinking contest is over. You notice a stack of gold on the table.", "success");
             game.data['drinking contest active'] = false;
             game.artifacts.get(31).moveToRoom();
+            return true;  // prevents the reaction below if the last man passed out
           }
 
           if (game.data['drinker reaction'] !== game.data['drinker prev reaction']) {
