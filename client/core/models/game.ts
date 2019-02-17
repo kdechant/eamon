@@ -502,10 +502,10 @@ export default class Game {
    */
   public setReady() {
     // set a timeout to activate the command prompt, so the player can't spam the enter key
-    setTimeout(() => { this.ready = true; }, 100);
+    // setTimeout(() => { this.ready = true; }, 100);
 
     // the old version, saved for later.
-    //setTimeout(() => { this.ready = true; }, this.history.total_delay);
+    setTimeout(() => { console.log('setting ready'); this.ready = true; this.refresh(); }, this.history.total_delay);
 
   }
 
@@ -589,7 +589,9 @@ export default class Game {
    *   The amount of time to delay, in seconds
    */
   public delay(time: number = 3) {
-    // this is currently a no-op until I can further research re-implementing the history timer.
+    if (this.history.delay > 0) {
+      this.history.total_delay += time * 1000;
+    }
   }
 
   /**

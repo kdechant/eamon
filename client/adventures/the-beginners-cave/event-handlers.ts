@@ -12,6 +12,7 @@ export var event_handlers = {
 
     game.effects.print(8);
     game.effects.print(10);
+    game.delay(1);
 
     // must have weapon
     if (game.player.weapon_id === null) {

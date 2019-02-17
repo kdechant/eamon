@@ -1,14 +1,16 @@
 import {HistoryEntry} from "../models/history-entry";
 
+// The "game" object contains the event handlers and custom commands defined for the loaded adventure.
+declare var game;
+
 /**
  * History manager model. Provides a container for all the history entries.
  */
 export class HistoryManager {
   history: HistoryEntry[];
   index: number;
-  // TODO: reimplement the delay. this was more flexible than the smooth scrolling but looked bad in Chrome.
-  // delay: number = 0;
-  // total_delay: number = 0;
+  delay: number = 100;
+  total_delay: number = 0;
   suppressNextMessage: boolean = false;
 
   constructor() {
@@ -24,7 +26,7 @@ export class HistoryManager {
 
     // reset the counter whenever a command is added.
     this.index = this.history.length;
-    // this.total_delay = 0;
+    this.total_delay = 0;
   }
 
   /**
@@ -37,16 +39,16 @@ export class HistoryManager {
   write(text: string, type: string = "normal") {
     if (!this.suppressNextMessage) {
       text = text.charAt(0).toUpperCase() + text.slice(1);
-      // TODO: delay logic turned off for now, until I can get it working better with React
-      // this.total_delay += this.delay;
-      // if (this.delay > 0) {
-      //   setTimeout(() => {
-      //     this.history[this.index - 1].push(text, type);
-      //   }, this.total_delay);
-      // } else {
+      this.total_delay += this.delay;
+      if (this.delay > 0) {
+        setTimeout(() => {
+          this.history[this.index - 1].push(text, type);
+          game && game.refresh();
+        }, this.total_delay);
+      } else {
         // delay of zero is used for unit testing, otherwise the timeouts make the tests fail
         this.history[this.index - 1].push(text, type);
-      // }
+      }
     }
     this.suppressNextMessage = false;
   }
@@ -59,15 +61,15 @@ export class HistoryManager {
    * game.history.append(" all one line");
    */
   append(text: string) {
-    // TODO: delay logic turned off for now, until I can get it working better with React
-    // if (this.delay > 0) {
-    //   setTimeout(() => {
-    //     this.history[this.index - 1].append(text);
-    //   }, this.total_delay);
-    // } else {
+    if (this.delay > 0) {
+      setTimeout(() => {
+        this.history[this.index - 1].append(text);
+        game && game.refresh();
+      }, this.total_delay);
+    } else {
       // delay of zero is used for unit testing, otherwise the timeouts make the tests fail
       this.history[this.index - 1].append(text);
-    // }
+    }
   }
 
   /**
