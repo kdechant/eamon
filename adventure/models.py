@@ -170,7 +170,7 @@ class Artifact(models.Model):
     dice = models.IntegerField(null=True,blank=True)
     sides = models.IntegerField(null=True,blank=True)
     clothing_type = models.IntegerField(null=True,choices=CLOTHING_TYPES,help_text="Reserved for future use.")
-    armor_class = models.IntegerField(default=0,
+    armor_class = models.IntegerField(null=True,default=0,
         help_text="(Armor only) How many hits does this armor protect against?")
     armor_type = models.IntegerField(null=True,blank=True,choices=ARMOR_TYPES)
     armor_penalty = models.IntegerField(default=0,null=True,
