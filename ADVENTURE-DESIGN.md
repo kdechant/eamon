@@ -6,54 +6,33 @@ Eamon is built on ReactJS and Django, but you don't need in-depth knowledge abou
 
 ## Getting started
  
-To design an adventure, you'll need to set up a local copy of Eamon. Thanks to Docker, this only takes a few easy steps.
+## Prerequisites
 
-First, install docker and docker-compose on your system:
-https://docs.docker.com/engine/installation/
-https://docs.docker.com/compose/install/
+For the manual install, you'll need the following:
 
-Docker is available for Linux, Windows 10, and MacOS.
+* Python v3.6.x or higher
+* Node.js v10.x or higher
 
-Once Docker is installed, open a terminal and run the following command:
+The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
 
-    docker-compose up -d
+## Setup instructions
 
-To load the base database, containing all currently published adventures, run:
+* Open a terminal or PowerShell and navigate to the repository root
+* Install pipenv: `pip3 install pipenv` (or just `pip install pipenv` if your system Python is v3.x)
+* Install the packages: `pipenv install`
+* Activate the pipenv shell with `pipenv shell` 
+* Create a user for the admin: `python manage.py createsuperuser`
+* Run `python manage.py runserver`
+    * If you're using PyCharm, you can skip this step and set up your development server inside PyCharm itself. This provides the ability to use step debugging in the Python code.
+* Open a second command prompt and navigate to the "client" folder
+* Install React and other JS packages using `npm install` or `yarn`
+* Run `npm start` or `yarn start`
+* Open your web browser and navigate to http://localhost:8000. You should see the Eamon welcome screen. 
 
-    ./db/import.sh
-    
-Eamon will now be available at http://localhost:8000
-
-The Adventure Designer is located at http://localhost:8000/admin
-
-To create an account in the adventure designer, run the following:
-
-    docker-compose run django python manage.py createsuperuser
-
-### Running the unit tests
-
-Eamon contains one set of tests for the core logic, and (optionally) one set of tests per adventure. These are all runnable using the Jest test runner.
-
-The tests do depend on API calls, so the back-end must be running. (`python manage.py runserver`)
-
-```
-cd client
-yarn test
-```
-
-To run just one test, you can specify the file name after `yarn test`. It must use forward slashes, even on Windows.
-
-```
-yarn test adventures/the-beginners-cave/event-handlers.spec.ts
-```
-
-To keep watching and compiling the Typescript files between test runs, the easiest way is to have two terminals open.
-In the first terminal, kick off `yarn start` and leave it running. In the second terminal, run the tests via the commands
-above. You can then edit some code and run the tests again to see the result.
-
-### Manual setup
-
-If you can't use Docker, or you prefer a manual installation, see the file ADVENTURE-DESIGN-MANUAL-SETUP.md for instructions.
+URLs: 
+Eamon home page: http://localhost:8000
+Admin page (for building adventure data): http://localhost:8000/admin
+To log into the admin, use the username and password you used when you ran the "createsuperuser" command above.
 
 ## Building the adventure database
 
@@ -186,7 +165,7 @@ If more than one of your event handlers use the same shared logic, you can defin
 
 Eamon has a suite of tests which test both the core game logic and also the custom logic for many of the adventures. These tests use the Jest test framework and can be called from the terminal or PowerShell.
 
-Make sure the Django development server is running, then run:
+*Make sure the Django development server is running*, then run:
 
 ```
 cd client
@@ -200,6 +179,10 @@ Tests can also be run one file at a time, which is much faster than running the 
 ```
 yarn test adventures/the-beginners-cave/event-handlers.spec.ts
 ```
+
+To keep watching and compiling the Typescript files between test runs, the easiest way is to have two terminals open.
+In the first terminal, kick off `yarn start` and leave it running. In the second terminal, run the tests via the commands
+above. You can then edit some code and run the tests again to see the result.
 
 ## Running your adventure
 

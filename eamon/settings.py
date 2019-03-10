@@ -167,14 +167,8 @@ SETTINGS_EXPORT = [
     'GA_ID',
 ]
 
-# look for machine-specific config files
-if 'IN_DOCKER' in os.environ and os.environ['IN_DOCKER'] == "1":
-    # docker has its own custom settings file
-    from .settings_docker import *
-else:
-    # other development or production environment.
-    # machine-specific settings can be stored in local_settings.py
-    try:
-        from .local_settings import *
-    except ImportError:
-        pass
+# machine-specific settings can be stored in local_settings.py
+try:
+    from .local_settings import *
+except ImportError:
+    pass
