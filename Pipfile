@@ -4,26 +4,29 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-bleach = "~=2.1"
+bleach = "~=3.1"
 chardet = "==3.0.4"
 django-braces = "~=1.13"
 django-ckeditor = "~=5.4"
 django-cors-middleware = "==1.3.1"
 django-debug-toolbar = "~=1.11"
-django-filter = "~=2.0.0"
+django-filter = "~=2.1.0"
 django-mptt = "~=0.9.0"
 django-rest-swagger = "~=2.2"
 django-settings-export = "==1.2.1"
 django-taggit = "~=0.24"
 django-taggit-serializer = "~=0.1"
-djangorestframework = "==3.8.2"
+djangorestframework = "==3.9.2"
 "html5lib" = "==1.0.1"
-regex = "~=2018.11.22"
+regex = "~=2019.3.9"
 requests = "~=2.21.0"
 requests-oauthlib = "~=1.2.0"
-six = "==1.11.0"
+six = "==1.12.0"
 sqlparse = "~=0.2"
 Django = "~=2.1.7"
-PyYAML = "~=3.12"
+PyYAML = "~=5.1b5"
 
 [dev-packages]
+
+[pipenv]
+allow_prereleases = true
