@@ -18,6 +18,8 @@ The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
 ## Setup instructions
 
 * Open a terminal or PowerShell and navigate to the repository root
+* Copy the base database file (`db/eamon.sqlite3.dist`) to a new file named `db/eamon3.sqlite3`
+  * Best to copy this and not rename it, so Git doesn't think the file is modified 
 * Install pipenv: `pip3 install pipenv` (or just `pip install pipenv` if your system Python is v3.x)
 * Install the packages: `pipenv install`
 * Activate the pipenv shell with `pipenv shell` 
