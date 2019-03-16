@@ -88,11 +88,25 @@ export class HistoryManager {
    * Used for recalling the history with the arrow keys.
    */
   getOlderCommand() {
+
+    // this should be a unique list of the history
+    // so if you ran the same command multiple times you don't have to
+    // arrow back through the duplicates.
+    // see https://codeburst.io/javascript-array-distinct-5edc93501dc4
+
+    // it should display the most recent commands at the end of the list,
+    // e.g., if you ran:
+    // 'n' 'e' 'n' 'w' 'n'
+    // the list should be, from oldest to newest: 'e', 'w', 'n'
+
+    // or else, combine duplicates only if they appear consecutively. (this might not be hard.)
+
+    let commands = this.getPastCommands();
     if (this.index > 0) {
       this.index--;
     }
-    if (this.index >= 0 && this.index < this.history.length) {
-      return this.history[this.index]["command"];
+    if (this.index >= 0 && this.index < commands.length) {
+      return commands[this.index];
     } else {
       return null;
     }
@@ -103,11 +117,12 @@ export class HistoryManager {
    * Used for recalling the history with the arrow keys.
    */
   getNewerCommand() {
-    if (this.index <= this.history.length) {
+    let commands = this.getPastCommands();
+    if (this.index <= commands.length) {
       this.index++;
     }
-    if (this.index >= 0 && this.index < this.history.length) {
-      return this.history[this.index]["command"];
+    if (this.index >= 0 && this.index < commands.length) {
+      return commands[this.index];
     } else if (this.index === this.history.length) {
       // reached the newest command. clear the field.
       return "";
@@ -153,6 +168,19 @@ export class HistoryManager {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Gets the list of commands the player ran, for use when paging through the history
+   */
+  getPastCommands() {
+    let commands = [];
+    this.history.forEach(e => {
+      if (commands[commands.length - 1] !== e.command) {
+        commands.push(e.command);
+      }
+    });
+    return commands;
   }
 
 }

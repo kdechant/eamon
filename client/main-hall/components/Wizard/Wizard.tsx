@@ -36,21 +36,13 @@ class Wizard extends React.Component<any, any> {
 
     return (
       <div className="wizard-shop">
-        <h2><img src="/static/images/ravenmore/128/tome.png" />Hokas Tokas' School of Magick</h2>
+        <h2><img src="/static/images/ravenmore/128/tome.png" alt="Tome" />Hokas Tokas' School of Magick</h2>
         <p>After a few minutes of diligent searching, you find Hokas Tokas, the old Mage. He looks at you and says, &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you. Here are the spells I teach. Which will it be?&quot;</p>
-        <table className="table spells-list">
-          <tr className="d-flex">
-            <th className="col-sm-4 col-md-6">Spell</th>
-            <th className="col-sm-3 col-md-2 text-center">Current Ability<br />
-              <span className="small">Odds to cast successfully</span>
-            </th>
-            <th className="col-sm-3 col-md-2 text-center">Price</th>
-            <th className="col-sm-2 col-md-2" />
-          </tr>
+        <div className="spells-list">
           {this.state.spells.map(spell =>
             <SpellListRow key={spell.name} {...this.props} spell={spell} />
           )}
-        </table>
+        </div>
         <p>You have {this.props.player.gold} gold pieces.</p>
 
         <Link to="/main-hall/hall" className="btn btn-primary">Done</Link>

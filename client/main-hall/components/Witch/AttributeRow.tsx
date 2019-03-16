@@ -57,19 +57,19 @@ class AttributeRow extends React.Component<any, any> {
   };
 
   public render() {
-    let button = <button className="btn disabled">Not enough gold</button>;
+    let button = <button className="btn btn-light disabled">Not enough gold</button>;
     if (this.props.player.gold >= this.getPrice()) {
       button = <button className="btn btn-primary" onClick={() => this.buy()}>Upgrade</button>
     }
 
     return (
-      <tr className="d-flex" key={this.props.attribute.name}>
-        <td className="col-sm-4 col-md-6 col-xl-8"><strong>{ titleCase(this.props.attribute.name) }</strong><br />
-          <span className="small">{ this.props.attribute.description }</span></td>
-        <td className="col-sm-3 col-md-2 col-xl-2 text-center attribute-cell">
-          <div className="current-ability">
-            { this.props.player[this.props.attribute.name] }
-          </div>
+      <div className="spell-list-row row h-100" key={this.props.attribute.name}>
+        <div className="col-12 col-sm-4 col-md-6 col-xl-8 my-auto">
+          <h3>{ titleCase(this.props.attribute.name) }</h3>
+          <span className="small">{ this.props.attribute.description }</span>
+        </div>
+        <div className="attribute-cell col-4 col-sm-3 col-md-2 col-xl-2 text-center my-auto">
+          Current: { this.props.player[this.props.attribute.name] }
           <CSSTransition
             in={this.state.messageVisible}
             timeout={300}
@@ -78,14 +78,14 @@ class AttributeRow extends React.Component<any, any> {
           >
             {animationState => <div className="message-inner">+{this.state.increased}</div>}
           </CSSTransition>
-        </td>
-        <td className="col-sm-3 col-md-2 col-xl-1 text-center">
-          <img src="/static/images/ravenmore/128/coin.png" /> { this.getPrice() }
-        </td>
-        <td className="col-sm-2 col-md-2 col-xl-1 text-right">
+        </div>
+        <div className="col-4 col-sm-3 col-md-2 col-xl-1 text-center my-auto">
+          <img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" /> { this.getPrice() }
+        </div>
+        <div className="col-4 col-sm-2 col-md-2 col-xl-1 text-right my-auto">
           {button}
-        </td>
-      </tr>
+        </div>
+      </div>
     )
   }
 
