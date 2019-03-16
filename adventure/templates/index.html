@@ -5,18 +5,20 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container-fluid">
   <div class="parchment">
     <div class="parchment-inner">
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-7 col-sm-8">
           <h2>Welcome to EAMON!</h2>
-          <p class="lead">Computerized fantasy role-playing system. Looting dungeons and slaying dragons for fun and profit!<p>
-          <p class="addplayer"><a href="{% url 'main-hall' %}"><img src="/static/images/ravenmore/128/map.png"> Enter the Main Hall</a></p>
-          <p><small>Based on the Eamon Adventure Series, written by Donald Brown for the Apple ][, and on Eamon Deluxe by Frank Black.</small></p>
+          <p class="lead">Eamon is a computerized fantasy role-playing system. Create one character and go on dozens of different adventures!<p>
+          <p id="intro-link"><a href="{% url 'main-hall' %}"><img src="/static/images/ravenmore/128/map.png"> Enter the Main Hall</a></p>
         </div>
-        <div class="col-sm-6 text-center">
-          <img src="/static/images/Eamon_dragon_NEUC.png" width="375">
+        <div class="col-md-5 col-sm-4 text-center">
+          <img src="/static/images/Eamon_dragon_NEUC.png" width="375" id="intro-dragon">
+        </div>
+        <div class="col-md-12">
+          <p><small>Based on the Eamon Adventure Series, written by Donald Brown for the Apple ][, and on Eamon Deluxe by Frank Black.</small></p>
         </div>
       </div>
     </div>

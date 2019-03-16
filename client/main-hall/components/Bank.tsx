@@ -70,8 +70,8 @@ export default class Bank extends React.Component<any, any> {
 
         <Route path="/main-hall/bank" exact={true} render={(props) => (
           <p>
-            <Link to="/main-hall/bank/deposit" className="btn btn-primary mr-2">Deposit</Link>
-            <Link to="/main-hall/bank/withdraw" className="btn btn-primary mr-2">Withdrawal</Link>
+            <Link to="/main-hall/bank/deposit" className="btn btn-primary">Deposit</Link>
+            <Link to="/main-hall/bank/withdraw" className="btn btn-primary">Withdrawal</Link>
             <Link to="/main-hall/hall" className="btn btn-primary">Go back to Main Hall</Link>
           </p>
         )} />

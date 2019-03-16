@@ -30,8 +30,8 @@ class Shop extends React.Component<any, any> {
           <div className="shop-home">
             <p>As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back room and says, &quot;Well, as I live and breathe, if it isn't my old pal, {this.props.player.name}!&quot;</p>
             <p>So, what do you need?</p>
-            <Link to="/main-hall/shop/buy" className="btn btn-primary mr-2">Buy weapons and armor</Link>
-            <Link to="/main-hall/shop/sell" className="btn btn-primary mr-2">Sell weapons and armor</Link>
+            <Link to="/main-hall/shop/buy" className="btn btn-primary">Buy weapons and armor</Link>
+            <Link to="/main-hall/shop/sell" className="btn btn-primary">Sell weapons and armor</Link>
             <Link to="/main-hall/hall" className="btn btn-primary">Go back to Main Hall</Link>
           </div>
         )} />

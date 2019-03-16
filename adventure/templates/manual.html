@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container-fluid">
   <div class="parchment">
     <div class="parchment-inner">
 
@@ -60,16 +60,16 @@
       <p>Weapons are divided into several categories:</p>
 
       <ul>
-        <li><strong>Axes</strong> (and other "chopping" type weapons</li>
+        <li><strong>Axes</strong> and other &quot;chopping&quot; type weapons</li>
         <li><strong>Bows</strong> and projectile weapons (everything from a standard archery set to a machine gun)</li>
         <li><strong>Clubs</strong> and other blunt crushing weapons like maces, flails, and baseball bats</li>
         <li><strong>Spears</strong> and other polearm weapons like halberds</li>
         <li><strong>Swords</strong></li>
       </ul>
 
-      <p>Additionally, some non-player characters and monsters may have "natural weapons" (claws, teeth, fire breath, poison ooze, etc.) or may have no weapon at all.</p>
+      <p>Additionally, some non-player characters and monsters may have &quot;natural weapons&quot; (claws, teeth, fire breath, poison ooze, etc.) or may have no weapon at all.</p>
 
-      <p>Each player will have a different skill with each of the five weapon types. These skills increase when the player lands a successful hit, with the chances of an increase being greater with a lower chance of hitting. If Hedric the Horrible is wielding an axe, and has a 60% chance to hit, when he lands a successful blow, he has a 40% chance of gaining a 2% increase in his "axe" ability. The next round, his chance to hit would be 62%, and he would have a 38% chance to improve his ability by another 2%.<p>
+      <p>Each player will have a different skill with each of the five weapon types. These skills increase when the player lands a successful hit, with the chances of an increase being greater with a lower chance of hitting. If Hedric the Horrible is wielding an axe, and has a 60% chance to hit, when he lands a successful blow, he has a 40% chance of gaining a 2% increase in his &quot;axe&quot; ability. The next round, his chance to hit would be 62%, and he would have a 38% chance to improve his ability by another 2%.<p>
 
       <p>Once Hedric's axe ability reaches 50% or higher, he will have less to learn about the art, and his abilities will only increase by 1% with a successful roll.</p>
 
@@ -91,7 +91,7 @@
         <tr>
           <th>Type</th>
           <th>Hits Absorbed</th>
-          <th>Armor Penalty</th>
+          <th>Armor Penalty <sup>1</sup></th>
         </tr>
         <tr>
           <td>None</td>
@@ -99,7 +99,7 @@
           <td>0%</td>
         </tr>
         <tr>
-          <td>Shield <sup>1</sup></td>
+          <td>Shield <sup>2</sup></td>
           <td>1</td>
           <td>5%</td>
         </tr>
@@ -130,7 +130,8 @@
         </tr>
       </table>
 
-      <p><sup>1</sup> A shield may be used in addition to armor, if the character is using a one-handed weapon. This means a character with plate armor and a shield would have protection from 6 hits, and would need an Armor Expertise of 65% to avoid the penalty.</p>
+      <p><sup>1</sup> For a character with Armor Expertise of zero.</p>
+      <p><sup>2</sup> A shield may be used in addition to armor, if the character is using a one-handed weapon. This means a character with plate armor and a shield would have protection from 6 hits, and would need an Armor Expertise of 65% to avoid the penalty.</p>
 
       <h3>Combat</h3>
 
@@ -150,7 +151,7 @@
       <p><sup>2</sup> The player has a base to-hit of 25%, plus any weapon abilities.</p>
       <p><sup>3</sup> NPCs have the same ability with all weapon classes.</p>
 
-      <p>Each individual weapon has its own odds adjustment, also known as "weapon odds" or "weapon complexity". This number reflects the quality of the weapon and how hard it is to use properly. A magic bow may increase your chance to hit, while a poorly-made sword may decrease it.</p>
+      <p>Each individual weapon has its own odds adjustment, also known as &quot;weapon odds&quot; or &quot;weapon complexity&quot;. This number reflects the quality of the weapon and how hard it is to use properly. A magic bow may increase your chance to hit, while a poorly-made sword may decrease it.</p>
 
       <p>For example, the gorilla in the Beginner's Cave has an agility of 11 and a base to-hit of 50%. Joe Normal, with his agility of 12 and a club ability of 20%, would have a 47% chance to hit the gorilla, and the gorilla would have a 48% chance to hit Joe. Hedric the Horrible, with his agility of 18 and club ability of 30%, has a 73% chance to hit the gorilla, and the gorilla has a 32% chance to hit Hedric.</p>
 
@@ -178,7 +179,7 @@
 
       <h4>Damage</h4>
 
-      <p>The amount of damage a weapon does is determined by two factors: the weapon's damage "dice" and "sides." In traditional RPGs, these would indicate the number and type of dice the player would roll to calculate the damage. For example, if your character's weapon has a damage rating of 2d8, you would roll two 8-sided dice and add the total. In Eamon, however, it's a computer that does the rolling. So, you may see unusual dice like d5 or d7, and this is perfectly normal.</p>
+      <p>The amount of damage a weapon does is determined by two factors: the weapon's damage &quot;dice&quot; and &quot;sides.&quot; In traditional RPGs, these would indicate the number and type of dice the player would roll to calculate the damage. For example, if your character's weapon has a damage rating of 2d8, you would roll two 8-sided dice and add the total. In Eamon, however, it's a computer that does the rolling. So, you may see unusual dice like d5 or d7, and this is perfectly normal.</p>
 
       <p>Once the initial damage is calculated, it is then adjusted based on the defender's armor class. So, if a player wearing chain mail is hit for 5 points of damage, the chain mail absorbs 2 points, leaving a final damage of 3 hit points. If the attack is weaker than the defender's armor class, Eamon will show a "blow bounces off armor!" message and the defender will take no damage at all.</p>
 
@@ -186,43 +187,43 @@
 
       <p>The strange shifting forces around Planet Eamon constantly create effects that can only be described as magical. However, most of these effects are extremely localized to a particular adventure setting and will not be consistent from one foray to the next.</p>
 
-      <p>Any character can pay a knowledgeable wizard to teach them these spells at a starting level. When they first learn a spell, a 1D100 die will be rolled and they will start with an ability level ranging from 25% to 75%. For additional money, the wizard can teach the character more advanced techniques, improving their spell ability further.</p>
+      <p>Any character can pay a knowledgeable wizard to teach them these spells at a starting level. When they first learn a spell, they will start with an ability level ranging from 25% to 75%. For additional money, the wizard can teach the character more advanced techniques, improving their spell ability further.</p>
 
       <p>There are four common spells that work almost everywhere:</p>
 
       <h4>BLAST</h4>
 
-      <p>This spell can be used by your character to send a magical blast of pure energy at either an opponent or an item (such as locked doors or chests). If successfully cast, a BLAST spell will always hit its target and do 1D6 in damage. Also, if the target is a living being, armor will not help absorb any of the damage from a BLAST spell.</p>
+      <p>This spell can be used by your character to send a magical blast of pure energy at either an opponent or an item (such as locked doors or chests). If successfully cast, a BLAST spell will always hit its target and do 2d5 in damage. Also, if the target is a living being, armor will not help absorb any of the damage from a BLAST spell.</p>
 
       <h4>HEAL</h4>
 
-      <p>This spell can be used to remove damage points from either the character casting it or any other living creature (in effect, "healing" them). If successfully cast, a HEAL spell will remove 1D10 in damage points from its target.</p>
+      <p>This spell can be used to remove damage points from either the character casting it or any other living creature (in effect, "healing" them). If successfully cast, a HEAL spell will restore 2d6 hit points to its target.</p>
 
       <p>To heal yourself, just type "HEAL" into the command prompt. To heal a friend, type "HEAL {name}", e.g. "HEAL EDDIE".</p>
 
       <h4>SPEED</h4>
 
-      <p>If successfully cast, a SPEED spell will double your character's agility for a random amount of time (ranging from eleven to twenty turns). If a SPEED spell is cast successfully while another one is already in effect, the new spell will increase the amount of rounds left, but it will not have the effect of further multiplying a character's agility. The SPEED spell is mostly useful when a character is engaged in combat with a skilled opponent, has a long paper to write within a short amount of time, or needs to study for an exam.</p>
+      <p>If successfully cast, a SPEED spell will double your character's agility for a random amount of time (ranging from eleven to twenty turns). If a SPEED spell is cast successfully while another one is already in effect, the new spell will increase the amount of rounds left, but it will not have the effect of further multiplying a character's agility. The SPEED spell is most useful when a character is engaged in combat with a skilled opponent, has a long paper to write within a short amount of time, or needs to study for an exam.</p>
 
       <h4>POWER</h4>
 
-      <p>POWER is a unique and unpredictable spell, influenced greatly by the shifting forces of the world of Eamon. It's basically a call to the magical forces around your character that says, "Hey, do something!"</p>
+      <p>POWER is a unique and unpredictable spell, influenced greatly by the shifting forces of the world of Eamon. It's basically a call to the magical forces around your character that says, &quot;Hey, do something!&quot;</p>
 
       <p>Depending upon the adventure your character is on, successfully casting POWER may cause a harmless diversion or have powerful effects (both helpful and harmful in nature). In some adventures, Power will do little more than make a loud noise, while in others it may be the key to surviving or moving on to different points in the game. If you become totally stuck (or just feel daring), give POWER a try.</p>
 
       <h4>Spell Abilities</h4>
 
-      <p>As with combat abilities, there is a chance that each spell ability can be increased every time your character successfully casts that spell; if a 1D100 dice roll is less than their chance to not have cast it, their ability will increase by 2% until they reach the 100% natural limit.</p>
+      <p>As with combat abilities, there is a chance that each spell ability can be increased every time your character successfully casts that spell; if a 1D100 dice roll is less than the chance of failure, their ability will increase by 2% until they reach the 100% natural limit.</p>
 
-      <p>For example: Hedric has now learned the BLAST spell and been given a starting ability of 30%. If he successfully casts the spell and a 1D100 roll yields a result from one to seventy, his overall ability for that spell will increase to 32%, with a roll from one to sixty eight being required for the next increase.</p>
+      <p>For example: Hedric has now learned the BLAST spell and has a starting ability of 30%. If he successfully casts the spell, and a 1D100 roll yields a result from one to seventy, his overall ability for that spell will increase by 2% to 32%. The next time he successfully casts the spell, he would have a 68% chance to increase his skill.</p>
+
+      <p>Due to the tiring effects of sending supernatural powers through their body, every time your character attempts to cast a spell (regardless of whether or not they succeed) their next chance is reduced by half. The player may recover their spell ability by &quot;resting up&quot; their brain for a bit; during each turn when the player doesn't try to cast a spell (walking around, picking up loot, etc.), their spell abilities recover slightly.</p>
 
       <h4>Additional Factors</h4>
 
-      <p>There are also "wildcard" rolls involved in spell casting: A roll from one to five will always be successful and a roll of one hundred will overload your character's mind and they will not be able to cast that spell for the rest of the adventure.</p>
+      <p>There are also "wildcard" rolls involved in spell casting. For each attempt to cast the spell, there is always a 5% chance of success and a 5% chance of failure. Also, there is a 1% chance that the spell casting will overload your character's mind, causing them to be unable to cast that spell for the rest of the adventure.</p>
 
-      <p>Due to the tiring effects of sending supernatural powers through their body, every time your character attempts to cast a spell (regardless of whether or not they succeed) their next chance is reduced by half until they "rest up" their brain for a bit. <!-- The STATUS command can be used to see the actual values of their current spell abilities as well as their overall spell abilities among other useful information. --></p>
-
-      <p>Note that this is the way that the four common spells usually work. Eamon is a marvelous and very random world and spell abilities may not drop at all when your character uses them in some adventures, while in other places spells may work quite differently or sometimes not at all.</p>
+      <p>Note that this is the way that the four common spells usually work. Eamon is a marvelous and very random world, with lots of strange local magics. In some adventures, the standard spells may work differently or not at all. In others, spell abilities may recover faster or slower.</p>
 
       <h4>Special Spells</h4>
 

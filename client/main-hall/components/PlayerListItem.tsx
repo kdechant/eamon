@@ -51,7 +51,7 @@ class PlayerListItem extends React.Component<any, any> {
     const icon_url = '/static/images/ravenmore/128/' + this.state.player.icon + '.png';
 
     return (
-      <div className="player col-sm-4" key={this.state.player.id}>
+      <div className="player col-sm-6 col-md-4" key={this.state.player.id}>
         <div className="icon"><img src={icon_url} width="96" height="96"/></div>
         <div className="name"><a className="player_name" onClick={() => this.loadPlayer()}><strong>{this.state.player.name}</strong></a>
           <br/>

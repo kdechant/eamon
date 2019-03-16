@@ -12,9 +12,11 @@ body {
 }
 
 h1 {
-  font-size: 44px;
   margin-top: 15px;
   margin-bottom: 15px;
+  @media (min-width: 480px) {
+    font-size: 3rem;
+  }
 }
 
 h2 {
@@ -23,6 +25,10 @@ h2 {
   img {
     width: 64px;
     height: 64px;
+  }
+  font-size: 1.9rem;
+  @media (min-width: 480px) {
+    font-size: 2rem;
   }
 }
 
@@ -43,7 +49,11 @@ a {
 
   .parchment-inner {
     background: url(/static/images/parchment/center.png) top left repeat;
-    padding: 18px;
+    padding: 0.25rem;
+
+    @media (min-width: 480px) {
+      padding: 0.5rem;
+    }
   }
 
 }
@@ -126,7 +136,7 @@ a {
 /** ADVENTURE UI STYLES **/
 
 .history {
-  height: 480px;
+  height: 380px;
   overflow-y: auto;
   margin: 0 5px;
   scroll-behavior: smooth;
@@ -162,9 +172,6 @@ a {
 }
 .hints-command-list {
   margin-top: 20px;
-  button {
-    margin-right: 0.5rem;
-  }
 }
 .hint-next-prev {
   margin-bottom: 15px;
@@ -176,15 +183,13 @@ a {
 .btn {
   font-size: 18px;
   padding-top: 4px;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .game-modal {
   .form-control {
     font-size: 20px;
-  }
-  .btn {
-    margin-right: 12px;
-    margin-bottom: 10px;
   }
 }
 
@@ -236,6 +241,25 @@ a {
 }
 
 // Main Hall
+
+#intro-link {
+  img {
+    margin: -10px;
+    @media (min-width: 480px) {
+      margin: 0;
+    }
+  }
+}
+#intro-dragon {
+  width: 100%;
+  max-width: 250px;
+  @media (min-width: 480px) {
+    max-width: 300px;
+  }
+  @media (min-width: 768px) {
+    max-width: 350px;
+  }
+}
 
 .icon-nav {
   p {

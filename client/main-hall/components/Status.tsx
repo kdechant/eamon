@@ -32,19 +32,19 @@ class Status extends React.Component<any, any> {
               <div className="col-3 charisma">CH: { this.props.player.charisma }</div>
             </div>
 
-            <div className="spell-abilities row">
-              <div className="axe col-sm-3">Blast:<br/> { this.props.player.spell_abilities_original.blast }%</div>
-              <div className="bow col-sm-3">Heal:<br/> { this.props.player.spell_abilities_original.heal }%</div>
-              <div className="club col-sm-3">Power:<br/> { this.props.player.spell_abilities_original.power }%</div>
-              <div className="spear col-sm-3">Speed:<br/> { this.props.player.spell_abilities_original.speed }%</div>
+            <div className="weapon-abilities row">
+              <div className="axe col-md-2">Axe: { this.props.player.wpn_axe }%</div>
+              <div className="bow col-md-2">Bow: { this.props.player.wpn_bow }%</div>
+              <div className="club col-md-2">Club: { this.props.player.wpn_club }%</div>
+              <div className="spear col-md-2">Spear: { this.props.player.wpn_spear }%</div>
+              <div className="sword col-md-2">Sword: { this.props.player.wpn_sword }%</div>
             </div>
 
-            <div className="weapon-abilities row">
-              <div className="axe col-sm-2">Axe: { this.props.player.wpn_axe }%</div>
-              <div className="bow col-sm-2">Bow: { this.props.player.wpn_bow }%</div>
-              <div className="club col-sm-2">Club: { this.props.player.wpn_club }%</div>
-              <div className="spear col-sm-2">Spear: { this.props.player.wpn_spear }%</div>
-              <div className="sword col-sm-2">Sword: { this.props.player.wpn_sword }%</div>
+            <div className="spell-abilities row">
+              <div className="col-6 col-md-3">Blast:<br/> { this.props.player.spell_abilities_original.blast }%</div>
+              <div className="col-6 col-md-3">Heal:<br/> { this.props.player.spell_abilities_original.heal }%</div>
+              <div className="col-6 col-md-3">Power:<br/> { this.props.player.spell_abilities_original.power }%</div>
+              <div className="col-6 col-md-3">Speed:<br/> { this.props.player.spell_abilities_original.speed }%</div>
             </div>
 
             <div className="ae row">
@@ -72,8 +72,8 @@ class Status extends React.Component<any, any> {
               const odds = (artifact.weapon_odds > 0 ? "+" : "") + artifact.weapon_odds;
               return (
                 <div key={artifact.uuid} className="row">
-                  <div className="icon col-sm-2"><img src={icon_url} width="48" height="48"/></div>
-                  <div className="col-sm-10">
+                  <div className="icon col-3 col-sm-2 px-0 px-sm-2"><img src={icon_url} width="48" height="48"/></div>
+                  <div className="col-9 col-sm-9 px-0 px-sm-2">
                     <span className="artifact-name">{ucFirst(artifact.name)}</span><br />
                     <span className="artifact-info mr-4">{artifact.dice}d{artifact.sides}</span>
                     <span className="artifact-info">{odds}% to hit</span>
@@ -85,8 +85,8 @@ class Status extends React.Component<any, any> {
             // otherwise, it's armor
             return (
               <div key={artifact.uuid} className="row">
-                <div className="icon col-sm-2"><img src={icon_url} width="48" height="48"/></div>
-                <div className="col-sm-10">
+                <div className="icon col-3 col-sm-2 px-0 px-sm-2"><img src={icon_url} width="48" height="48"/></div>
+                <div className="col-9 col-sm-10 px-0 px-sm-2">
                   <span className="artifact-name">{ucFirst(artifact.name)}</span><br />
                   <span className="artifact-info mr-4">AC: {artifact.armor_class}</span>
                   <span className="artifact-info">Penalty: {artifact.armor_penalty}%</span>

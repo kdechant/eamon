@@ -33,7 +33,7 @@ class CommandList extends React.Component<any, any> {
           <ModalBody>
             <div className="row">
               {keys.map((cmd, index) => (
-                <div className="command-list-item col-sm-3" key={index}>
+                <div className="command-list-item col-4 col-sm-3" key={index}>
                   {cmd}
                 </div>
               ))}
