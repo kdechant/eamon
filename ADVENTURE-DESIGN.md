@@ -202,11 +202,23 @@ To make testing and debugging easier, there are a few special commands you can e
 
 Teleport to a specific room:
 
-    GOTO {room number}
-    e.g., GOTO 1
+    XGOTO {room number}
+    e.g., XGOTO 1
+    
+Get an artifact from anywhere in the adventure:
+
+    XACCIO {artifact name}
+    e.g., XACCIO TROLLSFIRE
     
 Open the JavaScript debugger:
 
-    DEBUGGER
+    XDEBUGGER
     
-This lets you inspect the current game state using your browser's developer tools.
+This lets you inspect the current game state using your browser's developer tools. It only works if the developer panel is already open.
+
+## Porting Adventures from Classic Eamon or Eamon Deluxe
+
+Many of the adventures in Eamon Remastered are ports of adventures from these legacy systems. There are separate instructions for porting an adventure from each of these systems:
+
+[Porting Adventures from Eamon Deluxe 5.0](PORTING-EDX-ADVENTURES.md)
+[Porting Adventures from Classic Eamon](PORTING-CLASSIC-ADVENTURES.md)
