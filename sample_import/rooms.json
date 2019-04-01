@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "Entrance",
+    "description": "You are standing at the castle entrance.",
+    "n": 2,
+    "s": 0,
+    "e": 0,
+    "w": 4,
+    "u": 0,
+    "d": 0,
+    "light": 1
+  },
+  {
+    "id": 2,
+    "name": "Great Hall",
+    "description": "You are in the great hall of the castle.",
+    "n": 3,
+    "s": 1,
+    "e": 0,
+    "w": 0,
+    "u": 0,
+    "d": 5,
+    "light": 1
+  },
+  {
+    "id": 3,
+    "name": "Throne Room",
+    "description": "You are in the throne room. There is a large throne on the north wall. An archway leads west and there is a heavy locked door in the east wall.",
+    "n": 0,
+    "s": 2,
+    "e": 518,
+    "w": 6,
+    "u": 0,
+    "d": 0,
+    "light": 1
+  },
+  {
+    "id": 4,
+    "name": "Treasure Vault",
+    "description": "You are in a dark treasure vault. There are many valuables.",
+    "n": 3,
+    "s": 1,
+    "e": 0,
+    "w": 0,
+    "u": 0,
+    "d": 5,
+    "light": 1
+  },
+  {
+    "id": 5,
+    "name": "Dungeon",
+    "description": "You are in a dark dungeon. There are manacles on the walls.",
+    "n": 0,
+    "s": 0,
+    "e": 0,
+    "w": 0,
+    "u": 2,
+    "d": 0,
+    "light": 0
+  },
+  {
+    "id": 6,
+    "name": "Library",
+    "description": "You are in the castle library. There are lots of books around.",
+    "n": 0,
+    "s": 0,
+    "e": 3,
+    "w": 0,
+    "u": 0,
+    "d": 0,
+    "light": 1
+  },
+  {
+    "id": 7,
+    "name": "Armory",
+    "description": "You are in the armory inside the castle walls. There are weapon and armor racks all around. A door leads east back to the castle entrance.",
+    "n": 0,
+    "s": 0,
+    "e": 1,
+    "w": 0,
+    "u": 0,
+    "d": 5,
+    "light": 1
+  }
+]
