@@ -4,17 +4,34 @@ from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarkin
 
 
 class Command(BaseCommand):
-    help = 'Imports data from Classic Eamon adventures. Requires the data files to be parsed by a separate program.'
+    help = '''
+    Imports data from Classic Eamon adventures. Requires the data files to be parsed by a separate program
+    into four separate files: rooms.json, artifacts.json, effects.json, and monsters.json.
+    '''
 
     def add_arguments(self, parser):
-        parser.add_argument('folder', nargs=1, type=str)
-        parser.add_argument('adventure_id', nargs=1, type=int)
+        parser.add_argument('folder', nargs=1, type=str,
+                            help='The folder in your filesystem where the files are located')
+        parser.add_argument('adventure_id', nargs=1, type=int,
+                            help='The ID of the adventure')
+        parser.add_argument('-c', '--change-case', action='store_const', const=True,
+                            help='Provide this option to automatically change the names and descriptions'
+                                 ' into sentence case.')
 
     def handle(self, folder, adventure_id, *args, **options):
 
         folder = folder[0]
 
-        adventure = Adventure.objects.get(pk=adventure_id[0])
+        adventure = Adventure.objects.get_or_create(pk=adventure_id[0])[0]
+
+        if adventure.name == '':
+            print("Creating new adventure.")
+            adventure.name = input("What is the adventure name?")
+            adventure.slug = adventure.name.lower().replace(' ', '-')
+            adventure.active = 1
+            adventure.save()
+
+        print("Importing data for adventure #{}: {}".format(adventure.id, adventure.name))
 
         # Rooms
         with open(folder + '/rooms.json', 'r') as datafile:
@@ -22,12 +39,17 @@ class Command(BaseCommand):
             rooms = json.loads(data)
 
             connections = ['n', 's', 'e', 'w', 'u', 'd', 'ne', 'se', 'sw', 'nw']
+            required = ['id', 'name', 'description']
             for r in rooms:
                 # print(r)
+                if not validate('Room', required, r):
+                    continue
                 print('room #{}: {}'.format(r['id'], r['name']))
                 room = Room.objects.get_or_create(adventure=adventure, room_id=r['id'])[0]
                 room.name = r['name']
-                room.description = sentence_case(regex.sub(r'\s{2,}', " ", r['description']))
+                room.description = regex.sub(r'\s{2,}', " ", r['description'])
+                if options['change_case']:
+                    room.description = sentence_case(room.description)
                 room.is_dark = 0
                 if "light" in r and not r['light']:
                     room.is_dark = 1
@@ -47,11 +69,16 @@ class Command(BaseCommand):
         with open(folder + '/artifacts.json', 'r') as datafile:
             data = datafile.read()
             artifacts = json.loads(data)
+            required = ['id', 'name', 'description', 'value', 'type', 'weight', 'room_id']
             for ar in artifacts:
                 # print(ar)
-                name = sentence_case(ar['name'])
+                if not validate('Artifact', required, ar):
+                    continue
+                name = sentence_case(ar['name']) if options['change_case'] else ar['name']
                 print('artifact #{ar[id]}: {name}'.format(ar=ar, name=name))
-                desc = sentence_case(regex.sub(r'\s{2,}', " ", ar['description']))
+                desc = regex.sub(r'\s{2,}', " ", ar['description'])
+                if options['change_case']:
+                    desc = sentence_case(desc)
                 a = Artifact.objects.get_or_create(adventure=adventure, artifact_id=ar['id'])[0]
                 a.name = name
                 a.description = desc
@@ -70,7 +97,8 @@ class Command(BaseCommand):
                     if a.room_id < 0:
                         a.monster_id = abs(a.room_id) - 1
                         a.room_id = None
-                # the custom fields are below here (used by v6+ MAIN PGM)
+                # The custom fields are below here. Weapon stats (types 2 and 3) are present in all MAIN PGM versions,
+                # while the custom fields for other types are only used in MAIN PGM v6 and above.
                 field5 = int(ar['field5']) if 'field5' in ar else None
                 field6 = int(ar['field6']) if 'field6' in ar else None
                 field7 = int(ar['field7']) if 'field7' in ar else None
@@ -143,9 +171,14 @@ class Command(BaseCommand):
         if os.path.isfile(folder + '/effects.json'):
             with open(folder + '/effects.json', 'r') as datafile:
                 effects = json.loads(datafile.read())
+                required = ['id', 'text']
                 for ef in effects:
+                    if not validate('Effect', required, ef):
+                        continue
                     id = int(ef['id'])
-                    text = sentence_case(regex.sub(r'\s{2,}', " ", ef['text']))
+                    text = regex.sub(r'\s{2,}', " ", ef['text'])
+                    if options['change_case']:
+                        text = sentence_case(text)
                     print('effect #{}: {}'.format(id, text))
                     e = Effect.objects.get_or_create(adventure=adventure, effect_id=id)[0]
                     e.text = text
@@ -156,12 +189,17 @@ class Command(BaseCommand):
         # monsters
         with open(folder + '/monsters.json', 'r') as datafile:
             monsters = json.loads(datafile.read())
+            required = ['id', 'name', 'description', 'hardiness', 'agility', 'friendliness', 'courage', 'room_id']
             for m in monsters:
                 # print(m)
+                if not validate("Monster", required, m):
+                    continue
                 id = int(m['id'])
-                name = sentence_case(m['name'])
+                name = sentence_case(m['name']) if options['change_case'] else m['name']
                 print('monster #{}: {}'.format(id, name))
-                desc = sentence_case(regex.sub(r'\s{2,}', " ", m['description']))
+                desc = regex.sub(r'\s{2,}', " ", m['description'])
+                if options['change_case']:
+                    desc = sentence_case(desc)
                 mn = Monster.objects.get_or_create(adventure=adventure, monster_id=id)[0]
                 mn.name = name
                 mn.description = desc
@@ -182,7 +220,16 @@ class Command(BaseCommand):
                 # defense_odds and attack_odds, or whether they represent group size
                 mn.defense_bonus = int(m['defense_odds']) if 'defense_odds' in m else 0
                 mn.armor_class = int(m['armor_class']) if 'armor_class' in m else 0
-                mn.weapon_id = int(m['weapon_id']) if 'weapon_id' in m else 0
+                mn.weapon_id = 0
+                if 'weapon_id' in m:
+                    mn.weapon_id = m['weapon_id']
+                    if mn.weapon_id > 0:
+                        # move the weapon artifact into the monster's inventory, instead of room zero
+                        wpn = Artifact.objects.get(adventure_id=adventure.id, artifact_id=mn.weapon_id)
+                        if wpn:
+                            wpn.room_id = None
+                            wpn.monster_id = mn.monster_id
+                            wpn.save()
                 mn.attack_odds = int(m['offense_odds']) if 'offense_odds' in m else 50
                 mn.weapon_dice = int(m['weapon_dice']) if 'weapon_dice' in m else 0
                 mn.weapon_sides = int(m['weapon_sides']) if 'weapon_sides' in m else 0
@@ -200,3 +247,12 @@ def sentence_case(string):
         The string, now in sentence case
     """
     return '. '.join(i.capitalize() for i in string.split('. '))
+
+
+def validate(obj_type: str, required: list, obj: dict):
+    for fld in required:
+        if fld not in obj:
+            print("{} '{}' does not have a value for the field '{}'. Import failed!"
+                  .format(obj_type, obj['name'] if 'name' in obj else obj['text'][:25] if 'text' in obj else "???", fld))
+            return False
+    return True
