@@ -30,9 +30,9 @@ This procedure has only been tested with DOS 3.3 adventures and not with ProDOS 
 1. Run the "json" import script
     1. `pipenv shell` (if not already activated)
     1. `python manage.py import_json {folder} {adventure_id}`
-    1. e.g., `python manage.py import_json D:\eamon-clasic\213-demongate 213`
+    1. e.g., `python manage.py import_json D:\eamon-classic\213-demongate 213`
     1. If you want to convert the names and descriptions to sentence case, there is an additional `-c` option:
-    1. e.g., `python manage.py import_json D:\eamon-clasic\213-demongate 213 -c`
+    1. e.g., `python manage.py import_json D:\eamon-classic\213-demongate 213 -c`
     1. Otherwise, the text will be kept exactly as it is in the JSON files
     
 ## Inspecting and cleaning up your adventure data
