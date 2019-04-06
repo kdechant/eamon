@@ -6,12 +6,10 @@ Note: The instructions in this file have only been tested on Windows 10 and incl
 
 ## What you'll need
 
-* An Apple II emulator (e.g., AppleWin, or a Mac/Linux equivalent)
-  * Referred to as "the emulator" in the instructions below
-* The disk image of your adventure (usually in a format like .DSK)
-* The Dungeon Designer Disk 7.1 image
+* The emulator disk image of your adventure (usually in a format like .DSK)
 * A diff tool like WinMerge or Meld
 * A program that can read Apple II disk images and copy files from them (e.g., CiderPress)
+* A program that can extract the data from the Apple II files into JSON
 * Some familiarity with AppleSoft BASIC
 
 ## A note about DOS 3.3 vs. ProDOS
@@ -21,34 +19,21 @@ This procedure has only been tested with DOS 3.3 adventures and not with ProDOS 
 ## Porting the Adventure Data
 
 1. Determine the version of the MAIN PGM your adventure used (usually 4, 5, 6.0, 6.1, 6.2, 7.0, or 7.1)
-    1. You can find this information on the [EAG Adventure List page](http://www.eamonag.org/lists/list-master.htm)
-    1. It's often hard to tell the version just by looking at the MAIN PGM, especially for older adventures. Use the list above.  
-1. Load up the DDD 7.1 disk in your Apple II emulator
-    1. If DDD disk image is not bootable, boot from BootD3.dsk, then insert the DDD disk
-1. Run the DUNGEON LIST program, which has 2 versions:
-    1. "DUNGEON LIST 7.1" for adventures using the 7.x MAIN PGM
-    1. "DUNGEON LIST" for adventures using a 4, 5, or 6.x MAIN PGM
-    1. Note: if the DDD doesn't work correctly for adventures using the v4 or v5 MAIN PGM, try the disk image for DDD 6.2 instead.
-1. In emulator settings, make sure the Printer output file is configured
-    1. Note: These instructions are based on AppleWin. Most emulators should have some sort of "print to text file" option. Check your emulator's documentation for how to turn this on.
-    1. For the rest of the instructions, we'll assume you set your emulator to print to a file named "Printer.txt"
-    1. Remember the full path to the file. You'll need it later.
-1. In the DDD, choose Option 6, Toggle Printer - should be on - use slot 1
+    1. Adventures using MAIN PGM v4-6 had a file on the original disk named "EAMON.ROOM NAMES"
+    1. If not sure, you can find this information on the [EAG Adventure List page](http://www.eamonag.org/lists/list-master.htm)
 1. Create a folder on your computer to store all the adventure files.
     1. I name mine something like 'd:\eamon-classic\001-beginners-cave' but feel free to do as you wish
-1. List Rooms
-    1. If you set up printer correctly, no output will appear on screen. The screen may go blank while it's listing. Just wait a minute or two.
-        1. If this is slow, turn up the CPU speed on your emulator
-    1. Move/copy Printer.txt to the adventure folder and rename it "rooms.txt"
-    1. Delete the original Printer.txt if you copied instead of moving
-1. Repeat step 10 with artifacts, effects and monsters
-1. In a terminal or PowerShell, go to the root directory of the Eamon Remastered project
-1. Run the "classic" import script
-    1. There are a couple versions of this: `import_classic` (for 4.0-6.x adventures) and `import_classic7` (for 7.x adventures)
-    1. The v7.x version handles several new artifact types, embedded artifacts, etc. that were not present in MAIN PGM v.6x and older
+1. Use CiderPress (or other Apple II file export program) to export all the files from the disk image into the folder
+1. Run the JSON conversion program (not documented here, yet) to convert the data files to JSON
+    1. You should have four files: rooms.json, artifacts.json, effects.json, and monsters.json
+    1. If the adventure has no effects, you may omit effects.json. The import program will still work without it.
+1. Run the "json" import script
     1. `pipenv shell` (if not already activated)
-    1. `python manage.py import_classic {folder} {adventure_id}`
+    1. `python manage.py import_json {folder} {adventure_id}`
     1. e.g., `python manage.py import_classic D:\eamon-clasic\213-demongate 213`
+    1. If you want to convert the names and descriptions to sentence case, there is an additional `-c` option:
+    1. e.g., `python manage.py import_classic D:\eamon-clasic\213-demongate 213 -c`
+    1. Otherwise, the text will be kept exactly as it is in the JSON files
     
 ## Inspecting and cleaning up your adventure data
 
@@ -93,6 +78,9 @@ Once you have found a similar adventure, scan through the differences and locate
 ## Getting the intro text
 
 Many adventures have intro text which sets up the plot, explaining the plot, or how the player got to the starting point of the adventure. This text isn't stored in the MAIN PGM. It's usually stored in a different file on the disk image, one with the same name as the adventure. For example, the disk image for "The Temple of Ngurct" (#23) contains a file named "THE TEMPLE OF NGURCT" which has the intro text in it. If you use CiderPress (or equivalent) to export this file from the disk image to your computer, you can then copy and paste the text (though it will be all caps).
+
+Tip: I usually paste the intro text into Microsoft Word and use the "Change Case" feature to convert it to sentence case,
+ then I paste the text from Word into the database. 
 
 If exporting the files from the disk image isn't possible, you may be able to open the disk image in your emulator and print the file to a text file from there. Consult your emulator's documentation for how to configure the printer. 
 

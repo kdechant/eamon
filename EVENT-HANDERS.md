@@ -107,6 +107,65 @@ Sample code:
         game.monsters.get(2).moveToRoom(game.diceRoll(1,6));
       },
 
+## End of Turn
+
+There are three useful event handlers that happen at the end of each turn. These are used in many adventures and it
+helps to be familiar with them. They happen in this order:
+
+1. The monsters take their turns (attacking, picking up weapons, etc.)
+1. The `endTurn` event handler runs
+1. The room name or description is shown
+1. The `endTurn1` event handler runs
+1. The artifact and monster names or descriptions are shown
+1. The `endTurn2` event handler runs
+
+All these event handlers are called with no arguments. You may access the game variables like `game.player`, `game.rooms`,
+ `game.artifacts`, `game.monsters`, etc. from within your event handlers.
+
+Examples:
+
+### End Turn
+
+This happens after movement and monster actions, but before the room name or description is shown.
+
+      "endTurn": function() {
+        let game = Game.getInstance();
+    
+        // merlin appears, if he hasn't already appeared
+        if (game.player.room_id == 77 && !game.effects.get(11).seen) {
+          game.effects.print(11);
+          game.monsters.get(48).moveToRoom();
+        }
+      },
+
+### End Turn 1
+
+This happens after the room name or description is shown, but before the artifact and monster names or descriptions are shown. 
+
+      "endTurn1": function () {
+        let game = Game.getInstance();
+        
+        // the snowman melts when entering a room that's too warm
+        if (room_id == 37 && game.monsters.get(2).isHere()) {
+            game.history.write("Frosty just melted!", "special2");
+            game.monsters.get(2).destroy();
+        }
+      }
+
+### End Turn 2
+
+This happens at the very end of the turn, after all names and descriptions are shown.
+
+      "endTurn2": function() {
+        let game = Game.getInstance();
+    
+        // a sudden death trap that occurs if a certain monster is in the room
+        if (game.monsters.get(1).isHere()) {
+          game.effects.print(5);
+          game.die();
+        }
+      },
+
 ## Before Move and After Move
 
 This is a pair of event handlers which provides special logic around player movement.
