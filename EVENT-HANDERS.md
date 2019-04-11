@@ -32,7 +32,7 @@ An example of a simple event handler:
 
 What happened here?
 - The "say" event handler takes one parameter, the phrase being said
-- We can test for the phrase. In this case, we test if the player says "magic" while carrying artifact #5
+- We can test for the phrase. In this case, we test if the player says "magic" while artifact #5 is in the room or in the player's inventory
 - If true, we call `game.history.write()` to print a string to the output, using the "special" color (blue)
 - We also destroy artifact #5. This removes it from the player's inventory and the game.
 
@@ -84,10 +84,14 @@ Sample code:
 
 ## Game Start
 
-The "start" eveny handler runs once at the very beginning of the game. Use this to set up initial variables and move
+The "start" event handler runs once at the very beginning of the game. Use this to set up initial variables and move
 monsters and artifacts around before the player can interact with them. Any text or effects printed in this event 
 handler will appear at the very beginning of the game output. To change the pre-game intro text, use the "intro"
 event handler instead.
+
+Certain monster behaviors can also be set up in the 'start' event handler:
+* You can give a monster custom attack messages
+* You can give a monster the ability to cast standard spells like 'heal' or 'blast' 
 
 Parameters: none
 
@@ -96,15 +100,19 @@ Sample code:
       "start": function() {
         let game = Game.getInstance();
     
-        // declare some variables
+        // declare some variables, which can be used in other event handlers as game flags, counters, etc.
         game.data['my var'] = true;
         game.data['another var'] = 5;
         
-        // give monster #1 custom attack messages
+        // give monster #1 custom attack messages, which replace the usual "swings" or "slashes" messages
         game.monsters.get(1).combat_verbs = ["breathes fire at", "claws at", "swings its tail at"];
         
         // move monster #2 to a random room
         game.monsters.get(2).moveToRoom(game.diceRoll(1,6));
+        
+        // give monster #3 the ability to cast spells
+        game.monsters.get(3).spells = ['blast', 'heal'];  // The spells the monster can cast. Only 'blast' and 'heal' are implemented so far
+        game.monsters.get(3).spell_points = 3;  // The monster can cast 3 spells during the adventure, then no more. This does not recharge.
       },
 
 ## End of Turn
@@ -349,7 +357,7 @@ These common types of artifacts are handled by the core game and don't require a
 The "give" event is triggered when the player tries to give an artifact to an NPC. It runs just before the actual artifact transfer occurs.
  
 Parameters:
-- arg (string) - What the player typed after USE (e.g., "give *sword to alfred*" )
+- arg (string) - What the player typed after USE (e.g., "use *button*" )
 - artifact (Artifact) - What the player is trying to give
 - recipient (Monster) - To whom the player is trying to give it
 
@@ -366,6 +374,75 @@ Example:
       },
 
 ## Combat
+
+### Attack Monster
+
+The "attackMonster" event is triggered whenever a player attacks a monster. This can be used to prevent an attack, or
+to implement some other logic, like a monster that disappears in a puff of smoke when attacked.
+ 
+Note: This only happens when the player is attacking and does not happen when monsters attack each other.
+
+Parameters:
+- arg (string) - What the player typed after ATTACK (e.g., "attack *dragon*")
+- target (Monster) - the monster being attacked
+
+Return value:
+Return true if the attack should proceed, or false if the attack should be canceled.
+
+Example:
+
+      "attackMonster": function(arg: string, target: Monster) {
+        let game = Game.getInstance();
+        // bozworth the gnome disappears if attacked
+        if (target.id === 20) {
+          game.effects.print(21);
+          game.monsters.get(20).room_id = null;
+        }
+        return true;
+      },
+
+### Attack Artifact
+
+The "attackMonster" event is triggered whenever a player attacks an artifact. (Attacking an artifact is a way to smash
+open doors and chests in many adventures.) This can be used to prevent an attack, or to implement some other logic, like
+an artifact that zaps the player when attacked.
+
+Parameters:
+- arg (string) - What the player typed after ATTACK (e.g., "attack *iron door*")
+- target (Artifact) - the monster being attacked
+
+Return value:
+Return true if the attack should proceed, or false if the attack should be canceled.
+
+Example:
+
+      "attackArtifact": function(arg: string, target: Artifact) {
+        let game = Game.getInstance();
+        // can't attack or wear backpack
+        if (target.id === 13) {
+          game.history.write("You don't need to.");
+          return false;
+        }
+        return true;
+      },
+
+### Flee
+
+This event handler is called when the player tries to flee combat. It can be used to prevent fleeing, among other things.
+ This does not prevent other monsters from fleeing.
+
+Parameters: none
+
+Return value: true/false: true to allow the flee action to proceed, or false to prevent it
+
+      "flee": function() {
+        let game = Game.getInstance();
+        if (game.monsters.get(5).isHere() || game.monsters.get(12).isHere()) {
+          game.history.write("You are surrounded and cannot escape!", "emphasis");
+          return false;  // prevents fleeing
+        }
+        return true;  // player can flee as normal
+      },
 
 ### Fumble
 
@@ -384,14 +461,18 @@ Parameters:
 96-99 = weapon broken (with potential to hurt user)
 100 = weapon broken, hurts user with extra damage
 
+Return value:
+Return true if the fumble should proceed as normal, or false to prevent the fumble and leave the weapon in the monster's
+inventory. The monster will still lose their turn even if this event handler returns false.
+
 Example:
     
       "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
         let game = Game.getInstance();
         // cannot drop a cursed weapon
         if (attacker.id === 0 && attacker.weapon.name === 'hellsblade') {
-          game.history.write("-- fumble recovered!", "no-space");
-          return false;
+          game.history.write("-- fumble recovered!", "no-space");  // this fakes a normal fumble message
+          return false;  // no fumble actually happens, but the player still loses their turn
         }
         return true;  // otherwise, use regular fumble logic
       },
@@ -435,7 +516,7 @@ The "attackDamage" event handler is called when a monster attacks another monste
 Any output printed by this event handler will appear after the "Monster1 swings at Monster2" combat message.
 
 Parameters:
-- attacker (Monster) - The monster doing the attacking. This is the one who fumbled.
+- attacker (Monster) - The monster doing the attacking.
 - defender (Monster) - The monster being attacked
 - damage (number) - The normal damage done by the attacker, calculated by the combat routine, measured in hit points
 
@@ -451,6 +532,31 @@ Example:
           return damage * 2;
         }
         return true;  // this makes the game use the normal odds in situations not covered above.
+      },
+
+### After Attack Damage
+
+The "attackDamageAfter" event handler is called after damage is dealt to the target monster during combat. This is
+called after every hit, even if the damage was fully absorbed by the target's armor.
+
+Any output printed by this event handler will appear after the "Monster1 swings at Monster2" combat message.
+
+Parameters:
+- attacker (Monster) - The monster doing the attacking
+- defender (Monster) - The monster being attacked
+- damage_dealt (number) - The actual damage amount that was just taken by the defender. If the damage was absorbed by armor, this number could be zero.
+
+Example:
+
+      "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
+        let game = Game.getInstance();
+        // polaris gets hit by flamethrower
+        if (defender.id === 1 && attacker.weapon_id === 12) {
+          game.effects.print(2, 'special');
+          defender.reaction = Monster.RX_NEUTRAL;
+          game.artifacts.get(19).moveToRoom();
+        }
+        return true;
       },
 
 ### Armor Class
@@ -470,6 +576,34 @@ Example:
           // protection spell ac bonus
           monster.armor_class += 3;
         }
+      },
+
+### Death
+
+This is called when a monster dies. It can be used to print messages, cause some other effects to happen, or even to 
+ prevent the monster from dying at all.
+ 
+Parameters:
+- monster: the Monster object that is dying
+
+Return value:
+- Boolean - true to allow the death to continue; false to prevent it from happening
+
+Example: 
+
+      "death": function(monster: Monster): boolean {
+        let game = Game.getInstance();
+        if (monster.id === 8) {
+          // print an effect when a certain monster dies
+          game.effects.print(3);
+        }
+        // if you wanted to prevent a certain monster from dying, you could do something like this:
+        if (monster.id === 42) {
+            monster.damage = monster.hardiness - 1;  // gives 1 HP back
+            game.effects.print(1);
+            return false;  // the monster goes on living if this event handler returns false.
+        }
+        return true;  // return true, and the monster dies as normal.
       },
 
 ## Magic spells
@@ -511,7 +645,7 @@ Example:
         let game = Game.getInstance();
         // this monster disappears if blasted
         if (target.id === 20) {
-          game.effects.print(21);
+          game.effects.print(21);  // this effect contains the description of the monster disappearing
           game.monsters.get(20).room_id = null;
         }
         return true;
@@ -550,6 +684,8 @@ did nothing, and the monster will perform its normal combat actions (attacking, 
 
 Parameters:
 - monster (Monster) - The monster whose turn it is
+
+Note: Since this was written, there is now a better way to teach spells to an NPC. See the "Game Start" section above.
 
 Example:
 
