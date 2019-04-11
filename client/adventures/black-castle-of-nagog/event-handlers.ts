@@ -32,6 +32,7 @@ export var event_handlers = {
         }
       }
     }
+    return true;
   },
 
   "endTurn": function() {

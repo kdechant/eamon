@@ -29,6 +29,7 @@ export var event_handlers = {
       game.artifacts.get(2).destroy();
       game.artifacts.get(32).moveToRoom();
     }
+    return true;
   },
 
   "endTurn": function() {

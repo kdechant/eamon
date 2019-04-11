@@ -82,6 +82,7 @@ export var event_handlers = {
         monster.count = 0;
       }
     }
+    return true;
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {

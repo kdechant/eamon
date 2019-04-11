@@ -44,6 +44,7 @@ export var event_handlers = {
       game.effects.print(14);
       game.die();
     }
+    return true;
   },
 
   "beforeGet": function(arg, artifact) {

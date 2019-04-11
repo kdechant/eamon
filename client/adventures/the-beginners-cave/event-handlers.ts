@@ -61,12 +61,13 @@ export var event_handlers = {
     }
   },
 
-  "death": function(monster: Monster): void {
+  "death": function(monster: Monster): boolean {
     if (monster.id === 8) {
       // trollsfire goes out when pirate dies
       Game.getInstance().effects.print(3);
       put_out_trollsfire();
     }
+    return true;
   },
 
   "flee": function() {

@@ -933,37 +933,37 @@ export class Monster extends GameObject {
     // handle death
     if (this.damage >= this.hardiness) {
 
-      if (this.count > 1) {
-        // group monster - reduce count and drop weapon
-        this.group_monster_index = 0;
-        let w = this.getWeapon();
-        if (w) {
-          this.drop(w);
-          this.updateInventory();
-        }
-        this.damage = 0;
-        this.count--;
-        game.triggerEvent("death", this);
-      } else {
-        // single monster. drop weapon, etc.
-
-        for (let i of this.inventory) {
-          i.room_id = this.room_id;
-        }
-
-        if (this.dead_body_id) {
-          game.artifacts.get(this.dead_body_id).room_id = this.room_id;
-        }
-        this.status = Monster.STATUS_DEAD;
-        game.triggerEvent("death", this);
-        if (this.id === Monster.PLAYER) {
-          game.die(false);
-          if (attacker) {
-            game.logger.log('killed by', attacker.id);
+      if (game.triggerEvent("death", this)) {
+        if (this.count > 1) {
+          // group monster - reduce count and drop weapon
+          this.group_monster_index = 0;
+          let w = this.getWeapon();
+          if (w) {
+            this.drop(w);
+            this.updateInventory();
           }
-          this.room_id = null; // stops monsters from continuing to attack your dead body
+          this.damage = 0;
+          this.count--;
         } else {
-          this.room_id = null;
+          // single monster. drop weapon, etc.
+
+          for (let i of this.inventory) {
+            i.room_id = this.room_id;
+          }
+
+          if (this.dead_body_id) {
+            game.artifacts.get(this.dead_body_id).room_id = this.room_id;
+          }
+          this.status = Monster.STATUS_DEAD;
+          if (this.id === Monster.PLAYER) {
+            game.die(false);
+            if (attacker) {
+              game.logger.log('killed by', attacker.id);
+            }
+            this.room_id = null; // stops monsters from continuing to attack your dead body
+          } else {
+            this.room_id = null;
+          }
         }
       }
 

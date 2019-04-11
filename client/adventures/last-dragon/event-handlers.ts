@@ -46,6 +46,7 @@ export var event_handlers = {
     if (monster.id === 28) {
       game.data['ossogotrix dead'] = true;
     }
+    return true;
   },
 
   "endTurn": function() {

@@ -634,25 +634,25 @@ export default class Game {
   public die(show_health = true) {
     this.player.damage = this.player.hardiness;
     if (show_health) this.player.showHealth();
-    this.triggerEvent("death", this.player);
-    this.active = false;
-    this.died = true;
-    // saved games needs to be an array for *ngFor
-    this.saves = [];
-    for (let i = 1; i <= 10; i++) {
-      if (this.saved_games.hasOwnProperty(i)) {
-        this.saves.push(i + ": " + this.saved_games[i].description);
+    if (this.triggerEvent("death", this.player)) {
+      this.active = false;
+      this.died = true;
+      // saved games needs to be an array for rendering in browser
+      this.saves = [];
+      for (let i = 1; i <= 10; i++) {
+        if (this.saved_games.hasOwnProperty(i)) {
+          this.saves.push(i + ": " + this.saved_games[i].description);
+        }
+      }
+
+      this.logger.log('died', this.timer);
+      this.logger.log('died in room', this.player.room_id);
+      for (let s in this.statistics) {
+        if (s.indexOf('damage') !== -1) {
+          this.logger.log(s, this.statistics[s]);
+        }
       }
     }
-
-    this.logger.log('died', this.timer);
-    this.logger.log('died in room', this.player.room_id);
-    for (let s in this.statistics) {
-      if (s.indexOf('damage') !== -1) {
-        this.logger.log(s, this.statistics[s]);
-      }
-    }
-
   }
 
   /**

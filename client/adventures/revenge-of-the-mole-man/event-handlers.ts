@@ -25,6 +25,7 @@ export var event_handlers = {
     if (monster.id === 30) {
       game.artifacts.get(13).moveToRoom();
     }
+    return true;
   },
 
   "endTurn2": function() {
