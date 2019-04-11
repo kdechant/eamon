@@ -22,7 +22,7 @@ class History extends React.Component<any, any> {
       <div className="history" ref={el => { this.historyDiv = el; }}>
         {game.history.history.map((entry, index) => (
           <div className="history-entry" key={index}>
-            <p className="history-command">{entry.command}</p>
+            <h3 className="history-command">{entry.command}</h3>
             {entry.results.map((line, index) => {
               const className = "history-results " + line.type;
               return (

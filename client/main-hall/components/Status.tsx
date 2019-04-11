@@ -23,7 +23,7 @@ class Status extends React.Component<any, any> {
         <div className="status-widget player">
           <div className="container">
             <div className="row">
-              <p className="heading">You are the { this.props.player.getGenderLabel() } { this.props.player.name }</p>
+              <h3 className="heading">You are the { this.props.player.getGenderLabel() } { this.props.player.name }</h3>
             </div>
 
             <div className="stats row">
@@ -60,7 +60,7 @@ class Status extends React.Component<any, any> {
         </div>
 
       <div className="status-widget inventory">
-        <p className="heading">Inventory</p>
+        <h3 className="heading">Inventory</h3>
 
         <div className="container">
           {artifacts.length === 0 && <div className="row">No items</div>}

@@ -24,7 +24,7 @@ class Status extends React.Component<any, any> {
       <div className="status-widget player">
         <div className="container">
           <div className="row">
-            <p className="heading">{game.player.name}</p>
+            <h3 className="heading">{game.player.name}</h3>
           </div>
 
           <div className="stats row">
@@ -72,7 +72,8 @@ class Status extends React.Component<any, any> {
         {!inTheDark && (
           <div>
             {/* onClick={this.toggleDesc()} */}
-            <p className="room-name">Current Location: { game.rooms.current_room.name }</p>
+            <h3 className="heading">Current Location:</h3>
+            <p className="room-name">{ game.rooms.current_room.name }</p>
 
           {/*   [class.hidden]="hiddenDesc" */}
             <p className="room-description">{ game.rooms.current_room.description }</p>
@@ -91,7 +92,7 @@ class Status extends React.Component<any, any> {
       </div>
 
       <div className="status-widget monsters">
-        <p className="heading">Who's here:</p>
+        <h3 className="heading">Who's here:</h3>
         {!inTheDark && (
           <div className="monsters-list">
             {game.monsters.visible.map(monster => (
@@ -117,7 +118,7 @@ class Status extends React.Component<any, any> {
       </div>
 
       <div className="status-widget artifacts">
-        <p className="heading">What's around:</p>
+        <h3 className="heading">What's around:</h3>
         {!inTheDark && (
         <div className="artifacts-list">
           {game.artifacts.visible.map(artifact => (
@@ -138,7 +139,7 @@ class Status extends React.Component<any, any> {
       </div>
 
       <div className="status-widget inventory">
-        <p className="heading">You are carrying:</p>
+        <h3 className="heading">You are carrying:</h3>
         <div className="artifacts-list">
           {game.player.inventory.map(artifact => (
             <StatusArtifact key={artifact.id} game={this.props.game} artifact={artifact} />
