@@ -444,6 +444,39 @@ Return value: true/false: true to allow the flee action to proceed, or false to 
         return true;  // player can flee as normal
       },
 
+#### Forcing a Monster to Flee
+
+If you want to force a monster to immediately flee, in any situation, there is a special `Monster.flee()` method you
+ can call from within any event handler. This works whether or not there is active combat.
+  
+Here's an example event handler to demonstrate:
+
+    "say": function(phrase: string) {
+      let game = Game.getInstance();
+      // a scary word that makes a certain monster flee
+      let m = game.monsters.get(1);
+      if (phrase === 'booga booga' && m.isHere()) {
+        m.flee();
+      }
+    },
+
+#### Custom Fleeing Messages
+
+Normally, the game engine will show a message like "Sir Robin flees" whenever a monster flees. If you want to override
+ this message with a custom message, you can do that by adding special configuration into your adventure's "start" event
+ handler. For example, if you wanted to change the message to "Sir Robin runs away" you could do this:
+ 
+    "start": function(arg: string) {
+      let game = Game.getInstance();
+      game.flee_verbs = {'singular': 'runs away', 'plural': 'run away'};
+    },
+
+This setting affects all monsters, not just a specific one. 
+
+Note that the `flee_verbs` property is an object containing two variants of the verb. There is a 'singular' version
+ (used when one monster is fleeing) and a 'plural' version (used when a group of monsters flee). Because these words
+ are verbs, the singular version usually ends in 's' and the plural version doesn't end in 's'.
+
 ### Fumble
 
 This is called whenever a monster fumbles. You can change the fumble behavior, e.g., preventing cursed weapons from

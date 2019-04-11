@@ -142,6 +142,14 @@ export default class Game {
   skip_battle_actions: boolean = false;
 
   /**
+   * Verbs that are displayed when monsters flee
+   */
+  flee_verbs: any = {
+    'singular': "flees",
+    'plural': "flee"
+  };
+
+  /**
    * Messages that are displayed during the exit phase, after the sale of treasure
    */
   exit_message: string = "You successfully ride off into the sunset.";

@@ -537,16 +537,7 @@ export class Monster extends GameObject {
       if (!this.checkCourage()) {
         let exit = this.chooseRandomExit();
         if (exit) {
-          if (this.count > 1) {
-            game.history.write(this.count + " " + this.name + "s flee to the " + exit.getFriendlyDirection() + ".", "warning");
-          } else {
-            if (exit.direction == 'u' || exit.direction == 'd') {
-              game.history.write(this.name + " flees " + exit.getFriendlyDirection() + "ward.", "warning");
-            } else {
-              game.history.write(this.name + " flees to the " + exit.getFriendlyDirection() + ".", "warning");
-            }
-          }
-          this.moveToRoom(exit.room_to);
+          this.flee();
           return;
         }
         // if there are no valid exits, the monster has to stay and fight.
@@ -856,6 +847,25 @@ export class Monster extends GameObject {
     let roll = Game.getInstance().diceRoll(1, 20);
     let success = roll + Math.floor((this[stat] - 10) / 2) >= difficulty;
     return success;
+  }
+
+  /**
+   * Causes the monster to flee. Normally this only happens during combat, but you can call this specially
+   * to make the monster flee under other circumstances.
+   */
+  public flee() {
+    let game = Game.getInstance();
+    let exit = this.chooseRandomExit();
+    if (this.count > 1) {
+      game.history.write(`${this.count} ${this.name}s ${game.flee_verbs.plural} to the ${exit.getFriendlyDirection()}.`, "warning");
+    } else {
+      if (exit.direction == 'u' || exit.direction == 'd') {
+        game.history.write(`${this.name} ${game.flee_verbs.singular} ${exit.getFriendlyDirection()}ward.`, "warning");
+      } else {
+        game.history.write(`${this.name} ${game.flee_verbs.singular} to the ${exit.getFriendlyDirection()}.`, "warning");
+      }
+    }
+    this.moveToRoom(exit.room_to);
   }
 
   /**
