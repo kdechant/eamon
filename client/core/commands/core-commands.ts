@@ -680,7 +680,7 @@ export class EatCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
     let item = game.artifacts.getLocalByName(arg);
-    if (game.triggerEvent("eat", item) !== false) {
+    if (game.triggerEvent("eat", arg, item) !== false) {
       if (item) {
         if (item.type === Artifact.TYPE_EDIBLE) {
           if (item.quantity > 0) {
