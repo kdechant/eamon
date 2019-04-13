@@ -24,9 +24,35 @@ export default class MonsterRepository {
   index: number = 0;
 
   constructor(monster_data: Array<Object>) {
-    for (let m of monster_data) {
-      this.add(m);
-    }
+    monster_data.forEach((m: any) => {
+      let monster = this.add(m);
+
+      // unpack group monsters
+      if (m.count > 1) {
+        console.log(`Making ${m.count} ${m.name_plural}`);
+        for (let i=1; i <= m.count; i++) {
+          // Group monsters can have artifacts as weapons. In this case, the weapon ID in the database represents the
+          // first individual's weapon, with subsequent artifacts being used by subsequent individuals.
+          // e.g., if the weapon_id in the DB is 11, the first individual gets weapon #11, the second gets weapon #12, etc.
+          let weapon_id = m.weapon_id;
+          if (weapon_id > 0) {
+            m.weapon_id += i - 1;
+          }
+          // There is one object for each child monster, with an ID that's based on the group's id.
+          // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
+          let child = this.add({
+            ...m,
+            id: monster.id + 0.001 * i,
+            parent: monster,
+            count: 1,
+            weapon_id
+          });
+          console.log(`New ${m.name} #${child.id}`);
+          monster.children.push(child);
+        }
+      }
+    });
+    console.log(this.all);
   }
 
   /**
@@ -40,6 +66,11 @@ export default class MonsterRepository {
       monster_data.aliases = monster_data.synonyms.split(",");
     }
     m.init(monster_data);
+
+    // default plural name for group monsters. if you want a better name, enter it in the database.
+    if (m.count > 1 && !m.name_plural) {
+      m.name_plural = m.name + 's';
+    }
 
     // autonumber the ID if not provided
     if (m.id === undefined) {
@@ -172,7 +203,7 @@ export default class MonsterRepository {
    */
   getLocalByName(name: string) {
     // @ts-ignore
-    let mon = this.all.find(m => m.isHere() && m.match(name));
+    let mon = this.all.find(m => m.isHere() && !m.parent && m.match(name));
     return mon || null;
   }
 
@@ -202,7 +233,19 @@ export default class MonsterRepository {
    */
   public updateVisible() {
     let game = Game.getInstance();
-    let monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id);
+
+    // handle group monster containers
+    let group_monsters = this.all.filter(m => m.children.length);
+    group_monsters.forEach(m => {
+      let visible_children = m.children.filter(c => c.isHere());
+      if (visible_children.length) {
+        m.moveToRoom();
+      } else {
+        m.moveToRoom(999);
+      }
+    });
+
+    let monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id && !x.parent);
     game.in_battle = false;
     for (let m of monsters) {
       // check monster reactions

@@ -308,6 +308,8 @@ export default class Game {
     // for testing only! turns on debug mode.
     // this.data.bort = true;
 
+    this.skip_battle_actions = true; // prevent fighting when player first arrives in room 1
+
     // load the saved games
     if (this.demo) {
       // demo player with no saved games. just start the game.
@@ -418,7 +420,7 @@ export default class Game {
     // non-player monster actions
     if (this.in_battle && !this.skip_battle_actions) {
       for (let m of this.monsters.all) {
-        if (m.id !== Monster.PLAYER && m.isHere() && this.player.status === Monster.STATUS_ALIVE) {
+        if (m.id !== Monster.PLAYER && m.isHere() && this.player.status === Monster.STATUS_ALIVE && !m.parent) {
           m.doBattleActions();
         }
         this.artifacts.updateVisible();
@@ -471,14 +473,21 @@ export default class Game {
       this.history.write(""); // blank line for white space
       for (let m of this.monsters.visible) {
         if (!m.seen) {
-          m.showDescription();
+          if (!m.parent) {
+            m.showDescription();
+          }
           m.seen = true;
           this.triggerEvent("see_monster", m);
         } else {
-          if (m.count > 1) {
-            this.history.write(m.count + " " + m.name + "s are here.", "no-space");
+          if (!m.children) {
+            this.history.write(`${m.name} is here.`, "no-space");
           } else {
-            this.history.write(m.name + " is here.", "no-space");
+            let count_here = m.children.filter(m => m.isHere()).length;
+            if (count_here > 1) {
+              this.history.write(`${count_here} ${m.name_plural} are here.`, "no-space");
+            } else {
+              this.history.write(`${count_here} ${m.name} is here.`, "no-space");
+            }
           }
         }
       }
@@ -551,6 +560,9 @@ export default class Game {
    * @returns {any}
    */
   getRandomElement(array: any[]) {
+    if (array.length === 1) {
+      return array[0];
+    }
     let index = this.diceRoll(1, Math.floor(Math.random() * array.length)) - 1;
     return array[index];
   }

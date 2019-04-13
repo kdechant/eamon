@@ -244,6 +244,8 @@ class Monster(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='monsters')
     monster_id = models.IntegerField(default=0) # The in-game monster ID.
     name = models.CharField(max_length=255)
+    name_plural = models.CharField(max_length=255, null=True, blank=True,
+                                   help_text="The plural form of the name. Used only with group monsters.")
     synonyms = models.CharField(null=True, max_length=255, blank=True,
         help_text="Other names used for this monster. If the name is 'python' a synonym might be 'snake'")
     description = models.TextField(max_length=1000)
@@ -252,8 +254,6 @@ class Monster(models.Model):
     # The ID of an effect to display after the description, without a paragraph break.
     effect_inline = models.IntegerField(null=True, help_text="Used only with EDX conversions")
     count = models.IntegerField(default=1)
-    original_group_size = models.IntegerField(default=1,
-        help_text="no longer used")
     hardiness = models.IntegerField(default=12)
     agility = models.IntegerField(default=12)
     friendliness = models.CharField(max_length=10,choices=FRIENDLINESS)

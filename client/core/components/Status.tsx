@@ -168,13 +168,15 @@ class StatusMonster extends React.Component<any, any> {
     if (monster.reaction === Monster.RX_FRIEND) { className += "friendly" }
     if (monster.reaction === Monster.RX_HOSTILE) { className += "hostile" }
 
+    let visible_children = monster.children.filter(m => m.isHere());
+
     return (
       <div className={className}>
         {monster.count === 1 && (
         <span>{ monster.name }</span>
         )}
         {monster.count > 1 && (
-        <span>{ monster.count } { monster.name }s</span>
+        <span>{ visible_children.length } { visible_children.length > 1 ? monster.name_plural : monster.name }</span>
         )}{' '}
         - { monster.reaction }
       </div>
