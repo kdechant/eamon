@@ -1,0 +1,68 @@
+/**
+ * JSON data that mocks what would come from the back-end API
+ */
+export var ROOMS: Array<Object> = [
+  {
+    "id": 1,
+    "name": "Entrance",
+    "description": "You are standing at the castle entrance.",
+    "exits": [
+      {"direction": "n", "room_to": 2},
+      {"direction": "w", "room_to": 7},
+      {"direction": "s", "room_to": -999}
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Great Hall",
+    "description": "You are in the great hall of the castle.",
+    "exits": [
+      {"direction": "n", "room_to": 3},
+      {"direction": "s", "room_to": 1},
+      {"direction": "d", "room_to": 5}
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Throne Room",
+    "description": "You are in the throne room. There is a large throne on the north wall. An archway leads west and there is a heavy locked door in the east wall.",
+    "exits": [
+      {"direction": "e", "room_to": 4, "door_id": 18},
+      {"direction": "s", "room_to": 2},
+      {"direction": "w", "room_to": 6}
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Treasure Vault",
+    "description": "You are in a dark treasure vault. There are many valuables.",
+    "exits": [
+      {"direction": "w", "room_to": 3}
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Dungeon",
+    "description": "You are in a dark dungeon. There are manacles on the walls.",
+    "exits": [
+      {"direction": "u", "room_to": 2}
+    ],
+    "is_dark": true
+  },
+  {
+    "id": 6,
+    "name": "Library",
+    "description": "You are in the castle library. There are lots of books around.",
+    "exits": [
+      {"direction": "e", "room_to": 3}
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Armory",
+    "description": "You are in the armory inside the castle walls. There are weapon and armor racks all around. A door leads east back to the castle entrance.",
+    "exits": [
+      {"direction": "e", "room_to": 1}
+    ]
+  }
+];

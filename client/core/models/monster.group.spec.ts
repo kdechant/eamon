@@ -21,14 +21,17 @@ describe("Group monster handling", function() {
 
     expect(kobolds.children[0].id).toBe(5.0001);
     expect(kobolds.children[0].weapon_id).toBe(19);
+    expect(kobolds.children[0].getWeapon().id).toBe(19);
     expect(kobolds.children[0].room_id).toBe(7);
 
     expect(kobolds.children[1].id).toBe(5.0002);
     expect(kobolds.children[1].weapon_id).toBe(20);
+    expect(kobolds.children[1].getWeapon().id).toBe(20);
     expect(kobolds.children[1].room_id).toBe(7);
 
     expect(kobolds.children[2].id).toBe(5.0003);
     expect(kobolds.children[2].weapon_id).toBe(21);
+    expect(kobolds.children[2].getWeapon().id).toBe(21);
     expect(kobolds.children[2].room_id).toBe(7);
   });
 
@@ -61,6 +64,13 @@ describe("Group monster handling", function() {
     expect(kobolds.children[0].damage).toBe(1);
     expect(kobolds.children[1].damage).toBe(3);
     expect(kobolds.children[2].damage).toBe(2);
+
+    // also test the dead body handling
+    kobolds.dead_body_id = 23;
+    game.mock_random_numbers = [1];
+    kobolds.injure(100);
+    expect(kobolds.children[0].status).toBe(Monster.STATUS_DEAD);
+    expect(game.artifacts.get(23).room_id).toBe(7);
   });
 
   it ("should flee to different rooms", () => {
@@ -100,7 +110,28 @@ describe("Group monster handling", function() {
     }
   });
 
-  // hurt feelings
+  it ("should handle reaction checks", () => {
+    let prisoners = game.monsters.get(6);
+    prisoners.moveToRoom(1);
+    game.monsters.updateVisible();
+    expect(prisoners.reaction).toBe(Monster.RX_FRIEND);
+
+    // There are 2 checks for friendliness when monster's friendliness is random, so 2 mock random numbers.
+    // (see Monster.checkReaction)
+    game.mock_random_numbers = [99, 1];  // this will make it neutral
+    prisoners.hurtFeelings();
+    expect(prisoners.reaction).toBe(Monster.RX_NEUTRAL);
+    for (let c of prisoners.children) {
+      expect(c.reaction).toBe(Monster.RX_NEUTRAL);
+    }
+
+    game.mock_random_numbers = [99, 99];  // this will make it hostile
+    prisoners.hurtFeelings();
+    expect(prisoners.reaction).toBe(Monster.RX_HOSTILE);
+    for (let c of prisoners.children) {
+      expect(c.reaction).toBe(Monster.RX_HOSTILE);
+    }
+  });
 
   it("should know if it's able to attack (group monster)", function () {
     let kobolds = game.monsters.get(5);

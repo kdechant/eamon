@@ -29,7 +29,7 @@ beforeEach(() => {
 
 // TESTS
 
-it("should have working event handlers", () => {
+test("general event handlers", () => {
   expect(game.rooms.rooms.length).toBe(63);
   expect(game.artifacts.all.length).toBe(72 + 5); // includes player artifacts
   expect(game.effects.all.length).toBe(44);
@@ -60,9 +60,9 @@ it("should have working event handlers", () => {
   game.player.moveToRoom(game.monsters.get(6).room_id);
   game.command_parser.run("say gronk");
   expect(game.effects.get(43).seen).toBeTruthy();
-  game.artifacts.get(8).monster_id = Monster.PLAYER;
-  game.artifacts.get(8).room_id = null;
+  game.artifacts.get(8).moveToInventory();
   game.player.updateInventory();
+  // game.monsters.updateVisible();
   expect(game.monsters.get(6).isHere()).toBeTruthy();
   expect(game.player.hasArtifact(8)).toBeTruthy();
   game.command_parser.run("give lamp to mad piano player");
@@ -89,23 +89,30 @@ it("should have working event handlers", () => {
   expect(game.effects.get(14).seen).toBeTruthy();
   expect(game.data['locate active']).toBeTruthy();
 
-  // gerschter bar
-  game.player.moveToRoom(7);
-  game.command_parser.run('speed');
-  expect(game.effects.get(10).seen).toBeTruthy();
-  game.monsters.get(8).moveToRoom();
-  game.command_parser.run('attack ogre');
-  expect(game.effects.get(9).seen).toBeTruthy();
-  expect(game.player.room_id).toBe(63);
-  expect(game.monsters.get(8).room_id).toBe(63);
-
   // pink elephant
   game.player.moveToRoom(33);
   game.command_parser.run('drink rum');
   expect(game.effects.get(27).seen).toBeTruthy();
   expect(game.monsters.get(11).room_id).toBe(33);
 
-  // bac
+});
+
+test("gerschter bar", () => {
+
+  game.player.moveToRoom(7);
+  game.command_parser.run('speed');
+  expect(game.effects.get(10).seen).toBeTruthy();
+  game.monsters.get(8).moveToRoom();
+  // game.monsters.updateVisible();
+  game.command_parser.run('attack ogre');
+  expect(game.effects.get(9).seen).toBeTruthy();
+  expect(game.player.room_id).toBe(63);
+  expect(game.monsters.get(8).room_id).toBe(63);
+
+});
+
+test("blood alcohol content", () => {
+
   game.data['drinks'] = 18; // mock player has HD of 50
   game.data['sober counter'] = 100;
   game.triggerEvent('endTurn');
@@ -122,6 +129,10 @@ it("should have working event handlers", () => {
   game.data['drinks'] = 33;
   game.triggerEvent('endTurn');
   expect(game.history.getLastOutput().text).toBe(drunk_messages[4].text);
+
+});
+
+test("more event handlers", () => {
 
   // sealed door
   game.player.moveToRoom(52);
@@ -155,7 +166,7 @@ it("should have working event handlers", () => {
 
 });
 
-it("should handle the strange brew", () => {
+test("strange brew", () => {
   // distillery/strange brew
   game.player.moveToRoom(51);
   game.monsters.get(17).moveToRoom(50);  // get fire worm out of the way
@@ -187,7 +198,7 @@ it("should handle the strange brew", () => {
 
 });
 
-it("should handle the exit logic", () => {
+test("exit logic", () => {
 
   game.player.moveToRoom(2);
   game.artifacts.get(28).monster_id = Monster.PLAYER;

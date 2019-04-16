@@ -165,9 +165,10 @@ export var event_handlers = {
       game.history.write('Nasreen tells you, "Two of my commandos, Nevil and Norwood, are waiting in the camp to the south. We should join them as soon as you\'re ready."');
     }
     if (monster.id === 19) {
+      // dragon
       game.effects.print(10);
       monster.destroy();
-      game.monsters.get(20).count = Math.floor(game.monsters.get(20).count * 2 / 3);
+      game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length / 3));
     }
   },
 
@@ -216,7 +217,8 @@ export var event_handlers = {
         case 'console':
           if (!game.data['power off']) {
             game.history.write("You use the console to shut down power to parts of the complex. You hear startled shouts from outside, and the sounds of soldiers running.");
-            game.monsters.get(20).count = Math.floor(game.monsters.get(20).count * 2 / 3);
+            // reduce the size of the big guard group by 1/3
+            game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length / 3));
             game.data['power off'] = true;
           } else {
             game.history.write("You can't figure out how to turn off any more power feeds.");
@@ -240,9 +242,12 @@ export var event_handlers = {
             destroy_clonatorium();
           } else if (game.in_battle) {
             game.effects.print(16);
-            for (let m of game.monsters.all.filter(x => x.isHere() && x.reaction === Monster.RX_HOSTILE)) {
-              for (let i = 0; i < m.count; i++) {
-                m.injure(game.diceRoll(1, 20));
+            for (let m of game.monsters.visible.filter(x => x.reaction === Monster.RX_HOSTILE)) {
+              if (m.children.length) {
+                // group monsters take 1 hit per member
+                m.children.forEach(c => c.injure(game.diceRoll(1, 20), true));
+              } else {
+                m.injure(game.diceRoll(1, 20), true);
               }
             }
             artifact.destroy();
@@ -309,14 +314,13 @@ function destroy_clonatorium() {
   game.artifacts.get(35).moveToRoom();
   // chaos
   let guards = game.monsters.get(20);
-  if (guards.room_id === 28) {
-    guards.destroy();
-  }
+  guards.children.filter(g => g.room_id === 28).forEach(g => g.destroy());
+
   game.monsters.get(5).destroy();
   game.monsters.get(13).destroy();
   game.monsters.get(23).moveToRoom(27);
-  game.monsters.get(23).count = 1;
-  game.monsters.get(23).damage = 0;
+  // todo: the group of guards starts with 1 member, but can grow. Need to research this
+  game.monsters.get(23).spawnChild(); // turns it into a group monster with 1 member
   game.monsters.get(24).moveToRoom(20);
   game.monsters.get(25).moveToRoom(19);
   // any other remaining soldiers
@@ -324,7 +328,10 @@ function destroy_clonatorium() {
   for (let m = 7; m <= 12; m++) {
     if (game.monsters.get(m).room_id !== null) {
       let r = game.diceRoll(1, possible_rooms.length) - 1;
-      game.monsters.get(m).moveToRoom(possible_rooms[r]);
+      let monster = game.monsters.get(m);
+      monster.moveToRoom(possible_rooms[r]);
+      // also move all living members of group monsters
+      monster.children.filter(c => c.status === Monster.STATUS_ALIVE).forEach(c => c.moveToRoom(possible_rooms[r]));
     }
   }
 }

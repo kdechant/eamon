@@ -98,7 +98,7 @@ it("should have working event handlers", () => {
   game.player.moveToRoom(34);
   game.command_parser.run('free dragon');
   expect(game.monsters.get(19).room_id).toBeNull();
-  expect(game.monsters.get(20).count).toBe(13);
+  expect(game.monsters.get(20).children.length).toBe(14);
 
   // clone room stuff - needs work
   // game.player.moveToRoom(30);

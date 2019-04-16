@@ -135,43 +135,6 @@ describe("Monster", function() {
     expect(w.id).toBe(16);
   });
 
-  it("should get its current weapon (group monster)", () => {
-    let kobolds = game.monsters.get(5);
-    kobolds.group_monster_index = 0;
-    let w = kobolds.getWeapon();
-    expect(w.id).toBe(21);  // these go in descending order
-    kobolds.group_monster_index = 1;
-    w = kobolds.getWeapon();
-    expect(w.id).toBe(20);
-    kobolds.group_monster_index = 2;
-    w = kobolds.getWeapon();
-    expect(w.id).toBe(19);
-
-    // if one of the group drops a weapon
-    kobolds.drop(game.artifacts.get(20));
-    kobolds.group_monster_index = 0;
-    w = kobolds.getWeapon();
-    expect(w.id).toBe(21);
-    kobolds.group_monster_index = 1;
-    w = kobolds.getWeapon();
-    expect(w).toBeNull();
-    kobolds.group_monster_index = 2;
-    w = kobolds.getWeapon();
-    expect(w.id).toBe(19);
-
-    // if one of the group dies
-    kobolds.injure(100);
-    expect(kobolds.count).toBe(2);
-    expect(game.artifacts.get(21).room_id).toBe(kobolds.room_id); // should drop this weapon when one dies
-    kobolds.group_monster_index = 0;
-    w = kobolds.getWeapon();
-    expect(w).toBeNull();
-    kobolds.group_monster_index = 1;
-    w = kobolds.getWeapon();
-    expect(w.id).toBe(19);
-
-  });
-
   it("should calculate its armor factor", function() {
     expect(game.player.getArmorFactor()).toBe(2);
     // with lower ae
@@ -211,9 +174,10 @@ describe("Monster", function() {
 
     // player with battle axe (25% odds, 25% ability)
     expect(game.player.getToHitOdds(thief)).toBe(79);
-    // player with club (10% odds, 30% ability)
-    game.player.ready(game.artifacts.get(22));
-    expect(game.player.getToHitOdds(thief)).toBe(69);
+    // player with halberd (-10% odds, 10% ability)
+    game.artifacts.get(16).moveToInventory();
+    game.player.ready(game.artifacts.get(16));
+    expect(game.player.getToHitOdds(thief)).toBe(29);
   });
 
   it("should move", function() {

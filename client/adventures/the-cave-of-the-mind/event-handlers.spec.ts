@@ -32,7 +32,7 @@ it("should have working event handlers", () => {
   expect(game.rooms.rooms.length).toBe(31);
   expect(game.artifacts.all.length).toBe(51 + 5); // includes player artifacts
   expect(game.effects.all.length).toBe(15);
-  expect(game.monsters.all.length).toBe(14 + 1); // includes player
+  expect(game.monsters.all.length).toBe(22); // 14 base monsters + 7 group monster members + player
 
   expect(game.monsters.get(12).name).toBe("The Mind");
   expect(game.monsters.get(12).combat_verbs.length).toBe(3);

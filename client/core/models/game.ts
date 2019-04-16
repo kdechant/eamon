@@ -522,7 +522,7 @@ export default class Game {
     // setTimeout(() => { this.ready = true; }, 100);
 
     // the old version, saved for later.
-    setTimeout(() => { console.log('setting ready'); this.ready = true; this.refresh(); }, this.history.total_delay);
+    setTimeout(() => { this.ready = true; this.refresh(); }, this.history.total_delay);
 
   }
 
@@ -538,7 +538,7 @@ export default class Game {
     // for unit testing, it's possible to set mock random numbers
     if (this.mock_random_numbers.length) {
       let num = this.mock_random_numbers.shift();
-      console.log('using mock random number: ' + num);
+      // console.log('using mock random number: ' + num);
       return num;
     }
 

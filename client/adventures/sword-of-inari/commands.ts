@@ -77,7 +77,7 @@ custom_commands.push({
     let artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id === 9) {
-        // bell rope. "play x" is just a synonym for "use x"
+        // bell rope. "pull x" is just a synonym for "use x"
         artifact.use();
       } else {
         game.history.write("Nothing happens.");

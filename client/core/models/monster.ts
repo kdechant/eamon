@@ -130,7 +130,7 @@ export class Monster extends GameObject {
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
-    // console.log(`monster ${this.id} moving to room ${room_id}`);
+    console.log(`monster ${this.id} moving to room ${room_id}`);
     let from_room_id = this.room_id;
     this.room_id = room_id || Game.getInstance().player.room_id;
 
@@ -949,7 +949,7 @@ export class Monster extends GameObject {
    */
   public flee(show_message: boolean = true) {
     let game = Game.getInstance();
-    console.log(`monster #${this.id} is fleeing`, show_message);
+    // console.log(`monster #${this.id} is fleeing`, show_message);
 
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
@@ -1042,14 +1042,12 @@ export class Monster extends GameObject {
     let game = Game.getInstance();
 
     // when attacking a group monster, we actually attack a random one of the children
-    console.log(`injuring monster #${this.id}`);
     if (this.children.length) {
       let visible_children = this.children.filter(c => c.isHere());
       if (!visible_children.length) {
         return;  // currently impossible to injure members in a different room
       }
       let child = game.getRandomElement(visible_children);
-      console.log(`trying to injure member ${child.id}`);
       return child.injure(damage, ignore_armor, attacker);
     }
 
@@ -1081,7 +1079,8 @@ export class Monster extends GameObject {
 
         // if a member of a group, update or remove the parent
         if (this.parent) {
-          this.parent.room_id = this.parent.children.find(c => c.status === Monster.STATUS_ALIVE).room_id;
+          let living_child = this.parent.children.find(c => c.status === Monster.STATUS_ALIVE);
+          this.parent.room_id = living_child ? living_child.room_id : null;
           // let members = this.parent.children.filter(c => c.status === Monster.STATUS_ALIVE);
           if (this.parent.dead_body_id) {
             // whenever any group member dies, place the dead body in the room. (this same dead body artifact will
@@ -1100,6 +1099,7 @@ export class Monster extends GameObject {
           }
         }
         this.room_id = null;
+        game.monsters.updateVisible();
       }
 
     }
