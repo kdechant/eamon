@@ -757,6 +757,108 @@ Example:
         }
       },
 
+# Handling group monsters
+
+It's possible to create a group of monsters with the same properties. They will always be displayed as a group in the
+ game, though the members are independent entities who can fight or flee as individuals.
+ 
+To create a group monster, enter the following when creating or editing the monster in the admin panel:
+
+* "Count" field greater than 1
+* Enter a custom plural name in the "Name plural" field
+  * This is optional; if you leave this blank, the plural name will be created by adding an "s" to the regular name. This may not always be what you want.
+* If the monsters should have weapons (other than natural weapons), you'll need to do the following:
+  * Create as many artifacts as there are group members. The artifact IDs must be in a contiguous numerical series, e.g., #11, #12, #13...
+  * Set the group monster's weapon ID to the first one
+  * This will assign the weapons to the individual group members in sequential order. So, if the group monster's weapon ID is 11, the first member will have artifact ID #11 as its weapon, the second member will have artifact 12, and so on.
+
+## How it works
+
+Group monsters are represented by two types of objects: a virtual "parent" monster object representing the group, and an array
+ of "children." Children are represented as separate monster objects with an ID like '5.001' or '5.002'. (Where 5 is the 
+ id of the group.)
+
+Within an event handler, you may interact with the children of a group in a forEach() loop, like this:
+
+    let group_monster = game.monsters.get(5);
+    group_monster.children.forEach(c => c.hardiness++);
+
+## Limitations
+
+The group monster routine can work for groups up to 9,999 members. However, performance problems are likely if the group
+ size exceeds 500 members.
+
+All monsters in the group will have the same reaction to the player; e.g., if one is friendly, they're all friendly.
+
+## Attacking
+
+Group members attack as separate individuals. Only 5 members can attack in any given turn. (Otherwise, each turn could take a long time.)
+
+## Targeting
+
+During combat, when a monster chooses to target a group, it actually targets a random member of the group.
+
+Similarly, using `monster.injure()` (e.g., with traps or mass-effect weapons like bombs and grenades), the damage will
+ be done to a random member of the group.
+
+## Fleeing
+
+Any number of group members can flee in one round. They may all flee in different directions. If multiple members end
+ up in the same room, they will appear as part of the group when next encountered. 
+
+In an event handler, you can force the entire group to flee:
+
+    let group_monster = game.monsters.get(5);
+    group_monster.flee();
+    
+All the members of the group who are in the current room will flee. This does not affect other members who are currently
+ located in different rooms.
+
+## Pursuit
+
+When the player flees, the group members in the current room will either pursue the player as a group, or stay put as a group.
+
+## Dead bodies
+
+If the group monster has a dead body id, that artifact will be placed on the ground in the room where any member dies.
+ If some members flee, and they later die in a different room, the same artifact will be reused and moved to the new room.
+
+This behavior may change in the future.
+
+## Moving a group to a different room
+
+In an event handler, using `monster.moveToRoom(5)` will move all living members of the group to the target room.
+
+To move just one member, or just a few members, you can do something like the following:
+
+    // move one member
+    monster.children[0].moveToRoom(5);
+    // move the first 10 members
+    monster.children.slice(0, 10).forEach(c => c.moveToRoom(5));
+
+## Adding members to a group
+
+You can add on additional members to the group, using the `spawnChild()` method:
+
+    let group_monster = game.monsters.get(5);
+    group_monster.spawnChild();
+
+The new member will appear in the same room where the virtual "parent" monster is currently located. It will have the
+ same stats as the parent. New members will always have natural weapons, even if the other members are using artifacts
+ as weapons.
+
+## Removing members from a group
+
+You can reduce the size of a group by calling the `removeChildren()` method:
+
+    let group_monster = game.monsters.get(5);
+    group_monster.removeChildren(3);
+    
+If the number you pass is equal to or larger than the current size of the group, the entire group monster will be removed from the game.
+
+Note: This doesn't take into account where the members are. If they are scattered among multiple rooms, it won't be
+ predictable which ones get removed.
+
 # Requesting player input
 
 In some event handlers, you may need to ask for additional input from the player before proceeding. For this purpose, the game engine contains a "modal" object which displays a prompt.

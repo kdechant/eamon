@@ -82,6 +82,20 @@
     "combat_code": 0,
     "attack_odds": 30,
     "weapon_id": 19,
-    "armor_class": 1
+    "armor_class": 0
+  },
+  {
+    "id": 6,
+    "name": "prisoner",
+    "description": "You see five prisoners.",
+    "room_id": null,
+    "count": 5,
+    "hardiness": 10,
+    "agility": 10,
+    "courage": 100,
+    "friendliness": "friend",
+    "combat_code": 0,
+    "weapon_id": 0,
+    "armor_class": 0
   }
 ]

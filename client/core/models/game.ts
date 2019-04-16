@@ -479,7 +479,7 @@ export default class Game {
           m.seen = true;
           this.triggerEvent("see_monster", m);
         } else {
-          if (!m.children) {
+          if (!m.children.length) {
             this.history.write(`${m.name} is here.`, "no-space");
           } else {
             let count_here = m.children.filter(m => m.isHere()).length;
@@ -536,7 +536,11 @@ export default class Game {
   diceRoll(dice, sides) {
 
     // for unit testing, it's possible to set mock random numbers
-    if (this.mock_random_numbers.length) return this.mock_random_numbers.shift();
+    if (this.mock_random_numbers.length) {
+      let num = this.mock_random_numbers.shift();
+      console.log('using mock random number: ' + num);
+      return num;
+    }
 
     if (sides === 0) {
       return 0;
@@ -563,7 +567,8 @@ export default class Game {
     if (array.length === 1) {
       return array[0];
     }
-    let index = this.diceRoll(1, Math.floor(Math.random() * array.length)) - 1;
+    let index = this.diceRoll(1, array.length) - 1;
+    if (typeof(array[index]) === 'undefined') { console.log('oops: getRandomElement rolled index: ', index, array); }
     return array[index];
   }
 

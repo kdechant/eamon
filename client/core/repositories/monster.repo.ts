@@ -29,30 +29,31 @@ export default class MonsterRepository {
 
       // unpack group monsters
       if (m.count > 1) {
-        console.log(`Making ${m.count} ${m.name_plural}`);
+        // console.log(`Making ${m.count} ${monster.name_plural}`);
         for (let i=1; i <= m.count; i++) {
           // Group monsters can have artifacts as weapons. In this case, the weapon ID in the database represents the
           // first individual's weapon, with subsequent artifacts being used by subsequent individuals.
           // e.g., if the weapon_id in the DB is 11, the first individual gets weapon #11, the second gets weapon #12, etc.
           let weapon_id = m.weapon_id;
           if (weapon_id > 0) {
-            m.weapon_id += i - 1;
+            weapon_id += i - 1;
           }
-          // There is one object for each child monster, with an ID that's based on the group's id.
+          // console.log(`${m.name} ${i} gets weapon ${weapon_id}`);
+          // There is one Monster object for each child monster, with an ID that's based on the group's id.
           // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
           let child = this.add({
             ...m,
-            id: monster.id + 0.001 * i,
+            id: monster.id + 0.0001 * i,   // this can handle groups up to 9999 members
             parent: monster,
+            description: "",  // just to save memory
             count: 1,
             weapon_id
           });
-          console.log(`New ${m.name} #${child.id}`);
+          // console.log(`New ${m.name} #${child.id}`);
           monster.children.push(child);
         }
       }
     });
-    console.log(this.all);
   }
 
   /**
@@ -60,6 +61,8 @@ export default class MonsterRepository {
    * @param {Object} monster_data
    */
   public add(monster_data) {
+    let game = Game.getInstance();
+
     let m = new Monster();
     // "synonyms" in the back end are called "aliases" here
     if (monster_data.synonyms) {
@@ -85,15 +88,22 @@ export default class MonsterRepository {
     m.original_group_size = m.count;
 
     this.all.push(m);
+
+    // move the weapon into the monster's inventory
+    if (m.weapon_id && m.weapon_id > 0) {
+      game.artifacts.get(m.weapon_id).monster_id = m.id;
+      game.artifacts.get(m.weapon_id).room_id = null;
+    }
+
     m.updateInventory();
-    if (m.count === 1) {
+    if (m.count === 1 && !m.parent) {
       m.readyBestWeapon(); // this initializes the monster.weapon object, to show the correct combat verbs
       // group monsters skip this step. they must use the exact weapon ID in the database
     }
 
     // add the dead body artifact
-    if (Game.getInstance().dead_body_id) {
-      m.dead_body_id = Game.getInstance().dead_body_id + m.id - 1;
+    if (game.dead_body_id) {
+      m.dead_body_id = game.dead_body_id + Math.floor(m.id) - 1;
     } else {
       // let body = {
       //   "name": "Dead " + m.name,
@@ -108,7 +118,7 @@ export default class MonsterRepository {
     }
 
     // update the autonumber index
-    if (m.id > this.index) {
+    if (Math.floor(m.id) === m.id && m.id > this.index) {
       this.index = m.id;
     }
     return m;
@@ -239,9 +249,7 @@ export default class MonsterRepository {
     group_monsters.forEach(m => {
       let visible_children = m.children.filter(c => c.isHere());
       if (visible_children.length) {
-        m.moveToRoom();
-      } else {
-        m.moveToRoom(999);
+        m.room_id = game.player.room_id;  // move virtual group pointer
       }
     });
 

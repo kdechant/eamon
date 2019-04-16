@@ -117,6 +117,40 @@ export class Room extends Loadable {
   }
 
   /**
+   * Returns the open exits from the room (used, e.g., when fleeing).
+   * Excludes any locked/hidden exits and the game exit.
+   */
+  public getGoodExits(): RoomExit[] {
+    return this.exits.filter(x => x.room_to !== RoomExit.EXIT && x.room_to > 0 && x.isOpen());
+  }
+
+  /**
+   * Determines whether the room has a good exit (used, e.g., when fleeing)
+   * Excludes any locked/hidden exits and the game exit.
+   */
+  public hasGoodExits(): boolean {
+    const exits = this.getGoodExits();
+    return exits.length > 0;
+  }
+
+  /**
+   * Monster flees out a random exit
+   */
+  public chooseRandomExit(): RoomExit {
+    let game = Game.getInstance();
+
+    // choose a random exit
+    let good_exits: RoomExit[] = this.getGoodExits();
+    if (good_exits.length === 0) {
+      return null;
+    } else {
+      let exit = good_exits[game.diceRoll(1, good_exits.length) - 1];
+      return exit;
+      // return good_exits[game.diceRoll(1, good_exits.length) - 1];
+    }
+  }
+
+  /**
    * Creates a new exit from the room in a given direction
    */
   public addExit(exit: RoomExit): void {

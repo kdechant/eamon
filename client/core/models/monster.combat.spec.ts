@@ -64,54 +64,6 @@ describe("Monster Combat", function() {
 
   });
 
-  it("should know if it's able to attack (group monster)", function () {
-    let kobolds = game.monsters.get(5);
-    // expect(kobolds.weapon_id).toBe(19, "FAIL: monster data is dirty");
-    // expect(kobolds.hasArtifact(19)).toBeTruthy("FAIL: artifact data is dirty");
-    // expect(kobolds.hasArtifact(20)).toBeTruthy("FAIL: artifact data is dirty");
-    // expect(kobolds.hasArtifact(21)).toBeTruthy("FAIL: artifact data is dirty");
-
-    // one of them should not have a weapon
-    kobolds.drop(game.artifacts.get(20));
-
-    // combat code 1 (attacks if it has a weapon, special attack message)
-    kobolds.combat_code = Monster.COMBAT_CODE_SPECIAL;
-    kobolds.group_monster_index = 0;
-    expect(kobolds.canAttack()).toBe(true);
-    kobolds.group_monster_index = 1;
-    expect(kobolds.canAttack()).toBe(false);  // this one dropped his weapon
-    kobolds.group_monster_index = 2;
-    expect(kobolds.canAttack()).toBe(true);
-
-    // combat code 0 (attacks if it has a weapon, or if it was set to use natural weapons in the database)
-    kobolds.combat_code = Monster.COMBAT_CODE_NORMAL;
-    kobolds.group_monster_index = 0;
-    expect(kobolds.canAttack()).toBe(true);
-    kobolds.group_monster_index = 1;
-    expect(kobolds.canAttack()).toBe(false);  // this one dropped his weapon
-    kobolds.group_monster_index = 2;
-    expect(kobolds.canAttack()).toBe(true);
-
-    // combat code -1 (weapon or natural weapons if no weapon is available)
-    kobolds.combat_code = Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE;
-    kobolds.group_monster_index = 0;
-    expect(kobolds.canAttack()).toBe(true);
-    kobolds.group_monster_index = 1;
-    expect(kobolds.canAttack()).toBe(true);  // this one dropped his weapon. with this combat code, he attacks anyway.
-    kobolds.group_monster_index = 2;
-    expect(kobolds.canAttack()).toBe(true);
-
-    // combat code -2 (never fights)
-    kobolds.combat_code = Monster.COMBAT_CODE_NEVER_FIGHT;
-    kobolds.group_monster_index = 0;
-    expect(kobolds.canAttack()).toBe(false);
-    kobolds.group_monster_index = 1;
-    expect(kobolds.canAttack()).toBe(false);  // this one dropped his weapon
-    kobolds.group_monster_index = 2;
-    expect(kobolds.canAttack()).toBe(false);
-
-  });
-
   it("should swing and miss", function () {
     let alfred = game.monsters.get(3);  // has a weapon
     let thief = game.monsters.get(4);   // no weapon

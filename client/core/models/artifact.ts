@@ -395,7 +395,7 @@ export class Artifact extends GameObject {
     if (this.type === Artifact.TYPE_BOUND_MONSTER) {
       // put the freed monster into the room
       let monster = game.monsters.get(this.monster_id);
-      monster.room_id = game.rooms.current_room.id;
+      monster.moveToRoom(this.room_id);
       // remove the "bound monster" artifact
       this.destroy();
     }

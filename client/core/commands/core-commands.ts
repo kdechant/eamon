@@ -331,7 +331,10 @@ export class GetCommand implements BaseCommand {
           if (container.monster_id === Monster.PLAYER) {
             throw new CommandException("You're already carrying it. But you could REMOVE it from the " + container.name + ".");
           } else if (container.room_id === game.player.room_id && !container.embedded) {
-            game.command_parser.run('remove ' + arg + ' from ' + container.name, false);
+            if (game.triggerEvent("beforeGet", arg, art)) {
+              game.command_parser.run('remove ' + arg + ' from ' + container.name, false);
+              game.triggerEvent("afterGet", arg, art);
+            }
             return;
           }
         }
@@ -622,7 +625,7 @@ export class FleeCommand implements BaseCommand {
     }
 
     if (game.triggerEvent("flee") !== false) {
-      let exit = game.player.chooseRandomExit();
+      let exit = game.rooms.current_room.chooseRandomExit();
       if (!exit) {
         throw new CommandException("There is nowhere to flee to!");
       }

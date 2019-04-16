@@ -254,5 +254,15 @@
     "weapon_odds": 0,
     "dice": 1,
     "sides": 1
+  },
+  {
+    "id": 22,
+    "name": "chained prisoners",
+    "description": "There are some prisoners chained to the wall.",
+    "type": 10,
+    "room_id": 5,
+    "monster_id": 6,
+    "weight": -999,
+    "value": 0
   }
 ]
