@@ -98,6 +98,7 @@ You should have the following files:
     static/
         adventures/
             your-adventure/
+                index.ts
                 commands.ts
                 event-handlers.ts
 
@@ -117,13 +118,14 @@ The following types of effects are built into the game and do not require custom
 * Edible and drinkable items, including healing potions
 * Doors without keys
 * Locked doors with keys
-* Disguised monsters, such as the chest mimic in the Beginner's Cave
-* Bound monsters, such as prisoners, who need to be freed
-* Weapons
+* Weapons, both normal and magic
 * Armor and other wearable items
     *  Any artifact of the "wearable" type can be worn by the player, but you will need to add custom event handlers if these should have any effect beyond changing the player's armor class
 * Light sources, including ones that can run our of fuel
 * Containers like chests, bags, and backpacks
+* Disguised monsters, such as the chest mimic in the Beginner's Cave
+* Bound monsters, such as prisoners, who need to be freed
+* Monsters that live inside containers, which appear as soon as you open the container (e.g., a vampire in a coffin)
 
 ### Event handler examples
 

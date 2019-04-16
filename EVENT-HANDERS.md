@@ -22,13 +22,13 @@ object as an parameter, while a "say" event handler might accept the word being 
 
 An example of a simple event handler:
     
-      "say": function(phrase: string) {
-        let game = Game.getInstance();
-        if (phrase === 'magic' && game.artifacts.get(5).isHere()) {
-          game.history.write("POOF!!", "special");
-          game.artifacts.get(5).destroy();
-        }
-      },
+    "say": function(phrase: string) {
+      let game = Game.getInstance();
+      if (phrase === 'magic' && game.artifacts.get(5).isHere()) {
+        game.history.write("POOF!!", "special");
+        game.artifacts.get(5).destroy();
+      }
+    },
 
 What happened here?
 - The "say" event handler takes one parameter, the phrase being said
@@ -232,14 +232,65 @@ Sample:
         }
       },
 
-## Open and Close
+## Open
 
-These effects are common with doors and containers.
+There are two event handlers that run when the player tries to open a door, gate, or container.
+ 
+### beforeOpen
 
-### Open
+This event handler runs just before the player opens a door/gate or container. It can be used to prevent the artifact
+ from being opened.
+ 
+Parameters:
 
+Return value:
+true - allows the door/gate or container to open
+false - stops the door/gate or container from being opened
 
-### Close
+Example:
+    
+    "beforeOpen": function(arg: string, artifact: Artifact, command: OpenCommand) {
+      let game = Game.getInstance();
+      if (artifact !== null) {
+        if (artifact.id === 23) {
+          artifact.reveal();  // this artifact is embedded; trying to open it reveals it.
+          game.history.write("It's stuck! You will need to find a way to pry it open.");
+          return false;
+        }
+      }
+     return true;
+    },
+
+### Regular "open"
+
+This happens after the door, gate, or container is opened. It can also be used to allow the player to try to open something
+ that isn't an actual artifact object. It works a little differently from the other event handlers, so take note of the syntax.
+
+Parameters:
+- arg (string) - What the player typed after OPEN (e.g., "close *chest*" or "close *window*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
+- command (OpenCommand) - A reference to the OPEN Command object. Whenever something happens in this event handler, you
+ can set `command.opened_something = true` and it will suppress the normal "I don't see an X here" type messages.
+
+Return value: none. 
+
+Example:
+
+    "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+      let game = Game.getInstance();
+      if (artifact !== null) {
+        if (artifact.id === 23) {
+          // the grain sack is a death trap
+          command.opened_something = true;
+          game.effects.print(3, "danger");
+          game.die();
+        }
+      }
+    },
+
+Note: this event handler may change in the future.
+
+## Close
 
 This is called when the player tries to close an artifact like a container or door. It can be used to handle situations
 where the player shouldn't be able to close something (like a door that's been broken open), or when a player should
@@ -264,7 +315,323 @@ Example:
 
 A note on standard doors/gates and containers like chests or bags:
 
-These common types of artifacts are handled by the core game and don't require a custom event handler. Set the artifact type to "Door/Gate" (8) or "Container" (4). Optionally give it a "key_id" to lock it using that artifact ID, or put items into a container by setting their "container_id" property to the ID of the container artifact.
+These common types of artifacts are handled by the core game logic and don't require a custom event handler. Set the artifact type to "Door/Gate" (8) or "Container" (4). Optionally give it a "key_id" to lock it using that artifact ID, or put items into a container by setting their "container_id" property to the ID of the container artifact.
+
+## Get
+
+There are several event handlers which trigger when the player tries to get an artifact.
+
+### Before Get
+
+This is called as the player tries to pick something up. This applies to artifacts that are on the ground. For artifacts
+ in containers, the `beforeRemoveFromContainer` event handler will also be called.
+ 
+Parameters:
+* arg (string) - What the player typed after GET (e.g., "get *magic sword*" )
+* artifact (Artifact) - If the player's text matched the name of an artifact in the room, or in an open container in the room, this will contain a reference to the Artifact object.
+
+Return Value:
+Return true to allow the "get" operation to continue, or false to prevent the player from getting the artifact.
+
+Example:
+
+    "beforeGet": function(arg, artifact) {
+      let game = Game.getInstance();
+      // special message when the player tries to pick up the throne
+      if (artifact && artifact.id === 1) {
+        game.history.write("There's no way you'll ever be able to carry the throne!");
+        return false;
+      }
+      return true;
+    },
+
+### After Get
+
+This is called after the player has already gotten the artifact. It can be used to create special effects, or do things
+ that require the artifact to already be in the player's inventory. To prevent the player from getting the artifact at
+ all, use `beforeGet` instead.
+
+Parameters:
+* arg (string) - What the player typed after GET (e.g., "get *magic sword*" )
+* artifact (Artifact) - If the player's text matched the name of an artifact in the room, or in an open container in the room, this will contain a reference to the Artifact object.
+
+Example:
+
+    "afterGet": function(arg, artifact) {
+      let game = Game.getInstance();
+      // special message when the player finds the treasure
+      if (artifact && artifact.id == 3) {
+        game.history.write("The magic sword is so shiny you decided to ready it.");
+        game.player.ready(artifact);
+      }
+      return true;
+    },
+
+### specialGet
+
+This is used to create custom logic when the player tries to get something that isn't a full-fledged artifact object.
+ For example, there might be an item described in a room description that doesn't have a real artifact, or that describes
+ an artifact that isn't actually in the current room.
+ 
+For example: in the adventure "Sword of Inari", the player can see the sword from a distance, but can't interact with it
+ because it isn't actually in the current room. If the player does try to get it in this situation, the game shows some
+ specific messages.
+
+Note: This is called *before* the `beforeGet` and `afterGet` event handlers, and returning false will also prevent those from running.
+
+Parameters:
+* arg (string) - What the player typed after GET (e.g., "get *magic sword*" )
+
+Return Value:
+true: allow the "get" operation to continue
+false: prevent any further logic from executing 
+
+Example:
+
+      "specialGet": function(arg): boolean {
+        let game = Game.getInstance();
+        // if you try to get the sword when it's still in the brace
+        let sword = game.artifacts.get(12);
+        if (sword.match(arg) && sword.container_id === 31) {
+          if (game.player.room_id === 10) {
+            game.history.write("You can't reach it from here!");
+            return false;
+          } else if (game.player.room_id === 11) {
+            game.history.write("The brace holds the sword in place!");
+            return false;
+          }
+        }
+        return true;
+      },
+
+## Drop
+
+This event handler is a bit simpler than the "get" ones and is not as frequently used. It can prevent the player from
+ dropping something, so in that sense, it's more like a "before drop" handler.
+
+Parameters:
+* arg (string) - What the player typed after DROP (e.g., "drop *magic sword*" )
+* artifact (Artifact) - The artifact the player is attempting to drop
+
+Return value:
+true: allow the player to drop the artifact
+false: prevent the player from dropping the artifact
+
+Example:
+
+    "drop": function(arg: string, artifact: Artifact): boolean {
+      if (artifact.id === 20) {
+        // can't drop cursed item
+        Game.getInstance().history.write("You can't pry the cursed sword from your hand!");
+        return false;
+      }
+      return true;
+    },
+
+## Remove item from a container
+
+There are two event handlers associated with removing artifacts from containers.
+
+### beforeRemoveFromContainer
+
+This is called when the player tries to remove an artifact from a container. It is also called when the player tries to
+ "get" an item that is inside a container.
+
+Note: for adding events when the player removes a wearable artifact from their body, see the "beforeRemoveWearable" event
+ handler below.
+
+Parameters:
+- arg (string) - What the player typed after REMOVE (e.g., "remove *jewels from chest*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in a container, which is in the current room or in the player's inventory, this will contain the Artifact object.
+- container (Artifact) - The container the player is trying to remove the artifact from
+
+Return Value:
+Return true if the artifact should be removed from the container, or false to prevent it from being removed.
+
+Example: 
+
+    "beforeRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
+      let game = Game.getInstance();
+      if (artifact) {
+        if (artifact.id === 14) {
+          game.history.write("A magic force is holding the wand in the chest. You can't remove it.");
+          return false;
+        }
+      }
+      return true;
+    },
+
+### afterRemoveFromContainer
+
+This is called just after the artifact is removed from the container. It can produce special effects, but it can't be
+ used to stop the removal from happening.
+ 
+Parameters:
+- arg (string) - What the player typed after REMOVE (e.g., "remove *jewels from chest*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in a container, which is in the current room or in the player's inventory, this will contain the Artifact object.
+- container (Artifact) - The container the player is trying to remove the artifact from
+
+Example:
+
+    "afterRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
+      let game = Game.getInstance();
+      // special message when the player finds the treasure
+      if (artifact && artifact.id === 3) {
+        game.history.write("That's a fine-looking sword.");
+      }
+      return true;
+    },
+
+## Put an item into a container
+
+There are three event handlers that happen when the player uses the PUT command.
+
+### beforePut
+
+This happens when the player is trying to put an item into a container, immediately before it goes in. It can be used
+ to prevent the insertion. (If you need to use the PUT command with something that's not a container, see the 
+ "specialPut" event handler below.) 
+
+Parameters:
+- arg (string) - What the player typed after PUT (e.g., "put *sword into scabbard*" )
+- artifact (Artifact) - The artifact being put into the container (in this case, the sword)
+- container (Artifact) - The container the player is trying to put the artifact into (in this case, the scabbard)
+
+Return Value:
+true: allow the item to be put into the container (if it fits)
+false: prevent the item from being put into the container
+
+Example:
+
+    "beforePut": function(arg: string, artifact: Artifact, container: Artifact) {
+      let game = Game.getInstance();
+      // can't put a cursed item into a container, because you can't let go of it
+      if (artifact.id === 20) {
+        Game.getInstance().history.write("You can't pry the cursed sword from your hand!");
+        return false;
+      }
+      return true;
+    },
+
+### afterPut
+
+This is called just after the player puts something into a container.
+
+Parameters:
+- arg (string) - What the player typed after PUT (e.g., "put *sword into scabbard*" )
+- artifact (Artifact) - The artifact that was just put into the container (in this case, the sword)
+- container (Artifact) - The container the player just put the artifact into (in this case, the scabbard)
+
+Return Value: none
+
+Example:
+
+    "afterPut": function(arg: string, item: Artifact, container: Artifact) {
+      let game = Game.getInstance();
+      if (item.id === 25 && container.id === 56) {
+        game.history.write("The Hellsblade is contained, for now...", "special2");
+        container.inventory_message = "with Hellsblade inside";
+      }
+    },
+
+### specialPut
+
+This allows the player to put something into an artifact that isn't a real container, or to put arbitrary items into
+ other items, even if they're not full-fledged artifacts. This is called before "beforePut" and if it returns false, it
+ will cancel the rest of the "put" logic, meaning that the artifact won't end up in the container.
+
+Note: This is called *before* the `beforePut` and `afterPut` event handlers, and returning false will also prevent those from running.
+
+Paramerers:
+
+Return value:
+true: to allow the normal PUT operation to continue (e.g., artifact goes into the container if it fits)
+false: to 
+
+Example:
+
+    "specialPut": function(arg: string, item: Artifact, container: Artifact) {
+      let game = Game.getInstance();
+      // rubies / statue
+      if (item.id === 14 && container.id === 71) {
+        game.history.write("You put the rubies into the statue's scepter and you hear hidden gears grinding. The south wall swings open!");
+        container.is_open = true;
+        return false;   // skips the rest of the "put" logic
+      }
+      return true;
+    },
+
+## Wear an artifact
+
+This is called when the player puts on a wearable artifact.
+
+Parameters:
+- arg (string) - What the player typed after WEAR (e.g., "wear *ring*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact is in the current room or in the player's inventory, this will contain the Artifact object.
+
+Example:
+
+    "wear": function(arg: string, target: Artifact) {
+      let game = Game.getInstance();
+      // can't attack or wear backpack
+      if (target.id === 13) {
+        game.history.write("You don't need to. Just carry it.");
+        return false;
+      }
+      return true;
+    },
+
+## Take off (remove) a wearable artifact
+
+The REMOVE command is used for both removing an item from a container, and for removing an article of clothing or armor
+ (called a "wearable" artifact). The two uses each have different event handlers.
+ 
+### beforeRemoveWearable
+
+This is called just before the player takes off the artifact. It can prevent the artifact from being taken off.
+
+Parameters:
+- arg (string) - What the player typed after REMOVE (e.g., "remove *helmet*" )
+- artifact (Artifact) - The Artifact object representing the artifact that the player is trying to take off
+
+Return value:
+true: Allow the artifact to be taken off
+false: Prevent tha artifact from being taken off
+
+Example:
+
+    "afterRemoveWearable": function(arg: string, artifact: Artifact) {
+      let game = Game.getInstance();
+      // take off gauntlets
+      if (artifact && artifact.id === 57) {
+        game.history.write("You can't take that off!", "special2");
+        return false
+      }
+      return true;
+    },
+
+
+
+### afterRemoveWearable
+
+This is called just after the artifact has been taken off.
+
+Parameters:
+- arg (string) - What the player typed after REMOVE (e.g., "remove *helmet*" )
+- artifact (Artifact) - The Artifact object representing the artifact that the player just took off
+
+Return value: none
+
+Example:
+
+    "afterRemoveWearable": function(arg: string, artifact: Artifact) {
+      let game = Game.getInstance();
+      // take off gauntlets
+      if (artifact && artifact.id === 57 && game.player.hasArtifact(25)) {
+        game.history.write("The Hellsblade twitches eagerly!", "special2");
+      }
+      return true;
+    },
 
 ## Eat
 
@@ -372,6 +739,186 @@ Example:
         }
         return true;
       },
+
+## Light
+
+This runs when the player tries to light a "light source" artifact like a lamp, torch, flashlight, etc. It can also be
+ used for other effects separate from light sources, like lighting the fuse on a stick of dynamite.
+
+Parameters:
+- arg (string) - What the player typed after LIGHT (e.g., "light *dynamite*" )
+- artifact (Artifact) - What the player is trying to light
+
+Return value:
+true: continue with the normal "light a torch" logic, where the artifact gets lit
+false: skip the rest of the "light something" logic 
+
+Example:
+
+    "light": function(arg: string, artifact: Artifact) {
+      let game = Game.getInstance();
+      if (artifact !== null) {
+        if (artifact.id === 5) {
+          if (artifact.monster_id === Monster.PLAYER) {
+            game.history.write("Better put it down first!");
+            // or, you could blow up the player...
+          } else {
+            game.history.write("* * B O O M * *", "special");
+            artifact.destroy();
+            // also destroy some other things here - use your imagination
+          }
+          return false; // this skips the regular "light source" lighting routine
+        }
+      }
+      return true;
+    },
+
+## Look
+
+This event handler is called when the player tries to look at something. Normally, the artifact or monster description is 
+ shown in this situation, but you can use this event handler to do something else instead, like move an artifact into the
+ room, or explain why something isn't possible.
+
+Parameters:
+- arg (string) - What the player typed after LOOK (e.g., "look *sword*" )
+
+Return values:
+true: Continue with the regular LOOK command logic, i.e., showing the artifact, monster, or room description
+false: Skip the usual messages. Useful after you have just displayed a custom message.
+
+Example:
+
+
+    "look": function(arg: string) {
+      let game = Game.getInstance();
+      let sword = game.artifacts.get(12);
+      if (sword.match(arg) && sword.container_id === 31) {
+        if (game.player.room_id === 10) {
+          game.history.write("The sword is too high to see clearly!");
+          return false;
+        } else if (game.player.room_id === 11) {
+          game.history.write("The brace is blocking your view!");
+          return false;
+        }
+      }
+      return true;
+    },
+
+## See a monster
+
+This is called when the player sees a monster for the first time. It can be used to add additional messages, such as
+ if the monster should speak when first encountered.
+ 
+Parameters:
+- monster (Monster) - The Monster object that the player just saw for the first time.
+
+Return value: none
+
+Example (from Training Ground):
+
+    "see_monster": function(monster: Monster): void {
+      let game = Game.getInstance();
+      // some monsters speak when you first see them.
+  
+      // red sun's opening remarks
+      if (monster.id === 1) {
+        game.effects.print(4);
+      }
+      // Sylvani speaks (ID 13 is Don Jonson. In EDX, Sylvani speaks after both descriptions are shown.)
+      if (monster.id === 13) {
+        game.effects.print(6);
+      }
+    },
+
+## See an artifact
+
+Just like "see_monster", this is called when the player first sees an artifact. It's typically used to show extra information
+ that isn't in the artifact description.
+
+Parameters:
+- artifact (Artifact) - The Artifact object which the player just saw for the first time
+
+Return value: none
+ 
+Example:
+    
+    "see_artifact": function(artifact: Artifact): void {
+      let game = Game.getInstance();
+      if (artifact.id === 26) {
+        game.artifacts.get(36).reveal();
+      }
+    },
+
+## Read
+
+TODO
+
+### beforeRead
+
+TODO
+
+### regular "read"
+
+TODO
+
+## Ready a weapon
+
+This is called when the player readies a weapon. It has no effect when NPCs ready weapons.
+
+Parameters:
+- arg (string) - What the player typed after READY (e.g., "ready *sword*" )
+- old_wpn (Artifact) - The weapon the player was using previously
+- new_wpn (Artifact) - The weapon the player is readying
+
+Example:
+
+    "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact): boolean {
+      // if unreadying trollsfire, put it out
+      if (old_wpn && old_wpn.id === 10 && new_wpn.id !== 10) {
+        put_out_trollsfire();
+      }
+      return true;
+    },
+
+## Reveal an Artifact
+
+This is called whenever an embedded artifact is revealed. Usually, this happens when a player looks at the artifact or 
+ tries to get it, open it, or otherwise interact with it. This is just used for special effects and can't prevent the
+ artifact from being revealed.
+ 
+Note: Most secret doors can be implemented in the core logic and don't require event handlers.
+ 
+Parameters:
+- artifact (Artifact) - The Artifact object which the player just saw for the first time
+
+Return value: none
+
+    "revealArtifact": function(artifact: Artifact) {
+      let game = Game.getInstance();
+      // two secret doors with the same alias. when one is revealed, also reveal the other
+      if (artifact.id === 55) {
+        game.artifacts.get(56).reveal();
+      }
+    },
+
+## Say
+
+This is called whenever the player says something. It can be used to implement magic words, etc.
+
+Parameters:
+- phrase (string) - phrase the player typed after SAY (e.g., "say *magic*")
+
+Return value: none
+
+Example:
+
+    "say": function(phrase: string) {
+      let game = Game.getInstance();
+      if (phrase === 'magic' && game.artifacts.get(5).isHere()) {
+        game.history.write("POOF!!", "special");
+        game.artifacts.get(5).destroy();
+      }
+    },
 
 ## Combat
 
