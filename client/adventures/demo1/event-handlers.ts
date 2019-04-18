@@ -78,9 +78,9 @@ export var event_handlers = {
     }
   },
 
-  "beforeRemove": function(arg: string, artifact: Artifact, container: Artifact) {
+  "beforeRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
     let game = Game.getInstance();
-    // special message when the player tries to pick up the throne
+    debugger;
     if (artifact) {
       if (artifact.id === 13) {
         game.history.write("Sucker! The jewels are fake. The thief must have stolen the real ones.");
@@ -94,7 +94,7 @@ export var event_handlers = {
     return true;
   },
 
-  "afterRemove": function(arg: string, artifact: Artifact, container: Artifact) {
+  "afterRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
     let game = Game.getInstance();
     // special message when the player finds the treasure
     if (artifact && artifact.id === 3) {

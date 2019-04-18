@@ -61,6 +61,150 @@ What happened here?
 - The event handler is called for all player movement, not just movement to exit -1. Thus, we need to return true
  if no conditions were met.
 
+# Basic coding techniques
+
+There are some classes and utilities that apply to all event handlers. This section describes them and provides a few examples.
+
+## Objects and Repositories
+
+The collections of rooms, artifacts, effects, and monsters are organized into Repository classes, with each repository
+ containing the entire set of objects of that type. Additionally, there is a Game class which represents the overall
+ game engine (similar to the MAIN PGM in Classic Eamon).
+
+## The Game object
+
+At the beginning of many event handlers, there is a special line:
+
+    let game = Game.getInstance();
+
+This allows you to access the global Game instance, which is a singleton. This provides access to the object repositories.
+
+The Game object has the following important properties:
+
+- game.rooms: Repository of rooms
+- game.artifacts: Repository of artifacts
+- game.effects: Repository of effects
+- game.monsters: Repository of monsters
+- game.player: The player, who is also a Monster (monster #0)
+- game.hints: The hints that appear when the player clicks the "Hints" button below the command prompt
+- game.intro_text: The text that appears before the start of the game
+
+These are described in detail below.
+
+## Writing messages to the output
+
+It's quite frequent to display a certain message to the player when they take an action, like entering a room, opening a
+ chest, or using an artifact. This can be done using the `game.history` object, which represents the game output.
+ 
+    // write a message in the default font
+    game.history.write('The dragon blocks your way!');
+    // write a message using a custom style
+    game.history.write('The scroll disappears in a puff of smoke!', 'special');
+
+The available styles are as follows:
+
+- normal - regular text
+- emphasis (black, bold): Used for slightly more emphasis, but without a particular meaning
+- success (green): Used for messages where the player successfully did something
+- warning (orange): Used in combat messages, and anywhere something risky is happening
+- danger (red): Used in combat to indicate a monster's death. Also can be used when another highly dangerous event happens.
+- special (blue): Used for special effects, magic spells, etc.
+- special2 (purple): Used for special effects, magic spells, etc.
+
+## Working with Rooms, Artifacts, and Monsters
+
+The Game object contains references to all the objects contained within your adventure. The repositories are available
+ at `game.rooms`, `game.artifacts`, `game.effects`, and `game.monsters`. There are also other objects that are less
+ frequently used in event handlers, such as `game.hints`.
+ 
+Here are some examples of working with the repositories:
+
+    // get a room by its ID
+    let r = game.rooms.get(1);
+    // get all rooms
+    let r = game.rooms.all;
+    // get all rooms that are dark
+    let dark_rooms = game.rooms.all.filter(r => r.is_dark);
+
+    // get all monsters
+    let monsters = game.monsters.all;
+    // get the visible monsters (a filtered view of the monsters visible in the current room; updated after
+    // each player command and each monster's combat actions)
+    let monsters = game.monsters.visible;
+    // get a single monster by ID
+    let m1 = game.monsters.get(1);
+    
+    // get all artifacts
+    let artifacts = game.artifacts.all;
+    // get the visible artifacts (a filtered view of the artifacts visible in the current room; updated after
+    // each player command and each monster's combat actions; does not include unrevealed embedded artifacts and
+    // secret doors the player hasn't found yet.)
+    let artifacts = game.artifacts.visible;
+    // get a single artifact by ID
+    let a1 = game.artifacts.get(1);
+    // get everything the player is carrying
+    let inv = game.player.inventory;
+    // get everything a monster is carrying (as an array of artifacts)
+    let m1_inv = game.monsters.get(1).inventory;
+    // get the contents of a container (as an array of artifacts)
+    let contents = game.artifacts.get(3).contents;
+    
+The room, monster, and artifact arrays are standard JavaScript arrays, and can be used in loops and with higher-order
+ functions like `map`, `filter`, and `find`. 
+ 
+    // change the friendliness of all monsters in the game
+    game.monsters.all.forEach(m => m.reaction = Monster.RX_HOSTILE);
+    // get the currently visible artifacts that are weapons
+    let weapons = game.artifacts.visible.filter(a => a.type === Artifact.TYPE_WEAPON || a.type === Artifact.TYPE_MAGIC_WEAPON);
+
+In addition, Monsters and Artifacts have a few special methods and properties:
+
+    // move a monster to the player's current room
+    game.monsters.get(1).moveToRoom();
+    // move a monster to a numbered room
+    game.monsters.get(1).moveToRoom(5);
+    // remove a monster from the game
+    game.monsters.get(1).destroy();  // note: this does not actually kill them; they can be later brought back by another event with moveToRoom()
+    // do damage to a monster
+    game.monsters.get(1).injure(5);
+    game.monsters.get(1).injure(5, true);  // same as above, but ignores armor
+    
+    // move an artifact to the player's current room
+    game.artifacts.get(6).moveToRoom();
+    // move an artifact to a numbered room
+    game.artifacts.get(6).moveToRoom(5);
+    // move an artifact into the player's inventory
+    game.artifacts.get(6).moveToInventory();
+    // move an artifact into a numbered monster's inventory
+    game.artifacts.get(6).moveToInventory(3);
+    // reveal an embedded artifact (making it appear in the artifacts list in the status sidebar)
+    game.artifacts.get(10).reveal();
+    // open/close a door or container
+    game.artifacts.get(8).open();
+    game.artifacts.get(8).close();
+    // remove an artifact from the game
+    game.artifacts.get(6).destroy();
+    // determine if the player is carrying an artifact
+    if (game.player.hasArtifact(3)) ...
+    // determine if an artifact is "here" (meaning, if it's in the current room OR the player's inventory)
+    if (game.artifacts.get(3).isHere()) ...
+    // determine if an artifact is inside a container
+    if (game.artifacts.get(3).container_id === 7) ...    
+
+## Effects
+
+Effects are far simpler objects, containing just an ID, the effect text, and the style, which determines the color of the
+ text shown to the player.
+
+Working with effects is easy:
+
+    // show an effect, using the style defined in the database
+    game.effects.print(1);
+    // show an effect, overriding the style
+    game.effects.print(1, "special")
+
+The text styles available are the same ones described in the "Writing messages to the output" section above.
+
 # Example event handlers
 
 The following is a list of all the available event handlers, how they're used, and a sample handler of each type.
@@ -851,15 +995,61 @@ Example:
 
 ## Read
 
-TODO
+There are two event handlers that occur when the player reads something.
+
+Note: These event handlers are an older style and may change in the future.
 
 ### beforeRead
 
-TODO
+The `beforeRead` event handler runs right before the player reads something. It can be used to suppress the standard
+ "there are no markings to read" message by setting `command.markings_read` to true. It can't block the player from
+ reading the artifact. (This may change in the future.)
+
+Parameters:
+- arg (string) - What the player typed after READ (e.g., "read *book*" )
+- artifact (Artifact) - The artifact that matched the arg (if any)
+- command (ReadCommand) - A reference to the actual Command object, to allow setting the "markings_read" flag
+
+Return value: none
+
+Example:
+
+    "beforeRead": function(arg: string, artifact: Artifact, command: ReadCommand) {
+      if (artifact && artifact.id === 17) {
+        let game = Game.getInstance();
+        game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
+        game.history.write("WEAPONS AND LEAVE VIOLENCE BEHIND YOU ", "special2");
+        // teleport all weapons to random rooms
+        game.player.inventory.filter(a => a.is_weapon).forEach(a => {
+          let dest = game.rooms.getRandom();
+          item.moveToRoom(dest.id);
+        })
+        game.player.updateInventory();
+        game.artifacts.updateVisible();
+      }
+    },
 
 ### regular "read"
 
-TODO
+This works just like "beforeRead" but it happens after any regular markings (effects) on the artifact are shown
+
+Parameters:
+- arg (string) - What the player typed after READ (e.g., "read *book*" )
+- artifact (Artifact) - The artifact that matched the arg (if any)
+- command (ReadCommand) - A reference to the actual Command object, to allow setting the "markings_read" flag
+
+Return value: none
+
+Example:
+
+    "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+      let game = Game.getInstance();
+      if (artifact !== null && artifact.id === 11) {
+        // this artifact is not actually a "readable" type, but has a readable message on it
+        game.effects.print(10);
+        command.markings_read = true;
+      }
+    },
 
 ## Ready a weapon
 

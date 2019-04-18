@@ -30,9 +30,18 @@ export default class RoomRepository {
    * @param {number} room_id
    * @return Room
    */
-  getRoomById(room_id: number) {
+  get(room_id: number) {
     let r = this.rooms.find(x => x.id === room_id);
     return r || null;
+  }
+
+  /**
+   * Gets a numbered room (old alias).
+   * @param {number} room_id
+   * @return Room
+   */
+  getRoomById(room_id: number) {
+    return this.get(room_id);
   }
 
   /**
