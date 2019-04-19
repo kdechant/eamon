@@ -473,9 +473,7 @@ export default class Game {
       this.history.write(""); // blank line for white space
       for (let m of this.monsters.visible) {
         if (!m.seen) {
-          if (!m.parent) {
-            m.showDescription();
-          }
+          m.showDescription();
           m.seen = true;
           this.triggerEvent("see_monster", m);
         } else {
@@ -486,7 +484,7 @@ export default class Game {
             if (count_here > 1) {
               this.history.write(`${count_here} ${m.name_plural} are here.`, "no-space");
             } else {
-              this.history.write(`${count_here} ${m.name} is here.`, "no-space");
+              this.history.write(`${m.name} is here.`, "no-space");
             }
           }
         }

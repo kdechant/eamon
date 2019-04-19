@@ -87,7 +87,6 @@ export class Monster extends GameObject {
   saved_games: Object[] = [];
 
   // game-state properties
-  seen: boolean = false;
   reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
   original_group_size: number;
@@ -1283,7 +1282,7 @@ export class GroupMonster extends Monster {
         let chickens = visible_children.filter(m => !m.checkCourage());
         if (chickens.length) {
           if (chickens.length === 1) {
-            game.history.write(`${chickens.length} ${this.name} ${game.flee_verbs.singular}!`, 'warning');
+            game.history.write(`${this.name} ${game.flee_verbs.singular}!`, 'warning');
           } else {
             game.history.write(`${chickens.length} ${this.name_plural} ${game.flee_verbs.plural}!`, 'warning');
           }

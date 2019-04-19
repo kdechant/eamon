@@ -13,6 +13,7 @@ export class GameObject {
   aliases: string[];
   effect: number;  // for extended descriptions
   effect_inline: number;  // for extended descriptions
+  seen: boolean = false;
 
   /**
    * Loads data from JSON source into the object properties.

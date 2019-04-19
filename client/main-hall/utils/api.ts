@@ -16,10 +16,7 @@ export function getHeaders(): object {
   };
   const csrf = Cookie.get('csrftoken');
   if (csrf) {
-    console.log('getHeaders: setting csrf token', csrf);
     headers['X-CSRFToken'] = csrf;
-  } else {
-    console.log('getHeaders: no csrf token', csrf);
   }
   return headers;
 }
