@@ -144,9 +144,7 @@ export class Room extends Loadable {
     if (good_exits.length === 0) {
       return null;
     } else {
-      let exit = good_exits[game.diceRoll(1, good_exits.length) - 1];
-      return exit;
-      // return good_exits[game.diceRoll(1, good_exits.length) - 1];
+      return good_exits[game.diceRoll(1, good_exits.length) - 1];
     }
   }
 

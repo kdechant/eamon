@@ -1,6 +1,6 @@
 import Game from "../models/game";
 import {initMockGame} from "../utils/testing";
-import {Monster} from "../models/monster";
+import { Monster, GroupMonster } from "./monster";
 
 var game = new Game();
 
@@ -73,7 +73,7 @@ describe("Group monster handling", function() {
     expect(game.artifacts.get(23).room_id).toBe(7);
   });
 
-  it ("should flee to different rooms", () => {
+  it ("should flee to different rooms when using flee()", () => {
     let kobolds = game.monsters.get(5);
     kobolds.moveToRoom(1);  // this room has multiple exits, so it makes a better test
     game.mock_random_numbers = [2, 2, 1];
@@ -84,8 +84,24 @@ describe("Group monster handling", function() {
     expect(kobolds.room_id).toBe(7);
   });
 
-  it ("should add and remove members", () => {
+  it ("should flee to different rooms during combat", () => {
     let kobolds = game.monsters.get(5);
+    kobolds.moveToRoom(1);  // this room has multiple exits, so it makes a better test
+    game.mock_random_numbers = [
+      100, 100, 100,  // this will cause all three to flee (fear = 100)
+      2, 2, 1  // this determines the rooms they go to
+    ];
+    kobolds.doBattleActions();
+    game.monsters.updateVisible();
+    expect(kobolds.children[0].room_id).toBe(7);
+    expect(kobolds.children[1].room_id).toBe(7);
+    expect(kobolds.children[2].room_id).toBe(2);
+    expect(kobolds.room_id).toBe(7);
+  });
+
+  it ("should add and remove members", () => {
+    // @ts-ignore
+    let kobolds: GroupMonster = game.monsters.get(5);
     kobolds.spawnChild();
     expect(kobolds.children.length).toBe(4);
     expect(kobolds.count).toBe(4);

@@ -77,7 +77,7 @@
     "count": 3,
     "hardiness": 5,
     "agility": 5,
-    "courage": 100,
+    "courage": 90,
     "friendliness": "hostile",
     "combat_code": 0,
     "attack_odds": 30,

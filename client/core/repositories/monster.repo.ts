@@ -1,6 +1,5 @@
-import {Monster} from "../models/monster";
+import { Monster, GroupMonster } from "../models/monster";
 import Game from "../models/game";
-import {Artifact} from "../models/artifact";
 
 /**
  * Class MonsterRepository.
@@ -28,6 +27,7 @@ export default class MonsterRepository {
       let monster = this.add(m);
 
       // unpack group monsters
+      // TODO: move this to the GroupMonster class?
       if (m.count > 1) {
         // console.log(`Making ${m.count} ${monster.name_plural}`);
         for (let i=1; i <= m.count; i++) {
@@ -60,32 +60,26 @@ export default class MonsterRepository {
    * Adds a monster.
    * @param {Object} monster_data
    */
-  public add(monster_data) {
+  public add(monster_data): Monster {
     let game = Game.getInstance();
 
-    let m = new Monster();
+    // autonumber the ID if not provided
+    if (monster_data.id === undefined) {
+      monster_data.id = this.index + 1;
+    }
+
+    // error if there is an ID conflict
+    if (this.get(monster_data.id) !== null) {
+      console.log(this.get(monster_data.id));
+      throw new Error("Tried to create a monster #" + monster_data.id + " but that ID is already taken.");
+    }
+
+    let m = monster_data.count > 1 ? new GroupMonster() : new Monster();
     // "synonyms" in the back end are called "aliases" here
     if (monster_data.synonyms) {
       monster_data.aliases = monster_data.synonyms.split(",");
     }
     m.init(monster_data);
-
-    // default plural name for group monsters. if you want a better name, enter it in the database.
-    if (m.count > 1 && !m.name_plural) {
-      m.name_plural = m.name + 's';
-    }
-
-    // autonumber the ID if not provided
-    if (m.id === undefined) {
-      m.id = this.index + 1;
-    }
-
-    if (this.get(m.id) !== null) {
-      console.log(this.get(m.id));
-      throw new Error("Tried to create a monster #" + m.id + " but that ID is already taken.");
-    }
-
-    m.original_group_size = m.count;
 
     this.all.push(m);
 
@@ -96,7 +90,7 @@ export default class MonsterRepository {
     }
 
     m.updateInventory();
-    if (m.count === 1 && !m.parent) {
+    if (!m.parent) {
       m.readyBestWeapon(); // this initializes the monster.weapon object, to show the correct combat verbs
       // group monsters skip this step. they must use the exact weapon ID in the database
     }
@@ -104,23 +98,10 @@ export default class MonsterRepository {
     // add the dead body artifact
     if (game.dead_body_id) {
       m.dead_body_id = game.dead_body_id + Math.floor(m.id) - 1;
-    } else {
-      // let body = {
-      //   "name": "Dead " + m.name,
-      //   "description": "You see the dead " + m.name,
-      //   "room": null,
-      //   "weight": 100,
-      //   "value": 0,
-      //   "get_all": false,
-      // };
-      // let art: Artifact = Game.getInstance().artifacts.add(body);
-      // m.dead_body_id = art.id;
     }
 
     // update the autonumber index
-    if (Math.floor(m.id) === m.id && m.id > this.index) {
-      this.index = m.id;
-    }
+    this.index = Math.max(Math.floor(m.id), this.index);
     return m;
   }
 
@@ -153,7 +134,6 @@ export default class MonsterRepository {
     // player is always monster 0
     game.player.id = 0;
     game.player.room_id = 1;
-    game.player.count = 1;
     game.player.reaction = Monster.RX_FRIEND;
     game.player.spell_abilities_original = {
       "power": game.player.spell_abilities.power,
@@ -244,14 +224,8 @@ export default class MonsterRepository {
   public updateVisible() {
     let game = Game.getInstance();
 
-    // handle group monster containers
-    let group_monsters = this.all.filter(m => m.children.length);
-    group_monsters.forEach(m => {
-      let visible_children = m.children.filter(c => c.isHere());
-      if (visible_children.length) {
-        m.room_id = game.player.room_id;  // move virtual group pointer
-      }
-    });
+    // handle the virtual group monster pointers (this is a no-op for single monsters)
+    this.all.forEach(m => m.updateVirtualMonster());
 
     let monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id && !x.parent);
     game.in_battle = false;

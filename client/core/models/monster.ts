@@ -1,10 +1,7 @@
 import Game from "../models/game";
 import {GameObject} from "../models/game-object";
 import {Artifact} from "../models/artifact";
-import {Room} from "../models/room";
 import {RoomExit} from "../models/room";
-
-declare var Adventure: any;
 
 /**
  * Monster class. Represents all properties of a single monster
@@ -103,7 +100,6 @@ export class Monster extends GameObject {
   speed_multiplier: number = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
   profit: number = 0; // the money the player makes for selling items when they leave the adventure
-  // group_monster_index: number = 0;  // for combat logic involving group monsters, which group member is active
 
   /**
    * A container for custom data used by specific adventures
@@ -130,7 +126,7 @@ export class Monster extends GameObject {
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
-    console.log(`monster ${this.id} moving to room ${room_id}`);
+    // console.log(`monster ${this.id} moving to room ${room_id}`);
     let from_room_id = this.room_id;
     this.room_id = room_id || Game.getInstance().player.room_id;
 
@@ -160,13 +156,13 @@ export class Monster extends GameObject {
         }
       }
     }
+  }
 
-    if (this.children.length) {
-      // console.log('moving children of ' + this.name);
-      this.children
-        .filter(c => c.room_id === from_room_id && c.status === Monster.STATUS_ALIVE)
-        .forEach(c => c.moveToRoom(room_id));
-    }
+  /**
+   * Moves the virtual "group monster" pointer to the correct place
+   */
+  public updateVirtualMonster() {
+    // Not implemented for the Monster class. This is only implemented in the GroupMonster child class
   }
 
   /**
@@ -177,50 +173,7 @@ export class Monster extends GameObject {
 
     // choose a random exit
     // exclude any locked/hidden exits and the game exit
-    let good_exits: RoomExit[] = game.rooms.getRoomById(this.room_id).getGoodExits();
-
-    if (good_exits.length === 0) {
-      return null;
-    } else {
-      // console.log(good_exits.map(e => e.direction));
-      let exit = good_exits[game.diceRoll(1, good_exits.length) - 1];
-      // console.log(`chose ${exit.direction} as random exit`);
-      return exit;
-      // return good_exits[game.diceRoll(1, good_exits.length) - 1];
-    }
-  }
-
-  /**
-   * Spawns a new child member for the group
-   */
-  public spawnChild() {
-    let game = Game.getInstance();
-    this.count++;
-    // There is one Monster object for each child monster, with an ID that's based on the group's id.
-    // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
-    let child = game.monsters.add({
-      ...this,
-      id: this.id + 0.0001 * this.count,   // this can handle groups up to 9999 members
-      parent: this,
-      description: "",  // just to save memory
-      count: 1,
-      weapon_id: 0  // when using this, the new member always gets natural weapons, even if other members have a real weapon
-    });
-    // console.log(`New ${this.name} #${child.id}`);
-    this.children.push(child);
-  }
-
-  /**
-   * Reduces the size of the group by removing some children
-   * @param {number} num The number of children to remove
-   */
-  public removeChildren(num: Number = 1) {
-    // console.log(`Removing ${num} children from ${this.name}`);
-    this.children = this.children.slice(0, -num);
-    if (!this.children.length) {
-      this.destroy();
-    }
-    this.count = this.children.length;
+    return game.rooms.get(this.room_id).chooseRandomExit();
   }
 
   /**
@@ -254,24 +207,20 @@ export class Monster extends GameObject {
         }
         break;
     }
-    // for group monsters, we also update the reactions of all the members
-    this.children.forEach(m => {
-      m.reaction = this.reaction;
-    });
   }
 
   /**
    * Executes a courage check on this monster. Typically used to determine
    * if a monster should flee combat, or follow the player when he/she flees.
-   * @param {following} boolean
+   * @param {boolean} following
    *   Whether the monster is fleeing (false) or deciding to follow a fleeing player (true)
    * @returns {boolean}
    */
   public checkCourage(following: boolean = false): boolean {
     let fear = Game.getInstance().diceRoll(1, 100);
     let effective_courage = this.courage;
-    if (this.damage > this.hardiness * 0.2 || this.count < this.original_group_size) {
-      // wounded, or members of a group have been killed
+    if (this.damage > this.hardiness * 0.2) {
+      // wounded
       effective_courage *= 0.75;
     } else if (this.damage > this.hardiness * 0.6) {
       // badly wounded
@@ -610,33 +559,11 @@ export class Monster extends GameObject {
 
       // see if we have a valid exit to flee to
       if (game.rooms.getRoomById(this.room_id).hasGoodExits()) {
-        // group monster logic
-        if (this.children.length) {
-          let visible_children = this.children.filter(m => m.isHere());
-          // first, determine how many flee and how many stay
-          let chickens = visible_children.filter(m => !m.checkCourage());
-          if (chickens.length) {
-            if (chickens.length === 1) {
-              game.history.write(`${chickens.length} ${this.name} ${game.flee_verbs.singular}!`, 'warning');
-            } else {
-              game.history.write(`${chickens.length} ${this.name_plural} ${game.flee_verbs.plural}!`, 'warning');
-            }
-            chickens.forEach(m => m.flee(false));
-          }
-        } else {
-          // check if the monster should flee (single monster only)
-          if (!this.parent && !this.checkCourage()) {
-            this.flee();
-            return;
-          }
+        // check if the monster should flee (single monster only)
+        if (!this.parent && !this.checkCourage()) {
+          this.flee();
+          return;
         }
-      }
-
-      // group monsters delegate the rest of the logic to the individuals, which happens automatically
-      if (this.children.length) {
-        let visible_children = this.children.filter(m => m.isHere());
-        visible_children.slice(0,5).map(m => m.doBattleActions());
-        return;
       }
 
       // pick up weapon
@@ -954,27 +881,11 @@ export class Monster extends GameObject {
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
       if (show_message) {
-        if (this.children.length) {
-          game.history.write(`${this.name_plural} look frantically for an exit but find nowhere to go!`, "warning");
-        } else {
-          game.history.write(`${this.name} looks frantically for an exit but finds nowhere to go!`, "warning");
-        }
+        game.history.write(`${this.name} looks frantically for an exit but finds nowhere to go!`, "warning");
       }
       return;
     }
 
-    // group monster - all members in the current room flee, possibly in different directions
-    if (this.children.length) {
-      let visible_children = this.children.filter(m => m.isHere());
-      if (show_message) {
-        game.history.write(`${visible_children.length} ${this.name_plural} ${game.flee_verbs.plural}.`, "warning");
-      }
-      visible_children.forEach(m => m.flee(false));
-      this.room_id = (visible_children[0].room_id);
-      return;
-    }
-
-    // single monster
     let exit = game.rooms.getRoomById(this.room_id).chooseRandomExit();
 
     if (show_message) {
@@ -993,21 +904,7 @@ export class Monster extends GameObject {
    */
   public getWeapon(): Artifact {
     let game = Game.getInstance();
-    if (this.count === 1) {
-      // single monster, or last surviving member of a group
-      return game.artifacts.get(this.weapon_id);
-    } else {
-      // for multiple monsters, we use the index number plus the weapon ID to get the weapon they're using
-      // (this assumes that the weapons are ordered sequentially in the database)
-      // note: they're ordered in reverse, to prevent errors when some group members have died.
-      // let wpn_id = this.weapon_id + this.count - this.group_monster_index - 1;
-      let w = game.artifacts.get(this.weapon_id);
-      if (this.hasArtifact(w.id) && w.is_weapon) {
-        return w;
-      } else {
-        return null;
-      }
-    }
+    return game.artifacts.get(this.weapon_id);
   }
 
   /**
@@ -1040,16 +937,6 @@ export class Monster extends GameObject {
    */
   public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
     let game = Game.getInstance();
-
-    // when attacking a group monster, we actually attack a random one of the children
-    if (this.children.length) {
-      let visible_children = this.children.filter(c => c.isHere());
-      if (!visible_children.length) {
-        return;  // currently impossible to injure members in a different room
-      }
-      let child = game.getRandomElement(visible_children);
-      return child.injure(damage, ignore_armor, attacker);
-    }
 
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
@@ -1112,12 +999,6 @@ export class Monster extends GameObject {
   public destroy(): void {
     let game = Game.getInstance();
     this.room_id = null;
-
-    // for group monsters, we also destroy all members
-    this.children.forEach(m => {
-      m.room_id = null;
-    });
-
     game.monsters.updateVisible();
   }
 
@@ -1139,7 +1020,7 @@ export class Monster extends GameObject {
   public showHealth(): void {
     let game = Game.getInstance();
     let status = (this.hardiness - this.damage) / this.hardiness;
-    let name = this.count === 1 ? this.name : "One " + this.name;
+    let name = this.name;
 
     let messages: string[] = [
       "is in perfect health.",
@@ -1256,6 +1137,241 @@ export class Monster extends GameObject {
 
     Game.getInstance().triggerEvent("afterSell");
 
+  }
+
+}
+
+/**
+ * GroupMonster class. Represents all properties of a group of monsters, with children that are single monsters.
+ * Note: Keeping this in the same file as the parent class to avoid nasty import problems
+ */
+export class GroupMonster extends Monster {
+
+  // properties used for managing group monsters
+  name_plural: string;
+  count: number;
+  children: Monster[] = [];
+
+  constructor () {
+    super();
+  }
+
+  /**
+   * Loads data from JSON source into the object properties.
+   * @param {Object} source an object, e.g., from JSON.
+   */
+  public init(source): void {
+    const game = Game.getInstance();
+    super.init(source);
+
+    // default plural name for group monsters. if you want a better name, enter it in the database.
+    if (this.count > 1 && !this.name_plural) {
+      this.name_plural = this.name + 's';
+    }
+
+    this.original_group_size = this.count;
+  }
+
+  /**
+   * Moves the monster to a specific room.
+   * @param {Number} room_id  The ID of the room to move to. If null or zero, this moves the monster to the player's current room
+   * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
+   */
+  public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
+    // console.log(`group monster ${this.id} moving to room ${room_id}`);
+    let from_room_id = this.room_id;
+
+    super.moveToRoom(room_id, monsters_follow);
+
+    if (this.children.length) {
+      // console.log('moving children of ' + this.name);
+      this.children
+        .filter(c => c.room_id === from_room_id && c.status === Monster.STATUS_ALIVE)
+        .forEach(c => c.moveToRoom(room_id));
+    }
+  }
+
+  /**
+   * Moves the virtual "group monster" pointer to the correct place
+   */
+  public updateVirtualMonster() {
+    // console.log(`updating virtual monster ${this.id}`);
+    const game = Game.getInstance();
+    const visible_children = this.children.filter(c => c.isHere());
+    if (visible_children.length) {
+      // console.log("moving to player's location");
+      this.room_id = game.player.room_id;  // move virtual group pointer
+    } else {
+      // console.log("moving to child's location");
+      const living_child = this.children.find(c => c.status === Monster.STATUS_ALIVE);
+      this.room_id = living_child ? living_child.room_id : null;
+    }
+  }
+
+  /**
+   * Spawns a new child member for the group
+   */
+  public spawnChild() {
+    let game = Game.getInstance();
+    this.count++;
+    // There is one Monster object for each child monster, with an ID that's based on the group's id.
+    // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
+    let child = game.monsters.add({
+      ...this,
+      id: this.id + 0.0001 * this.count,   // this can handle groups up to 9999 members
+      parent: this,
+      description: "",  // just to save memory
+      count: 1,
+      weapon_id: 0  // when using this, the new member always gets natural weapons, even if other members have a real weapon
+    });
+    // console.log(`New ${this.name} #${child.id}`);
+    this.children.push(child);
+  }
+
+  /**
+   * Reduces the size of the group by removing some children
+   * @param {number} num The number of children to remove
+   */
+  public removeChildren(num: Number = 1) {
+    // console.log(`Removing ${num} children from ${this.name}`);
+    this.children = this.children.slice(0, -num);
+    if (!this.children.length) {
+      this.destroy();
+    }
+    this.count = this.children.length;
+  }
+
+  /**
+   * Checks the monster's reaction to the player
+   */
+  public checkReaction(): void {
+    super.checkReaction();
+
+    // for group monsters, we also update the reactions of all the members
+    this.children.forEach(m => {
+      m.reaction = this.reaction;
+    });
+  }
+
+  // TODO: override checkCourage to reduce courage if a group member has been killed
+
+  /**
+   * Battle actions the monster can do (attack, flee, pick up weapon)
+   */
+  public doBattleActions(): void {
+    let game = Game.getInstance();
+
+    // if something happened, where an event handler stopped combat, the monster should do nothing
+    if (game.skip_battle_actions) {
+      return;
+    }
+
+    if (this.reaction === Monster.RX_NEUTRAL || this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
+      // neutral and never-fight monsters do nothing here.
+      return;
+    }
+
+    // console.log(`battle action for group monster #${this.id}: ${this.name}`);
+
+    if (game.triggerEvent('monsterAction', this)) {
+
+      // see if we have a valid exit to flee to
+      if (game.rooms.getRoomById(this.room_id).hasGoodExits()) {
+        // group monster logic
+        let visible_children = this.children.filter(m => m.isHere());
+        // first, determine how many flee and how many stay
+        let chickens = visible_children.filter(m => !m.checkCourage());
+        if (chickens.length) {
+          if (chickens.length === 1) {
+            game.history.write(`${chickens.length} ${this.name} ${game.flee_verbs.singular}!`, 'warning');
+          } else {
+            game.history.write(`${chickens.length} ${this.name_plural} ${game.flee_verbs.plural}!`, 'warning');
+          }
+          chickens.forEach(m => m.flee(false));
+        }
+      }
+
+      // group monsters delegate the rest of the logic to the individuals, which happens automatically
+      let visible_children = this.children.filter(m => m.isHere());
+      visible_children.slice(0,5).map(m => m.doBattleActions());
+      return;
+    }
+  }
+
+  /**
+   * Causes the monster to flee. Normally this only happens during combat, but you can call this specially
+   * to make the monster flee under other circumstances.
+   * @param {boolean} show_message
+   *   Whether to show the flee message. Usually omitted, except for internal logic dealing with group monsters
+   */
+  public flee(show_message: boolean = true) {
+    let game = Game.getInstance();
+    // console.log(`group monster #${this.id} is fleeing`, show_message);
+
+    // check if there is somewhere to flee to
+    if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
+      if (show_message) {
+        if (this.children.length > 1) {
+          game.history.write(`${this.children.length} ${this.name_plural} look frantically for an exit but find nowhere to go!`, "warning");
+        } else {
+          game.history.write(`${this.name} looks frantically for an exit but finds nowhere to go!`, "warning");
+        }
+      }
+      return;
+    }
+
+    // group monster - all members in the current room flee, possibly in different directions
+    let visible_children = this.children.filter(m => m.isHere());
+    if (show_message) {
+      game.history.write(`${visible_children.length} ${this.name_plural} ${game.flee_verbs.plural}.`, "warning");
+    }
+    visible_children.forEach(m => m.flee(false));
+    this.room_id = (visible_children[0].room_id);
+    return;
+  }
+
+  /**
+   * Deals damage to a monster
+   * @param {number} damage - The amount of damage to do.
+   * @param {boolean} ignore_armor - Whether to ignore the effect of armor
+   * @param {Monster} attacker - Reference to the attacking monster, if in combat
+   * @returns number The amount of actual damage done
+   */
+  public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
+    let game = Game.getInstance();
+
+    // when attacking a group monster, we actually attack a random one of the children
+    let visible_children = this.children.filter(c => c.isHere());
+    if (!visible_children.length) {
+      return;  // currently impossible to injure members in a different room
+    }
+    let child = game.getRandomElement(visible_children);
+    return child.injure(damage, ignore_armor, attacker);
+  }
+
+  /**
+   * Removes a monster from the game
+   */
+  public destroy(): void {
+    let game = Game.getInstance();
+    this.room_id = null;
+
+    // for group monsters, we also destroy all members
+    this.children.forEach(m => {
+      m.room_id = null;
+    });
+
+    game.monsters.updateVisible();
+  }
+
+  /**
+   * Heals a monster
+   * @param {number} amount - The amount of hit points to heal
+   */
+  public heal(amount): void {
+    let game = Game.getInstance();
+    let child = game.getRandomElement(this.children.filter(c => c.isHere()));
+    child.heal(amount);
   }
 
 }
