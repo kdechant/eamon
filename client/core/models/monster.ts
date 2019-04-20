@@ -965,16 +965,10 @@ export class Monster extends GameObject {
 
         // if a member of a group, update or remove the parent
         if (this.parent) {
-          let living_child = this.parent.children.find(c => c.status === Monster.STATUS_ALIVE);
-          this.parent.room_id = living_child ? living_child.room_id : null;
-          // let members = this.parent.children.filter(c => c.status === Monster.STATUS_ALIVE);
-          if (this.parent.dead_body_id) {
-            // whenever any group member dies, place the dead body in the room. (this same dead body artifact will
-            // move to a different room if another member later dies somewhere else)
-            game.artifacts.get(this.parent.dead_body_id).room_id = this.room_id;
-          }
-        } else if (this.dead_body_id) {
-          game.artifacts.get(this.dead_body_id).room_id = this.room_id;
+          this.parent.placeDeadBody();
+          this.parent.updateVirtualMonster();
+        } else {
+          this.placeDeadBody();
         }
 
         if (this.id === Monster.PLAYER) {
@@ -990,6 +984,19 @@ export class Monster extends GameObject {
 
     }
     return damage;
+  }
+
+  /**
+   * Puts the monster's dead body into the room
+   */
+  private placeDeadBody() {
+    if (!this.dead_body_id) {
+      return;
+    }
+    let body = Game.getInstance().artifacts.get(this.dead_body_id);
+    if (body) {
+      body.room_id = this.room_id;
+    }
   }
 
   /**

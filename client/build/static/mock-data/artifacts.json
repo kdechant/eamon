@@ -274,5 +274,15 @@
     "monster_id": null,
     "weight": -999,
     "value": 0
+  },
+  {
+    "id": 24,
+    "name": "dead thief",
+    "description": "You see a dead thief.",
+    "type": 13,
+    "room_id": null,
+    "monster_id": null,
+    "weight": -999,
+    "value": 0
   }
 ]

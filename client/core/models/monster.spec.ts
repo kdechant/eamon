@@ -207,4 +207,28 @@ describe("Monster", function() {
     expect(game.history.getLastOutput().text).toBe("Alfred is barely conscious");
   });
 
+  it("should handle its dead body artifact", function() {
+    let thief = game.monsters.get(4);
+
+    // without dead body id
+    thief.injure(100);
+    expect(game.artifacts.get(24).room_id).toBeNull();
+
+    // with dead body id of a non-existent artifact
+    thief.damage = 0;
+    thief.status = Monster.STATUS_ALIVE;
+    thief.dead_body_id = 999; // non-existent artifact
+    thief.injure(100);
+    thief.moveToRoom(2);
+    expect(game.artifacts.get(24).room_id).toBeNull();
+
+    // with a dead body id
+    thief.damage = 0;
+    thief.status = Monster.STATUS_ALIVE;
+    thief.dead_body_id = 24; // real artifact
+    thief.moveToRoom(2);
+    thief.injure(100);
+    expect(game.artifacts.get(24).room_id).toBe(2);
+  });
+
 });
