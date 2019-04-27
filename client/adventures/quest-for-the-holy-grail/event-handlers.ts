@@ -293,6 +293,11 @@ export var event_handlers = {
 
 "give": function(arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
+    // giving the dead collector a body
+    if (recipient.id == 33) {
+      if (deadCollectorCollectsABody(recipient, artifact)) { return false; }
+      return true;
+    }
     // giving the Knights Who Say Nee a shrubbery
     if ((artifact.id == 3) && (recipient.id >= 14 && recipient.id <= 19)) {
       game.effects.print(50);
@@ -433,10 +438,15 @@ export var event_handlers = {
   "say": function(phrase: string) {
     let game = Game.getInstance();
     phrase = phrase.toLowerCase();
-    if (phrase.indexOf("nee") >= 0) {
+    if (phrase.indexOf("it") === 0) {
       visibleKnightsOfNee().forEach(function(knight){
         knight.flee();
       });
+    }
+    if (phrase.indexOf("nee") >= 0) {
+      if (visibleKnightsOfNee().length > 0) {
+        game.history.write("\"Showing off your vocabulary, eh? That's not the right word, anyway.\"");
+      }
       if (game.monsters.get(13).isHere()) { // Roger
         if ((game.data['shrubbery'] == false) && (game.artifacts.get(3).monster_id != Monster.PLAYER)) {
           game.data['shrubbery'] = true;
@@ -662,15 +672,22 @@ export function deadCollectorCollects(collector: Monster): boolean {
   let game = Game.getInstance();
   let bodies = game.artifacts.all.filter(a => (a.room_id === collector.room_id)).filter(a => (a.type === 13));
   bodies.forEach(function (body){
-    body.destroy();
-    if (collector.room_id == game.player.room_id) {
-      game.player.gold += body.value;
-      game.history.write(`The dead collector throws ${body.name} into his cart and pays you ${body.value} gold pieces.`);
-    game.player.updateInventory();
-    }
+    deadCollectorCollectsABody(collector, body);
     return true;
   });
   return false;
+}
+
+export function deadCollectorCollectsABody(collector: Monster, body: Artifact): boolean {
+  let game = Game.getInstance();
+  if (body.type != 13) { return false; }
+  body.destroy();
+  if (collector.room_id == game.player.room_id) {
+    game.player.gold += body.value;
+    game.history.write(`The dead collector throws ${body.name} into his cart and pays you ${body.value} gold pieces.`);
+  game.player.updateInventory();
+    }
+  return true;
 }
 
 export function deadCollectorIsInterested(collector: Monster): boolean {
