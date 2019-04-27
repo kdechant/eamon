@@ -734,7 +734,7 @@ export default class Game {
         this.rooms = new RoomRepository(data.rooms);
         this.artifacts = new ArtifactRepository(data.artifacts);
         this.effects = new EffectRepository(data.effects);
-        this.monsters = new MonsterRepository(data.monsters);
+        this.monsters = new MonsterRepository(data.monsters, true);
         this.player = this.monsters.get(0);
         this.rooms.current_room = this.rooms.getRoomById(this.player.room_id);
         this.player.updateInventory();

@@ -22,14 +22,13 @@ export default class MonsterRepository {
    */
   index: number = 0;
 
-  constructor(monster_data: Array<Object>) {
+  constructor(monster_data: Array<Object>, restoring_save: boolean = false) {
     monster_data.forEach((m: any) => {
       let monster = this.add(m);
 
       // unpack group monsters
       // TODO: move this to the GroupMonster class?
-      if (m.count > 1) {
-        // console.log(`Making ${m.count} ${monster.name_plural}`);
+      if (m.count > 1 && !restoring_save) {
         for (let i=1; i <= m.count; i++) {
           // Group monsters can have artifacts as weapons. In this case, the weapon ID in the database represents the
           // first individual's weapon, with subsequent artifacts being used by subsequent individuals.
@@ -38,7 +37,6 @@ export default class MonsterRepository {
           if (weapon_id > 0) {
             weapon_id += i - 1;
           }
-          // console.log(`${m.name} ${i} gets weapon ${weapon_id}`);
           // There is one Monster object for each child monster, with an ID that's based on the group's id.
           // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
           let child = this.add({
@@ -49,11 +47,18 @@ export default class MonsterRepository {
             count: 1,
             weapon_id
           });
-          // console.log(`New ${m.name} #${child.id}`);
           monster.children.push(child);
         }
       }
     });
+
+    if (restoring_save) {
+      // repair the parent-child relationships for group monsters
+      this.all.filter(m => m.id !== Math.floor(m.id)).forEach(m => {
+        m.parent = this.get(Math.floor(m.id));
+        m.parent.children.push(m);
+      });
+    }
   }
 
   /**
@@ -245,18 +250,25 @@ export default class MonsterRepository {
    * Serializes the repo to JSON, without some unnecessary deep-copy data like monster inventories
    */
   public serialize() {
-    let data = JSON.parse(JSON.stringify(this.all));
-    for (let m of data) {
-      // calculated properties don't need to be serialized
-      delete m.inventory;
-      delete m.armor_worn;
-      delete m.weapon;
-      delete m.weight_carried;
-      // some properties are only used in the main hall or game exit
-      delete m.profit;
-      delete m.saved_games;
-    }
-    return data;
+    return JSON.parse(JSON.stringify(this.all, serializeFilter));
   }
 
 }
+
+/**
+ * Filters out some calculated properties that don't need to be serialized
+ * @param key
+ * @param value
+ */
+const serializeFilter = (key, value) => {
+  // the filtering only applies when we serialize a Monster object, not to others
+  // using duck typing to tell if it's a monster because "typeof foo" only returns "object", not the class name
+  if (value && value.hasOwnProperty('agility')) {
+    // clone the object with only some props (using destructuring to discard the others)
+    const {inventory, parent, children, weapon, saved_games, weight_carried, profit, ...m} = value;
+    return m;
+  } else {
+    // array or some other object that's not a Monster
+    return value;
+  }
+};
