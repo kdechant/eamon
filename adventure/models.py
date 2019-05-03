@@ -348,7 +348,7 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
-    def log(self, type, adventure_id = None):
+    def log(self, type, adventure_id=None):
         l = ActivityLog(player=self, type=type, adventure_id=adventure_id)
         l.save()
 
@@ -386,7 +386,7 @@ class PlayerArtifact(models.Model):
     armor_penalty = models.IntegerField(default=0,null=True)
 
     def __str__(self):
-        return str(self.player) + " " + self.name
+        return "{} {}".format(self.player, self.name)
 
 
 class ActivityLog(models.Model):

@@ -9,4 +9,4 @@
 venv
 db/*
 eamon/local_settings.py
-static/dist
+static/*
