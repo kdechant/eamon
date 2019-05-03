@@ -2,7 +2,7 @@
   "name": "eamon-remastered",
   "description": "A rewrite of the classic text adventure game, The Wonderful World of Eamon.",
   "license": "ISC",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "dependencies": {
     "axios": "^0.18.0",
     "ie-array-find-polyfill": "^1.1.0",

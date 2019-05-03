@@ -668,7 +668,7 @@ export default class Game {
         }
       }
 
-      this.logger.log('died', this.timer);
+      this.logger.log('died on move', this.timer);
       this.logger.log('died in room', this.player.room_id);
       for (let s in this.statistics) {
         if (s.indexOf('damage') !== -1) {
@@ -694,6 +694,7 @@ export default class Game {
       slot,
       description,
       data: {
+        version: 2.1,
         rooms: this.rooms.rooms,
         artifacts: this.artifacts.serialize(),
         effects: this.effects.all,
@@ -704,7 +705,6 @@ export default class Game {
     };
 
     // save to the API
-    // this.savedGameService.saveGame(sv).subscribe(
     const axios = getAxios();
     sv.data = compressToBase64(JSON.stringify(sv.data));
     axios.post("/saves?uuid=" + window.localStorage.getItem('eamon_uuid'), sv)
@@ -734,7 +734,9 @@ export default class Game {
         this.rooms = new RoomRepository(data.rooms);
         this.artifacts = new ArtifactRepository(data.artifacts);
         this.effects = new EffectRepository(data.effects);
-        this.monsters = new MonsterRepository(data.monsters, true);
+        // older saved games didn't have the child monsters for groups, so we'll need to unpack those in that case.
+        const skip_unpacking_groups = data.version && data.version >= 2.1;
+        this.monsters = new MonsterRepository(data.monsters, skip_unpacking_groups);
         this.player = this.monsters.get(0);
         this.rooms.current_room = this.rooms.getRoomById(this.player.room_id);
         this.player.updateInventory();
