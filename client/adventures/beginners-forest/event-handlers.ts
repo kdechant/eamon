@@ -14,18 +14,13 @@ export var event_handlers = {
 
     game.data["queen effect"] = game.player.gender === "m" ? 5 : 6;
     game.data["queen artifact"] = game.player.gender === "m" ? 7 : 15;
-    game.data["spook count"] = 0;
     game.data["met queen"] = false;
 
     // set up the entrance/exit gates
     game.artifacts.get(19).seen = true;
     game.artifacts.get(20).seen = true;
     game.artifacts.get(20).name = game.artifacts.get(19).name;
-    game.rooms.getRoomById(1).seen = true;
-    game.rooms.getRoomById(33).seen = true;
-
-    // clear the spooks group count
-    game.monsters.get(9).count = 0;
+    game.rooms.get(33).seen = true;
 
     // Sir Grummor is always kind to the ladies!
     if (game.player.gender === 'f') {
@@ -33,7 +28,7 @@ export var event_handlers = {
     }
 
     // entrance routine, similar to Beginner's Cave
-    game.effects.print(9);
+    // game.effects.print(9);
     game.effects.print(11);
 
     if (game.player.weapon_id === null) {
@@ -194,12 +189,15 @@ export var event_handlers = {
 
     // spooks
     let spooks = game.monsters.get(9);
-    if (game.player.room_id > 1 && game.player.room_id < 5 && game.data["spook count"] < 10 && spooks.count < 4) {
-      let rl = game.diceRoll(1, 100);
-      if (rl < 35) {
+    if (game.player.room_id > 1 && game.player.room_id <= 5) {
+      // 1 in 3 chance a spook appears in those rooms; limit of 4 in the room
+      if (game.diceRoll(1, 3) == 1 && spooks.children.filter(m => m.isHere()).length < 4) {
+        try {
+          spooks.children.find(m => !m.isHere() && m.status === Monster.STATUS_ALIVE).moveToRoom();
+        } catch (e) {
+          // no spooks left; do nothing
+        }
         spooks.seen = false;
-        spooks.room_id = game.player.room_id;
-        spooks.count++;
       }
     }
 

@@ -824,8 +824,14 @@ export class ReadCommand implements BaseCommand {
     }
 
     // see if we're reading an artifact that has markings
-    let a = game.artifacts.getLocalByName(arg);
+    let a = game.artifacts.getLocalByName(arg, false);
     if (a !== null) {
+      // don't reveal in getLocalByName above because we want to know if we revealed something.
+      let revealed_something = false;
+      if (a.embedded) {
+        a.reveal();
+        revealed_something = true;
+      }
 
       game.triggerEvent("beforeRead", arg, a, this);
 
@@ -851,7 +857,9 @@ export class ReadCommand implements BaseCommand {
       } else {
         // readable artifact with no effects. just show description. common in some older adventures.
         if (a.type === Artifact.TYPE_READABLE) {
-          a.showDescription();
+          if (!revealed_something) {
+            a.showDescription();
+          }
           this.markings_read = true;
         }
       }

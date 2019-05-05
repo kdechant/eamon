@@ -169,15 +169,15 @@ class StatusMonster extends React.Component<any, any> {
     if (monster.reaction === Monster.RX_HOSTILE) { className += "hostile" }
 
     let visible_children = monster.children.filter(m => m.isHere());
+    let singular = monster.count === 1 || visible_children.length === 1;
 
     return (
       <div className={className}>
-        {monster.count === 1 && (
-        <span>{ monster.name }</span>
-        )}
-        {monster.count > 1 && (
-        <span>{ visible_children.length } { visible_children.length > 1 ? monster.name_plural : monster.name }</span>
-        )}{' '}
+        {singular ?
+          <span>{ monster.name }</span>
+          :
+          <span>{ visible_children.length } { monster.name_plural }</span>
+        }{' '}
         - { monster.reaction }
       </div>
     );
