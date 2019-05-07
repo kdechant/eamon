@@ -61,7 +61,7 @@ export default class Bank extends React.Component<any, any> {
 
     return (
       <div className="bank">
-        <h2><img src="/static/images/ravenmore/128/coin.png" />Bank of Eamon Towne</h2>
+        <h2><img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" />Bank of Eamon Towne</h2>
         <p>You have no trouble spotting Shylock McFenney, the local banker, due to his large belly. You attract his attention, and he comes over to you.</p>
         <p>&quot;Well, {this.props.player.name}, my dear {this.props.player.gender === 'm' ? 'boy' : 'lass'}, what a pleasure
           to see you! Do you want to make a deposit or a withdrawal?&quot;</p>

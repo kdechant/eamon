@@ -52,12 +52,12 @@ class PlayerListItem extends React.Component<any, any> {
 
     return (
       <div className="player col-sm-6 col-md-4" key={this.state.player.id}>
-        <div className="icon"><img src={icon_url} width="96" height="96"/></div>
+        <div className="icon"><img src={icon_url} width="96" height="96" aria-hidden="true" /></div>
         <div className="name"><a className="player_name" onClick={() => this.loadPlayer()}><strong>{this.state.player.name}</strong></a>
           <br/>
           HD: {this.state.player.hardiness} AG: {this.state.player.agility} CH: {this.state.player.charisma} <br/>
           {ucFirst(weapon_name)}</div>
-        <div className="delete"><button className="btn btn-link" onClick={() => this.deletePlayer(this.state.player)}><img src="/static/images/ravenmore/128/x.png" title="delete" /></button></div>
+        <div className="delete"><button className="btn btn-link" aria-label="Delete" onClick={() => this.deletePlayer(this.state.player)}><img src="/static/images/ravenmore/128/x.png" title="delete" /></button></div>
       </div>
     );
   }
