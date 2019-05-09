@@ -24,7 +24,7 @@ class Shop extends React.Component<any, any> {
 
     return (
       <div className="shop">
-        <h2><img src="/static/images/ravenmore/128/axe2.png" />Marcos Cavielli's Weapons and Armour Shoppe</h2>
+        <h2><img src="/static/images/ravenmore/128/axe2.png" alt="Battle axe" />Marcos Cavielli's Weapons and Armour Shoppe</h2>
 
         <Route path="/main-hall/shop" exact={true} render={(props) => (
           <div className="shop-home">

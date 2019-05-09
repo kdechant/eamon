@@ -179,7 +179,7 @@ class AdventureList extends React.Component<any, any> {
 
     return (
       <div id="AdventureList">
-        <h2><img src="/static/images/ravenmore/128/map.png" /> Go on an adventure</h2>
+        <h2><img src="/static/images/ravenmore/128/map.png" alt="Map" /> Go on an adventure</h2>
 
         {message}
 
