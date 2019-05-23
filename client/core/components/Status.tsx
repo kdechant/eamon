@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactMarkdown from "react-markdown";
 import {titleCase} from "../../main-hall/utils";
 import {Monster} from "../models/monster";
 
@@ -76,7 +77,9 @@ class Status extends React.Component<any, any> {
             <p className="room-name">{ game.rooms.current_room.name }</p>
 
           {/*   [class.hidden]="hiddenDesc" */}
-            <p className="room-description">{ game.rooms.current_room.description }</p>
+            <ReactMarkdown className="room-description"
+                           source={ game.rooms.current_room.description }
+                           escapeHtml={false} />
             <div className="room-exits">Visible Exits:&nbsp;
               {visible_exits.map((exit, index) => (
                 <span key={index}>{exit.direction}&nbsp;</span>

@@ -61,7 +61,7 @@ class Adventure(models.Model):
     full_description = models.TextField(default='', blank=True)
     intro_text = models.TextField(
         default='', blank=True,
-        help_text="Text shown to the adventurer when they begin the adventure. Use this to set up the story."
+        help_text="Text shown to the adventurer when they begin the adventure. Use this to set up the story. Split it into multiple pages by using a line containing three hyphens as a break. Supports Markdown."
     )
     intro_question = models.TextField(
         default='', blank=True,
@@ -130,7 +130,7 @@ class Artifact(models.Model):
     synonyms = models.CharField(null=True, max_length=255, blank=True,
                                 help_text="Other terms for this artifact. E.g., if the artifact name is 'secret door in"
                                           " north wall' you could have a synonym of 'door' to help the player find it.")
-    description = models.TextField(max_length=1000)
+    description = models.TextField(max_length=1000, help_text="Supports Markdown.")
     effect = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description
     effect_inline = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description, without a paragraph break.
     room_id = models.IntegerField(null=True,blank=True,
@@ -217,7 +217,7 @@ class Effect(models.Model):
     )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
     effect_id = models.IntegerField(default=0) # The in-game effect ID.
-    text = models.TextField(max_length=65535)
+    text = models.TextField(max_length=65535, help_text="Supports Markdown.")
     style = models.CharField(max_length=20, null=True, blank=True, choices=STYLES) # used by EDX to display effect text in color
     next = models.IntegerField(null=True, blank=True,
                                help_text="The next chained effect. Used with EDX conversions.")
@@ -248,7 +248,7 @@ class Monster(models.Model):
                                    help_text="The plural form of the name. Used only with group monsters.")
     synonyms = models.CharField(null=True, max_length=255, blank=True,
         help_text="Other names used for this monster. If the name is 'python' a synonym might be 'snake'")
-    description = models.TextField(max_length=1000)
+    description = models.TextField(max_length=1000, help_text="Supports Markdown.")
     # The ID of an effect to display after the description
     effect = models.IntegerField(null=True, help_text="Used only with EDX conversions")
     # The ID of an effect to display after the description, without a paragraph break.
@@ -310,7 +310,7 @@ class HintAnswer(models.Model):
     """
     hint = models.ForeignKey(Hint, on_delete=models.CASCADE, related_name='answers')
     index = models.IntegerField(null=True)
-    answer = models.TextField(max_length=1000)
+    answer = models.TextField(max_length=1000, help_text="Supports Markdown.")
     spoiler = models.BooleanField(default=False, help_text="Obscure the answer until the user shows it.")
 
 

@@ -38,22 +38,57 @@ Eamon home page: http://localhost:8000
 Admin page (for building adventure data): http://localhost:8000/admin
 To log into the admin, use the username and password you used when you ran the "createsuperuser" command above.
 
-## Building the adventure database
+## Creating and Editing Adventures
 
-You can edit your adventure objects in the admin site. This provides basic forms for creating adventures, rooms, artifacts, monsters, etc. This is still a work in progress!
+You can edit your adventure and its rooms, artifacts, effects, and monsters using the admin site. This provides basic forms for listing adventure content and creating and editing.
 
 The adventure objects are defined in the following tables in the database:
 
-	• Adventure_adventure
-	• Adventure_room
-	• Adventure_roomexit
-	• Adventure_artifact
-	• Adventure_effect
-	• Adventure_monster
-	• Adventure_hint
-	• Adventure_hintanswer
+* adventure_adventure
+* adventure_room
+* adventure_roomexit
+* adventure_artifact
+* adventure_effect
+* adventure_monster
+* adventure_hint
+* adventure_hintanswer
 
-First, create an Adventure. Give your adventure a name and a slug. Also give it a description and intro text. If you want to ask a question to the player on the intro screen, put the question in the `intro_question` field. Set the `active` field to 1.
+### Using Markdown and HTML in text blocks
+
+Most of the larger blocks of text support Markdown to allow finer control over the formatting. This uses GitHub-flavored Markdown. [See the official documentation for a syntax reference](https://guides.github.com/features/mastering-markdown/).
+
+Example:
+```md
+This is regular text
+
+**This is bold**
+
+***This is italic***
+
+`a code block` which will be rendered in a monospaced, pinkish font (for better ways to create colors, see below.)
+
+An image: ![alt text here](http://example.com/some/image/path.jpg)
+```
+
+You can also mix in some basic HTML with the Markdown. This is mainly useful to create colored text:
+```md
+<span style="color: blue;">This text is blue</span>
+```
+
+Note that you can also create colored text for Effects by setting the Effect's "style" field. See EVENT-HANDERS.md for examples of the available styles.
+
+### Creating your adventure
+
+First, create an Adventure. The following fields are important:
+
+* name - The title of the adventure (e.g., "The Beginner's Cave")
+* slug - The slug is used to build the URL and should contain letters, numbers, and hyphens (e.g., 'the-beginners-cave')
+* description - This is shown in the adventure list in the Main Hall
+* intro_text - This is shown to the player at the very beginning of the adventure. Supports Markdown. If you want to split it into multiple pages, separate them with a line containing only three hyphens ('---')
+* intro_question - If you want to ask a question to the player on the intro screen, put the question in the `intro_question` field.
+* active - Adventures must have this flag set to 1 before they will appear in the Adventure List in the Main Hall
+* tags - A comma-separated list of tags, which can be used to filter the adventure list
+* authors - One or more authors for the adventure. For Classic Eamon or Eamon Deluxe adventures ported to Eamon Remastered, this should be the original author's name (e.g., Donald Brown or John Nelson)
 
 The fields with names beginning with `EDX`, as well as the `first_hint` and `last_hint` fields, are used for importing data from the EDX databases. For new adventures, leave these blank.
 
@@ -66,10 +101,10 @@ Fields are:
 - Adventure: Choose the adventure you created above in the drop-down
 - Room ID: Give it an ID number. Room 1 is the where the player will start. Typically, rooms are numbered sequentially starting with 1, though the program currently won't calculate this for you.
 - Name
-- Description - Unlike Classic Eamon, this can contain as much text as you like.
+- Description - Unlike Classic Eamon, this can contain as much text as you like. It also supports Markdown.
 - Is Dark - Check this box if the room is dark and requires a light source
 
-Room Exits
+#### Room Exits
 
 Each room typically has one or more exits, connecting it to other rooms.
 
@@ -80,14 +115,17 @@ Fields are:
 - Door ID: If this connection is blocked by a door, enter the artifact ID of the door. Leave blank if there is no door.
 - Message: currently unused
 
-### Artifacts and monsters
+### Artifacts, Effects, and Monsters
 
-Do the same for artifacts and monsters.
+Adding/editing artifacts and monsters is generally the same as adding/editing rooms. Most of the fields on the form contain help text that will explain the purpose of the field.
 
 ### Hints
 
-If you want to provide special hints in your adventure, add these to the `adventure_hint` and `adventure_hintanswer` tables.
+If you want to provide special hints in your adventure, add these to the `adventure_hint` and `adventure_hintanswer` tables. These can be edited in the admin interface, as well.
 
+Each hint can have one or more answers. If there is more than one, the game will show "next" and "previous" links to page through them. Hint answers support Markdown.
+
+Some hint answers may contain spoilers. There is a special "spoiler" flag that can be set on each answer, which will blur the text until the player clicks a link to reveal it.
 
 ## Programming Custom Commands and Event Handlers
 

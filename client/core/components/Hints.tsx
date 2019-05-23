@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactMarkdown from 'react-markdown';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class Hints extends React.Component<any, any> {
@@ -65,14 +66,14 @@ class Hints extends React.Component<any, any> {
                 </p>
                 {h.is_open && (
                   <div className="hint-answers">
-                    <p className="hint-answer">
+                    <div className="hint-answer">
                       { h.answers[h.current_index].spoiler ?
                         <span>
                           <span className="blur">{h.answers[h.current_index].answer}</span><br />
                           <span className="small">Spoiler alert! <a onClick={() => this.reveal(h)}>Click here to show the answer</a>.</span>
                         </span> :
-                        h.answers[h.current_index].answer }
-                    </p>
+                        <ReactMarkdown source={h.answers[h.current_index].answer} escapeHtml={false} /> }
+                    </div>
                     {h.answers.length > 1 && (
                     <div className="hint-next-prev">
                       <a className="prev" onClick={() => this.prevAnswer(h)}>&larr; prev</a>

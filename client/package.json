@@ -11,6 +11,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-facebook-login": "^4.1.1",
+    "react-markdown": "^4.0.8",
     "react-router-dom": "^5.0.0",
     "react-transition-group": "^4.0.1",
     "reactstrap": "^8.0.0",

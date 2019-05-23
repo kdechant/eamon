@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactMarkdown from 'react-markdown';
 
 class History extends React.Component<any, any> {
 
@@ -26,7 +27,9 @@ class History extends React.Component<any, any> {
             {entry.results.map((line, index) => {
               const className = "history-results " + line.type;
               return (
-                <p className={className} key={index}>{line.text}</p>
+                <div className={className} key={index}>
+                  <ReactMarkdown source={line.text} escapeHtml={false} />
+                </div>
               )
             }
             )}
