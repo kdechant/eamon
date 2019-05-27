@@ -1,7 +1,6 @@
 from django.db import models
 from taggit.managers import TaggableManager
 
-
 ARTIFACT_TYPES = (
     (0, 'Gold'),
     (1, 'Treasure'),
@@ -14,7 +13,7 @@ ARTIFACT_TYPES = (
     (8, 'Door/Gate'),
     (9, 'Edible'),
     (10, 'Bound Monster'),
-    (11, 'Wearable'), # armor/shield
+    (11, 'Wearable'),  # armor/shield
     (12, 'Disguised Monster'),
     (13, 'Dead Body'),
     (14, 'User 1'),
@@ -62,7 +61,8 @@ class Adventure(models.Model):
     full_description = models.TextField(default='', blank=True)
     intro_text = models.TextField(
         default='', blank=True,
-        help_text="Text shown to the adventurer when they begin the adventure. Use this to set up the story. Split it into multiple pages by using a line containing three hyphens as a break. Supports Markdown."
+        help_text="Text shown to the adventurer when they begin the adventure. Use this to set up the story. Split"
+                  " it into multiple pages by using a line containing three hyphens as a break. Supports Markdown."
     )
     intro_question = models.TextField(
         default='', blank=True,
@@ -70,22 +70,23 @@ class Adventure(models.Model):
                   " the question text here. The answer will be available in the game object."
     )
     slug = models.SlugField(null=True)
-    edx = models.CharField(null=True,max_length=50, blank=True)
+    edx = models.CharField(null=True, max_length=50, blank=True)
     edx_version = models.FloatField(default=0, blank=True, null=True)
-    edx_room_offset = models.IntegerField(default=0,null=True, blank=True)
-    edx_artifact_offset = models.IntegerField(default=0,null=True, blank=True)
-    edx_effect_offset = models.IntegerField(default=0,null=True, blank=True)
-    edx_monster_offset = models.IntegerField(default=0,null=True, blank=True)
-    edx_program_file = models.CharField(null=True,max_length=50, blank=True)
+    edx_room_offset = models.IntegerField(default=0, null=True, blank=True)
+    edx_artifact_offset = models.IntegerField(default=0, null=True, blank=True)
+    edx_effect_offset = models.IntegerField(default=0, null=True, blank=True)
+    edx_monster_offset = models.IntegerField(default=0, null=True, blank=True)
+    edx_program_file = models.CharField(null=True, max_length=50, blank=True)
     directions = models.IntegerField(default=6)
-    dead_body_id = models.IntegerField(default=0,blank=True,null=True,
+    dead_body_id = models.IntegerField(
+        default=0, blank=True, null=True,
         help_text="The artifact ID of the first dead body. Leave blank to not use dead body artifacts.")
     active = models.BooleanField(default=0)
     # the first and last index of hints read from the hints file - used with the import_hints management command
-    first_hint = models.IntegerField(null=True,blank=True)
-    last_hint = models.IntegerField(null=True,blank=True)
-    date_published = models.DateField(null=True,blank=True)
-    featured_month = models.CharField(null=True,blank=True,max_length=7)
+    first_hint = models.IntegerField(null=True, blank=True)
+    last_hint = models.IntegerField(null=True, blank=True)
+    date_published = models.DateField(null=True, blank=True)
+    featured_month = models.CharField(null=True, blank=True, max_length=7)
     tags = TaggableManager(blank=True)
     authors = models.ManyToManyField(Author)
 
@@ -102,12 +103,14 @@ class Adventure(models.Model):
 
 class Room(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='rooms')
-    room_id = models.IntegerField(default=0) # The in-game room ID.
+    room_id = models.IntegerField(default=0)  # The in-game room ID.
     name = models.CharField(max_length=255)
     is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
-    effect = models.IntegerField(null=True,blank=True) # The ID of an effect to display after the description
-    effect_inline = models.IntegerField(null=True,blank=True) # The ID of an effect to display after the description, without a paragraph break.
+    # The ID of an effect to display after the description
+    effect = models.IntegerField(null=True, blank=True)
+    # The ID of an effect to display after the description, without a paragraph break.
+    effect_inline = models.IntegerField(null=True, blank=True)
     is_dark = models.BooleanField(default=False)
 
     def __str__(self):
@@ -117,9 +120,9 @@ class Room(models.Model):
 class RoomExit(models.Model):
     direction = models.CharField(max_length=2)
     room_from = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='exits')
-    room_to = models.IntegerField(default=0) # Not a real foreign key. Yet.
-    door_id = models.IntegerField(null=True,blank=True)
-    message = models.CharField(max_length=255,blank=True)
+    room_to = models.IntegerField(default=0)  # Not a real foreign key. Yet.
+    door_id = models.IntegerField(null=True, blank=True)
+    message = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return str(self.room_from) + " " + self.direction
@@ -127,73 +130,96 @@ class RoomExit(models.Model):
 
 class Artifact(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='artifacts')
-    artifact_id = models.IntegerField(default=0) # The in-game artifact ID.
+    artifact_id = models.IntegerField(default=0)  # The in-game artifact ID.
     name = models.CharField(max_length=255)
-    synonyms = models.CharField(null=True, max_length=255, blank=True,
-                                help_text="Other terms for this artifact. E.g., if the artifact name is 'secret door in"
-                                          " north wall' you could have a synonym of 'door' to help the player find it.")
+    synonyms = models.CharField(
+        null=True, max_length=255, blank=True,
+        help_text="Other terms for this artifact. E.g., if the artifact name is 'secret door in"
+                  " north wall' you could have a synonym of 'door' to help the player find it.")
     is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
-    effect = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description
-    effect_inline = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description, without a paragraph break.
-    room_id = models.IntegerField(null=True,blank=True,
+    # The ID of an effect to display after the description
+    effect = models.IntegerField(null=True, blank=True)
+    # The ID of an effect to display after the description, without a paragraph break.
+    effect_inline = models.IntegerField(null=True, blank=True)
+    room_id = models.IntegerField(
+        null=True, blank=True,
         help_text="If in a room, the room ID"
     )
-    monster_id = models.IntegerField(null=True,blank=True,
+    monster_id = models.IntegerField(
+        null=True, blank=True,
         help_text="If carried by a monster, the monster ID"
     )
-    container_id = models.IntegerField(null=True,blank=True,
+    container_id = models.IntegerField(
+        null=True, blank=True,
         help_text="If in a container, the container ID"
     )
-    guard_id = models.IntegerField(null=True,blank=True,
+    guard_id = models.IntegerField(
+        null=True, blank=True,
         help_text="If a bound monster, the ID of a monster that prevents the player from freeing it"
     )
-    weight = models.IntegerField(default=0,
+    weight = models.IntegerField(
+        default=0,
         help_text="Weight in Gronds. Enter -999 for something that can't be picked up, or 999 to show the message "
-                  "'Don't be absurd' if the player tries to pick it up.")
+                  "'Don't be absurd' if the player tries to pick it up."
+    )
 
     value = models.IntegerField(default=0)
-    type = models.IntegerField(null=True,choices=ARTIFACT_TYPES)
+    type = models.IntegerField(null=True, choices=ARTIFACT_TYPES)
     is_worn = models.BooleanField(default=False)
     is_open = models.BooleanField(default=False)
-    key_id = models.IntegerField(null=True,blank=True,
+    key_id = models.IntegerField(
+        null=True, blank=True,
         help_text="If a container, door, or bound monster, the artifact ID of the key that opens it"
     )
-    linked_door_id = models.IntegerField(null=True, blank=True,
-        help_text="To make a two-sided door, enter the artifact ID of the other side of the door. They will open and close as a set."
+    linked_door_id = models.IntegerField(
+        null=True, blank=True,
+        help_text="To make a two-sided door, enter the artifact ID of the other side of the door. "
+                  "They will open and close as a set."
     )
-    hardiness = models.IntegerField(null=True,blank=True,
+    hardiness = models.IntegerField(
+        null=True, blank=True,
         help_text="If a door or container that can be smashed open, how much damage does it take to open it?")
-    weapon_type = models.IntegerField(null=True,blank=True,choices=WEAPON_TYPES)
-    hands = models.IntegerField(default=1,choices=(
-      (1, 'One-handed'),
-      (2, 'Two-handed')
+    weapon_type = models.IntegerField(null=True, blank=True, choices=WEAPON_TYPES)
+    hands = models.IntegerField(default=1, choices=(
+        (1, 'One-handed'),
+        (2, 'Two-handed')
     ))
-    weapon_odds = models.IntegerField(null=True,blank=True)
-    dice = models.IntegerField(null=True,blank=True)
-    sides = models.IntegerField(null=True,blank=True)
-    clothing_type = models.IntegerField(null=True,choices=CLOTHING_TYPES,help_text="Reserved for future use.")
-    armor_class = models.IntegerField(null=True,default=0,
-        help_text="(Armor only) How many hits does this armor protect against?")
-    armor_type = models.IntegerField(null=True,blank=True,choices=ARMOR_TYPES)
-    armor_penalty = models.IntegerField(default=0,null=True,
+    weapon_odds = models.IntegerField(null=True, blank=True)
+    dice = models.IntegerField(null=True, blank=True)
+    sides = models.IntegerField(null=True, blank=True)
+    clothing_type = models.IntegerField(null=True, choices=CLOTHING_TYPES, help_text="Reserved for future use.")
+    armor_class = models.IntegerField(
+        null=True, default=0,
+        help_text="(Armor only) How many hits does this armor protect against?"
+    )
+    armor_type = models.IntegerField(null=True, blank=True, choices=ARMOR_TYPES)
+    armor_penalty = models.IntegerField(
+        default=0, null=True,
         help_text="(Armor only) How much does this reduce the player's chance to hit, if they don't have enough "
-                  "armor expertise?")
-    get_all = models.BooleanField(default=True,
+                  "armor expertise?"
+    )
+    get_all = models.BooleanField(
+        default=True,
         help_text="Will the 'get all' command pick up this item?"
     )
-    embedded = models.BooleanField(default=False,
+    embedded = models.BooleanField(
+        default=False,
         help_text="Check this box to make the item not appear in the artifacts list until the player looks at it.")
-    hidden = models.BooleanField(default=False,
+    hidden = models.BooleanField(
+        default=False,
         help_text="(For secret doors only) Check this box for embedded secret doors, so that the player can't "
                   "pass through them before finding them.")
-    quantity = models.IntegerField(null=True,blank=True,
+    quantity = models.IntegerField(
+        null=True, blank=True,
         help_text="Drinks or bites, fuel for light source, etc."
     )
-    effect_id = models.IntegerField(null=True,blank=True,
+    effect_id = models.IntegerField(
+        null=True, blank=True,
         help_text="First effect ID for Readable artifacts"
     )
-    num_effects = models.IntegerField(null=True,blank=True,
+    num_effects = models.IntegerField(
+        null=True, blank=True,
         help_text="Number of effects for Readable artifacts"
     )
 
@@ -219,10 +245,10 @@ class Effect(models.Model):
         ('danger', 'Danger (red)'),
     )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
-    effect_id = models.IntegerField(default=0) # The in-game effect ID.
+    effect_id = models.IntegerField(default=0)  # The in-game effect ID.
     is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     text = models.TextField(max_length=65535)
-    style = models.CharField(max_length=20, null=True, blank=True, choices=STYLES) # used by EDX to display effect text in color
+    style = models.CharField(max_length=20, null=True, blank=True, choices=STYLES)  # display effect text in color
     next = models.IntegerField(null=True, blank=True,
                                help_text="The next chained effect. Used with EDX conversions.")
     next_inline = models.IntegerField(null=True, blank=True,
@@ -246,11 +272,13 @@ class Monster(models.Model):
         (-2, "Never fights"),
     )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='monsters')
-    monster_id = models.IntegerField(default=0) # The in-game monster ID.
+    monster_id = models.IntegerField(default=0)  # The in-game monster ID.
     name = models.CharField(max_length=255)
-    name_plural = models.CharField(max_length=255, null=True, blank=True,
-                                   help_text="The plural form of the name. Used only with group monsters.")
-    synonyms = models.CharField(null=True, max_length=255, blank=True,
+    name_plural = models.CharField(
+        max_length=255, null=True, blank=True,
+        help_text="The plural form of the name. Used only with group monsters.")
+    synonyms = models.CharField(
+        null=True, max_length=255, blank=True,
         help_text="Other names used for this monster. If the name is 'python' a synonym might be 'snake'")
     is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
@@ -261,15 +289,16 @@ class Monster(models.Model):
     count = models.IntegerField(default=1)
     hardiness = models.IntegerField(default=12)
     agility = models.IntegerField(default=12)
-    friendliness = models.CharField(max_length=10,choices=FRIENDLINESS)
+    friendliness = models.CharField(max_length=10, choices=FRIENDLINESS)
     friend_odds = models.IntegerField(default=50,
-        help_text="Used only when 'Friendliness' is 'Random'"
-    )
+                                      help_text="Used only when 'Friendliness' is 'Random'"
+                                      )
     combat_code = models.IntegerField(default=0, choices=COMBAT_CODES)
     courage = models.IntegerField(default=100)
-    pursues = models.BooleanField(default=True,  help_text="Will the monster pursue a fleeing player?")
+    pursues = models.BooleanField(default=True, help_text="Will the monster pursue a fleeing player?")
     room_id = models.IntegerField(null=True, blank=True)
-    container_id = models.IntegerField(null=True, blank=True,
+    container_id = models.IntegerField(
+        null=True, blank=True,
         help_text="Container artifact ID where this monster starts. The monster will enter the room as soon as the "
                   "container is opened. e.g., a vampire who awakes when you open his coffin"
     )
@@ -278,16 +307,20 @@ class Monster(models.Model):
         ('female', 'Female'),
         ('none', 'None'),
     ))
-    weapon_id = models.IntegerField(null=True, blank=True,
+    weapon_id = models.IntegerField(
+        null=True, blank=True,
         help_text="Enter an artifact ID, or zero for natural weapons. Leave blank for no weapon.")
-    attack_odds = models.IntegerField(default=50,
+    attack_odds = models.IntegerField(
+        default=50,
         help_text="Base attack odds, before agility and armor adjustments. Weapon type does not matter.")
-    weapon_dice = models.IntegerField(default=1,
+    weapon_dice = models.IntegerField(
+        default=1,
         help_text="Applies to natural weapons only. For an artifact weapon, the weapon's dice and sides will be used.")
     weapon_sides = models.IntegerField(default=4,
-        help_text="Applies to natural weapons only.")
-    defense_bonus = models.IntegerField(default=0,
-        help_text="no longer used"
+                                       help_text="Applies to natural weapons only.")
+    defense_bonus = models.IntegerField(
+        default=0,
+        help_text="Gives the monster an additional percent bonus to avoid being hit. (Rare)"
     )
     armor_class = models.IntegerField(default=0)
     special = models.CharField(max_length=255, null=True, blank=True)
@@ -302,7 +335,7 @@ class Hint(models.Model):
     """
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='hints', null=True)
     index = models.IntegerField(null=True)
-    edx = models.CharField(max_length=50,null=True,blank=True)
+    edx = models.CharField(max_length=50, null=True, blank=True)
     question = models.CharField(max_length=255)
 
     def __str__(self):
@@ -316,7 +349,8 @@ class HintAnswer(models.Model):
     hint = models.ForeignKey(Hint, on_delete=models.CASCADE, related_name='answers')
     index = models.IntegerField(null=True)
     answer = models.TextField(max_length=1000, help_text="Supports Markdown.")
-    spoiler = models.BooleanField(default=False, help_text="Obscure the answer until the user shows it.")
+    spoiler = models.BooleanField(default=False,
+                                  help_text="Obscure the answer until the user shows it.")
 
 
 class PlayerProfile(models.Model):
@@ -365,11 +399,11 @@ class PlayerArtifact(models.Model):
     TYPES = (
         (2, 'Weapon'),
         (3, 'Magic Weapon'),
-        (11, 'Wearable'), # armor/shield
+        (11, 'Wearable'),  # armor/shield
     )
     ARMOR_TYPES = (
         (0, 'Armor'),
-        (1, 'Shield'), # different in EDX - see manual
+        (1, 'Shield'),  # different in EDX - see manual
     )
     HANDS = (
         (1, 'One-handed'),
@@ -381,14 +415,14 @@ class PlayerArtifact(models.Model):
     type = models.IntegerField(choices=TYPES)
     weight = models.IntegerField(default=0)
     value = models.IntegerField(default=0)
-    weapon_type = models.IntegerField(default=0,choices=WEAPON_TYPES,null=True)
-    hands = models.IntegerField(choices=HANDS,default=1)
-    weapon_odds = models.IntegerField(default=0,null=True)
-    dice = models.IntegerField(default=1,null=True)
-    sides = models.IntegerField(default=1,null=True)
-    armor_type = models.IntegerField(default=0,choices=ARMOR_TYPES,null=True)
-    armor_class = models.IntegerField(default=0,null=True)
-    armor_penalty = models.IntegerField(default=0,null=True)
+    weapon_type = models.IntegerField(default=0, choices=WEAPON_TYPES, null=True)
+    hands = models.IntegerField(choices=HANDS, default=1)
+    weapon_odds = models.IntegerField(default=0, null=True)
+    dice = models.IntegerField(default=1, null=True)
+    sides = models.IntegerField(default=1, null=True)
+    armor_type = models.IntegerField(default=0, choices=ARMOR_TYPES, null=True)
+    armor_class = models.IntegerField(default=0, null=True)
+    armor_penalty = models.IntegerField(default=0, null=True)
 
     def __str__(self):
         return "{} {}".format(self.player, self.name)
@@ -402,4 +436,4 @@ class ActivityLog(models.Model):
     type = models.CharField(max_length=255)
     value = models.IntegerField(null=True, blank=True)
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='activity_log', null=True)
-    created = models.DateTimeField(auto_now_add=True,null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)

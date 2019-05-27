@@ -1,14 +1,11 @@
-import os
-import json
-from rest_framework import viewsets, filters, permissions, mixins, generics, status
+from rest_framework import viewsets, mixins
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from eamon import settings
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
 from . import serializers
-from .models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, Player, PlayerProfile, Hint, HintAnswer, ActivityLog
+from .models import Adventure, Author, Room, Artifact, Effect, Monster, Player, PlayerProfile, Hint, ActivityLog
 
 
 def index(request, path=''):

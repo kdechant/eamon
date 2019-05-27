@@ -90,7 +90,7 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         if 'inventory' in validated_data:
-            inventory_data = validated_data.pop('inventory') # not used here - causes errors if present
+            _ = validated_data.pop('inventory')  # not used here - causes errors if present
         validated_data['gold'] = 200
         player = Player.objects.create(**validated_data)
         player.log("create")

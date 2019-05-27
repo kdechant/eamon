@@ -520,10 +520,7 @@ export class Monster extends GameObject {
     if (this.weapon_id === null || this.weapon_id < 0) {
       return true;
     }
-    if (this.weapon_id === 0 && this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE) {
-      return true;
-    }
-    return false;
+    return (this.weapon_id === 0 && this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
   }
 
   /**
@@ -831,11 +828,7 @@ export class Monster extends GameObject {
     }
 
     let w = this.getWeapon();
-    if (w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE) {
-      return true;
-    } else {
-      return false;
-    }
+    return (w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
   }
 
   /**
@@ -863,8 +856,7 @@ export class Monster extends GameObject {
    */
   public rollSavingThrow(stat, difficulty) {
     let roll = Game.getInstance().diceRoll(1, 20);
-    let success = roll + Math.floor((this[stat] - 10) / 2) >= difficulty;
-    return success;
+    return roll + Math.floor((this[stat] - 10) / 2) >= difficulty;
   }
 
   /**
@@ -1143,6 +1135,21 @@ export class Monster extends GameObject {
 
     Game.getInstance().triggerEvent("afterSell");
 
+  }
+
+  /**
+   * Spawns a new child member for the group
+   */
+  public spawnChild() {
+    console.error("Not implemented for single monsters");
+  }
+
+  /**
+   * Reduces the size of the group by removing some children
+   * @param {number} num The number of children to remove
+   */
+  public removeChildren(num: Number = 1) {
+    console.error("Not implemented for single monsters");
   }
 
 }
