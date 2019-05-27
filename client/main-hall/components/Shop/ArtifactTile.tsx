@@ -9,14 +9,13 @@ class ArtifactTile extends React.Component<any, any> {
   public buy = () => {
     this.setState({message: "Bought!"});
     setTimeout(() => {
-      // TODO: animations
       this.setState({message: ""});
       let player = this.props.player;
       player.inventory.push(this.props.artifact);
       player.gold -= this.props.artifact.value;
       this.props.setPlayerState(player);
-      // TODO: remove item from the shop inventory if it's a magic weapon
-      }, 1200);
+      this.props.removeItem(this.props.artifact);
+    }, 1200);
   };
 
   public sell = () => {

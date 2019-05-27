@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Link, Route} from "react-router-dom";
 import ArtifactTile from "./ArtifactTile";
+import Artifact from "../../models/artifact";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 // the shop inventory is kept outside the component, so it will persist
@@ -13,6 +14,18 @@ class Shop extends React.Component<any, any> {
     super(props);
     this.state = {weapons, armors};
   }
+
+  public removeItem = (artifact) => {
+    if (artifact.type === Artifact.TYPE_WEAPON) {
+      return;  // infinite supply of non-magic weapons
+    }
+    let index = this.state.weapons.indexOf(artifact);
+    if (index > -1) {
+      let weapons = this.state.weapons;
+      weapons.splice(index, 1);
+      this.setState({weapons});
+    }
+  };
 
   public render() {
 
@@ -42,10 +55,13 @@ class Shop extends React.Component<any, any> {
             <p>You have {this.props.player.gold} gold pieces.</p>
             <p className="heading">Weapons:</p>
             <div className="container-fluid">
-              <div className="row">{this.state.weapons.map(artifact =>
-                <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
-              )}
-              </div>
+              <TransitionGroup className="row">
+                {this.state.weapons.map(artifact =>
+                  <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
+                    <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} removeItem={this.removeItem} action="buy" />
+                  </CSSTransition>
+                )}
+              </TransitionGroup>
             </div>
             <p className="heading">Armor and Shields:</p>
             <div className="container-fluid">
