@@ -33,18 +33,18 @@ class Status extends React.Component<any, any> {
             </div>
 
             <div className="weapon-abilities row">
-              <div className="axe col-md-2">Axe: { this.props.player.wpn_axe }%</div>
-              <div className="bow col-md-2">Bow: { this.props.player.wpn_bow }%</div>
-              <div className="club col-md-2">Club: { this.props.player.wpn_club }%</div>
-              <div className="spear col-md-2">Spear: { this.props.player.wpn_spear }%</div>
-              <div className="sword col-md-2">Sword: { this.props.player.wpn_sword }%</div>
+              <div className="axe col-md">Axe:<br />{ this.props.player.wpn_axe }%</div>
+              <div className="bow col-md">Bow:<br />{ this.props.player.wpn_bow }%</div>
+              <div className="club col-md">Club:<br />{ this.props.player.wpn_club }%</div>
+              <div className="spear col-md">Spear:<br />{ this.props.player.wpn_spear }%</div>
+              <div className="sword col-md">Sword:<br />{ this.props.player.wpn_sword }%</div>
             </div>
 
             <div className="spell-abilities row">
-              <div className="col-6 col-md-3">Blast:<br/> { this.props.player.spell_abilities_original.blast }%</div>
-              <div className="col-6 col-md-3">Heal:<br/> { this.props.player.spell_abilities_original.heal }%</div>
-              <div className="col-6 col-md-3">Power:<br/> { this.props.player.spell_abilities_original.power }%</div>
-              <div className="col-6 col-md-3">Speed:<br/> { this.props.player.spell_abilities_original.speed }%</div>
+              <div className="col-6 col-md">Blast:<br/>{ this.props.player.spell_abilities_original.blast }%</div>
+              <div className="col-6 col-md">Heal:<br/>{ this.props.player.spell_abilities_original.heal }%</div>
+              <div className="col-6 col-md">Power:<br/>{ this.props.player.spell_abilities_original.power }%</div>
+              <div className="col-6 col-md">Speed:<br/>{ this.props.player.spell_abilities_original.speed }%</div>
             </div>
 
             <div className="ae row">
@@ -52,8 +52,8 @@ class Status extends React.Component<any, any> {
             </div>
 
             <div className="gold row">
-              <div className="col-sm-6">Gold in hand: { this.props.player.gold }</div>
-              <div className="col-sm-6">Gold in bank: { this.props.player.gold_in_bank }</div>
+              <div className="col-sm">Gold in hand: { this.props.player.gold }</div>
+              <div className="col-sm">Gold in bank: { this.props.player.gold_in_bank }</div>
             </div>
           </div>
 

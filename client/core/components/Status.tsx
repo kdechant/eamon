@@ -36,26 +36,24 @@ class Status extends React.Component<any, any> {
           </div>
 
           <div className="weapon-abilities row">
-            <div className="axe col-sm-2">Axe: { game.player.weapon_abilities[1]}%</div>
-            <div className="bow col-sm-2">Bow: { game.player.weapon_abilities[2]}%</div>
-            <div className="club col-sm-2">Club: { game.player.weapon_abilities[3]}%</div>
-            <div className="spear col-sm-2">Spear: { game.player.weapon_abilities[4]}%</div>
-            <div className="sword col-sm-2">Sword: { game.player.weapon_abilities[5]}%</div>
+            <div className="axe col-sm">Axe:<br />{ game.player.weapon_abilities[1]}%</div>
+            <div className="bow col-sm">Bow:<br />{ game.player.weapon_abilities[2]}%</div>
+            <div className="club col-sm">Club:<br />{ game.player.weapon_abilities[3]}%</div>
+            <div className="spear col-sm">Spear:<br />{ game.player.weapon_abilities[4]}%</div>
+            <div className="sword col-sm">Sword:<br />{ game.player.weapon_abilities[5]}%</div>
           </div>
 
           <div className="ae row">Armor expertise: { game.player.armor_expertise }%</div>
 
-          {game.player.weapon && (
-          <div className="weapon row">Ready weapon: { titleCase(game.player.weapon.name) }&nbsp;
-            ({ game.player.weapon.dice }d{ game.player.weapon.sides })
-          </div>
+          {game.player.weapon ? (
+            <div className="weapon row">Ready weapon: { titleCase(game.player.weapon.name) }{' '}
+              ({ game.player.weapon.dice }d{ game.player.weapon.sides })
+            </div>
+          ) : (
+            <div className="weapon none row">Ready weapon: none!</div>
           )}
 
-          {!game.player.weapon && (
-          <div className="weapon none row">Ready weapon: none!</div>
-          )}
-
-          {game.player.armor_class && (
+          {game.player.armor_class > 0 && (
             <div className="armor row">Armor:&nbsp;
               {game.player.armor_worn.map(armor => titleCase(armor.name)).join(" and ")}
               &nbsp;({ game.player.armor_class })
@@ -68,7 +66,7 @@ class Status extends React.Component<any, any> {
 
         </div>
       </div>
-        
+
       <div className="status-widget room">
         {!inTheDark && (
           <div>
@@ -76,10 +74,10 @@ class Status extends React.Component<any, any> {
             <h3 className="heading">Current Location:</h3>
             <p className="room-name">{ game.rooms.current_room.name }</p>
 
-          {/*   [class.hidden]="hiddenDesc" */}
+            {/*   [class.hidden]="hiddenDesc" */}
             <ReactMarkdown className="room-description"
-                           source={ game.rooms.current_room.description }
-                           escapeHtml={false} />
+                           source={game.rooms.current_room.description}
+                           escapeHtml={false}/>
             <div className="room-exits">Visible Exits:&nbsp;
               {visible_exits.map((exit, index) => (
                 <span key={index}>{exit.direction}&nbsp;</span>
