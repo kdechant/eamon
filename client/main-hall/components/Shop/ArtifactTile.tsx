@@ -68,14 +68,14 @@ class ArtifactTile extends React.Component<any, any> {
       <div className="artifact-tile col-sm-6 col-md-4 col-lg-3">
         <div className="artifact-tile-inner">
           <div className="artifact-icon">
-            <img src={icon_url} title={ this.props.artifact.getTypeName() } />
+            <img src={icon_url} title={ this.props.artifact.getTypeName() } alt={ this.props.artifact.getTypeName() } />
           </div>
           <div className="artifact-name">
             <strong>{ ucFirst(this.props.artifact.name) }</strong><br />
           </div>
           <div className="artifact-data">
             {stats}
-            <img src="/static/images/ravenmore/128/coin.png" title="gold coin" /> {value}
+            <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
           </div>
           <div className="artifact-buttons">
             {button}
