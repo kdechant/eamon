@@ -35,19 +35,21 @@ export class HistoryManager {
    *   The text to output
    * @param {string} type
    *   The style of text: "normal" (default), "special", "success", "warning", "danger"
+   * @param {boolean} markdown
+   *   Whether to use the Markdown formatter (true) or the plain text formatter (false)
    */
-  write(text: string, type: string = "normal") {
+  write(text: string, type: string = "normal", markdown: boolean = false) {
     if (!this.suppressNextMessage) {
       text = text.charAt(0).toUpperCase() + text.slice(1);
       this.total_delay += this.delay;
       if (this.delay > 0) {
         setTimeout(() => {
-          this.history[this.index - 1].push(text, type);
+          this.history[this.index - 1].push(text, type, markdown);
           game && game.refresh();
         }, this.total_delay);
       } else {
         // delay of zero is used for unit testing, otherwise the timeouts make the tests fail
-        this.history[this.index - 1].push(text, type);
+        this.history[this.index - 1].push(text, type, markdown);
       }
     }
     this.suppressNextMessage = false;

@@ -46,6 +46,7 @@ ARMOR_TYPES = (
     (0, 'Armor'),
     (1, 'Shield'),
 )
+MARKDOWN_CHOICES = [(False, "Plain text"), (True, "Markdown")]
 
 
 class Author(models.Model):
@@ -103,6 +104,7 @@ class Room(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='rooms')
     room_id = models.IntegerField(default=0) # The in-game room ID.
     name = models.CharField(max_length=255)
+    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
     effect = models.IntegerField(null=True,blank=True) # The ID of an effect to display after the description
     effect_inline = models.IntegerField(null=True,blank=True) # The ID of an effect to display after the description, without a paragraph break.
@@ -130,7 +132,8 @@ class Artifact(models.Model):
     synonyms = models.CharField(null=True, max_length=255, blank=True,
                                 help_text="Other terms for this artifact. E.g., if the artifact name is 'secret door in"
                                           " north wall' you could have a synonym of 'door' to help the player find it.")
-    description = models.TextField(max_length=1000, help_text="Supports Markdown.")
+    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    description = models.TextField(max_length=1000)
     effect = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description
     effect_inline = models.IntegerField(null=True, blank=True) # The ID of an effect to display after the description, without a paragraph break.
     room_id = models.IntegerField(null=True,blank=True,
@@ -217,7 +220,8 @@ class Effect(models.Model):
     )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
     effect_id = models.IntegerField(default=0) # The in-game effect ID.
-    text = models.TextField(max_length=65535, help_text="Supports Markdown.")
+    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    text = models.TextField(max_length=65535)
     style = models.CharField(max_length=20, null=True, blank=True, choices=STYLES) # used by EDX to display effect text in color
     next = models.IntegerField(null=True, blank=True,
                                help_text="The next chained effect. Used with EDX conversions.")
@@ -248,7 +252,8 @@ class Monster(models.Model):
                                    help_text="The plural form of the name. Used only with group monsters.")
     synonyms = models.CharField(null=True, max_length=255, blank=True,
         help_text="Other names used for this monster. If the name is 'python' a synonym might be 'snake'")
-    description = models.TextField(max_length=1000, help_text="Supports Markdown.")
+    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    description = models.TextField(max_length=1000)
     # The ID of an effect to display after the description
     effect = models.IntegerField(null=True, help_text="Used only with EDX conversions")
     # The ID of an effect to display after the description, without a paragraph break.

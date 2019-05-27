@@ -26,11 +26,15 @@ class History extends React.Component<any, any> {
             <h3 className="history-command">{entry.command}</h3>
             {entry.results.map((line, index) => {
               const className = "history-results " + line.type;
-              return (
-                <div className={className} key={index}>
-                  <ReactMarkdown source={line.text} escapeHtml={false} />
-                </div>
-              )
+              if (line.markdown) {
+                return (
+                  <div className={className} key={index}>
+                    <ReactMarkdown source={line.text} escapeHtml={false}/>
+                  </div>
+                );
+              }
+              // plain text formatting is the default
+              return <p className={className} key={index}>{line.text}</p>
             }
             )}
           </div>

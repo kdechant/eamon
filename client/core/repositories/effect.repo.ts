@@ -66,6 +66,7 @@ export default class EffectRepository {
    * @param {number} id The ID of the effect
    * @param {string} style The display type, e.g., "normal", "special", "warning", "danger"  - omit this argument
    * to use the style specified in the effect object
+   * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
   public print(id: number, style: string = null, inline: boolean = false): void {
     let ef = this.get(id);
@@ -79,7 +80,7 @@ export default class EffectRepository {
         if (final_style === null) {
           final_style = ef.style;
         }
-        Game.getInstance().history.write(ef.text, final_style);
+        Game.getInstance().history.write(ef.text, final_style, ef.is_markdown);
       }
       if (ef.next !== null) {
         this.print(ef.next, style);

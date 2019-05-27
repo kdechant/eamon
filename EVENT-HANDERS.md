@@ -111,10 +111,10 @@ The available styles are as follows:
 - special (blue): Used for special effects, magic spells, etc.
 - special2 (purple): Used for special effects, magic spells, etc.
 
-For finer control of the output, you may also use Markdown within the output strings.
+For finer control of the output, you may also use the optional third "Markdown" argument to `game.history.write()`:
 
     // write a message using Markdown to mix regular and bold font
-    game.history.write('The dragon snarls, **"Go Away"**');
+    game.history.write('The dragon snarls, **"Go Away"**', 'normal', true);  // third argument "true" enables Markdown
 
 ## Working with Rooms, Artifacts, and Monsters
 

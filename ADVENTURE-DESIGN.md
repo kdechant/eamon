@@ -101,7 +101,8 @@ Fields are:
 - Adventure: Choose the adventure you created above in the drop-down
 - Room ID: Give it an ID number. Room 1 is the where the player will start. Typically, rooms are numbered sequentially starting with 1, though the program currently won't calculate this for you.
 - Name
-- Description - Unlike Classic Eamon, this can contain as much text as you like. It also supports Markdown.
+- Text format - Use "Plain Text" unless you need custom formatting. Use "Markdown" to allow Markdown formatting in the description.
+- Description - Unlike Classic Eamon, this can contain as much text as you like.
 - Is Dark - Check this box if the room is dark and requires a light source
 
 #### Room Exits

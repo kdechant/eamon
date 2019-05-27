@@ -55,6 +55,7 @@ export class Room extends Loadable {
   public id: number;
   public name: string;
   public description: string;
+  public is_markdown: boolean;
   public exits: RoomExit[] = [];
   public seen: boolean = false;
   public is_dark: boolean;
@@ -64,7 +65,7 @@ export class Room extends Loadable {
   /**
    * Loads data from JSON source into the object properties.
    * Override of parent method to handle RoomExit objects.
-   * @param Object source an object, e.g., from JSON.
+   * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
     for (let prop in source) {
@@ -85,7 +86,7 @@ export class Room extends Loadable {
    */
   public show_description() {
     let game = Game.getInstance();
-    game.history.write(this.description);
+    game.history.write(this.description,"normal", this.is_markdown);
     if (this.effect != null) {
       game.effects.print(this.effect);
     }

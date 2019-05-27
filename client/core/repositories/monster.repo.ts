@@ -172,7 +172,7 @@ export default class MonsterRepository {
   /**
    * Gets a numbered monster.
    * @param {number} id
-   * @return Monster
+   * @return Monster|GroupMonster
    */
   public get(id) {
     // @ts-ignore

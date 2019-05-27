@@ -39,6 +39,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_filter = ['adventure']
     ordering = ['adventure', 'room_id']
     exclude = ('effect', 'effect_inline')
+    radio_fields = {'is_markdown': admin.HORIZONTAL}
 
     inlines = [
         RoomExitInline,
@@ -52,6 +53,7 @@ class ArtifactAdmin(admin.ModelAdmin):
     list_filter = ['adventure']
     ordering = ['adventure', 'artifact_id']
     exclude = ('effect', 'effect_inline', 'clothing_type', 'original_group_size')
+    radio_fields = {'is_markdown': admin.HORIZONTAL}
 
 
 @admin.register(Effect)
@@ -61,6 +63,7 @@ class EffectAdmin(admin.ModelAdmin):
     list_filter = ['adventure']
     ordering = ['adventure', 'effect_id']
     exclude = ('next', 'next_inline')
+    radio_fields = {'is_markdown': admin.HORIZONTAL}
 
 
 @admin.register(Monster)
@@ -70,6 +73,7 @@ class MonsterAdmin(admin.ModelAdmin):
     list_filter = ['adventure']
     ordering = ['adventure_id', 'monster_id']
     exclude = ('effect', 'effect_inline', 'defense_bonus', 'original_group_size')
+    radio_fields = {'is_markdown': admin.HORIZONTAL}
 
 
 class HintAnswerInline(admin.TabularInline):

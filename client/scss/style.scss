@@ -176,19 +176,26 @@ a {
     height: 730px;
   }
 
-  // by default, the history paragraphs have the white space at the top. (see also .no-space below.)
+  // By default, the history paragraphs have the white space at the top.
+  // The .no-space class is used to make them appear closer together.
   p {
     margin: 10px 0 0;
     &.no-space {
       margin-top: 0;
     }
   }
+  div.no-space {
+    p {
+      margin-top: 0;
+    }
+  }
 
   .history-command {
-    margin: 10px 0 0;
+    margin: 10px 0;
     font-size: 20px;
     color: #009;
     font-weight: bold;
+    text-transform: uppercase;
   }
 }
 

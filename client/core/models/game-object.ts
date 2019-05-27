@@ -10,6 +10,7 @@ export class GameObject {
   id: number;
   name: string;
   description: string;
+  is_markdown: boolean;  // does the description use markdown formatting?
   aliases: string[];
   effect: number;  // for extended descriptions
   effect_inline: number;  // for extended descriptions
@@ -57,7 +58,8 @@ export class GameObject {
     // Check for whether the game is running. This prevents the following JS error in the main hall:
     // "TypeError: Object.setPrototypeOf: expected an object or null, got undefined"
     if (typeof game !== 'undefined') {
-      game.history.write(this.description + " ");  // pad with space in case of chained effects
+      game.history.write(this.description + " ",  // pad with space in case of chained effects
+        "normal", this.is_markdown);
       if (this.effect) {
         game.effects.print(this.effect);
       }
