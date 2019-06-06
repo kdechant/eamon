@@ -302,10 +302,13 @@ export class GetCommand implements BaseCommand {
 
             if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
               game.player.pickUp(a);
-              if (arg === "all") {
-                game.history.write(a.name + " taken.", "no-space");
+              let style = arg === 'all' ? "no-space" : '';
+              if (a.type === Artifact.TYPE_GOLD) {
+                game.history.write(a.name + " is added to your coin pouch.", style);
+                game.player.gold += a.value;
+                a.destroy();
               } else {
-                game.history.write(a.name + " taken.");
+                game.history.write(a.name + " taken.", style);
               }
               game.triggerEvent("afterGet", arg, a);
 
@@ -383,8 +386,14 @@ export class RemoveCommand implements BaseCommand {
                   game.history.write(item.description);
                   item.seen = true;
                 }
-                game.history.write(item.name + " removed from " + container.name + ".");
-                item.removeFromContainer();
+                if (item.type === Artifact.TYPE_GOLD) {
+                  game.history.write(`You add the ${item.name} to your coin pouch.`);
+                  game.player.gold += item.value;
+                  item.destroy();
+                } else {
+                  game.history.write(item.name + " removed from " + container.name + ".");
+                  item.removeFromContainer();
+                }
                 game.triggerEvent("afterRemoveFromContainer", arg, item, container);
               }
             } else {
