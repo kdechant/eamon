@@ -171,7 +171,7 @@ export var event_handlers = {
     }
   },
 
-  "see_artifact": function(artifact: Artifact): void {
+  "seeArtifact": function(artifact: Artifact): void {
     let game = Game.getInstance();
     if (artifact.id === 26) {
       game.artifacts.get(36).reveal();

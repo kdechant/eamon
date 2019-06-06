@@ -965,7 +965,7 @@ Return value: none
 
 Example (from Training Ground):
 
-    "see_monster": function(monster: Monster): void {
+    "seeMonster": function(monster: Monster): void {
       let game = Game.getInstance();
       // some monsters speak when you first see them.
   
@@ -981,7 +981,7 @@ Example (from Training Ground):
 
 ## See an artifact
 
-Just like "see_monster", this is called when the player first sees an artifact. It's typically used to show extra information
+Just like "seeMonster", this is called when the player first sees an artifact. It's typically used to show extra information
  that isn't in the artifact description.
 
 Parameters:
@@ -991,7 +991,7 @@ Return value: none
  
 Example:
     
-    "see_artifact": function(artifact: Artifact): void {
+    "seeArtifact": function(artifact: Artifact): void {
       let game = Game.getInstance();
       if (artifact.id === 26) {
         game.artifacts.get(36).reveal();

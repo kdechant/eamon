@@ -235,7 +235,7 @@ export var event_handlers = {
     }
   },
 
-  "see_monster": function (monster: Monster): void {
+  "seeMonster": function (monster: Monster): void {
     let game = Game.getInstance();
     // some monsters speak when you first see them.
 

@@ -475,7 +475,7 @@ export default class Game {
         if (!m.seen) {
           m.showDescription();
           m.seen = true;
-          this.triggerEvent("see_monster", m);
+          this.triggerEvent("seeMonster", m);
         } else {
           if (!m.children.length) {
             this.history.write(`${m.name} is here.`, "no-space");
@@ -493,7 +493,7 @@ export default class Game {
       for (let a of this.artifacts.visible) {
         if (!a.seen) {
           a.showDescription();
-          this.triggerEvent("see_artifact", a);
+          this.triggerEvent("seeArtifact", a);
           a.seen = true;
         } else {
           if (a.player_brought) {

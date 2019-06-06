@@ -50,7 +50,7 @@ export var event_handlers = {
     }
   },
 
-  "see_monster": function(monster: Monster): void {
+  "seeMonster": function(monster: Monster): void {
     let game = Game.getInstance();
     if (monster.id === 16) {
       // king explains the situation and gives you a pass

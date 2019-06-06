@@ -149,7 +149,7 @@ export var event_handlers = {
     return true;
   },
 
-  "see_artifact": function(artifact: Artifact): void {
+  "seeArtifact": function(artifact: Artifact): void {
     let game = Game.getInstance();
     if (artifact.id === 45) {
       game.delay();
@@ -158,7 +158,7 @@ export var event_handlers = {
     }
   },
 
-  "see_monster": function(monster: Monster): void {
+  "seeMonster": function(monster: Monster): void {
     let game = Game.getInstance();
     // nasreen's opening remarks
     if (monster.id === 1) {

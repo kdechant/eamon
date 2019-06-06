@@ -307,7 +307,7 @@ export var event_handlers = {
     return true;
   },
 
-  "see_monster": function(monster: Monster): void {
+  "seeMonster": function(monster: Monster): void {
     let game = Game.getInstance();
     if (monster.id == 3) { // Lancelot
       printSequence([85,86]);
