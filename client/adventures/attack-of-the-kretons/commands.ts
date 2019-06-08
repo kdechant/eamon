@@ -30,7 +30,7 @@ custom_commands.push({
       }
       // chichester (first time)
       if (monster.id === 16 && monster.hasArtifact(19)) {
-        game.artifacts.get(16).moveToRoom();
+        game.artifacts.get(19).moveToRoom();
         game.effects.printSequence([32, 33]);
         monster.reaction = Monster.RX_FRIEND;
       }

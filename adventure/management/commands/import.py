@@ -1,8 +1,8 @@
 import struct, re, os, regex
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.text import slugify
-from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
+from adventure.models import Adventure, Room, RoomExit, Artifact, Effect, Monster
 
 
 class Command(BaseCommand):
@@ -42,7 +42,10 @@ class Command(BaseCommand):
                 # multiple adventures in the database
                 for adv in sub_adventures:
                     print("Adventure: '" + adv[0] + "'")
-                    a = Adventure.objects.get_or_create(name=adv[0], edx=edx)[0]
+                    a = Adventure.objects.get(name=adv[0], edx=edx)
+                    if a is None:
+                        adv_id = input('ID for adventure {}?'.format(adv[0]))
+                        a = Adventure.objects.get_or_create(id=adv_id, name=adv[0], edx=edx)[0]
                     print("Adventure ID:" + str(a.id))
                     a.slug = slugify(adv[0])
                     a.edx_room_offset = adv[5]
@@ -55,7 +58,10 @@ class Command(BaseCommand):
                     a.save()
             else:
                 print("Adventure: " + adv_data[4])
-                a = Adventure.objects.get_or_create(name=adv_data[4], edx=edx)[0]
+                a = Adventure.objects.get(name=adv_data[4], edx=edx)
+                if a is None:
+                    adv_id = input('ID for adventure {}?'.format(adv_data[4]))
+                    a = Adventure.objects.get_or_create(id=adv_id, name=adv_data[4], edx=edx)[0]
                 a.slug = slugify(adv_data[4])
                 a.edx_room_offset = 1
                 a.edx_artifact_offset = 1
@@ -112,7 +118,11 @@ class Command(BaseCommand):
                     values = struct.unpack('<hhhhhhhhhhh', bytes)
 
                     room.is_dark = True if values[10] == 0 else False
-                    room.save()
+                    try:
+                        room.save()
+                    except ValidationError as e:
+                        print(e)
+
                     # print("Saved with ID #" + str(room.id))
 
                     # the connections
@@ -159,9 +169,9 @@ class Command(BaseCommand):
                             new_artifact_id = artifact_id - a.edx_artifact_offset + 1
 
                     # name
-                    artifact = Artifact.objects.get_or_create(adventure_id=adventure_id,artifact_id=new_artifact_id)[0]
+                    artifact = Artifact.objects.get_or_create(adventure_id=adventure_id, artifact_id=new_artifact_id)[0]
                     artifact.name = bytes.decode('cp437').strip()
-                    print("Artifact: " + artifact.name)
+                    print("Artifact #{}: {}".format(artifact.artifact_id, artifact.name))
 
                     # other properties are in the next 8 2-byte little-endian integers
                     bytes = datafile.read(16)
@@ -284,7 +294,7 @@ class Command(BaseCommand):
 
                     elif artifact.type == 13:
                         # dead body
-                        artifact.get_all = values[4]
+                        artifact.get_all = bool(values[4])
 
                     # description is stored in a separate file
                     bytes = descfile.read(255)
@@ -299,7 +309,13 @@ class Command(BaseCommand):
                         else:
                             artifact.effect = match.groups()[1]
 
-                    artifact.save()
+                    try:
+                        artifact.save()
+                    except ValidationError as e:
+                        print("Validation Error:")
+                        print(e)
+                        print("Data:")
+                        print(values)
 
         with open(folder + '/EFFECT.DSC', 'r', encoding="cp437") as datafile:
 
@@ -321,7 +337,7 @@ class Command(BaseCommand):
                 )[0]
                 effect.text = bytes.strip()
                 try:
-                    print("Effect: " + effect.text[0:40] + "...")
+                    print("Effect #{}: {}...".format(effect.effect_id, effect.text[0:40]))
                 except UnicodeEncodeError:
                     print("Invalid character in string!")
 
@@ -343,7 +359,10 @@ class Command(BaseCommand):
                     else:
                         effect.next = match.groups()[1]
 
-                effect.save()
+                try:
+                    effect.save()
+                except ValidationError as e:
+                    print(e)
 
         # TODO: merge chained effects (looking for *nnn at end of text)
 
@@ -372,7 +391,7 @@ class Command(BaseCommand):
                     )[0]
                     monster.name = bytes.decode('cp437').strip()
 
-                    print("Monster: " + monster.name)
+                    print("Monster #{}: {}".format(monster.monster_id, monster.name))
 
                     # other properties are in the next 13 2-byte little-endian integers
                     bytes = datafile.read(26)
@@ -418,7 +437,10 @@ class Command(BaseCommand):
                         else:
                             monster.effect = match.groups()[1]
 
-                    monster.save()
+                    try:
+                        monster.save()
+                    except ValidationError as e:
+                        print(e)
 
         # import artifact synonyms from the .BAS files
         for a in adventures:

@@ -110,6 +110,7 @@ export class Room extends Loadable {
    */
   public getExit(direction: string): RoomExit {
     for (let i in this.exits) {
+      // FIXME: this will only work with 'e' not 'east', etc.
       if (this.exits[i].direction === direction) {
         return this.exits[i];
       }

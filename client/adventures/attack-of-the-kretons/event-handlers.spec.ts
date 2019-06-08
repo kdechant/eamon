@@ -42,11 +42,37 @@ it("should have working event handlers", () => {
   expect(game.monsters.get(3).room_id).toBe(1);
   expect(game.artifacts.get(8).room_id).toBe(1);
 
-  // gate
+  // gate / kretons
   game.player.moveToRoom(9);
   game.artifacts.updateVisible();
   game.tick();
   game.command_parser.run('open gate');
   expect(game.history.getOutput(0).text).toBe("Don't be dumb.");
+  game.command_parser.run('w');
+  expect(game.effects.get(25).seen).toBeTruthy();
+  expect(game.player.room_id).toBe(10);
+  expect(game.effects.get(27).seen).toBeTruthy();
+  game.command_parser.run("flee n");
+  expect(game.player.room_id).toBe(11);
+  expect(game.effects.get(29).seen).toBeTruthy();
+  expect(game.monsters.get(3).room_id).toBe(11);
+  expect(game.monsters.get(14).room_id).toBe(10);
+
+  // max
+  game.player.moveToRoom(43);
+  game.tick();
+  game.command_parser.run('flee e');
+  expect(game.history.getOutput(0).text).toBe("Manly Max won't let you go that way!");
+  expect(game.player.room_id).toBe(43);
+  game.command_parser.run('flee');
+  expect(game.player.room_id).toBe(13);
+
+  // chichester
+  game.player.moveToRoom(20);
+  game.tick();
+  game.command_parser.run('talk chichester');
+  expect(game.monsters.get(16).reaction).toBe(Monster.RX_FRIEND);
+  expect(game.effects.get(32).seen).toBeTruthy();
+  expect(game.artifacts.get(19).isHere()).toBeTruthy();
 
 });

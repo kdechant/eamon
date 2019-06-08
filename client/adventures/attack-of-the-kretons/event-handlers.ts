@@ -4,6 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
+import {printRandomEffect} from "../quest-for-the-holy-grail/event-handlers";
 
 export var event_handlers = {
 
@@ -22,17 +23,13 @@ export var event_handlers = {
     game.monsters.get(20).combat_verbs = witch_attacks;
 
     // game data
-    game.data['sage wants rum'] = 0;  // d$(1)
+    game.data['sage'] = 0;  // d$(1)
     game.data['prince unconscious'] = false;  // d$(2)
     game.data['eagles'] = false;  // d$(3)
-    game.data['hot room'] = false;  // d$(4)
+    game.data['hot room'] = 0;  // d$(4)
     game.data['read codex'] = false;  // d$(5)
     // the next few should be effect "seen" flag or seeMonster e.h.
-    // game.data['groo sees kretons'] = false;  // d$(6)
-    // game.data['seen torture room'] = false;  // d$(7)
     // game.data['pillagers'] = false;  // d$(8)
-    // game.data['conan'] = false;  // d$(9)
-    // game.data['statue'] = false;  // d$(10)
     game.data['conan dies'] = false;  // d$(11)
     game.data['can take orb'] = false;  // d$(12)
 
@@ -41,7 +38,6 @@ export var event_handlers = {
       'spits in a beer and swears.', 'chases some barbarians out.', 'opens a bottle with his teeth.'];
     game.monsters.get(3).data['battle_taunts'] = ['A fray!', 'Now Groo does what Groo does best!',
       'Fear me! I am Groo, the guy you should fear!', 'Die, mendicant!'];
-    game.monsters.get(16).data['actions'] = ['blows a smoke ring.']
 
     // monster talk effects
     game.monsters.get(1).data['talk'] = 1;
@@ -93,17 +89,112 @@ export var event_handlers = {
     return (defender.id === 29 || defender.id === 40) ? 0 : true;
   },
 
+  "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
+    let game = Game.getInstance();
+
+    switch (exit.room_to) {
+      case -555:
+        // leaving the city
+        game.effects.print(25);
+        game.player.moveToRoom(10);
+        return false;
+      case -627:
+        // getting back into the city
+        if (game.monsters.get(12).room_id !== 9) {
+          game.history.write("The soldiers aren't there to let you in.");
+        } else if (game.data['sage'] === 0 && game.monsters.get(21).isHere()) {
+          // returning with sage
+          game.data['sage'] = 1;
+          game.effects.printSequence([28,40,41]);
+          game.artifacts.get(29).moveToRoom(2);  // fish key
+          // TODO: if you already have the brandy, you shouldn't get thrown out
+          game.history.write("They throw you out the door and tell you that the rum shop is to the east.");
+          game.monsters.get(21).reaction = Monster.RX_NEUTRAL;
+          game.player.moveToRoom(2);
+        } else {
+          // soldiers let you in
+          game.effects.print(28);
+          game.player.moveToRoom(9);
+        }
+        return false;
+      case -747:
+        game.history.write("There is nothing for you there.");
+        return false;
+    }
+    return true;
+  },
+
+
   "endTurn2": function() {
     let game = Game.getInstance();
+    let room_id = game.player.room_id;
+
+    if (game.data['hot room'] === 1) {
+      game.history.write("Hurry up, or you're toast!", "warning");
+    }
+
+    // sage gets cranky if you come back without rum
+    if (room_id === 3 && game.data['sage'] === 1 && !game.player.hasArtifact(28)) {
+      game.effects.print(70);
+    }
 
     // groo's reactions to things
     let groo = game.monsters.get(3);
     if (groo.isHere()) {
+      // thrown out of court
+      if (room_id === 5 && !game.data['prince unconscious'] && !game.data['read codex']) {
+        game.data['prince unconscious'] = true;
+        game.effects.printSequence([16,17]);
+        game.history.write("Groo is thrown outside by the guards.");
+        groo.moveToRoom(4);
+      }
       // statue
       if (game.artifacts.get(57).isHere() && !game.effects.get(74).seen) {
         game.effects.print(74);
       }
+      // kretons
+      if (game.monsters.get(14).isHere() && !game.effects.get(27).seen) {
+        game.effects.print(27);
+      }
+      // path
+      if (room_id === 30 && !game.effects.get(49).seen) {
+        game.effects.print(49);
+      }
+      // path
+      if (room_id === 30 && !game.effects.get(49).seen) {
+        game.effects.print(49);
+      }
+    }
 
+    // first time in torture room
+    if (room_id === 25 && !game.effects.get(36).seen) {
+      game.effects.printSequence([36,37]);
+    }
+
+    // chichester's reactions to things
+    let chi = game.monsters.get(16);
+    let zombies = game.monsters.get(36);
+    let chakaal = game.monsters.get(34);
+    if (chi.isHere()) {
+      // zombie horde
+      if (zombies.isHere()) {
+        game.effects.printSequence([80, 81]);
+        zombies.destroy();
+      }
+      if (chakaal.isHere()) {
+        game.effects.printSequence([72, 73]);
+        game.history.write(`${chakaal.name} mopes away.`);
+        chakaal.destroy();
+      }
+      if (!game.in_battle && game.diceRoll(1,5) === 1) {
+        game.history.write(`${chi.name} blows a smoke ring.`);
+      }
+    }
+
+    // zombies (without chichester)
+    if (zombies.isHere()) {
+      game.effects.printSequence([78, 79]);
+      zombies.destroy();
     }
 
     // monster actions and taunts
@@ -118,6 +209,32 @@ export var event_handlers = {
       }
     });
 
+    if (room_id === 51) {
+      game.history.write("You think you hear Frank Zappa far in the distance.");
+    }
+
+    if (room_id === 57 && game.data['hot room'] === 0) {
+      game.history.write("The doors slam shut!", "emphasis");
+      game.data['hot room'] = 1;
+    }
+
+    // cheesedip god
+    let cg = game.monsters.get(39);
+    if (cg.isHere()) {
+      game.effects.print(85);
+      if (groo.isHere()) {
+        game.history.write("But Groo has no brain!");
+        game.effects.print(86);
+        cg.destroy();
+        game.monsters.get(40).moveToRoom();
+        game.artifacts.get(65).moveToRoom();
+        game.artifacts.get(66).moveToRoom();
+      } else {
+        game.effects.print(107);
+        game.die();
+      }
+    }
+
     // dog's name
     if (game.monsters.get(18).isHere()) {
       game.monsters.visible.filter(m => m.special && m.special.indexOf('dog') !== -1 && !m.data['dog'])
@@ -126,6 +243,35 @@ export var event_handlers = {
         m.data['dog'] = true;
       });
     }
+
+    if (room_id === 3 && game.monsters.get(21).isHere() && game.player.hasArtifact(28)) {
+      game.history.write("The Sage begs for the brandy.");
+    }
+
+    // if you found Groo before talking to the minstrel
+    if (room_id === 1 && game.monsters.get(2).isHere() && groo.isHere()) {
+      game.monsters.get(2).destroy();
+      game.artifacts.get(8).moveToRoom();
+      game.effects.print(95);
+    }
+
+  },
+
+  "flee": function(arg: string, exit: RoomExit) {
+    let game = Game.getInstance();
+    if (game.monsters.get(14).isHere()) { // kretons taunt
+      game.effects.print(29);
+    }
+    if (game.monsters.get(29).isHere()) { // max
+      if (arg === 'e' || arg === 'east') {
+        game.history.write("Manly Max won't let you go that way!");
+      } else {
+        game.player.moveToRoom(13);  // always flee west
+        game.skip_battle_actions = true;
+      }
+      return false;
+    }
+    return true;
   },
 
   "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
@@ -151,15 +297,8 @@ export var event_handlers = {
 
   "seeMonster": function(monster: Monster): void {
     let game = Game.getInstance();
-    // nasreen's opening remarks
-    if (monster.id === 1) {
-      game.history.write('Nasreen tells you, "Two of my commandos, Nevil and Norwood, are waiting in the camp to the south. We should join them as soon as you\'re ready."');
-    }
-    if (monster.id === 19) {
-      // dragon
-      game.effects.print(10);
-      monster.destroy();
-      game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length / 3));
+    if (monster.id === 33) {  // conan
+      game.effects.print(65);
     }
   },
 
