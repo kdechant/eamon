@@ -69,18 +69,19 @@ export default class EffectRepository {
    * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
   public print(id: number, style: string = null, inline: boolean = false): void {
+    let game = Game.getInstance();
     let ef = this.get(id);
     if (ef) {
       if (inline) {
         // print on the same line as the last effect
-        Game.getInstance().history.append(" " + ef.text);
+        game.history.append(" " + ef.text);
       } else {
         // print as a new paragraph
         let final_style = style;
         if (final_style === null) {
           final_style = ef.style;
         }
-        Game.getInstance().history.write(ef.text, final_style, ef.is_markdown);
+        game.history.write(ef.text, final_style, ef.is_markdown);
       }
       if (ef.next !== null) {
         this.print(ef.next, style);
@@ -90,8 +91,18 @@ export default class EffectRepository {
       }
       ef.seen = true;
     } else {
-      Game.getInstance().history.write("Effect #" + id + " not found!");
+      game.history.write("Effect #" + id + " not found!");
     }
+  }
+
+  /**
+   * Prints a sequence of effects.
+   * @param {number[]} effectIds
+   *   The IDs of the effects to print
+   */
+  public printSequence(effectIds: number[]): void {
+    let game = Game.getInstance();
+    effectIds.forEach(id => game.effects.print(id));
   }
 
 }
