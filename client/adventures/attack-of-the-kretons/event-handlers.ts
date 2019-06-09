@@ -5,6 +5,8 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {printRandomEffect} from "../quest-for-the-holy-grail/event-handlers";
+import {CommandException} from "../../core/utils/command.exception";
+import {ModalQuestion} from "../../core/models/modal";
 
 export var event_handlers = {
 
@@ -31,7 +33,7 @@ export var event_handlers = {
     // the next few should be effect "seen" flag or seeMonster e.h.
     // game.data['pillagers'] = false;  // d$(8)
     game.data['conan dies'] = false;  // d$(11)
-    game.data['can take orb'] = false;  // d$(12)
+    game.data['orb'] = 0;  // d$(12)
 
     // monster random actions
     game.monsters.get(1).data['actions'] = ['growls viciously.', 'cracks a walnut on his head.',
@@ -89,6 +91,29 @@ export var event_handlers = {
     return (defender.id === 29 || defender.id === 40) ? 0 : true;
   },
 
+  "attackMonster": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // to battle!
+    if (target.id === 16) {
+      game.effects.print(106);
+      return false;
+    }
+    if (target.reaction !== Monster.RX_HOSTILE) {
+      game.history.write("That wouldn't be very nice!");
+      return false;
+    }
+    return true;
+  },
+
+  "beforeGet": function (arg, artifact) {
+    let game = Game.getInstance();
+    if (artifact && artifact.id === 45 && game.data['orb'] < 2) {
+      game.history.write("Sorry, it's not yours.");
+      return false;
+    }
+    return true;
+  },
+
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
 
@@ -124,6 +149,24 @@ export var event_handlers = {
     return true;
   },
 
+  "endTurn": function() {
+    let game = Game.getInstance();
+    if (game.data['hot room'] === 1) {
+      game.effects.print(83, 'danger');
+      game.die();
+    }
+  },
+
+  "endTurn1": function() {
+    let game = Game.getInstance();
+
+    // if you found Groo before talking to the minstrel
+    if (game.monsters.get(2).isHere() && game.monsters.get(3).isHere()) {
+      game.monsters.get(2).destroy();
+      game.artifacts.get(8).moveToRoom();
+      game.effects.print(95);
+    }
+  },
 
   "endTurn2": function() {
     let game = Game.getInstance();
@@ -160,8 +203,8 @@ export var event_handlers = {
       if (room_id === 30 && !game.effects.get(49).seen) {
         game.effects.print(49);
       }
-      // path
-      if (room_id === 30 && !game.effects.get(49).seen) {
+      // pillagers
+      if (game.monsters.get(23).isHere() && !game.effects.get(49).seen) {
         game.effects.print(49);
       }
     }
@@ -248,13 +291,6 @@ export var event_handlers = {
       game.history.write("The Sage begs for the brandy.");
     }
 
-    // if you found Groo before talking to the minstrel
-    if (room_id === 1 && game.monsters.get(2).isHere() && groo.isHere()) {
-      game.monsters.get(2).destroy();
-      game.artifacts.get(8).moveToRoom();
-      game.effects.print(95);
-    }
-
   },
 
   "flee": function(arg: string, exit: RoomExit) {
@@ -299,6 +335,42 @@ export var event_handlers = {
     let game = Game.getInstance();
     if (monster.id === 33) {  // conan
       game.effects.print(65);
+    }
+  },
+
+  "use": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if (artifact.isHere()) {
+      switch (artifact.id) {
+        case 26:  // wand of frost
+          if (game.data['hot room'] === 1) {
+            game.data['hot room'] = 2;
+            game.effects.print(84);
+          } else {
+            game.history.write("It gets very cold and snow covers the area, however it quickly passes.", 'special');
+          }
+          break;
+        case 43:  // wand of castratia
+          if (game.monsters.get(29).isHere()) {
+            game.effects.print(110);
+            game.monsters.get(29).destroy();
+            game.artifacts.get(47).moveToRoom();
+            game.rooms.get(43).getExit('e').room_to = 44;
+          } else {
+            game.history.write("The wand glows, but nothing seems to happen.", 'special');
+          }
+          break;
+        case 70:  // amulet of ian
+          if (game.monsters.get(40).isHere()) {
+            game.effects.printSequence([91,92,93]);
+            game.monsters.get(40).destroy();
+            game.artifacts.get(67).moveToRoom();
+            game.monsters.get(18).name = 'Mulch';
+          } else {
+            game.effects.print(90);
+          }
+          break;
+      }
     }
   },
 

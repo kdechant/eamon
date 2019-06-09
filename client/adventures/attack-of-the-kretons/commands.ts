@@ -11,7 +11,7 @@ custom_commands.push({
     let game = Game.getInstance();
 
     if (arg.indexOf('to ') !== -1) {
-      arg = arg.slice(4);
+      arg = arg.slice(3);
     }
 
     let monster = game.monsters.getLocalByName(arg);
@@ -25,7 +25,7 @@ custom_commands.push({
         return;
       }
       if (monster.id === 6 && game.data['prince unconscious']) {
-        game.history.write('The prince is unconscious.');
+        game.history.write('The Prince is unconscious.');
         return;
       }
       // chichester (first time)
@@ -33,6 +33,7 @@ custom_commands.push({
         game.artifacts.get(19).moveToRoom();
         game.effects.printSequence([32, 33]);
         monster.reaction = Monster.RX_FRIEND;
+        return;
       }
       // sage
       if (monster.id === 21 && game.data['sage wants rum'] === 0) {
@@ -65,7 +66,10 @@ custom_commands.push({
     let artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       game.history.write('No response.');
+      return;
     }
+
+    game.history.write('No one here by that name.');
   }
 });
 

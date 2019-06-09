@@ -30,7 +30,13 @@ beforeEach(() => {
 
 it("should have working event handlers", () => {
 
+  // prince 1
+  game.player.moveToRoom(5); game.tick();
+  game.command_parser.run('get orb');
+  expect(game.history.getOutput(0).text).toBe("Sorry, it's not yours.");
+
   // tavern
+  game.player.moveToRoom(1); game.tick();
   game.mock_random_numbers = [2];  // for mike's random action
   game.command_parser.run("talk to mike");
   expect(game.effects.get(1).seen).toBeTruthy();
@@ -41,9 +47,20 @@ it("should have working event handlers", () => {
   expect(game.monsters.get(2).room_id).toBeNull();
   expect(game.monsters.get(3).room_id).toBe(1);
   expect(game.artifacts.get(8).room_id).toBe(1);
+  game.command_parser.run('attack mike');
+  expect(game.history.getOutput(0).text).toBe("That wouldn't be very nice!");
+  expect(game.monsters.get(1).reaction).toBe(Monster.RX_NEUTRAL);
+
+  // prince 2
+  game.player.moveToRoom(5); game.tick();
+  expect(game.data['prince unconscious']).toBeTruthy();
+  expect(game.monsters.get(3).room_id).toBe(4);
+  game.command_parser.run("talk to prince");
+  expect(game.history.getOutput(0).text).toBe("The Prince is unconscious.");
+  game.command_parser.run('s');  // rejoin groo
 
   // gate / kretons
-  game.player.moveToRoom(9);
+  game.player.moveToRoom(9); game.tick();
   game.artifacts.updateVisible();
   game.tick();
   game.command_parser.run('open gate');
@@ -70,9 +87,26 @@ it("should have working event handlers", () => {
   // chichester
   game.player.moveToRoom(20);
   game.tick();
+  game.command_parser.run('attack chichester');
+  expect(game.effects.get(106).seen).toBeTruthy();
   game.command_parser.run('talk chichester');
   expect(game.monsters.get(16).reaction).toBe(Monster.RX_FRIEND);
   expect(game.effects.get(32).seen).toBeTruthy();
   expect(game.artifacts.get(19).isHere()).toBeTruthy();
+
+  // arba/dakarba
+  game.player.moveToRoom(24);
+  game.command_parser.run('w');
+  expect(game.effects.get(36).seen).toBeTruthy();
+  game.monsters.get(19).destroy();
+  game.monsters.get(20).destroy();
+
+  // max 2
+  game.artifacts.get(43).moveToInventory();
+  game.player.moveToRoom(43);
+  game.tick();
+  game.command_parser.run('use wand of castratia');
+  expect(game.monsters.get(29).isHere()).toBeFalsy();
+  expect(game.artifacts.get(47).isHere()).toBeTruthy();
 
 });
