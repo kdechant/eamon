@@ -154,7 +154,7 @@ export var event_handlers = {
 
   "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
     let game = Game.getInstance();
-    // buy options from Bozworth the gnome
+    // buy potions from Bozworth the gnome
     if (recipient.id === 20) {
       if (gold_amount < 100) {
         game.effects.print(28);
