@@ -8,6 +8,7 @@
     "ie-array-find-polyfill": "^1.1.0",
     "js-cookie": "^2.2.0",
     "lz-string": "^1.4.4",
+    "pluralize": "^8.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-facebook-login": "^4.1.1",

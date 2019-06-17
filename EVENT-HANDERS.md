@@ -241,6 +241,12 @@ event handler instead.
 Certain monster behaviors can also be set up in the 'start' event handler:
 * You can give a monster custom attack messages
 * You can give a monster the ability to cast standard spells like 'heal' or 'blast' 
+* Monsters can be assigned custom data that can be used in later logic, like flags
+
+Certain other aspects of the game can also be customized:
+* The name of the money
+* The names of the standard Eamon characters you meet at the end of the adventure (e.g., Sam Slicker) 
+* The verbs used in the text when a monster flees
 
 Parameters: none
 
@@ -262,6 +268,18 @@ Sample code:
         // give monster #3 the ability to cast spells
         game.monsters.get(3).spells = ['blast', 'heal'];  // The spells the monster can cast. Only 'blast' and 'heal' are implemented so far
         game.monsters.get(3).spell_points = 3;  // The monster can cast 3 spells during the adventure, then no more. This does not recharge.
+        
+        // change the name of the money for this adventure
+        // (enter this as singular; it will be automatically pluralized)
+        game.money_name = 'credit';
+        
+        // change the name of Sam Slicker and Lord William Missilefire
+        game.lwm_name = 'Lord Alfred Arrowshoot';
+        game.ss_name = 'Fast Charlie Benante';
+        
+        // change the text shown when a monster flees
+        game.flee_verbs = {'singular': "runs away", 'plural': "run away"};
+        
       },
 
 ## End of Turn

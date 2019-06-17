@@ -1072,7 +1072,7 @@ export class GiveCommand implements BaseCommand {
       // giving money
 
       if (gold_amount > game.player.gold) {
-        throw new CommandException("You only have " + game.player.gold + " gold pieces!");
+        throw new CommandException(`You only have ${game.player.getMoneyFormatted()}!`);
       }
 
       // TODO: show confirmation dialog to player

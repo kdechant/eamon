@@ -1,3 +1,4 @@
+import * as pluralize from 'pluralize';
 import Game from "../models/game";
 import {GameObject} from "../models/game-object";
 import {Artifact} from "../models/artifact";
@@ -899,6 +900,15 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Gets the formatted amount of money the monster has (usually the player)
+   * @returns string
+   */
+  public getMoneyFormatted(): string {
+    let game = Game.getInstance();
+    return this.gold.toLocaleString() + " " + pluralize(game.money_name, this.gold);
+  }
+
+  /**
    * Finds someone for the monster to attack
    * @returns Monster
    */
@@ -1179,7 +1189,7 @@ export class GroupMonster extends Monster {
 
     // default plural name for group monsters. if you want a better name, enter it in the database.
     if (this.count > 1 && !this.name_plural) {
-      this.name_plural = this.name + 's';
+      this.name_plural = pluralize(this.name, 2);
     }
 
     this.original_group_size = this.count;
@@ -1197,7 +1207,6 @@ export class GroupMonster extends Monster {
     super.moveToRoom(room_id, monsters_follow);
 
     if (this.children.length) {
-      // console.log('moving children of ' + this.name);
       this.children
         .filter(c => c.room_id === from_room_id && c.status === Monster.STATUS_ALIVE)
         .forEach(c => c.moveToRoom(room_id));
@@ -1208,14 +1217,11 @@ export class GroupMonster extends Monster {
    * Moves the virtual "group monster" pointer to the correct place
    */
   public updateVirtualMonster() {
-    // console.log(`updating virtual monster ${this.id}`);
     const game = Game.getInstance();
     const visible_children = this.children.filter(c => c.isHere());
     if (visible_children.length) {
-      // console.log("moving to player's location");
       this.room_id = game.player.room_id;  // move virtual group pointer
     } else {
-      // console.log("moving to child's location");
       const living_child = this.children.find(c => c.status === Monster.STATUS_ALIVE);
       this.room_id = living_child ? living_child.room_id : null;
     }

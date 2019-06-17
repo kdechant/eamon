@@ -82,6 +82,11 @@ export var event_handlers = {
     game.monsters.get(40).data['talk'] = -2;
     game.monsters.get(41).data['talk'] = -2;
 
+    // custom people's names and stuff
+    game.lwm_name = 'Lord Daniel Spitz';
+    game.ss_name = 'Fast Charlie Benante';
+    game.money_name = 'kopin';
+
   },
 
   "attackDamage": function (attacker: Monster, defender: Monster, damage: number) {

@@ -29,13 +29,12 @@ class SamSlicker extends React.Component<any, any> {
 
   public render() {
     const game = this.props.game;
-
     const weapons = game.player.inventory.filter(x => x.is_weapon);
-    
+
     if (weapons.length > 4) {
       return (
         <div>
-          <p>As you enter the Main Hall, Lord William Missilefire approaches you and says, &quot;You have too many weapons to keep them all. Four is the legal limit.&quot;</p>
+          <p>As you enter the Main Hall, {game.lwm_name} approaches you and says, &quot;You have too many weapons to keep them all. Four is the legal limit.&quot;</p>
           <p>Your weapons are:</p>
           <table className="table artifacts-list">
             <thead>
@@ -89,8 +88,8 @@ class SamSlicker extends React.Component<any, any> {
 
     return (
       <div>
-        <p>When you reach the main hall, you deliver your goods to Sam Slicker, the local buyer for such things. He examines your items and pays you what they are worth...</p>
-        <p>He pays you {game.player.profit} gold pieces total.</p>
+        <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>
+        <p>He pays you {game.player.profit} {game.money_name} total.</p>
 
         {/* messages that appear after the sale completes, like "the rebels reward you for killing darth vader" */}
         {game.after_sell_messages.map((msg, index) =>

@@ -155,6 +155,21 @@ export default class Game {
   exit_message: string = "You successfully ride off into the sunset.";
 
   /**
+   * Name of the person who tells you you have too many weapons when you leave
+   */
+  lwm_name: string = 'Lord William Missilefire';
+
+  /**
+   * Name of the person who buys treasure at the end
+   */
+  ss_name: string = 'Sam Slicker';
+
+  /**
+   * Name of the money in this adventure
+   */
+  money_name: string = 'gold piece';
+
+  /**
    * Messages that are displayed during the exit phase, after the sale of treasure
    */
   after_sell_messages: string[] = [];

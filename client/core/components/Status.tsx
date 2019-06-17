@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactMarkdown from "react-markdown";
+import * as pluralize from 'pluralize';
 import {titleCase} from "../../main-hall/utils";
 import {Monster} from "../models/monster";
 
@@ -149,8 +150,8 @@ class Status extends React.Component<any, any> {
             <span className="artifact none">nothing<br/></span>
           )}
         </div>
+        <p className="gold">{ game.player.getMoneyFormatted() }</p>
         <p className="weight">Weight carried: { game.player.weight_carried }/{ game.player.hardiness * 10 }</p>
-        <p className="gold">Gold: { game.player.gold }</p>
       </div>
 
       </div>
