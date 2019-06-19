@@ -120,18 +120,28 @@ it("should have working event handlers", () => {
   expect(game.player.hasArtifact(49)).toBeTruthy();  // get crystal
 
   // chichester
+  let chi = game.monsters.get(16);
   game.player.moveToRoom(20);
   game.tick();
   game.command_parser.run('attack chichester');
   expect(game.effects.get(106).seen).toBeTruthy();
   game.command_parser.run('talk chichester');
-  expect(game.monsters.get(16).reaction).toBe(Monster.RX_FRIEND);
+  expect(chi.reaction).toBe(Monster.RX_FRIEND);
   expect(game.effects.get(32).seen).toBeTruthy();
   expect(game.artifacts.get(19).isHere()).toBeTruthy();
+  game.command_parser.run('request cig from chi');
+  expect(game.history.getOutput(0).text).toBe('Chichester tells you to bite something.');
+  expect(chi.hasArtifact(51)).toBeTruthy();
+
+  // dog
+  game.player.moveToRoom(24);
+  game.command_parser.run('free dog');
+  game.tick();
+  expect(game.monsters.get(18).isHere()).toBeTruthy();
 
   // arba/dakarba/sage
+  let sage = game.monsters.get(21);
   game.artifacts.get(25).moveToInventory();  // key
-  game.player.moveToRoom(24);
   game.command_parser.run('w');
   expect(game.effects.get(36).seen).toBeTruthy();
   game.monsters.get(19).destroy();
@@ -140,7 +150,7 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(25).isHere()).toBeTruthy();
   game.command_parser.run('get key');
   game.command_parser.run('free sage');
-  expect(game.monsters.get(21).isHere()).toBeTruthy();
+  expect(sage.isHere()).toBeTruthy();
   game.command_parser.run('w');
   game.command_parser.run('open chest');
   expect(game.artifacts.get(24).is_open).toBeTruthy();
@@ -152,7 +162,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('flee e');
   expect(game.effects.get(28).seen).toBeTruthy();
   expect(game.player.room_id).toBe(2);
-  expect(game.monsters.get(21).room_id).toBe(3);  // sage stays put
+  expect(sage.room_id).toBe(3);  // sage stays put
   expect(game.artifacts.get(29).room_id).toBe(2);  // key
   game.command_parser.run('get key');
   game.command_parser.run('e');
@@ -169,5 +179,19 @@ it("should have working event handlers", () => {
   expect(game.history.getLastOutput().text).toBe("The Sage begs for the brandy.");
   game.command_parser.run('give brandy to sage');
   expect(game.effects.get(42).seen).toBeTruthy();
+  game.command_parser.run('read catalog');
+  expect(game.effects.get(14).seen).toBeTruthy();
+  expect(sage.hasArtifact(6)).toBeTruthy();
+  game.command_parser.run('request catalog from sage');
+  expect(game.history.getOutput(0).text).toBe('Sage tells you to bite something.');
+  expect(sage.hasArtifact(6)).toBeTruthy();
+
+  // prince 3
+  game.player.moveToRoom(5); game.tick();
+  game.command_parser.run('give crystal to prince');
+  expect(game.effects.get(63).seen).toBeTruthy();
+  expect(game.data['orb']).toBe(2);
+  game.command_parser.run('get orb');
+  expect(game.player.hasArtifact(45)).toBeTruthy();
 
 });

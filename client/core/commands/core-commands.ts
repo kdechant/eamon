@@ -1075,6 +1075,10 @@ export class GiveCommand implements BaseCommand {
         throw new CommandException(`You only have ${game.player.getMoneyFormatted()}!`);
       }
 
+      if (gold_amount <= 0 || gold_amount !== Math.floor(gold_amount)) {
+        throw new CommandException(`You're not making any sense.`);
+      }
+
       // TODO: show confirmation dialog to player
 
       if (game.triggerEvent("giveGold", arg, gold_amount, recipient)) {
@@ -1197,42 +1201,44 @@ export class FreeCommand implements BaseCommand {
     let message: string = "";
 
     let a = game.artifacts.getLocalByName(arg);
-    if (a !== null) {
-      if (a.type !== Artifact.TYPE_BOUND_MONSTER) {
-        throw new CommandException("You can't free that!");
-      }
-      // some adventures use guard_id of 0 to indicate no guard
-      if (a.guard_id !== null && a.guard_id !== 0) {
-        let guard = game.monsters.get(a.guard_id);
-        if (guard.isHere()) {
-          throw new CommandException(guard.name + " won't let you!");
+    if (game.triggerEvent('beforeFree', arg, a)) {
+      if (a !== null) {
+        if (a.type !== Artifact.TYPE_BOUND_MONSTER) {
+          throw new CommandException("You can't free that!");
         }
-      }
-      if (a.key_id) {
-        if (game.player.hasArtifact(a.key_id)) {
-          let key = game.artifacts.get(a.key_id);
-          message = "You free it using the " + key.name + ".";
+        // some adventures use guard_id of 0 to indicate no guard
+        if (a.guard_id !== null && a.guard_id !== 0) {
+          let guard = game.monsters.get(a.guard_id);
+          if (guard.isHere()) {
+            throw new CommandException(guard.name + " won't let you!");
+          }
+        }
+        if (a.key_id) {
+          if (game.player.hasArtifact(a.key_id)) {
+            let key = game.artifacts.get(a.key_id);
+            message = "You free it using the " + key.name + ".";
+          } else {
+            throw new CommandException("It's locked and you don't have the key!");
+          }
         } else {
-          throw new CommandException("It's locked and you don't have the key!");
+          message = "Freed.";
+        }
+        if (game.triggerEvent("free", arg, a)) {
+          game.history.write(message);
+          a.freeBoundMonster();
+          game.triggerEvent("afterFree", arg, a, game.monsters.get(a.monster_id));
         }
       } else {
-        message = "Freed.";
-      }
-      if (game.triggerEvent("free", arg, a)) {
-        game.history.write(message);
-        a.freeBoundMonster();
-      }
-    } else {
 
-      // catch user mischief
-      let m: Monster = game.monsters.getLocalByName(arg);
-      if (m) {
-        throw new CommandException(m.name + " is already free!");
-      }
+        // catch user mischief
+        let m: Monster = game.monsters.getLocalByName(arg);
+        if (m) {
+          throw new CommandException(m.name + " is already free!");
+        }
 
-      throw new CommandException("I don't see any " + arg + "!");
+        throw new CommandException("I don't see any " + arg + "!");
+      }
     }
-
   }
 }
 core_commands.push(new FreeCommand());

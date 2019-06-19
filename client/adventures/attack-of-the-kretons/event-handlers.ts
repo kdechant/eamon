@@ -386,6 +386,31 @@ export var event_handlers = {
     return true;
   },
 
+  "beforeFree": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if (artifact && artifact.id === 68) {  // old man
+      game.history.write("You have freed the old man.");
+      game.effects.print(88);
+      game.artifacts.get(69).moveToRoom();
+      return false;  // this is not a real bound monster, just an effect.
+    }
+    return true;
+  },
+
+  "afterFree": function(arg: string, artifact: Artifact, monster: Monster) {
+    let game = Game.getInstance();
+    if (monster) {
+      if (monster.id === 18) {  // dog
+        game.effects.print(68);
+        if (game.monsters.get(3).isHere()) {
+          game.effects.print(69);
+        }
+      } else if (monster.id === 21) {  // sage
+        game.monsters.get(34).moveToRoom(13); // chakaal
+      }
+    }
+  },
+
   "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
     let game = Game.getInstance();
     // some monsters can't fumble
@@ -399,22 +424,34 @@ export var event_handlers = {
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
     // sage / brandy
-    if (recipient.id === 21 && artifact.id === 28) {
+    if (recipient.id === 21 && artifact.id === 28) {  // sage / brandy
+      if (game.player.room_id !== 3) {
+        game.history.write(`The Sage says, "Wait 'til we're back in my house."`);
+        return false;
+      }
       game.effects.printSequence([42, 43, 44, 45, 46]);
       game.data['sage'] = 2;
-    } else if (recipient.id === 6 && artifact.id === 49) {
+    } else if (recipient.id === 6 && artifact.id === 49) {  // crystal to prince
       game.effects.print(63);
       game.data['orb'] = 2;
+    } else if (recipient.id === 18) {  // dog
+      game.history.write("Good luck getting a dog to carry that.");
+      return false;
     }
     return true;
   },
 
   "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
     let game = Game.getInstance();
+    // this adventure doesn't let you hire NPCs as mercenaries
+    if (gold_amount >= 5000) {
+      game.history.write("Don't go flashing that kind of money around here!");
+      return false;
+    }
     // buy brandy from stan
     if (recipient.id === 8) {
       if (game.data['brandy']) {
-        game.history.write('"I\'m all out!" growls Stan.');
+        game.history.write('"I already sold you one."');
       } else if (gold_amount < 75) {
         game.history.write('"That ain\'t enough!" growls Stan.');
       } else {
@@ -440,6 +477,23 @@ export var event_handlers = {
       }
     }
     return true;
+  },
+
+  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    let game = Game.getInstance();
+    if (artifact) {
+      if (artifact.id === 37) {  // codex
+        game.data['codex'] = true;
+        game.data['prince unconscious'] = false;
+      } else if (artifact.id === 6) {  // catalog
+        if (game.monsters.get(21).isHere()) {
+          game.effects.print(14);
+          game.monsters.get(21).pickUp(artifact);
+        } else {
+          game.effects.print(15);
+        }
+      }
+    }
   },
 
   "say": function(phrase) {
@@ -489,6 +543,10 @@ export var event_handlers = {
       }
     } else if (monster.id === 11) {  // kurk
       game.effects.print(21);
+      return false;
+    } else if (monster.id === 16 && artifact.id === 51 || monster.id === 21 && artifact.id === 6) {
+      // chichester / sage
+      game.history.write(`${monster.name} tells you to bite something.`);
       return false;
     } else if (monster.id === 30 && artifact.id === 49) {  // wizard
       game.effects.print(58);
