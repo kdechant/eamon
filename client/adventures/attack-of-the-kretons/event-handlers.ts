@@ -26,6 +26,7 @@ export var event_handlers = {
     // game data
     game.data['sage'] = 0;  // d%(1)
     game.data['prince unconscious'] = false;  // d%(2)
+    game.data['prince saw groo'] = false;  // d%(2)
     game.data['eagles'] = false;  // d%(3)
     game.data['hot room'] = 0;  // d%(4)
     game.data['read codex'] = false;  // d%(5)
@@ -101,6 +102,15 @@ export var event_handlers = {
       game.effects.print(106);
       return false;
     }
+    if (target.reaction !== Monster.RX_HOSTILE) {
+      game.history.write("That wouldn't be very nice!");
+      return false;
+    }
+    return true;
+  },
+
+  "blast": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
     if (target.reaction !== Monster.RX_HOSTILE) {
       game.history.write("That wouldn't be very nice!");
       return false;
@@ -199,6 +209,13 @@ export var event_handlers = {
     return true;
   },
 
+  "eat": function(arg: string, artifact: Artifact) {
+    if (artifact && artifact.id === 3) {
+      Game.getInstance().history.write("You're already sick of the stuff.");
+      return false;
+    }
+  },
+
   "endTurn": function() {
     let game = Game.getInstance();
     if (game.data['hot room'] === 1) {
@@ -235,8 +252,12 @@ export var event_handlers = {
     let groo = game.monsters.get(3);
     if (groo.isHere()) {
       // thrown out of court
-      if (room_id === 5 && !game.data['prince unconscious'] && !game.data['read codex']) {
+      if (room_id === 5
+        && !game.data['prince unconscious']
+        && !game.data['prince saw groo']
+        && !game.data['read codex']) {
         game.data['prince unconscious'] = true;
+        game.data['prince saw groo'] = true;
         game.effects.printSequence([16,17]);
         game.history.write("Groo is thrown outside by the guards.");
         groo.moveToRoom(4);
@@ -292,7 +313,7 @@ export var event_handlers = {
 
     // monster actions and taunts
     game.monsters.visible.forEach(m => {
-      if (m.data['actions']) {
+      if (m.data['actions'] && game.diceRoll(1,2) === 2) {
         let action = game.getRandomElement(m.data['actions']);
         game.history.write(`${m.name} ${action}`);
       }
@@ -319,7 +340,9 @@ export var event_handlers = {
     // cheesedip god
     let cg = game.monsters.get(39);
     if (cg.isHere()) {
+      game.delay();
       game.effects.print(85);
+      game.delay();
       if (groo.isHere()) {
         game.history.write("But Groo has no brain!");
         game.effects.print(86);
@@ -391,6 +414,7 @@ export var event_handlers = {
     if (artifact && artifact.id === 68) {  // old man
       game.history.write("You have freed the old man.");
       game.effects.print(88);
+      artifact.destroy();  // have to do this manually due to returning false below
       game.artifacts.get(69).moveToRoom();
       return false;  // this is not a real bound monster, just an effect.
     }
@@ -431,6 +455,9 @@ export var event_handlers = {
       }
       game.effects.printSequence([42, 43, 44, 45, 46]);
       game.data['sage'] = 2;
+    } else if (recipient.id === 6 && game.data['prince unconscious']) {
+      game.history.write('The Prince is unconscious.');
+      return false;
     } else if (recipient.id === 6 && artifact.id === 49) {  // crystal to prince
       game.effects.print(63);
       game.data['orb'] = 2;
@@ -474,6 +501,9 @@ export var event_handlers = {
       if (artifact.id === 9) {  // city gate
         game.history.write("Don't be dumb.");
         return false;
+      } else if (artifact.id === 34) {  // slab
+        game.history.write("How?");
+        return false;
       }
     }
     return true;
@@ -505,7 +535,7 @@ export var event_handlers = {
       game.data['eagles'] = true;
     } else if (phrase === 'dhoud' && room_id === 35) {
       game.effects.print(109, 'special');
-      game.artifacts.get(36).open();
+      game.artifacts.get(34).open();
     } else if (phrase === 'imtu khoul' && game.artifacts.get(45).isHere()) {
       game.effects.print(64, 'special2');
       game.player.moveToRoom(48);
@@ -610,5 +640,16 @@ export var event_handlers = {
       game.player.heal(1000);
     }
   },
+
+  "exit": function() {
+    let game = Game.getInstance();
+    // you can exit without killing c.g. but you don't get a prize
+    if (game.monsters.get(39).room_id === null
+      && game.monsters.get(40).room_id === null) {
+      game.effects.printSequence([96, 97, 98, 99, 100, 101, 102, 103, 104, 105]);
+      game.player.gold += 5000;
+    }
+    return true;
+  }
 
 }; // end event handlers

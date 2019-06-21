@@ -715,7 +715,7 @@ export class UseCommand implements BaseCommand {
   run(verb, arg) {
     let game = Game.getInstance();
     let item: Artifact = game.artifacts.getByName(arg);
-    if (item) {
+    if (item && item.isHere()) {
       if (item.quantity === null || item.quantity > 0) {
         item.use();
       } else {

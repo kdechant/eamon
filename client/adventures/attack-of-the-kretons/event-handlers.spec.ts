@@ -31,51 +31,61 @@ afterEach(() => { game.history.history.map((h) => console.log(h.command, h.resul
 it("should have working event handlers", () => {
 
   // prince 1
-  // game.player.moveToRoom(5); game.tick();
-  // game.command_parser.run('get orb');
-  // expect(game.history.getOutput(0).text).toBe("Sorry, it's not yours.");
+  let orb = game.artifacts.get(45);
+  game.player.moveToRoom(5); game.tick();
+  game.command_parser.run('get orb');
+  expect(game.history.getOutput(0).text).toBe("Sorry, it's not yours.");
+  expect(orb.room_id).toBe(5);
+  game.command_parser.run('get all');
+  expect(orb.room_id).toBe(5);
 
   // tavern
-  // game.player.moveToRoom(1); game.tick();
-  // game.mock_random_numbers = [2];  // for mike's random action
-  // game.command_parser.run("talk to mike");
-  // expect(game.effects.get(1).seen).toBeTruthy();
-  // expect(game.history.getLastOutput().text).toBe('Iron Mike cracks a walnut on his head.');
-  // game.command_parser.run("talk to minstrel");
-  // expect(game.effects.get(2).seen).toBeTruthy();
-  // expect(game.effects.get(11).seen).toBeTruthy();
-  // expect(game.monsters.get(2).room_id).toBeNull();
-  // expect(game.monsters.get(3).room_id).toBe(1);
-  // expect(game.artifacts.get(8).room_id).toBe(1);
-  // game.command_parser.run('attack mike');
-  // expect(game.history.getOutput(0).text).toBe("That wouldn't be very nice!");
-  // expect(game.monsters.get(1).reaction).toBe(Monster.RX_NEUTRAL);
-  //
-  // // prince 2
-  // game.player.moveToRoom(5); game.tick();
-  // expect(game.data['prince unconscious']).toBeTruthy();
-  // expect(game.monsters.get(3).room_id).toBe(4);
-  // game.command_parser.run("talk to prince");
-  // expect(game.history.getOutput(0).text).toBe("The Prince is unconscious.");
-  // game.command_parser.run('s');  // rejoin groo
-  //
-  // // gate / kretons
-  // game.player.moveToRoom(9); game.tick();
-  // game.artifacts.updateVisible();
-  // game.tick();
-  // game.command_parser.run('open gate');
-  // expect(game.history.getOutput(0).text).toBe("Don't be dumb.");
-  // game.command_parser.run('w');
-  // expect(game.effects.get(25).seen).toBeTruthy();
-  // expect(game.player.room_id).toBe(10);
-  // expect(game.effects.get(27).seen).toBeTruthy();
-  // game.command_parser.run("flee n");
-  // expect(game.player.room_id).toBe(11);
-  // expect(game.effects.get(29).seen).toBeTruthy();
-  // expect(game.monsters.get(3).room_id).toBe(11);
-  // expect(game.monsters.get(14).room_id).toBe(10);
+  let groo = game.monsters.get(3);
+  game.player.moveToRoom(1); game.tick();
+  game.mock_random_numbers = [2, 2];  // for mike's random action
+  game.command_parser.run("talk to mike");
+  expect(game.effects.get(1).seen).toBeTruthy();
+  expect(game.history.getLastOutput().text).toBe('Iron Mike cracks a walnut on his head.');
+  game.modal.mock_answers = ['ok'];
+  game.command_parser.run("talk to minstrel");
+  expect(game.effects.get(2).seen).toBeTruthy();
+  expect(game.effects.get(11).seen).toBeTruthy();
+  expect(game.monsters.get(2).room_id).toBeNull();
+  expect(groo.room_id).toBe(1);
+  expect(game.artifacts.get(8).room_id).toBe(1);
+  game.command_parser.run('attack mike');
+  expect(game.history.getOutput(0).text).toBe("That wouldn't be very nice!");
+  expect(game.monsters.get(1).reaction).toBe(Monster.RX_NEUTRAL);
+
+  // prince 2
+  game.player.moveToRoom(5); game.tick();
+  expect(game.data['prince unconscious']).toBeTruthy();
+  expect(game.data['prince saw groo']).toBeTruthy();
+  expect(groo.room_id).toBe(4);
+  game.command_parser.run("talk to prince");
+  expect(game.history.getOutput(0).text).toBe("The Prince is unconscious.");
+  game.command_parser.run('s');  // rejoin groo
+
+  // gate / kretons
+  game.player.moveToRoom(9); game.tick();
+  game.artifacts.updateVisible();
+  game.tick();
+  game.command_parser.run('open gate');
+  expect(game.history.getOutput(0).text).toBe("Don't be dumb.");
+  game.command_parser.run('w');
+  expect(game.effects.get(25).seen).toBeTruthy();
+  expect(game.player.room_id).toBe(10);
+  expect(game.effects.get(27).seen).toBeTruthy();
+  game.command_parser.run("flee n");
+  expect(game.player.room_id).toBe(11);
+  expect(game.effects.get(29).seen).toBeTruthy();
+  expect(groo.room_id).toBe(11);
+  expect(game.monsters.get(14).room_id).toBe(10);
 
   // max
+  game.command_parser.run("use wand of castratia");
+  expect(game.effects.get(110).seen).toBeFalsy();
+  expect(game.monsters.get(29).room_id).toBe(43);
   game.player.moveToRoom(43);
   game.tick();
   game.command_parser.run('flee e');
@@ -88,6 +98,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('use wand of castratia');
   expect(game.monsters.get(29).isHere()).toBeFalsy();
   expect(game.artifacts.get(47).isHere()).toBeTruthy();
+  expect(game.effects.get(110).seen).toBeTruthy();
 
   // eagles / wizard / arena
   game.command_parser.run('e');
@@ -186,12 +197,87 @@ it("should have working event handlers", () => {
   expect(game.history.getOutput(0).text).toBe('Sage tells you to bite something.');
   expect(sage.hasArtifact(6)).toBeTruthy();
 
-  // prince 3
+  // granite slab
+  game.player.moveToRoom(35);
+  game.command_parser.run('open slab');
+  expect(game.history.getOutput(0).text).toBe('How?');
+  game.command_parser.run('say dhoud');
+  expect(game.effects.get(109).seen).toBeTruthy();
+  expect(game.artifacts.get(34).is_open).toBeTruthy();
+
+  // old man
+  game.player.moveToRoom(42); game.tick();
+  game.command_parser.run('free old man');
+  expect(game.effects.get(88).seen).toBeTruthy();
+  expect(game.artifacts.get(68).room_id).toBeNull();
+  expect(game.artifacts.get(69).isHere()).toBeTruthy();
+
+  // codex
+  game.monsters.get(26).destroy();  // get priest out of the way
+  game.player.moveToRoom(39);
+  game.command_parser.run('read codex');
+  expect(game.data['codex']).toBeTruthy();
+  expect(game.data['prince unconscious']).toBeFalsy();
+
+  // prince 3 / orb
   game.player.moveToRoom(5); game.tick();
   game.command_parser.run('give crystal to prince');
   expect(game.effects.get(63).seen).toBeTruthy();
   expect(game.data['orb']).toBe(2);
   game.command_parser.run('get orb');
   expect(game.player.hasArtifact(45)).toBeTruthy();
+
+  // misc
+  groo.injure(100);
+  expect(game.effects.get(108).seen).toBeTruthy();
+  expect(groo.status).toBe(Monster.STATUS_ALIVE);
+  expect(groo.damage).toBe(0);
+  game.artifacts.get(70).moveToInventory();
+  game.command_parser.run('use amulet');
+  expect(game.effects.get(90).seen).toBeTruthy();
+  game.command_parser.run("use wand of water");
+  expect(game.effects.get(84).seen).toBeFalsy();
+
+  // stench
+  game.command_parser.run('say imtu khoul');
+  expect(game.player.room_id).toBe(48);
+  game.player.moveToRoom(51); game.tick();
+  expect(game.history.getLastOutput().text).toBe("You think you hear Frank Zappa far in the distance.");
+  // zombies
+  game.skip_battle_actions = true;
+  game.player.moveToRoom(52); game.tick();
+  expect(game.effects.get(80).seen).toBeTruthy();
+  expect(game.monsters.get(36).isHere()).toBeFalsy();
+  // hot room
+  game.player.moveToRoom(57); game.tick();
+  expect(game.data['hot room']).toBe(1);
+  game.command_parser.run("use wand of water");
+  expect(game.effects.get(84).seen).toBeTruthy();
+  expect(game.data['hot room']).toBe(2);
+
+  // altar
+  game.monsters.get(41).destroy();  // joey
+  game.player.moveToRoom(58);
+  game.command_parser.run('e');
+  expect(game.effects.get(85).seen).toBeTruthy();
+  expect(game.effects.get(86).seen).toBeTruthy();
+  expect(game.monsters.get(39).isHere()).toBeFalsy();
+  expect(game.monsters.get(40).isHere()).toBeTruthy();
+  expect(game.artifacts.get(65).isHere()).toBeTruthy();
+  expect(game.artifacts.get(66).isHere()).toBeTruthy();
+  game.command_parser.run('use amulet');
+  expect(game.monsters.get(40).isHere()).toBeFalsy();
+  expect(game.effects.get(91).seen).toBeTruthy();
+  expect(game.artifacts.get(67).isHere()).toBeTruthy();
+  expect(game.monsters.get(18).name).toBe('Mulch');
+
+  // exit
+  let gold = game.player.gold;
+  game.player.moveToRoom(55); game.tick();
+  game.command_parser.run('say cawteemahmosh');
+  expect(game.effects.get(96).seen).toBeTruthy();
+  expect(game.effects.get(105).seen).toBeTruthy();
+  expect(game.player.gold).toBe(gold + 5000);
+  expect(game.won).toBeTruthy();
 
 });

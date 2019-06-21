@@ -1,6 +1,7 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
+import {ModalQuestion} from "../../core/models/modal";
 
 export var custom_commands = [];
 
@@ -18,10 +19,21 @@ custom_commands.push({
     if (monster) {
       if (monster.id === 2) {
         // minstrel
-        game.effects.printSequence([2,3,4,5,6,7,8,9,10,11]);
-        monster.destroy();
-        game.monsters.get(3).moveToRoom();
-        game.artifacts.get(8).moveToRoom();
+        game.effects.printSequence([2,3,4,5,6,7]);
+
+        game.pause();
+        let q1 = new ModalQuestion;
+        q1.type = 'multiple_choice';
+        q1.question = "Click to continue...";
+        q1.choices = ['Next'];
+        q1.callback = function (answer) {
+          game.effects.printSequence([8, 9, 10, 11]);
+          monster.destroy();
+          game.monsters.get(3).moveToRoom();
+          game.artifacts.get(8).moveToRoom();
+        };
+        game.modal.questions = [q1];
+        game.modal.run();
         return;
       }
       if (monster.id === 6 && game.data['prince unconscious']) {
