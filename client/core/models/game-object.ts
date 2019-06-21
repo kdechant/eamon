@@ -1,3 +1,4 @@
+import * as pluralize from 'pluralize';
 import Game from "./game";
 
 declare var game: Game;
@@ -33,9 +34,10 @@ export class GameObject {
    */
   public match(str: string): boolean {
     let name: string = this.name.toLocaleLowerCase();
+    let plural_name: string = pluralize(name);
     str = str.toLocaleLowerCase();
     // attempt exact match by name
-    if (str === name) {
+    if (str === name || str === plural_name) {
       return true;
     }
     // attempt match by alias
@@ -45,7 +47,7 @@ export class GameObject {
       }
     }
     // attempt match by beginning/end of name
-    if (name.startsWith(str) || name.endsWith(str)) {
+    if (name.startsWith(str) || name.endsWith(str) || plural_name.endsWith(str)) {
       return true;
     }
     return false;
