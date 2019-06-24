@@ -185,4 +185,13 @@ export class HistoryManager {
     return commands;
   }
 
+  /**
+   * Clears the history. Used for tests.
+   */
+  flush() {
+    this.history = [];
+    this.index = this.history.length;
+    this.push("");
+  }
+
 }

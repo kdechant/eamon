@@ -777,8 +777,6 @@ Example:
       return true;
     },
 
-
-
 ### afterRemoveWearable
 
 This is called just after the artifact has been taken off.
@@ -906,6 +904,64 @@ Example:
         }
         return true;
       },
+
+## Request an artifact from a monster
+
+The player can use a command like "REQUEST NOTE FROM EDDIE" to get an artifact that's
+in a monster's inventory. The following event handlers run during this process:
+
+### beforeRequest
+
+This runs after the target monster and artifact are identified, but before any other
+checks are made. Thus, this will run even if the monster or artifact doesn't exist,
+or if the monster isn't carrying the artifact. This allows creating special effects
+around non-existent artifacts or artifacts that are somewhere other than the monster's
+inventory.
+
+Parameters:
+- arg (string) - What the player typed after WEAR (e.g., "wear *ring*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact is in the current room or in the player's inventory, this will contain the Artifact object.
+- monster (Monster) - The monster from whom the player is requesting the artifact
+
+Return value:
+true: continue with the normal "request artifact" logic (the monster will give the artifact to the player)
+false: skip the rest of the "request" logic. This bypasses the check for whether the monster and artifact actually exist, and whether the monster has the artifact.
+
+Example:
+
+    "beforeRequest": function(arg: string, artifact: Artifact, monster: Monster) {
+      let game = Game.getInstance();
+      // in this event handler, you should check for whether the monster and artifact
+      // exist, unless your logic doesn't require them to exist.
+      if (!monster) return true;
+      if (!artifact) return true;
+      if (!monster.hasArtifact(artifact.id)) return true;
+      
+      // custom logic: you can't take alfred's lucky sword.
+      if (monster.id === 3 && artifact.id === 8) {
+        game.history.write("Alfred says, \"That's my lucky sword! My father gave it to me!\"");
+        return false;
+      }
+      return true;
+    },
+
+### afterRequest
+
+This runs after the item has changed hands. It's mainly for special messages, etc.
+
+Parameters:
+- arg (string) - What the player typed after WEAR (e.g., "wear *ring*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact is in the current room or in the player's inventory, this will contain the Artifact object.
+- monster (Monster) - The monster who gave the artifact to the player
+
+Example:
+
+    "afterRequest": function(arg: string, artifact: Artifact, monster: Monster) {
+      let game = Game.getInstance();
+      if (monster.id === 3 && artifact.id === 1) {
+        game.history.write("Alfred says, 'Use it well.'");
+      }
+    },
 
 ## Light
 

@@ -2,6 +2,7 @@
  * Unit tests for Attack of the Kretons
  */
 import Game from "../../core/models/game";
+import {HistoryManager} from "../../core/models/history-manager";
 import {Monster} from "../../core/models/monster";
 import {Artifact} from "../../core/models/artifact";
 import {initLiveGame} from "../../core/utils/testing";
@@ -38,6 +39,8 @@ it("should have working event handlers", () => {
   expect(orb.room_id).toBe(5);
   game.command_parser.run('get all');
   expect(orb.room_id).toBe(5);
+  game.command_parser.run("request orb from prince");
+  expect(game.history.getOutput(0).text).toBe("The Prince says you can't have it if you don't have a reason.");
 
   // tavern
   let groo = game.monsters.get(3);
@@ -57,6 +60,8 @@ it("should have working event handlers", () => {
   expect(game.history.getOutput(0).text).toBe("That wouldn't be very nice!");
   expect(game.monsters.get(1).reaction).toBe(Monster.RX_NEUTRAL);
 
+  game.history.flush();
+
   // prince 2
   game.player.moveToRoom(5); game.tick();
   expect(game.data['prince unconscious']).toBeTruthy();
@@ -64,6 +69,8 @@ it("should have working event handlers", () => {
   expect(groo.room_id).toBe(4);
   game.command_parser.run("talk to prince");
   expect(game.history.getOutput(0).text).toBe("The Prince is unconscious.");
+  game.command_parser.run("request orb from prince");
+  expect(game.history.getOutput(0).text).toBe("He's unconscious.");
   game.command_parser.run('s');  // rejoin groo
 
   // gate / kretons
@@ -82,8 +89,10 @@ it("should have working event handlers", () => {
   expect(groo.room_id).toBe(11);
   expect(game.monsters.get(14).room_id).toBe(10);
 
+  game.history.flush();
+
   // max
-  game.command_parser.run("use wand of castratia");
+  game.command_parser.run("use wand of castratia"); // when max is not here
   expect(game.effects.get(110).seen).toBeFalsy();
   expect(game.monsters.get(29).room_id).toBe(43);
   game.player.moveToRoom(43);
@@ -95,7 +104,7 @@ it("should have working event handlers", () => {
   expect(game.player.room_id).toBe(13);
   game.artifacts.get(43).moveToInventory();
   game.command_parser.run('e');
-  game.command_parser.run('use wand of castratia');
+  game.command_parser.run('use wand of castratia'); // when max is here
   expect(game.monsters.get(29).isHere()).toBeFalsy();
   expect(game.artifacts.get(47).isHere()).toBeTruthy();
   expect(game.effects.get(110).seen).toBeTruthy();
@@ -130,6 +139,8 @@ it("should have working event handlers", () => {
   expect(game.player.room_id).toBe(46);  // back to wizard's cave
   expect(game.player.hasArtifact(49)).toBeTruthy();  // get crystal
 
+  game.history.flush();
+
   // chichester
   let chi = game.monsters.get(16);
   game.player.moveToRoom(20);
@@ -150,6 +161,8 @@ it("should have working event handlers", () => {
   game.tick();
   expect(game.monsters.get(18).isHere()).toBeTruthy();
 
+  game.history.flush();
+
   // arba/dakarba/sage
   let sage = game.monsters.get(21);
   game.artifacts.get(25).moveToInventory();  // key
@@ -162,10 +175,16 @@ it("should have working event handlers", () => {
   game.command_parser.run('get key');
   game.command_parser.run('free sage');
   expect(sage.isHere()).toBeTruthy();
+  expect(game.monsters.get(34).room_id).toBe(13);
   game.command_parser.run('w');
   game.command_parser.run('open chest');
   expect(game.artifacts.get(24).is_open).toBeTruthy();
   game.command_parser.run('get wand');
+  game.player.moveToRoom(13); game.tick();
+  expect(game.effects.get(72).seen).toBeTruthy();
+  expect(game.monsters.get(34).room_id).toBeNull();
+
+  game.history.flush();
 
   // sage / gate / brandy
   game.player.moveToRoom(11);
@@ -178,11 +197,15 @@ it("should have working event handlers", () => {
   game.command_parser.run('get key');
   game.command_parser.run('e');
   game.command_parser.run('s');
+  game.command_parser.run('request brandy from stan');
+  expect(game.history.getOutput(0).text).toBe('"I suggest you give me 75 kopins," says Stan.');
   game.command_parser.run('give 10 to stan');
   expect(game.history.getOutput(0).text).toBe('"That ain\'t enough!" growls Stan.');
   game.command_parser.run('give 75 to stan');
   expect(game.data['brandy']).toBeTruthy();
   expect(game.artifacts.get(28).room_id).toBe(6);
+  game.command_parser.run('request brandy from stan');
+  expect(game.history.getOutput(0).text).toBe('"Sorry, all out of that," says Stan.');
   game.command_parser.run('get brandy');
   game.command_parser.run('n');
   game.command_parser.run('w');
@@ -196,6 +219,8 @@ it("should have working event handlers", () => {
   game.command_parser.run('request catalog from sage');
   expect(game.history.getOutput(0).text).toBe('Sage tells you to bite something.');
   expect(sage.hasArtifact(6)).toBeTruthy();
+
+  game.history.flush();
 
   // granite slab
   game.player.moveToRoom(35);
@@ -223,9 +248,11 @@ it("should have working event handlers", () => {
   game.player.moveToRoom(5); game.tick();
   game.command_parser.run('give crystal to prince');
   expect(game.effects.get(63).seen).toBeTruthy();
-  expect(game.data['orb']).toBe(2);
+  expect(game.data['orb']).toBeTruthy();
   game.command_parser.run('get orb');
   expect(game.player.hasArtifact(45)).toBeTruthy();
+
+  game.history.flush();
 
   // misc
   groo.injure(100);
@@ -241,7 +268,10 @@ it("should have working event handlers", () => {
   // stench
   game.command_parser.run('say imtu khoul');
   expect(game.player.room_id).toBe(48);
-  game.player.moveToRoom(51); game.tick();
+  game.monsters.get(35).destroy();  // get reaper out of the way
+  game.player.moveToRoom(50);
+  game.command_parser.run('e');
+  expect(game.history.getOutput().text).toBe("You feel as if you are tumbling through space and time...");
   expect(game.history.getLastOutput().text).toBe("You think you hear Frank Zappa far in the distance.");
   // zombies
   game.skip_battle_actions = true;
@@ -253,7 +283,9 @@ it("should have working event handlers", () => {
   expect(game.data['hot room']).toBe(1);
   game.command_parser.run("use wand of water");
   expect(game.effects.get(84).seen).toBeTruthy();
-  expect(game.data['hot room']).toBe(2);
+  expect(game.data['hot room']).toBe(-1);
+
+  game.history.flush();
 
   // altar
   game.monsters.get(41).destroy();  // joey

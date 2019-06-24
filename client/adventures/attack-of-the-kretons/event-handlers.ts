@@ -31,13 +31,13 @@ export var event_handlers = {
     game.data['hot room'] = 0;  // d%(4)
     game.data['read codex'] = false;  // d%(5)
     // d%(6) through d%(10) were replaced by effect "seen" flags
-    game.data['orb'] = 0;  // d$(12)
+    game.data['orb'] = false;  // d$(12)
     game.data['brandy'] = false;
 
     // monster random actions
     game.monsters.get(1).data['actions'] = ['growls viciously.', 'cracks a walnut on his head.',
       'spits in a beer and swears.', 'chases some barbarians out.', 'opens a bottle with his teeth.'];
-    game.monsters.get(3).data['battle_taunts'] = ['A fray!', 'Now Groo does what Groo does best!',
+    game.monsters.get(3).data['battle taunts'] = ['A fray!', 'Now Groo does what Groo does best!',
       'Fear me! I am Groo, the guy you should fear!', 'Die, mendicant!'];
 
     // monster talk effects
@@ -120,7 +120,7 @@ export var event_handlers = {
 
   "beforeGet": function (arg, artifact) {
     let game = Game.getInstance();
-    if (artifact && artifact.id === 45 && game.data['orb'] < 2) {
+    if (artifact && artifact.id === 45 && !game.data['orb']) {
       game.history.write("Sorry, it's not yours.");
       return false;
     }
@@ -129,6 +129,10 @@ export var event_handlers = {
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
+
+    if (exit.room_to === 51 || room.id === 51) {
+      game.history.write("You feel as if you are tumbling through space and time...");
+    }
 
     switch (exit.room_to) {
       case -555:
@@ -169,16 +173,29 @@ export var event_handlers = {
 
   "death": function(monster: Monster) {
     let game = Game.getInstance();
+    if (monster.id === 3) {
+      game.effects.print(108);
+      monster.heal(monster.hardiness);
+      return false;
+    }
+    return true;
+  },
+
+  "afterDeath": function(monster: Monster) {
+    let game = Game.getInstance();
     switch (monster.id) {
       case 2:
         game.artifacts.get(8).moveToRoom();
         break;
-      case 3:
-        game.effects.print(108);
-        monster.heal(monster.hardiness);
-        return false;
+      case 25:
+        game.artifacts.get(35).moveToRoom();  // grateful dead
+        break;
       case 31:
         game.monsters.get(32).moveToRoom();
+        game.skip_battle_actions = true;
+        break;
+      case 32:
+        game.monsters.get(33).moveToRoom();
         game.skip_battle_actions = true;
         break;
       case 33:
@@ -188,25 +205,6 @@ export var event_handlers = {
         game.player.updateInventory();
         break;
     }
-
-    // special handling of zombies (group monster) - only do something when the last individual dies
-    if (monster.parent) {
-      // console.log('killed one of', monster.parent.name);
-      // Note: this will be 1 when the last one dies, because the status flag hasn't been
-      // updated on that one yet.
-      let living = monster.parent.children.filter(m => m.status === Monster.STATUS_ALIVE).length;
-      // console.log(`${monster.parent.name} has ${living} children`);
-      if (monster.parent.id === 25 && living === 1) {
-        // console.log('killed all of', monster.parent.name);
-        game.artifacts.get(35).moveToRoom();  // grateful dead
-      }
-      if (monster.parent.id === 32 && living === 1) {
-        // console.log('killed all of', monster.parent.name);
-        game.monsters.get(33).moveToRoom();  // conan
-        game.skip_battle_actions = true;
-      }
-    }
-    return true;
   },
 
   "eat": function(arg: string, artifact: Artifact) {
@@ -218,9 +216,11 @@ export var event_handlers = {
 
   "endTurn": function() {
     let game = Game.getInstance();
-    if (game.data['hot room'] === 1) {
+    if (game.data['hot room'] > 2) {
       game.effects.print(83, 'danger');
       game.die();
+    } else if (game.data['hot room'] > 0) {
+      game.data['hot room']++;
     }
   },
 
@@ -239,8 +239,8 @@ export var event_handlers = {
     let game = Game.getInstance();
     let room_id = game.player.room_id;
 
-    if (game.data['hot room'] === 1) {
-      game.history.write("Hurry up, or you're toast!", "warning");
+    if (game.data['hot room'] > 0) {
+      game.history.write("The flames rise higher! Hurry up, or you're toast!", "warning");
     }
 
     // sage gets cranky if you come back without rum
@@ -264,7 +264,7 @@ export var event_handlers = {
       }
       // statue
       if (game.artifacts.get(57).isHere() && !game.effects.get(74).seen) {
-        game.effects.print(74);
+        game.effects.printSequence([74, 75]);
       }
       // kretons
       if (game.monsters.get(14).isHere() && !game.effects.get(27).seen) {
@@ -296,6 +296,7 @@ export var event_handlers = {
         zombies.destroy();
       }
       if (chakaal.isHere()) {
+        console.log('chakaal leaves');
         game.effects.printSequence([72, 73]);
         game.history.write(`${chakaal.name} mopes away.`);
         chakaal.destroy();
@@ -317,7 +318,7 @@ export var event_handlers = {
         let action = game.getRandomElement(m.data['actions']);
         game.history.write(`${m.name} ${action}`);
       }
-      if (game.in_battle && m.data['battle taunts']) {
+      if (game.in_battle && m.data['battle taunts'] && game.diceRoll(1,2) === 2) {
         let taunt = game.getRandomElement(m.data['battle taunts']);
         game.history.write(`${m.name} shouts with bloodlust, "${taunt}"`);
       }
@@ -334,6 +335,7 @@ export var event_handlers = {
 
     if (room_id === 57 && game.data['hot room'] === 0) {
       game.history.write("The doors slam shut!", "emphasis");
+      game.effects.print(71, "warning");
       game.data['hot room'] = 1;
     }
 
@@ -350,6 +352,8 @@ export var event_handlers = {
         game.monsters.get(40).moveToRoom();
         game.artifacts.get(65).moveToRoom();
         game.artifacts.get(66).moveToRoom();
+        game.monsters.updateVisible();
+        game.artifacts.updateVisible();
       } else {
         game.effects.print(107);
         game.die();
@@ -374,7 +378,6 @@ export var event_handlers = {
   "flee": function(arg: string, exit: RoomExit) {
     let game = Game.getInstance();
     if (game.monsters.get(14).isHere()) { // kretons taunt
-      game.effects.print(29);
       if (exit.room_to === -627) {
         // getting back into the city
         if (game.monsters.get(12).room_id !== 9) {
@@ -395,6 +398,8 @@ export var event_handlers = {
           game.player.moveToRoom(9);
         }
         return false;
+      } else {
+        game.effects.print(29);
       }
     }
     if (game.monsters.get(29).isHere()) { // max
@@ -453,14 +458,16 @@ export var event_handlers = {
         game.history.write(`The Sage says, "Wait 'til we're back in my house."`);
         return false;
       }
-      game.effects.printSequence([42, 43, 44, 45, 46]);
+      game.effects.printSequence([42, 44, 45, 46]);
       game.data['sage'] = 2;
+      game.history.suppressNextMessage = true;  // don't print the standard "monster takes item" message
     } else if (recipient.id === 6 && game.data['prince unconscious']) {
       game.history.write('The Prince is unconscious.');
       return false;
     } else if (recipient.id === 6 && artifact.id === 49) {  // crystal to prince
       game.effects.print(63);
-      game.data['orb'] = 2;
+      game.data['orb'] = true;
+      game.history.suppressNextMessage = true;  // don't print the standard "monster takes item" message
     } else if (recipient.id === 18) {  // dog
       game.history.write("Good luck getting a dog to carry that.");
       return false;
@@ -485,6 +492,7 @@ export var event_handlers = {
         game.history.write("Stan rolls out a keg of brandy.");
         game.data['brandy'] = true;
         game.artifacts.get(28).moveToRoom();
+        recipient.updateInventory();
         if (gold_amount > 75) {
           game.history.write("Stan hands you your change.");
           game.player.gold += gold_amount - 75;
@@ -539,7 +547,7 @@ export var event_handlers = {
     } else if (phrase === 'imtu khoul' && game.artifacts.get(45).isHere()) {
       game.effects.print(64, 'special2');
       game.player.moveToRoom(48);
-    } else if (phrase === 'cawteemahmosh' && room_id === 55) {
+    } else if (phrase === 'cawteenahmosh' && room_id === 55) {
       game.history.write("You again feel nausea as you return to your home dimension.", "special2");
       game.exit();
     } else if (game.monsters.get(16).isHere()) {
@@ -549,37 +557,49 @@ export var event_handlers = {
     // of stench. (as a workaround in case you get stuck)
   },
 
-  "take": function(arg: string, artifact: Artifact, monster: Monster) {
+  "beforeRequest": function(arg: string, artifact: Artifact, monster: Monster) {
     let game = Game.getInstance();
+    if (!monster || !artifact) return true;
+    // Some effects can happen even if the monster doesn't have the artifact.
+    // So, we check for whether the monster actually has the artifact below.
+
     if (monster.id === 4) {  // cheesy woman
       game.effects.print(67);
       return false;
+    } else if (monster.id === 6 && game.data['prince unconscious']) {
+      game.history.write("He's unconscious.");
+      return false;
     } else if (monster.id === 6 && artifact.id === 45) {  // prince / orb
-      if (game.data['prince unconscious']) {
+      if (artifact.room_id !== 5) {
+        return true;  // already got it
+      } else if (!game.data['read codex']) {
         game.history.write("The Prince says you can't have it if you don't have a reason.");
-        return false;
-      } else if (game.data['read codex'] === 0) {
+      } else {
         game.effects.print(55);
-        if (game.data['orb'] < 2) game.data['orb'] = 1;
-        return false;
       }
+      return false;
     } else if (monster.id === 8) {  // stan
-      if (artifact.id !== 28 || !monster.hasArtifact(artifact.id)) {
-        game.history.write('"Sorry, all out of that," says Stan.');
-        return false;
-      } else if (artifact.id === 28) {
-        game.history.write('"I suggest you give me 75 kopins," says Stan.');
-        return false;
+      if (artifact.id === 28) {
+        if (monster.hasArtifact(artifact.id)) {
+          game.history.write('"I suggest you give me 75 kopins," says Stan.');
+          return false;
+        } else {
+          game.history.write('"Sorry, all out of that," says Stan.');
+          return false;
+        }
       }
     } else if (monster.id === 11) {  // kurk
       game.effects.print(21);
       return false;
-    } else if (monster.id === 16 && artifact.id === 51 || monster.id === 21 && artifact.id === 6) {
+    } else if (monster.id === 16 && artifact.id === 51
+        || monster.id === 21 && artifact.id === 6
+        && monster.hasArtifact(artifact.id)) {
       // chichester / sage
       game.history.write(`${monster.name} tells you to bite something.`);
       return false;
     } else if (monster.id === 30 && artifact.id === 49) {  // wizard
       game.effects.print(58);
+      game.skip_battle_actions = true;
       game.player.moveToRoom(47);
       return false;
     }
@@ -591,8 +611,8 @@ export var event_handlers = {
     if (artifact.isHere()) {
       switch (artifact.id) {
         case 26:  // wand of frost
-          if (game.data['hot room'] === 1) {
-            game.data['hot room'] = 2;
+          if (game.data['hot room'] > 0) {
+            game.data['hot room'] = -1;
             game.effects.print(84);
           } else {
             game.history.write("It gets very cold and snow covers the area, however it quickly passes.", 'special');
@@ -627,14 +647,8 @@ export var event_handlers = {
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+    if (roll <= 75) {
+      game.history.write("Blobs of cheesedip rain from above. They make a big mess but don't do any damage.");
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);

@@ -1160,32 +1160,34 @@ export class TakeCommand implements BaseCommand {
 
     }
 
-    let item = monster.findInInventory(item_name);
-    if (!item) {
-      throw new CommandException(monster.name + " doesn't have it!");
-    }
-
-    if (game.triggerEvent("take", arg, item, monster)) {
-
-      item.monster_id = game.player.id;
-      let ready_weapon_id = monster.weapon_id;
-      monster.updateInventory();
-      game.history.write(monster.name + " gives you the " + item.name + ".");
-      if (!item.seen) {
-        item.showDescription();
+    // first look in monster's inventory, then look at all items
+    let item = monster.findInInventory(item_name) || game.artifacts.getByName(item_name);
+    if (game.triggerEvent("beforeRequest", arg, item, monster)) {
+      if (!item || !monster.hasArtifact(item.id)) {
+        throw new CommandException(monster.name + " doesn't have it!");
       }
-      if (item.id === ready_weapon_id) {
-        // took NPC's ready weapon. NPC should ready another weapon if they have one
-        monster.weapon = null;
-        monster.readyBestWeapon();
-        if (monster.weapon_id) {
-          game.history.write(monster.name + " readies the " + monster.weapon.name + ".");
+
+      // legacy event handler
+      if (game.triggerEvent("take", arg, item, monster)) {
+        item.moveToInventory();
+        let ready_weapon_id = monster.weapon_id;
+        monster.updateInventory();
+        game.history.write(monster.name + " gives you the " + item.name + ".");
+        if (!item.seen) {
+          item.showDescription();
         }
+        if (item.id === ready_weapon_id) {
+          // took NPC's ready weapon. NPC should ready another weapon if they have one
+          monster.weapon = null;
+          monster.readyBestWeapon();
+          if (monster.weapon_id) {
+            game.history.write(monster.name + " readies the " + monster.weapon.name + ".");
+          }
+        }
+        game.player.updateInventory();
+        game.triggerEvent("afterRequest");
       }
-      game.player.updateInventory();
-
     }
-
   }
 }
 core_commands.push(new TakeCommand());
@@ -1225,8 +1227,9 @@ export class FreeCommand implements BaseCommand {
         }
         if (game.triggerEvent("free", arg, a)) {
           game.history.write(message);
+          let monster = game.monsters.get(a.monster_id);
           a.freeBoundMonster();
-          game.triggerEvent("afterFree", arg, a, game.monsters.get(a.monster_id));
+          game.triggerEvent("afterFree", arg, a, monster);
         }
       } else {
 
