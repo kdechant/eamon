@@ -318,7 +318,8 @@ export var event_handlers = {
         let action = game.getRandomElement(m.data['actions']);
         game.history.write(`${m.name} ${action}`);
       }
-      if (game.in_battle && m.data['battle taunts'] && game.diceRoll(1,2) === 2) {
+      if (game.in_battle && m.data['battle taunts']
+        && game.player.room_id !== 59 && game.diceRoll(1,2) === 2) {
         let taunt = game.getRandomElement(m.data['battle taunts']);
         game.history.write(`${m.name} shouts with bloodlust, "${taunt}"`);
       }
@@ -342,9 +343,9 @@ export var event_handlers = {
     // cheesedip god
     let cg = game.monsters.get(39);
     if (cg.isHere()) {
-      game.delay();
       game.effects.print(85);
-      game.delay();
+      // game.modal.screenPause(() => {
+      game.history.slower(75);
       if (groo.isHere()) {
         game.history.write("But Groo has no brain!");
         game.effects.print(86);
@@ -354,18 +355,23 @@ export var event_handlers = {
         game.artifacts.get(66).moveToRoom();
         game.monsters.updateVisible();
         game.artifacts.updateVisible();
+        game.skip_battle_actions = true;
+        game.endTurn();
       } else {
         game.effects.print(107);
         game.die();
       }
+      game.history.faster(75);
+      // });
     }
 
     // dog's name
     if (game.monsters.get(18).isHere()) {
       game.monsters.visible.filter(m => m.special && m.special.indexOf('dog') !== -1 && !m.data['dog'])
         .forEach(m => {
-        game.history.write(`${m.name} asks what the dog's name is.`);
-        m.data['dog'] = true;
+          if (m.id === 6 && game.data['prince unconscious']) return;
+          game.history.write(`${m.name} asks what the dog's name is.`);
+          m.data['dog'] = true;
       });
     }
 
@@ -431,8 +437,11 @@ export var event_handlers = {
     if (monster) {
       if (monster.id === 18) {  // dog
         game.effects.print(68);
-        if (game.monsters.get(3).isHere()) {
-          game.effects.print(69);
+        if (game.monsters.get(21).isHere()) {
+          game.effects.print(111);
+          if (game.monsters.get(3).isHere()) {
+            game.effects.print(69);
+          }
         }
       } else if (monster.id === 21) {  // sage
         game.monsters.get(34).moveToRoom(13); // chakaal
@@ -460,6 +469,7 @@ export var event_handlers = {
       }
       game.effects.printSequence([42, 44, 45, 46]);
       game.data['sage'] = 2;
+      recipient.reaction = Monster.RX_FRIEND;
       game.history.suppressNextMessage = true;  // don't print the standard "monster takes item" message
     } else if (recipient.id === 6 && game.data['prince unconscious']) {
       game.history.write('The Prince is unconscious.');
@@ -581,7 +591,7 @@ export var event_handlers = {
     } else if (monster.id === 8) {  // stan
       if (artifact.id === 28) {
         if (monster.hasArtifact(artifact.id)) {
-          game.history.write('"I suggest you give me 75 kopins," says Stan.');
+          game.history.write(`"I'll sell it to you for 75 kopins," says Stan.`);
           return false;
         } else {
           game.history.write('"Sorry, all out of that," says Stan.');
@@ -614,6 +624,9 @@ export var event_handlers = {
           if (game.data['hot room'] > 0) {
             game.data['hot room'] = -1;
             game.effects.print(84);
+            // make doors easier to smash, for convenience
+            game.artifacts.get(63).hardiness = 5;
+            game.artifacts.get(64).hardiness = 5;
           } else {
             game.history.write("It gets very cold and snow covers the area, however it quickly passes.", 'special');
           }
@@ -622,6 +635,7 @@ export var event_handlers = {
           if (game.monsters.get(29).isHere()) {
             game.effects.print(110);
             game.monsters.get(29).destroy();
+            game.artifacts.get(46).moveToRoom();
             game.artifacts.get(47).moveToRoom();
             game.rooms.get(43).getExit('e').room_to = 44;
           } else {
@@ -630,10 +644,15 @@ export var event_handlers = {
           break;
         case 70:  // amulet of ian
           if (game.monsters.get(40).isHere()) {
-            game.effects.printSequence([91,92,93]);
-            game.monsters.get(40).destroy();
-            game.artifacts.get(67).moveToRoom();
-            game.monsters.get(18).name = 'Mulch';
+            game.effects.print(91);
+            if (game.monsters.get(21).isHere()) {
+              game.effects.printSequence([91, 92, 93]);
+              game.monsters.get(40).destroy();
+              game.artifacts.get(67).moveToRoom();
+              game.monsters.get(18).name = 'Mulch';
+            } else {
+              game.monsters.get(40).injure(10000);
+            }
           } else {
             game.effects.print(90);
           }
@@ -647,11 +666,22 @@ export var event_handlers = {
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (roll <= 75) {
+    if (roll <= 40) {
       game.history.write("Blobs of cheesedip rain from above. They make a big mess but don't do any damage.");
+    } else if (roll <= 80) {
+      // teleport to random room
+      game.history.write("You are being teleported...");
+      // valid destinations are 1-23 and 27-35
+      let room_id = game.diceRoll(1, 32);
+      if (room_id >= 24) room_id += 3;
+      game.player.moveToRoom(room_id);
+      game.skip_battle_actions = true;
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
+      game.monsters.visible
+        .filter(m => m.reaction === Monster.RX_FRIEND)
+        .forEach(m => m.heal(100));
     }
   },
 
@@ -660,8 +690,12 @@ export var event_handlers = {
     // you can exit without killing c.g. but you don't get a prize
     if (game.monsters.get(39).room_id === null
       && game.monsters.get(40).room_id === null) {
-      game.effects.printSequence([96, 97, 98, 99, 100, 101, 102, 103, 104, 105]);
-      game.player.gold += 5000;
+      game.history.slower(100);
+      game.effects.printSequence([96, 97, 98, 99, 100]);
+      // game.modal.screenPause(() => {
+        game.effects.printSequence([101, 102, 103, 104, 105]);
+        game.player.gold += 5000;
+      // });
     }
     return true;
   }

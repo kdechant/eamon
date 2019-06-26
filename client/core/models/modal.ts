@@ -33,6 +33,27 @@ export class Modal {
   }
 
   /**
+   * The easy way to ask a yes/no question.
+   * The game will be paused waiting for player input.
+   *
+   * Example:
+   * @param {string} question
+   *  The text of the question
+   * @param {Function} callback
+   *  The callback function that will be called when the player submits their answer. This takes one parameter, the
+   *  answer (as a string).
+   */
+  public confirm(question: string, callback: Function) {
+    let q = new ModalQuestion();
+    q.type = 'multiple_choice';
+    q.choices = ['Yes', 'No'];
+    q.question = question;
+    q.callback = callback;
+    this.questions = [q];
+    this.run();
+  }
+
+  /**
    * Shows a modal prompt (multiple choice version). The game will be paused waiting for player input.
    */
   public run() {

@@ -75,6 +75,20 @@ export class HistoryManager {
   }
 
   /**
+   * Increases speed
+   */
+  faster(amount = 25) {
+    this.delay = Math.max(0, this.delay - amount);
+  }
+
+  /**
+   * Decreases speed
+   */
+  slower(amount = 25) {
+    this.delay += amount;
+  }
+
+  /**
    * Gets the most recent command the user entered
    */
   getLastCommand() {

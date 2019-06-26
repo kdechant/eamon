@@ -6,6 +6,56 @@ import {ModalQuestion} from "../../core/models/modal";
 export var custom_commands = [];
 
 custom_commands.push({
+  name: "buy",
+  verbs: ["buy"],
+  run: function(verb: string, arg: string): void {
+    let game = Game.getInstance();
+    arg = arg.toLowerCase();
+    let stan = game.monsters.get(8);
+    if (arg === 'brandy' && stan.isHere()) {
+      if (stan.hasArtifact(28)) {
+        if (game.player.gold < 75) {
+          game.history.write('"It costs 75 kopins," says Stan. "Come back when you have enough money."');
+        } else {
+          game.modal.confirm('"I can sell it to you for 75 kopins," says Stan. "Deal?"', () => {
+            game.history.write("Stan rolls out a keg of brandy.");
+            game.data['brandy'] = true;
+            game.artifacts.get(28).moveToRoom();
+            game.player.gold -= 75;
+            game.monsters.get(8).updateInventory();
+          })
+        }
+      } else {
+        game.history.write('"Sorry, all out of that," says Stan.');
+      }
+      return;
+    } else if (arg === "rum" && stan.isHere()) {
+      if (game.player.gold < 3) {
+        game.history.write('"It costs 3 kopins," says Stan. "Come back when you have enough money."');
+      } else {
+        game.player.gold -= 3;
+        game.history.write("Stan pours you a glass of rum. You drink it. You feel like you should be investigating the situation in town, not just getting drunk.");
+      }
+      return;
+    }
+    if (arg === 'cheesedip' || arg === 'cheese' || arg === 'dip') {
+      if (game.monsters.get(11).isHere()) {
+        game.effects.print(21);
+        return;
+      }
+      let m = null;
+      if (stan.isHere()) m = stan;
+      if (game.monsters.get(4).isHere()) m = game.monsters.get(4);
+      if (m) {
+        game.history.write(`${m.name} gives you a bowl of cheesedip. You choke it down.`);
+        return;
+      }
+    }
+    throw new CommandException("No one here has that for sale.");
+  },
+});
+
+custom_commands.push({
   name: "talk",
   verbs: ["talk"],
   run: function(verb: string, arg: string): void {
@@ -19,21 +69,16 @@ custom_commands.push({
     if (monster) {
       if (monster.id === 2) {
         // minstrel
+        game.history.slower(75);
         game.effects.printSequence([2,3,4,5,6,7]);
-
-        game.pause();
-        let q1 = new ModalQuestion;
-        q1.type = 'multiple_choice';
-        q1.question = "Click to continue...";
-        q1.choices = ['Next'];
-        q1.callback = function (answer) {
-          game.effects.printSequence([8, 9, 10, 11]);
-          monster.destroy();
-          game.monsters.get(3).moveToRoom();
-          game.artifacts.get(8).moveToRoom();
-        };
-        game.modal.questions = [q1];
-        game.modal.run();
+        // game.modal.screenPause(() => {
+        // game.delay(1);
+        game.effects.printSequence([8, 9, 10, 11]);
+        monster.destroy();
+        game.monsters.get(3).moveToRoom();
+        game.artifacts.get(8).moveToRoom();
+        game.history.faster(75);
+        // });
         return;
       }
       if (monster.id === 6 && game.data['prince unconscious']) {

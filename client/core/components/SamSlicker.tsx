@@ -1,3 +1,4 @@
+import * as pluralize from 'pluralize';
 import * as React from 'react';
 import axios from "axios";
 import {getHeaders} from "../../main-hall/utils/api";
@@ -86,10 +87,12 @@ class SamSlicker extends React.Component<any, any> {
       )
     }
 
+    let profit = game.player.profit.toLocaleString();
+    let money_name = pluralize(game.money_name, game.player.profit);
     return (
       <div>
         <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>
-        <p>He pays you {game.player.profit} {game.money_name} total.</p>
+        <p>He pays you {profit} {money_name} total.</p>
 
         {/* messages that appear after the sale completes, like "the rebels reward you for killing darth vader" */}
         {game.after_sell_messages.map((msg, index) =>

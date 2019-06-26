@@ -1,3 +1,4 @@
+import * as pluralize from 'pluralize';
 import {BaseCommand} from "./base-command";
 import Game from "../models/game";
 import {Artifact} from "../models/artifact";
@@ -297,6 +298,10 @@ export class GetCommand implements BaseCommand {
               throw new CommandException("You can't get that.");
             }
             if (a.type === Artifact.TYPE_BOUND_MONSTER) {
+              if (arg === 'all') {
+                game.history.write(a.name + " can't be picked up.");
+                continue;
+              }
               throw new CommandException("You can't get that.");
             }
 
@@ -1067,7 +1072,15 @@ export class GiveCommand implements BaseCommand {
       throw new CommandException(monster_name + " is not here!");
     }
 
+    // check if we're giving money (GIVE 123 TO NPC or GIVE 123 GOLD TO NPC)
     let gold_amount = Number(item_name);
+    if (isNaN(gold_amount)) {
+      let plural = pluralize(game.money_name);
+      let regex_result = new RegExp(`([0-9,.]+) (gold|${game.money_name}|${plural})`).exec(item_name);
+      if (regex_result) {
+        gold_amount = Number(regex_result[1]);
+      }
+    }
     if (!isNaN(gold_amount)) {
       // giving money
 
