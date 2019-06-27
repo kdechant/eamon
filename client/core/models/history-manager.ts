@@ -8,9 +8,12 @@ declare var game;
  */
 export class HistoryManager {
   history: HistoryEntry[];
-  index: number;
+  current_entry: HistoryEntry;
+  index: number;  // used for the history recall
   delay: number = 100;
-  total_delay: number = 0;
+  page_size: number = 20;
+  paused: boolean = false;
+  counter: number = 0;  // used for display pagination
   suppressNextMessage: boolean = false;
 
   constructor() {
@@ -18,15 +21,44 @@ export class HistoryManager {
     this.index = this.history.length;
   }
 
+  public display() {
+    if (this.paused) this.counter = 0;
+    this.paused = false;
+    let line = this.current_entry.results.shift();
+    if (line) {
+      this.history[this.index - 1].push(line.text, line.type, line.markdown);
+      if (this.delay > 0) {
+        let pause = (line.type && line.type.indexOf('pause') !== -1)
+          || (this.counter > this.page_size && this.current_entry.results.length > 2);
+        // don't pause on game start text because it's ugly
+        if (this.current_entry.command === "") pause = false;
+        if (pause) {
+          this.paused = true;
+        } else {
+          this.counter += line.type.indexOf('no-space') !== -1 ? 1 : 2;
+          setTimeout(() => { this.display(); }, this.delay);
+        }
+      } else {
+        // No delay (i.e., unit tests). Not using setTimeout because it breaks the tests.
+        this.display();
+      }
+    } else {
+      // we've displayed everything, so reactivate the command prompt
+      game.setReady();
+    }
+    game.refresh();
+  }
+
   /**
    * Pushes a command onto the history
    */
   push(command: string) {
-    this.history.push(new HistoryEntry(command));
+    this.current_entry = new HistoryEntry(command);  // temp holding area for the results
+    this.history.push(new HistoryEntry(command));  // this will stay empty (except for the command) until the results are pushed onto it with display()
 
     // reset the counter whenever a command is added.
+    this.counter = 0;
     this.index = this.history.length;
-    this.total_delay = 0;
   }
 
   /**
@@ -41,16 +73,7 @@ export class HistoryManager {
   write(text: string, type: string = "normal", markdown: boolean = false) {
     if (!this.suppressNextMessage) {
       text = text.charAt(0).toUpperCase() + text.slice(1);
-      this.total_delay += this.delay;
-      if (this.delay > 0) {
-        setTimeout(() => {
-          this.history[this.index - 1].push(text, type, markdown);
-          game && game.refresh();
-        }, this.total_delay);
-      } else {
-        // delay of zero is used for unit testing, otherwise the timeouts make the tests fail
-        this.history[this.index - 1].push(text, type, markdown);
-      }
+      this.current_entry.push(text, type, markdown);
     }
     this.suppressNextMessage = false;
   }
@@ -63,15 +86,7 @@ export class HistoryManager {
    * game.history.append(" all one line");
    */
   append(text: string) {
-    if (this.delay > 0) {
-      setTimeout(() => {
-        this.history[this.index - 1].append(text);
-        game && game.refresh();
-      }, this.total_delay);
-    } else {
-      // delay of zero is used for unit testing, otherwise the timeouts make the tests fail
-      this.history[this.index - 1].append(text);
-    }
+    this.current_entry.append(text);
   }
 
   /**
@@ -86,6 +101,13 @@ export class HistoryManager {
    */
   slower(amount = 25) {
     this.delay += amount;
+  }
+
+  /**
+   * Implements a screen pause
+   */
+  public pause() {
+    this.current_entry.push("", "pause", false);
   }
 
   /**

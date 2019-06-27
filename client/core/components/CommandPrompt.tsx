@@ -16,6 +16,13 @@ class CommandPrompt extends React.Component<any, any> {
 
   public handleKeyPress = (event) => {
     const game = this.props.game;
+
+    // when the screen pause is active, don't type into the text box
+    if (game.history.paused) {
+      event.preventDefault();
+      return;
+    }
+
     switch (event.key) {
       case 'Enter':
         if (!game.ready) { return; }
@@ -98,7 +105,7 @@ class CommandPrompt extends React.Component<any, any> {
                    type="text"
                    value={this.state.command}
                    onChange={this.handleChange}
-                   onKeyUp={this.handleKeyPress}
+                   onKeyDown={this.handleKeyPress}
                    className="form-control ml-2"
                    placeholder={this.state.last_command}
                    autoComplete="off"
@@ -107,6 +114,10 @@ class CommandPrompt extends React.Component<any, any> {
           </div>
         </div>
       )
+    }
+
+    if (game.history.paused) {
+      return <div />;
     }
 
     if (game.won) {

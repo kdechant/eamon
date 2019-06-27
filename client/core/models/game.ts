@@ -367,6 +367,7 @@ export default class Game {
       // event handler that can change the intro text
       this.triggerEvent("intro");
     }
+    this.history.display();
   }
 
   /**
@@ -524,19 +525,14 @@ export default class Game {
     // and monster descriptions (e.g., some monsters may speak when you see them)
     this.triggerEvent("endTurn2");
 
-    this.setReady();
+    this.history.display();
   }
 
   /**
    * Resets the "ready" state
    */
   public setReady() {
-    // set a timeout to activate the command prompt, so the player can't spam the enter key
-    // setTimeout(() => { this.ready = true; }, 100);
-
-    // the old version, saved for later.
-    setTimeout(() => { this.ready = true; this.refresh(); }, this.history.total_delay);
-
+    this.ready = true;
   }
 
   /**
@@ -627,9 +623,10 @@ export default class Game {
    *   The amount of time to delay, in seconds
    */
   public delay(time: number = 3) {
-    if (this.history.delay > 0) {
-      this.history.total_delay += time * 1000;
-    }
+    // TODO: rework this (currently no-op, removed in favor of automatic screen pauses)
+    // if (this.history.delay > 0) {
+    //   this.history.total_delay += time * 1000;
+    // }
   }
 
   /**
@@ -639,6 +636,7 @@ export default class Game {
     if (this.triggerEvent('exit')) {
       this.active = false;
       this.won = true;
+      this.history.display();
 
       this.logger.log('exit adventure', this.timer);
       for (let s in this.statistics) {
@@ -675,6 +673,8 @@ export default class Game {
     if (this.triggerEvent("death", this.player)) {
       this.active = false;
       this.died = true;
+      this.history.display();
+
       // saved games needs to be an array for rendering in browser
       this.saves = [];
       for (let i = 1; i <= 10; i++) {

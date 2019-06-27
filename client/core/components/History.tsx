@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
+import Game from "../models/game";
 
 class History extends React.Component<any, any> {
 
@@ -7,6 +8,16 @@ class History extends React.Component<any, any> {
 
   public componentDidMount() {
     this.scrollToBottom();
+
+    // key press handler for screen pause
+    let game = Game.getInstance();
+    document.addEventListener("keyup", (ev) => {
+      let game = Game.getInstance();
+      if (game.history.paused) {
+        ev.preventDefault();
+        game.history.display();
+      }
+    }, false);
   }
 
   public componentDidUpdate() {
@@ -16,6 +27,10 @@ class History extends React.Component<any, any> {
   public scrollToBottom() {
     this.historyDiv.scrollTop = this.historyDiv.scrollHeight;
   }
+
+  public continue = () => {
+    Game.getInstance().history.display();
+  };
 
   public render() {
     const game = this.props.game;
@@ -39,6 +54,9 @@ class History extends React.Component<any, any> {
             )}
           </div>
         ))}
+        {game.history.paused ? <button className="btn btn-info paused" onClick={this.continue}>
+          Hit any key to continue...
+        </button> : ""}
       </div>
     );
   }

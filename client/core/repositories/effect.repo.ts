@@ -68,7 +68,7 @@ export default class EffectRepository {
    * to use the style specified in the effect object
    * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
-  public print(id: number, style: string = null, inline: boolean = false): void {
+  public print(id: number, style: string = 'normal', inline: boolean = false): void {
     let game = Game.getInstance();
     let ef = this.get(id);
     if (ef) {
