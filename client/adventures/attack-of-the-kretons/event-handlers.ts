@@ -95,6 +95,15 @@ export var event_handlers = {
     return (defender.id === 29 || defender.id === 40) ? 0 : true;
   },
 
+  "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
+    let game = Game.getInstance();
+    // mr. r
+    if (defender.id === 40 && attacker.id === Monster.PLAYER) {
+      game.history.write('Mr. Roessler shrugs off your attack and laughs.');
+    }
+    return true;
+  },
+
   "attackMonster": function(arg: string, target: Monster) {
     let game = Game.getInstance();
     // to battle!
@@ -208,19 +217,32 @@ export var event_handlers = {
   },
 
   "eat": function(arg: string, artifact: Artifact) {
-    if (artifact && artifact.id === 3) {
-      Game.getInstance().history.write("You're already sick of the stuff.");
+    let game = Game.getInstance();
+    if (game.player.room_id === 51 && (arg === "cheesedip" || arg === "cheese" || arg === "dip")) {
+      game.history.write("That's some psychedelic cheesedip. Your vision goes all swimmy for a few minutes.");
       return false;
+    }
+    if (artifact) {
+      if (artifact.id === 3) {
+        game.history.write("You're already sick of the stuff.");
+        return false;
+      }
+      if (artifact.id === 65) {
+        game.history.write("No way.");
+        return false;
+      }
     }
   },
 
   "endTurn": function() {
     let game = Game.getInstance();
-    if (game.data['hot room'] > 2) {
-      game.effects.print(83, 'danger');
-      game.die();
-    } else if (game.data['hot room'] > 0) {
-      game.data['hot room']++;
+    if (game.player.room_id === 57) {
+      if (game.data['hot room'] > 2) {
+        game.effects.print(83, 'danger');
+        game.die();
+      } else if (game.data['hot room'] > 0) {
+        game.data['hot room']++;
+      }
     }
   },
 
@@ -239,7 +261,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     let room_id = game.player.room_id;
 
-    if (game.data['hot room'] > 0) {
+    if (game.player.room_id === 57 && game.data['hot room'] > 0) {
       game.history.write("The flames rise higher! Hurry up, or you're toast!", "warning");
     }
 
@@ -344,25 +366,25 @@ export var event_handlers = {
     let cg = game.monsters.get(39);
     if (cg.isHere()) {
       game.effects.print(85);
-      // game.modal.screenPause(() => {
-      game.history.slower(75);
       if (groo.isHere()) {
         game.history.write("But Groo has no brain!");
         game.effects.print(86);
         cg.destroy();
+        game.history.pause();
         game.monsters.get(40).moveToRoom();
-        game.artifacts.get(65).moveToRoom();
-        game.artifacts.get(66).moveToRoom();
+        game.monsters.get(40).showDescription();
+        game.monsters.get(40).seen = true;
+        [65,66].forEach(id => {
+          game.artifacts.get(id).moveToRoom();
+          game.artifacts.get(id).showDescription();
+          game.artifacts.get(id).seen = true;
+        });
         game.monsters.updateVisible();
         game.artifacts.updateVisible();
-        game.skip_battle_actions = true;
-        game.endTurn();
       } else {
         game.effects.print(107);
         game.die();
       }
-      game.history.faster(75);
-      // });
     }
 
     // dog's name
@@ -621,7 +643,7 @@ export var event_handlers = {
     if (artifact.isHere()) {
       switch (artifact.id) {
         case 26:  // wand of frost
-          if (game.data['hot room'] > 0) {
+          if (game.player.room_id === 57 && game.data['hot room'] > 0) {
             game.data['hot room'] = -1;
             game.effects.print(84);
             // make doors easier to smash, for convenience
@@ -642,9 +664,12 @@ export var event_handlers = {
             game.history.write("The wand glows, but nothing seems to happen.", 'special');
           }
           break;
+        case 66:  // electronics equipment
+          game.effects.print(112);
+          break;
         case 70:  // amulet of ian
           if (game.monsters.get(40).isHere()) {
-            game.effects.print(91);
+            game.effects.print(91, "special2");
             if (game.monsters.get(21).isHere()) {
               game.effects.printSequence([91, 92, 93]);
               game.monsters.get(40).destroy();
@@ -690,12 +715,10 @@ export var event_handlers = {
     // you can exit without killing c.g. but you don't get a prize
     if (game.monsters.get(39).room_id === null
       && game.monsters.get(40).room_id === null) {
-      game.history.slower(100);
       game.effects.printSequence([96, 97, 98, 99, 100]);
-      // game.modal.screenPause(() => {
-        game.effects.printSequence([101, 102, 103, 104, 105]);
-        game.player.gold += 5000;
-      // });
+      game.history.pause();
+      game.effects.printSequence([101, 102, 103, 104, 105]);
+      game.player.gold += 5000;
     }
     return true;
   }
