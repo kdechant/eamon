@@ -126,7 +126,6 @@ export class Monster extends GameObject {
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
-    // console.log(`monster ${this.id} moving to room ${room_id}`);
     let from_room_id = this.room_id;
     this.room_id = room_id || Game.getInstance().player.room_id;
 
@@ -829,7 +828,7 @@ export class Monster extends GameObject {
     }
 
     let w = this.getWeapon();
-    return (w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
+    return (!!w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
   }
 
   /**

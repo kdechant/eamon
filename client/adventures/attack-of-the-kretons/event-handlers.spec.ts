@@ -25,7 +25,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
@@ -198,7 +198,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('e');
   game.command_parser.run('s');
   game.command_parser.run('request brandy from stan');
-  expect(game.history.getOutput(0).text).toBe('"I suggest you give me 75 kopins," says Stan.');
+  expect(game.history.getOutput(0).text).toBe('"I\'ll sell it to you for 75 kopins," says Stan.');
   game.command_parser.run('give 10 to stan');
   expect(game.history.getOutput(0).text).toBe('"That ain\'t enough!" growls Stan.');
   game.command_parser.run('give 75 to stan');
@@ -306,7 +306,7 @@ it("should have working event handlers", () => {
   // exit
   let gold = game.player.gold;
   game.player.moveToRoom(55); game.tick();
-  game.command_parser.run('say cawteemahmosh');
+  game.command_parser.run('say cawteenahmosh');
   expect(game.effects.get(96).seen).toBeTruthy();
   expect(game.effects.get(105).seen).toBeTruthy();
   expect(game.player.gold).toBe(gold + 5000);

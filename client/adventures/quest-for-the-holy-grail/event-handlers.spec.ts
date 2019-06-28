@@ -25,9 +25,8 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
-// TESTS
 // TESTS
 
 it("should have working event handlers", () => {
@@ -41,51 +40,45 @@ it("should have working event handlers", () => {
   game.command_parser.run('w');
   game.command_parser.run('flee');
   expect(game.player.room_id).toBe(6);
+  game.monsters.get(9).destroy();  // black knight
 
   // Holy Hand Grenade
-  game.player.moveToRoom(2);
-  game.tick();
+  game.player.moveToRoom(2); game.tick();
   game.command_parser.run('get grenade');
-  game.tick();
+  // game.tick();
   expect(game.player.hasArtifact(1)).toBeTruthy();
   expect(game.effects.get(27).seen).toBeTruthy();
 
   // The Monks
-  game.player.moveToRoom(10);
-  game.tick();
+  game.player.moveToRoom(10); game.tick();
   expect(game.effects.get(1).seen).toBeTruthy();
 
-  // ROger
-  game.player.moveToRoom(14);
+  // Roger
+  game.player.moveToRoom(14); game.tick();
   game.command_parser.run('buy shrubbery');
-  game.tick();
   expect(game.player.hasArtifact(3)).toBeTruthy();
 
+  game.history.flush();
+
   // the Knights Who Say Nee
-  game.player.moveToRoom(25);
+  game.player.moveToRoom(25); game.tick();
   game.command_parser.run('give shrubbery to knights');
-  game.tick();
   expect(game.player.hasArtifact(3)).toBeFalsy();
   game.command_parser.run('say nee');
-  game.tick();
+  expect(game.history.getOutput(1).text).toBe(`"Showing off your vocabulary, eh? That's not the right word, anyway."`);
+  game.command_parser.run('say it');
   expect(game.monsters.get(14).isHere()).toBeFalsy();
 
   // Bridge of Death
-  game.player.moveToRoom(64);
-  game.tick();
+  game.player.moveToRoom(64); game.tick();
   game.command_parser.run('say He-Man');
-  game.tick();
   game.command_parser.run('say grail');
-  game.tick();
   game.command_parser.run('say red');
-  game.tick();
   game.command_parser.run('n');
-  game.tick();
   expect(game.player.room_id).toBe(65);
 
   // Holy Grail
-  game.player.moveToRoom(66);
-  game.tick();
+  game.player.moveToRoom(66); game.tick();
   game.in_battle = false; // bypass the knights
   game.command_parser.run('get grail');
 });

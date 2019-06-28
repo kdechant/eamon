@@ -171,12 +171,13 @@ export class HistoryManager {
 
   /**
    * Gets a line from the history for the most recent command
-   * Used for unit tests.
+   * Used for unit tests. Do not use this for actual game play logic.
    * @param {number} index
    *   The zero-based index number of the history line (default 0, which is the first line of history since the last command)
    *   1 is the second line, 2 the third, and so on.
    */
   getOutput(index: number = 0) {
+    this.display();
     if (this.history.length > 0) {
       let res = this.history[this.history.length - 1]["results"];
       if (res.length >= index + 1) {
@@ -191,11 +192,12 @@ export class HistoryManager {
 
   /**
    * Gets the most recent output entry added to the history.
-   * Used for unit tests.
+   * Used for unit tests. Do not use this for actual game play logic.
    * @param {number} num
    *   The number of history entries to go back (default 1)
    */
   getLastOutput(num: number = 1) {
+    this.display();
     if (this.history.length > 0) {
       let res = this.history[this.history.length - 1]["results"];
       if (res.length >= num) {

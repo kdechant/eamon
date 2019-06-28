@@ -8,13 +8,13 @@ describe("History entry class", function() {
 
     h.push("Sword taken", "normal");
     expect(h.results).toEqual([
-      {text: "Sword taken", type: "normal"}
+      {markdown: false, text: "Sword taken", type: "normal"}
     ]);
 
     h.push("The dragon attacks you!", "danger");
     expect(h.results).toEqual([
-      {text: "Sword taken", type: "normal"},
-      {text: "The dragon attacks you!", type: "danger"}
+      {markdown: false, text: "Sword taken", type: "normal"},
+      {markdown: false, text: "The dragon attacks you!", type: "danger"}
     ]);
 
   });

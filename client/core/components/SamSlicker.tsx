@@ -54,13 +54,13 @@ class SamSlicker extends React.Component<any, any> {
                 <tr className="artifact" key={artifact.id}>
                   <td>{ artifact.name }</td>
                   <td className="weapon-icon">
-                    <img src={icon_url} title={ artifact.getTypeName() } />
+                    <img src={icon_url} alt={ artifact.getTypeName() } title={ artifact.getTypeName() } />
                   </td>
                   <td>{ artifact.weapon_odds }%</td>
                   <td>{ artifact.dice } d { artifact.sides }</td>
                   <td>{ artifact.value } gp</td>
                   <td>
-                    <button className="btn" onClick={() => this.sell(artifact)}>Sell</button>
+                    <button className="btn btn-primary" onClick={() => this.sell(artifact)}>Sell</button>
                   </td>
                 </tr>
               );

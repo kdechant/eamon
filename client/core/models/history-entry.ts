@@ -11,7 +11,7 @@ export class HistoryEntry {
     this.command = command;
   }
 
-  public push(text: string, type: string, markdown: boolean) {
+  public push(text: string, type: string, markdown: boolean = false) {
     if (text === null) {
       text = "";
     }

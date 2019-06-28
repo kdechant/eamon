@@ -55,7 +55,8 @@ export var event_handlers = {
     if (monster.id === 16) {
       // king explains the situation and gives you a pass
       game.effects.print(1);
-      game.artifacts.get(16).moveToRoom(game.rooms.current_room.id);
+      game.artifacts.get(16).moveToInventory();
+      game.artifacts.get(16).showDescription();
       game.artifacts.updateVisible();
     }
   },
@@ -68,8 +69,8 @@ export var event_handlers = {
 
         // the misty trail
         game.effects.print(9);
-        exit.room_to = 1;
-        break;
+        game.player.moveToRoom(1);
+        return false;
 
       case -12:
 
@@ -120,14 +121,13 @@ export var event_handlers = {
 
   },
 
-  "give": function(arg: string, artifact: Artifact, monster: Monster) {
+  "afterGive": function (arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
-
-    if (monster.id === 17 && artifact.id === 16) {
+    if (recipient.id === 17 && artifact.id === 16) {
       // give the pass to the guard
       game.history.write("You may pass now.");
       game.data['pass guard'] = true;
-    } else if (monster.id === 10 && artifact.id === 11) {
+    } else if (recipient.id === 10 && artifact.id === 11) {
       // give the doughnut to the dragon
       game.history.write("The dragon ate the doughnut!");
       game.monsters.get(10).injure(1000);
@@ -135,14 +135,11 @@ export var event_handlers = {
     return true;
   },
 
-  "free": function(arg: string, artifact: Artifact) {
+  "afterFree": function(arg: string, artifact: Artifact, monster: Monster) {
     let game = Game.getInstance();
-
     if (artifact.id === 15) {
-      // the princess' gold chain
-      game.artifacts.get(12).room_id = game.rooms.current_room.id;
+      game.artifacts.get(12).moveToRoom();  // the princess' gold chain
     }
-    return true;
   },
 
   // every adventure should have a "power" event handler.

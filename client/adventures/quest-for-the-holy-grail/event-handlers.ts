@@ -291,7 +291,7 @@ export var event_handlers = {
     }
   },
 
-"give": function(arg: string, artifact: Artifact, recipient: Monster) {
+  "give": function(arg: string, artifact: Artifact, recipient: Monster) {
     let game = Game.getInstance();
     // giving the dead collector a body
     if (recipient.id == 33) {
@@ -445,7 +445,7 @@ export var event_handlers = {
     }
     if (phrase.indexOf("nee") >= 0) {
       if (visibleKnightsOfNee().length > 0) {
-        game.history.write("\"Showing off your vocabulary, eh? That's not the right word, anyway.\"");
+        game.history.write(`"Showing off your vocabulary, eh? That's not the right word, anyway."`);
       }
       if (game.monsters.get(13).isHere()) { // Roger
         if ((game.data['shrubbery'] == false) && (game.artifacts.get(3).monster_id != Monster.PLAYER)) {

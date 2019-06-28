@@ -773,7 +773,7 @@ export class AttackCommand implements BaseCommand {
         if (damage_done === 0) {
           game.history.write("Nothing happens.");
         } else if (damage_done === -1) {
-          throw new CommandException("Why would you attack a " + arg + "?");
+          throw new CommandException(`Why would you attack a ${artifact_target.name}?`);
         }
       }
 
@@ -1067,8 +1067,8 @@ export class GiveCommand implements BaseCommand {
     let item_name: string = regex_result[1];
     let monster_name: string = regex_result[2];
 
-    let recipient = game.monsters.getByName(monster_name);
-    if (!recipient || recipient.room_id !== game.rooms.current_room.id) {
+    let recipient = game.monsters.getLocalByName(monster_name);
+    if (!recipient) {
       throw new CommandException(monster_name + " is not here!");
     }
 

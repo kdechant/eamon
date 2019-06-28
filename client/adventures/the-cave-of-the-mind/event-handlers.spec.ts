@@ -44,12 +44,6 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(19).room_id).toBeNull();
   expect(game.artifacts.get(18).room_id).toBe(5);
 
-  // use the potion
-  let p = game.artifacts.get(16);
-  game.triggerEvent("use", "potion", p);
-  expect(game.effects.get(10).seen).toBeTruthy();
-  expect(game.won).toBeTruthy();
-
   // inscription
   game.mock_random_numbers = [1, 2, 3];
   expect(game.player.inventory.length).toBe(5);
@@ -66,5 +60,11 @@ it("should have working event handlers", () => {
   game.triggerEvent("power", 51);
   expect(game.history.getLastOutput().text).toBe("You are being teleported...");
   expect(game.player.room_id).toBe(16);
+
+  // use the potion
+  let p = game.artifacts.get(16);
+  game.triggerEvent("use", "potion", p);
+  expect(game.effects.get(10).seen).toBeTruthy();
+  expect(game.won).toBeTruthy();
 
 });
