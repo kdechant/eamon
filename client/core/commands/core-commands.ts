@@ -719,8 +719,8 @@ export class UseCommand implements BaseCommand {
   verbs: string[] = ["use"];
   run(verb, arg) {
     let game = Game.getInstance();
-    let item: Artifact = game.artifacts.getByName(arg);
-    if (item && item.isHere()) {
+    let item: Artifact = game.artifacts.getLocalByName(arg);
+    if (item) {
       if (item.quantity === null || item.quantity > 0) {
         item.use();
       } else {

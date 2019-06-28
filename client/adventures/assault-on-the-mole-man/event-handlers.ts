@@ -1,21 +1,7 @@
 import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
-import {Monster} from "../../core/models/monster";
-import {RoomExit} from "../../core/models/room";
-import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
-
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
-    // remove the # from some artifact names
-    for (let a of game.artifacts.all.filter(x => x.name.indexOf('#') > -1 && x.id <= 27)) {
-      a.name = a.name.replace(/#/g, "");
-    }
-
-  },
 
   "use": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
@@ -27,6 +13,15 @@ export var event_handlers = {
         if (typeof a !== 'undefined') {
           game.history.write("There is a clanking sound and the prisoner is freed!", "success");
           a.freeBoundMonster();
+        } else {
+          game.history.write("Nothing happens.");
+        }
+      } else if (artifact.id === 2) {
+        // strange device
+        if (game.artifacts.get(3).isHere()) {
+          toggle_gate(3);
+        } else if (game.artifacts.get(5).isHere()) {
+          toggle_gate(5);
         } else {
           game.history.write("Nothing happens.");
         }
@@ -42,9 +37,8 @@ export var event_handlers = {
     }
   },
 
-  "free": function(arg: string, artifact: Artifact) {
+  "beforeFree": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-
     if (artifact.id >= 21 && artifact.id <= 24) {
       game.history.write("You can't see how. Maybe there is a button somewhere?");
       return false;
@@ -82,3 +76,14 @@ export var event_handlers = {
 
 
 // declare any functions used by event handlers and custom commands
+function toggle_gate(artifact_id: Number) {
+  let game = Game.getInstance();
+  let artifact = game.artifacts.get(artifact_id);
+  if (artifact.is_open) {
+    game.history.write("The gate swings closed!", "special");
+    artifact.close();
+  } else {
+    game.history.write("The gate swings open!", "special");
+    artifact.open();
+  }
+}
