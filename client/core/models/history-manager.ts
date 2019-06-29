@@ -35,8 +35,9 @@ export class HistoryManager {
         if (pause) {
           this.paused = true;
         } else {
-          this.counter += line.type.indexOf('no-space') !== -1 ? 1 : 2;
-          setTimeout(() => { this.display(); }, this.delay);
+          let no_space = line.type.indexOf('no-space') !== -1;
+          this.counter += no_space ? 1 : 2;
+          setTimeout(() => { this.display(); }, no_space ? this.delay : this.delay / 2);
         }
       } else {
         // No delay (i.e., unit tests). Not using setTimeout because it breaks the tests.
