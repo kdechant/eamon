@@ -1,3 +1,4 @@
+import * as pluralize from 'pluralize';
 import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
@@ -57,13 +58,13 @@ export var event_handlers = {
       game.effects.print(82);
     }
     if (game.player.room_id == 61 && !game.effects.get(2).seen) { // my brain hurts
-      printSequence([2,3]);
+      game.effects.printSequence([2,3]);
     }
     if (game.player.room_id == 16 && !game.effects.get(4).seen) { // Scene 24
-      printSequence([4,5]);
+      game.effects.printSequence([4,5]);
     }
     if (game.player.room_id == 49 && !game.effects.get(6).seen) { // Spanish Inquisition!
-      printSequence([6,7,8,17,24,25]);
+      game.effects.printSequence([6,7,8,17,24,25]);
     }
     if (game.player.room_id == 18) { // the French castle
       if (!game.effects.get(9).seen) {
@@ -224,21 +225,18 @@ export var event_handlers = {
       game.data['divine_intervention']++;
       switch(game.data["divine_intervention"]) {
         case 1: { // first intervention
-          printSequence([101,102,103,104]);
+          game.effects.printSequence([101,102,103,104]);
           monster.heal(1000);
           return false;
-          break;
         }
         case 2: { // last chance…
           game.effects.print(105);
           monster.heal(1000);
           return false;
-          break;
         }
         default: { // The Almighty has given up on you
           game.effects.print(106);
           return true;
-          break;
         }
       }
     }
@@ -285,7 +283,7 @@ export var event_handlers = {
         game.effects.print(27);
       }
       if (artifact.id == 2) { // the Holy Grail
-        printSequence([120,121,122]);
+        game.effects.printSequence([120,121,122]);
         game.exit();
       }
     }
@@ -310,7 +308,7 @@ export var event_handlers = {
   "seeMonster": function(monster: Monster): void {
     let game = Game.getInstance();
     if (monster.id == 3) { // Lancelot
-      printSequence([85,86]);
+      game.effects.printSequence([85,86]);
     }
     if (monster.id == 9) { // the Black Knight
       game.effects.print(53);
@@ -325,13 +323,13 @@ export var event_handlers = {
       monster.description = game.effects.get(79).text;
     }
     if (monster.id == 25) { // Minstrel
-      printSequence([19,11,12,13,14,20]);
+      game.effects.printSequence([19,11,12,13,14,20]);
     }
     if (monster.id == 27) { // Dad/Herbert/etc
-      printSequence([88,89,15,21,22,23]);
+      game.effects.printSequence([88,89,15,21,22,23]);
     }
     if (monster.id == 28) { // yeoman guards
-      printSequence([109,110]);
+      game.effects.printSequence([109,110]);
     }
     if (monster.id == 30) { // royal guards
       game.effects.print(84);
@@ -415,7 +413,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     if (artifact && (artifact.id == 88)) { // armor
       artifact.destroy();
-    game.player.name = game.data['real_name'];
+      game.player.name = game.data['real_name'];
       game.data['power_naked'] = false;
       game.player.updateInventory();
       game.effects.print(123);
@@ -439,6 +437,7 @@ export var event_handlers = {
     let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     if (phrase.indexOf("it") === 0) {
+      game.effects.print(128);
       visibleKnightsOfNee().forEach(function(knight){
         knight.flee();
       });
@@ -493,15 +492,15 @@ export function initCustomCombatMessages(): void {
   let game = Game.getInstance();
   // the Knights Who Say Nee
   let neeCombatVerbs = [
-      "screams \"NEE!\" at",
-      "bellows \"NEE!\" at",
-      "shouts \"NEE!\" at",
-      "shrieks \"NEEEE!\" at",
-      "growls \"Nee...\" in the general direction of",
-      "whispers \"Nee.\" toward",
-      "chuckles \"Nee-hee-hee!\" gleefully at",
-      "States simply, \"Nee.\" to",
-      "Mutters \"Nee.\" under his breath at"];
+      'screams "NEE!" at',
+      'bellows "NEE!" at',
+      'shouts "NEE!" at',
+      'shrieks "NEEEE!" at',
+      'growls "Nee..." in the general direction of',
+      'whispers "Nee." toward',
+      'chuckles "Nee-hee-hee!" gleefully at',
+      'States simply, "Nee." to',
+      'Mutters "Nee." under his breath at'];
   game.monsters.get(14).combat_verbs = neeCombatVerbs;
   game.monsters.get(15).children.forEach(m => (m.combat_verbs = neeCombatVerbs));
   // Vicious Chicken
@@ -555,65 +554,31 @@ export function getDeadGroupMember(firstBodyId: number, quantity: number): Artif
 
 export function strikeFear(monster: Monster): void {
   let game = Game.getInstance();
-  let output: string;
   monster.courage = monster.courage / 2;
+  let strings = [];
+  let name = monster.name;
   if (monster.count == 1) {
-    switch(game.diceRoll(1,6)) {
-      case 1: {
-        output = " trembles in terror!";
-        break;
-      }
-      case 2: {
-        output = " is petrified!";
-        break;
-      }
-      case 3: {
-        output = " has gone white as a sheet!";
-        break;
-      }
-      case 4: {
-        output = " is a big fat chicken!";
-        break;
-      }
-      case 5: {
-        output = "'s eyes grow wide!";
-        break;
-      }
-      case 6: {
-        output = " gasps in fear!";
-        break;
-      }
-    }
+    strings = [
+      " trembles in terror!",
+      " is petrified!",
+      " has gone white as a sheet!",
+      " is a big fat chicken!",
+      "'s eyes grow wide!",
+      " gasps in fear!"
+    ];
+  } else {
+    strings = [
+      " tremble in terror!",
+      " are petrified!",
+      " have gone white as a sheet!",
+      " are all a bunch of scaredy-cats!",
+      " are frozen with fear!",
+      " gasp in fear—in unison!"
+    ];
+    name = pluralize(name);
+    monster.children.forEach(m => m.courage /= 2);
   }
-  if (monster.count > 1) {
-    switch(game.diceRoll(1,6)) {
-      case 1: {
-        output = "s tremble in terror!";
-        break;
-      }
-      case 2: {
-        output = "s are petrified!";
-        break;
-      }
-      case 3: {
-        output = "s have gone white as a sheet!";
-        break;
-      }
-      case 4: {
-        output = "s are all a bunch of scaredy-cats!";
-        break;
-      }
-      case 5: {
-        output = "s are frozen with fear!";
-        break;
-      }
-      case 6: {
-        output = "s gasp in fear—in unison!";
-        break;
-      }
-    }
-  }
-          game.history.write(monster.name + output);
+  game.history.write(name + game.getRandomElement(strings));
 }
 
 export function blackKnightDamage(): number {
@@ -621,31 +586,31 @@ export function blackKnightDamage(): number {
   game.data['black_knight_damage']++;
   switch(game.data['black_knight_damage']) {
     case 1: {
-      printSequence([36,37,56]);
+      game.effects.printSequence([36,37,56]);
       game.artifacts.get(95).moveToRoom(game.player.room_id); // the BK's right arm
+      game.history.suppressNextMessage = true;
       return 0;
-      break;
     }
     case 2: {
-      printSequence([38,39,57]);
+      game.effects.printSequence([38,39,57]);
       game.artifacts.get(96).moveToRoom(game.player.room_id); // the BK's left arm
+      game.history.suppressNextMessage = true;
       return 0;
-      break;
     }
     case 3: {
-      printSequence([40,41]);
+      game.effects.printSequence([40,41]);
       game.artifacts.get(97).moveToRoom(game.player.room_id); // the BK's right leg
+      game.history.suppressNextMessage = true;
       return 0;
-      break;
     }
     case 4: {
-      printSequence([42,58]);
-    game.monsters.get(9).destroy();
+      game.effects.printSequence([42,58]);
+      game.monsters.get(9).destroy();
       game.artifacts.get(98).moveToRoom(game.player.room_id); // the BK's left leg
       game.artifacts.get(31).moveToRoom(game.player.room_id); // the BK's torso
       game.artifacts.get(16).moveToRoom(game.player.room_id); // the BK's sword
+      game.history.suppressNextMessage = true;
       return 0;
-      break;
     }
   }
 }
@@ -722,7 +687,7 @@ export function deadCollectorMoves(collector: Monster): void {
 
 export function intoTheGorge(): void {
   let game = Game.getInstance();
-  printSequence([34,35]);
+  game.effects.printSequence([34,35]);
   game.die();
 }
 
@@ -734,12 +699,12 @@ export function printRandomEffect(first: number, quantity: number, odds: number 
   game.effects.print(offset + game.diceRoll(1,quantity));
 }
 
-export function printSequence(effectIds: number[]): void {
-  let game = Game.getInstance();
-  effectIds.forEach(function(id){
-    game.effects.print(id);
-  });
-}
+// export function printSequence(effectIds: number[]): void {
+//   let game = Game.getInstance();
+//   effectIds.forEach(function(id){
+//     game.effects.print(id);
+//   });
+// }
 
 export function updateArtifactDescription(artifact: Artifact): void {
   let game = Game.getInstance();

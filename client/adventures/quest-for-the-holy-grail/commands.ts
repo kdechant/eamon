@@ -51,6 +51,31 @@ custom_commands.push({
 });
 
 custom_commands.push({
+  name: "enter",
+  verbs: ["enter"],
+  run: function(verb: string, arg: string): void {
+    let game = Game.getInstance();
+    if (arg === 'castle') {
+      switch (game.player.room_id) {
+        case 18:
+          game.history.write(`The Frenchman's head appears above the wall again. He says, "You cannot enter! Now go away, or I shall taunt you a second time!`);
+          return;
+        case 13:
+          game.command_parser.run('e', false);
+          return;
+        case 34:
+          game.command_parser.run('w', false);
+          return;
+        case 65:
+          game.command_parser.run('n', false);
+          return;
+      }
+    }
+    throw new CommandException("Try a different command.");
+  }
+});
+
+custom_commands.push({
   name: "buy",
   verbs: ["buy","purchase"],
   run: function(verb: string, arg: string): void {
