@@ -1,7 +1,6 @@
 import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -64,18 +63,15 @@ export var event_handlers = {
     }
   },
 
-  // the 'read' event handler should set command.markings_read to true if the handler did something,
-  // otherwise the "there are no markings to read" message will appear.
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact && artifact.name === 'black book') {
-      let a = game.artifacts.getByName(arg);
-      if (a.room_id === game.rooms.current_room.id || a.monster_id === 0) {
+      if (game.player.hasArtifact(artifact.id)) {
         game.history.write("The book zaps you when you open it!", "danger");
         game.player.injure(5);
-        command.markings_read = true;
       }
     }
+    return true;
   },
 
   "beforeRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {

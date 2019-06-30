@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {CommandException} from "../../core/utils/command.exception";
 import {ModalQuestion} from "../../core/models/modal";
 
@@ -535,7 +534,7 @@ export var event_handlers = {
     return true;
   },
 
-  "beforeOpen": function(arg: string, artifact: Artifact, command: OpenCommand) {
+  "beforeOpen": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 9) {  // city gate
@@ -549,7 +548,7 @@ export var event_handlers = {
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "afterRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 37) {  // codex
@@ -558,7 +557,8 @@ export var event_handlers = {
       } else if (artifact.id === 6) {  // catalog
         if (game.monsters.get(21).isHere()) {
           game.effects.print(14);
-          game.monsters.get(21).pickUp(artifact);
+          artifact.moveToInventory(21);
+          game.monsters.get(21).updateInventory();
         } else {
           game.effects.print(15);
         }

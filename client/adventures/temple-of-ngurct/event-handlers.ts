@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -56,14 +55,10 @@ export var event_handlers = {
   "afterGet": function(arg, artifact) {
     let game = Game.getInstance();
 
-    if (artifact) {
-      switch (artifact.id) {
-        case 41:
-          // scimitar
-          game.history.write("Alignment conflict! The evil runes on the scimitar burn with a cold fire against your hand!", "special2");
-          game.player.injure(game.diceRoll(1, 8) + 1, true);
-          break;
-      }
+    if (artifact && artifact.id) {
+      // scimitar
+      game.history.write("Alignment conflict! The evil runes on the scimitar burn with a cold fire against your hand!", "special2");
+      game.player.injure(game.diceRoll(1, 8) + 1, true);
     }
   },
 
@@ -147,20 +142,19 @@ export var event_handlers = {
 
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-
     if (artifact !== null) {
       if (artifact.id === 18) {
         game.effects.print(5);
         game.player.moveToRoom(58);
-        command.markings_read = true;
+        return false;
       } else if (artifact.id === 53) {
         game.history.write('It says "H2SO4"');
-        command.markings_read = true;
+        return false;
       } else if (artifact.id === 64) {
         game.history.write('It says "Hale to he who wears this ring!"');
-        command.markings_read = true;
+        return false;
       }
     }
     return true;

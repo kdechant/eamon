@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -147,17 +146,22 @@ export var event_handlers = {
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact !== null) {
       // some readable artifacts have their text contained in the artifact description
       if (artifact.id === 19 || artifact.id === 20) {
         game.history.write(artifact.description, "special");
-        command.markings_read = true;  // suppresses the "no markings to read" message
-      } else if (artifact.id === 3) {
-        // scroll vanishes
-        artifact.destroy();
+        return false;
       }
+    }
+    return true;
+  },
+
+  "afterRead": function(arg: string, artifact: Artifact) {
+    if (artifact && artifact.id === 3) {
+      // scroll vanishes
+      artifact.destroy();
     }
   },
 

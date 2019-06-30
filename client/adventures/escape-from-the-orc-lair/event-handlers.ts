@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 // NOTE: nothing special here. This adventure runs on the base code.
 

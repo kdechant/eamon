@@ -3,22 +3,12 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
   "start": function(arg: string) {
     let game = Game.getInstance();
-
     game.data['pass guard'] = false;
-  },
-
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
-    let game = Game.getInstance();
-    if (artifact !== null && artifact.id === 11) {
-      game.effects.print(10);
-      command.markings_read = true;
-    }
   },
 
   "use": function(arg: string, artifact: Artifact) {

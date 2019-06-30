@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -15,6 +14,7 @@ export var event_handlers = {
     game.data['bridge'] = false;
     game.data['wizard spells'] = 3;
     game.data['lammasu spells'] = 3;
+    game.data['rovnart'] = false;
 
   },
 
@@ -143,13 +143,12 @@ export var event_handlers = {
     return true;
   },
 
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+  "afterOpen": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-    if (artifact !== null) {
+    if (artifact && artifact.id === 63 && !game.data['rovnart']) {
       // rovnart's tomb
-      if (artifact.id === 63 && !game.effects.get(1).seen) {
-        game.player.charisma -= 2;
-      }
+      game.data['rovnart'] = true;
+      game.player.charisma -= 2;
     }
   },
 
@@ -164,7 +163,7 @@ export var event_handlers = {
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "afterRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     // book
     if (artifact && artifact.id === 10) {
@@ -175,7 +174,6 @@ export var event_handlers = {
         }
       }
       artifact.destroy();
-      command.markings_read = true;
     }
   },
 

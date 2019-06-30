@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -110,7 +109,7 @@ export var event_handlers = {
       game.history.write("A strange force prevents you from lifting the bowl...");
       return false;
     }
-    if (artifact && artifact.id === 44) {
+    if (artifact && artifact.id === 44) {  // damp spot
       game.effects.print(12);
       return false;
     }
@@ -148,12 +147,13 @@ export var event_handlers = {
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-    if (artifact !== null && artifact.id === 11) {
+    if (artifact && artifact.id === 11) {
       game.effects.print(10);
-      command.markings_read = true;
+      return false;
     }
+    return true;
   },
 
   "revealArtifact": function(artifact: Artifact) {

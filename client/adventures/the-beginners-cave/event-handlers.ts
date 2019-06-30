@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -41,23 +40,25 @@ export var event_handlers = {
     return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
+    if (artifact && artifact.id === 3) {
+      game.history.write('It says "HEALING POTION"');
+      artifact.name = "healing potion";
+      return false;
+    }
+    return true;
+  },
 
-    if (artifact !== null) {
-      if (artifact.id === 3) {
-        game.history.write('It says "HEALING POTION"');
-        artifact.name = "healing potion";
-        command.markings_read = true;
-      } else if (artifact.id === 9) {
-        if (game.rooms.current_room.id === 26) {
-          game.history.write("You fall into the sea and are eaten by a big fish.", "danger");
-        } else {
-          game.history.write("You flop three times and die.", "danger");
-        }
-        game.die();
-        command.markings_read = true;
+  "afterRead": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    if (artifact && artifact.id === 9) {  // book
+      if (game.rooms.current_room.id === 26) {
+        game.history.write("You fall into the sea and are eaten by a big fish.", "danger");
+      } else {
+        game.history.write("You flop three times and die.", "danger");
       }
+      game.die();
     }
   },
 

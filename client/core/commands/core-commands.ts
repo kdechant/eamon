@@ -6,6 +6,7 @@ import {Monster} from "../models/monster";
 import {RoomExit} from "../models/room";
 import {CommandException} from "../utils/command.exception";
 import {ModalQuestion} from "../models/modal";
+import artifact from "../../main-hall/models/artifact";
 
 export let core_commands = [];
 
@@ -824,74 +825,51 @@ core_commands.push(new LightCommand());
 export class ReadCommand implements BaseCommand {
   name: string = "read";
   verbs: string[] = ["read"];
-  markings_read: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    this.markings_read = false;
 
     // can't read anything if it's dark
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
-      game.history.write("You can't read in the dark!");
-      return;
+      throw new CommandException("You can't read in the dark!");
     }
 
     // see if we're reading an artifact that has markings
     let a = game.artifacts.getLocalByName(arg, false);
-    if (a !== null) {
-      // don't reveal in getLocalByName above because we want to know if we revealed something.
-      let revealed_something = false;
-      if (a.embedded) {
-        a.reveal();
-        revealed_something = true;
-      }
-
-      game.triggerEvent("beforeRead", arg, a, this);
-
-      // "readable" type artifacts have built-in markings logic
-      // (this is the new version, which displays one marking per use of the "read" command.)
-      // NOTE: This is not implemented on most adventures yet.
-      if (a.markings) {
-        game.history.write("It reads: \"" + a.markings[a.markings_index] + "\"");
-        this.markings_read = true;
-        a.markings_index++;
-        if (a.markings_index >= a.markings.length) {
-          a.markings_index = 0;
+    if (game.triggerEvent('beforeRead', arg, a)) {
+      if (a !== null) {
+        // don't reveal in getLocalByName above because we want to know if we revealed something.
+        let revealed_something = false;
+        if (a.embedded) {
+          a.reveal();
+          revealed_something = true;
         }
-      }
 
-      // markings logic from EDX - uses the effect system to print a bunch of effects in series.
-      // (This prints them all at once. It doesn't page through them on multiple "read" calls.)
-      if (a.effect_id) {
-        for (let i = 0; i < a.num_effects; i++) {
-          game.effects.print(a.effect_id + i);
-        }
-        this.markings_read = true;
-      } else {
-        // readable artifact with no effects. just show description. common in some older adventures.
-        if (a.type === Artifact.TYPE_READABLE) {
+        // artifacts that aren't specifically "readable" can sometimes still have effect_ids and be
+        // "de facto" readable.
+        // this does not work with containers, which can have an effect ID that appears when you open them.
+        if (a.effect_id && a.type !== Artifact.TYPE_CONTAINER) {
+          for (let i = 0; i < a.num_effects; i++) {
+            game.effects.print(a.effect_id + i);
+          }
+        } else if (a.type === Artifact.TYPE_READABLE) {
+          // readable artifact with no effects. just show description.
           if (!revealed_something) {
             a.showDescription();
           }
-          this.markings_read = true;
+        } else {
+          game.history.write(a.name + " has no markings to read!!!");
         }
-      }
-
-      // also call the event handler to allow reading custom markings on other artifact types
-      // (or doing special things when reading something)
-      game.triggerEvent("read", arg, a, this);
-    }
-
-    // otherwise, nothing happens
-    if (!this.markings_read) {
-      if (a) {
-        game.history.write(a.name + " has no markings to read!");
-      } else if (arg === 'wall' || arg === 'door' || arg === 'floor' || arg === 'ceiling') {
-        game.history.write("There are no markings to read!");
-      } else if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
-        // generic sign which is not really readable. we can pretend.
-        game.rooms.current_room.show_description();
+        game.triggerEvent("afterRead", arg, a);
       } else {
-        game.history.write("There is no " + arg + " here!");
+        // no valid readable artifact. we can try to show interesting messages explaining why it can't be read.
+        if (arg === 'wall' || arg === 'door' || arg === 'floor' || arg === 'ceiling') {
+          game.history.write("There are no markings to read!");
+        } else if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
+          // generic sign which is not really readable. we can pretend.
+          game.rooms.current_room.show_description();
+        } else {
+          game.history.write("There is no " + arg + " here!");
+        }
       }
     }
   }
@@ -902,13 +880,11 @@ core_commands.push(new ReadCommand());
 export class OpenCommand implements BaseCommand {
   name: string = "open";
   verbs: string[] = ["open"];
-  opened_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    this.opened_something = false;
     let a: Artifact = game.artifacts.getLocalByName(arg, false);
-    if (game.triggerEvent("beforeOpen", arg, a, this)) {
-      if (a !== null) {
+    if (a !== null) {
+      if (game.triggerEvent("beforeOpen", arg, a)) {
         // don't reveal in getLocalByName above because we want to know if we revealed something.
         let revealed_something = false;
         if (a.embedded) {
@@ -917,18 +893,20 @@ export class OpenCommand implements BaseCommand {
         }
         if (a.type === Artifact.TYPE_DISGUISED_MONSTER) {
           // if it's a disguised monster, reveal it
-
           a.revealDisguisedMonster();
-          this.opened_something = true;
-
-        } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
-          // normal container or door/gate
-
-          this.opened_something = true;
+        } else if (a.type === Artifact.TYPE_CONTAINER
+          || a.type === Artifact.TYPE_DOOR
+          || a.type === Artifact.TYPE_READABLE
+          || a.type === Artifact.TYPE_EDIBLE
+          || a.type === Artifact.TYPE_DRINKABLE
+        ) {
+          // normal container or door/gate; books and food/drink are also openable
+          // FIXME: this doesn't make sense for some items like a piece of paper or a loaf of bread
+          // (though what user is going to type "open bread"?)
           if (!a.is_open) {
             // not open. try to open it.
             if (a.key_id === -1) {
-              game.history.write("It won't open.");
+              game.history.write("It won't open.");  // only special code can open this
             } else if (a.key_id === 0 && a.hardiness) {
               game.history.write("You'll have to force it open.");
             } else if (a.key_id > 0) {
@@ -937,13 +915,13 @@ export class OpenCommand implements BaseCommand {
                 game.history.write("You unlock it using the " + key.name + ".");
                 a.open();
 
-                if (a.type === Artifact.TYPE_CONTAINER) {
-                  a.printContents();
-                }
                 if (a.effect_id && !game.effects.get(a.effect_id).seen) {
                   game.effects.print(a.effect_id);
                 }
-
+                game.triggerEvent('afterOpen', arg, artifact);
+                if (a.type === Artifact.TYPE_CONTAINER) {
+                  a.printContents();
+                }
               } else {
                 game.history.write("It's locked and you don't have the key!");
               }
@@ -951,56 +929,42 @@ export class OpenCommand implements BaseCommand {
               game.history.write(a.name + " opened.");
               a.open();
 
-              if (a.type === Artifact.TYPE_CONTAINER) {
-                a.printContents();
-              }
               if (a.effect_id && !game.effects.get(a.effect_id).seen) {
                 game.effects.print(a.effect_id);
               }
-
+              game.triggerEvent('afterOpen', arg, artifact);
+              if (a.type === Artifact.TYPE_CONTAINER) {
+                a.printContents();
+              }
             }
           } else {
+            // secret passages usually start out as "open" so we don't show the "already open" message for them.
             if (!revealed_something) {
               game.history.write("It's already open!");
             }
           }
-        } else if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
-          if (!a.is_open) {
-            game.history.write(a.name + " opened.");
-            a.is_open = true;
-          } else {
-            throw new CommandException("It's already open!");
-          }
         } else {
           throw new CommandException("That's not something you can open.");
         }
-
       }
-
-      // other effects are custom to the adventure
-      game.triggerEvent("open", arg, a, this);
-
+      // if the beforeOpen event handler returned false, display nothing. that event handler should display a message
+      // explaining why something couldn't be opened.
+    } else {
       // if we didn't find anything to open, show a message
-      if (!this.opened_something) {
-        if (game.rooms.current_room.textMatch(arg)) {
-          if (arg === 'door') {
-            game.history.write("The door will open when you pass through it.");
-          } else {
-            game.history.write("That's not something you can open.");
-          }
+      if (game.rooms.current_room.textMatch(arg)) {
+        if (arg === 'door') {
+          throw new CommandException("The door will open when you pass through it.");
         } else {
-
-          // catch user mischief
-          if (game.monsters.getLocalByName(arg)) {
-            throw new CommandException("That's not something you can open.");
-          }
-
-          game.history.write("I don't see a " + arg + " here!");
+          throw new CommandException("That's not something you can open.");
         }
+      } else {
+        // catch user mischief
+        if (game.monsters.getLocalByName(arg)) {
+          throw new CommandException("That's not something you can open.");
+        }
+        throw new CommandException("I don't see a " + arg + " here!");
       }
     }
-    // if the beforeOpen event handler returned false, display nothing. that event handler should display a message
-    // explaining why something couldn't be opened.
   }
 }
 core_commands.push(new OpenCommand());
@@ -1015,17 +979,17 @@ export class CloseCommand implements BaseCommand {
     this.closed_something = false;
     let a = game.artifacts.getLocalByName(arg, false);  // not revealing embedded artifacts automatically
     if (a !== null) {
-      // don't reveal secret passages with this command
-      if (a.hidden) {
-        throw new CommandException("I don't follow you.");
-      }
+      if (game.triggerEvent('beforeClose', arg, a)) {
+        // don't reveal secret passages with this command
+        if (a.hidden) {
+          throw new CommandException("I don't follow you.");
+        }
 
-      // if it's an embedded artifact that is not a hidden secret passage, reveal it
-      if (a.embedded) {
-        a.reveal();
-      }
+        // if it's an embedded artifact that is not a hidden secret passage, reveal it
+        if (a.embedded) {
+          a.reveal();
+        }
 
-      if (game.triggerEvent('close', arg, a)) {
         if (a.type === Artifact.TYPE_READABLE || a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE || a.key_id === -1) {
           throw new CommandException("You don't need to.");
         } else if (a.type === Artifact.TYPE_CONTAINER || a.type === Artifact.TYPE_DOOR) {
@@ -1036,16 +1000,15 @@ export class CloseCommand implements BaseCommand {
           } else {
             a.close();
             game.history.write(a.name + " closed.");
-            this.closed_something = true;
+            game.triggerEvent('afterClose', arg, a);
           }
         }
       }
-    }
-
-    // otherwise, nothing happens
-    if (!this.closed_something) {
+    } else {
       throw new CommandException("It's not here.");
     }
+    // If the beforeClose event handler returned false, this displays nothing. That event
+    // handler should display a message explaining why something couldn't be closed.
   }
 }
 core_commands.push(new CloseCommand());

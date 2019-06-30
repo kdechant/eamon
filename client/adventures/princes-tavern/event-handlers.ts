@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {ModalQuestion} from "../../core/models/modal";
 
 // some data - export so we can use it in tests
@@ -403,12 +402,12 @@ export var event_handlers = {
     return true;
   },
 
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+  "beforeOpen": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
+    // TODO: move all this to beforeOpen()
     if (artifact !== null) {
       if (artifact.id === 69) {
         // vault door
-        command.opened_something = true; // use this even if we didn't open it, to suppress other messages
         game.modal.show("Enter combination (use dashes):", function(value) {
           if (value === game.data['combo'][3]) {
             game.history.write("The vault door opened!", "success");
@@ -417,23 +416,27 @@ export var event_handlers = {
             game.history.write("The vault door did not open.");
           }
         });
+        return false;
       } else if (artifact.id === 72) {
         game.history.write("You don't see any physical way to open it.");
-        command.opened_something = true; // use this even if we didn't open it, to suppress other messages
+        return false;
       }
     }
+    return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact && artifact.name === 'graffiti') {
+      // this artifact's markings contain dynamic text, so effects won't work
       game.history.write("You see some names and measurements:");
       game.history.write("Deede Berry - " + game.data['combo'][0]);
       game.history.write("Fifi LaFrentz - " + game.data['combo'][1]);
       game.history.write("V. Ault - " + game.data['combo'][2]);
       game.history.write("Jamie Zena - " + game.data['combo'][3]);
-      command.markings_read = true;
+      return false;
     }
+    return true;
   },
 
   "say": function(phrase: string) {

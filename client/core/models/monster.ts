@@ -128,6 +128,7 @@ export class Monster extends GameObject {
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
     let from_room_id = this.room_id;
     this.room_id = room_id || Game.getInstance().player.room_id;
+    this.container_id = null;
 
     // when the player moves, set the current room reference
     if (this.id === Monster.PLAYER) {

@@ -3,9 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {ModalQuestion} from "../../core/models/modal";
-import {drinks} from "../princes-tavern/event-handlers";
 
 export var event_handlers = {
 
@@ -73,11 +71,9 @@ export var event_handlers = {
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
 
-    switch (exit.room_to) {
-      case -1:
-        // the blocked door - didn't pay the dwarf enough
-        game.history.write("The dwarf has blocked the exit!");
-        return false;
+    if (exit.room_to === -1) {
+      game.history.write("The dwarf has blocked the exit!");
+      return false;
     }
 
     // if player is carrying the crystal ball, look for possible hostile monsters in the next room
@@ -116,30 +112,26 @@ export var event_handlers = {
 
   },
 
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+  "beforeOpen": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-    if (artifact !== null) {
-      if (artifact.id === 23) {
-        // the grain sack
-        command.opened_something = true;
-        game.effects.print(3, "danger");
-        game.die();
-      }
+    if (artifact && artifact.id === 23) {
+      // the grain sack
+      game.effects.print(3, "danger");
+      game.die();
+      return false;
     }
+    return true;
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
 
-    if (artifact !== null) {
-      if (artifact.id === 23) {
-        game.history.write('The sign reads, "Feed me!"');
-        command.markings_read = true;
-      } else if (artifact.id === 19) {
-        game.history.write('You read the scroll and it says: The magic word for today is "PICKLE".');
-        command.markings_read = true;
-      }
+    if (artifact && artifact.id === 23) {  // sack
+      // it's a container, so the regular "read a non-readable" logic doesn't work here.
+      game.effects.print(6);
+      return false;
     }
+    return true;
   },
 
   "say": function(arg: string) {

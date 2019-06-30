@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 import {ModalQuestion} from "../../core/models/modal";
 import {CommandException} from "../../core/utils/command.exception";
 
@@ -104,7 +103,7 @@ export var event_handlers = {
     return true;
   },
 
-  "close": function(arg: string, artifact: Artifact) {
+  "beforeClose": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact.id === 22 && game.data['inner gate open']) {
       game.history.write("The gears have been smashed. You can't close it.");

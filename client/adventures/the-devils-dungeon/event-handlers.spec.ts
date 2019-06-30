@@ -56,4 +56,13 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(19).room_id).toBeNull();
   expect(game.artifacts.get(41).room_id).toBe(7);
 
+  // sack
+  game.player.moveToRoom(12); game.tick();
+  game.command_parser.run('read sack');
+  expect(game.effects.get(6).seen).toBeTruthy();
+  game.command_parser.run('open sack');
+  expect(game.effects.get(3).seen).toBeTruthy();
+  expect(game.artifacts.get(23).is_open).toBeFalsy();  // event handler returned false
+  expect(game.died).toBeTruthy();
+
 });

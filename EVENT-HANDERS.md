@@ -406,9 +406,12 @@ There are two event handlers that run when the player tries to open a door, gate
 ### beforeOpen
 
 This event handler runs just before the player opens a door/gate or container. It can be used to prevent the artifact
- from being opened.
+ from being opened. It can also be used to allow the player to try to open something
+ that isn't an actual artifact object.
  
 Parameters:
+- arg (string) - What the player typed after OPEN (e.g., "close *chest*" or "close *window*" )
+- artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
 
 Return value:
 true - allows the door/gate or container to open
@@ -416,7 +419,7 @@ false - stops the door/gate or container from being opened
 
 Example:
     
-    "beforeOpen": function(arg: string, artifact: Artifact, command: OpenCommand) {
+    "beforeOpen": function(arg: string, artifact: Artifact) {
       let game = Game.getInstance();
       if (artifact !== null) {
         if (artifact.id === 23) {
@@ -428,22 +431,19 @@ Example:
      return true;
     },
 
-### Regular "open"
+### "afterOpen"
 
-This happens after the door, gate, or container is opened. It can also be used to allow the player to try to open something
- that isn't an actual artifact object. It works a little differently from the other event handlers, so take note of the syntax.
+This happens after the door, gate, or container is opened.
 
 Parameters:
 - arg (string) - What the player typed after OPEN (e.g., "close *chest*" or "close *window*" )
 - artifact (Artifact) - If the player's text matched the name of an artifact in the current room or in the player's inventory, this will contain the Artifact object.
-- command (OpenCommand) - A reference to the OPEN Command object. Whenever something happens in this event handler, you
- can set `command.opened_something = true` and it will suppress the normal "I don't see an X here" type messages.
 
 Return value: none. 
 
 Example:
 
-    "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+    "afterOpen": function(arg: string, artifact: Artifact) {
       let game = Game.getInstance();
       if (artifact !== null) {
         if (artifact.id === 23) {
@@ -454,8 +454,6 @@ Example:
         }
       }
     },
-
-Note: this event handler may change in the future.
 
 ## Close
 
@@ -469,7 +467,7 @@ Parameters:
 
 Example:
 
-    "close": function(arg: string, artifact: Artifact) {
+    "beforeClose": function(arg: string, artifact: Artifact) {
         let game = Game.getInstance();
         // trying to close a drawbridge when the winch has been smashed
         if (artifact.name === 'drawbridge' && game.data['drawbridge winch smashed']) {
@@ -1080,20 +1078,20 @@ Note: These event handlers are an older style and may change in the future.
 
 ### beforeRead
 
-The `beforeRead` event handler runs right before the player reads something. It can be used to suppress the standard
- "there are no markings to read" message by setting `command.markings_read` to true. It can't block the player from
- reading the artifact. (This may change in the future.)
+The `beforeRead` event handler runs right before the player reads something. It can block the player from
+ reading the artifact by returning false.
 
 Parameters:
 - arg (string) - What the player typed after READ (e.g., "read *book*" )
 - artifact (Artifact) - The artifact that matched the arg (if any)
-- command (ReadCommand) - A reference to the actual Command object, to allow setting the "markings_read" flag
 
-Return value: none
+Return value:
+true: Continue with the regular READ command logic, i.e., showing the effects associated with the artifact
+false: Skip the usual messages. Useful after you have just displayed a custom message.
 
 Example:
 
-    "beforeRead": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    "beforeRead": function(arg: string, artifact: Artifact) {
       if (artifact && artifact.id === 17) {
         let game = Game.getInstance();
         game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
@@ -1105,28 +1103,29 @@ Example:
         })
         game.player.updateInventory();
         game.artifacts.updateVisible();
+        return false;
       }
+      return true;
     },
 
-### regular "read"
+### "afterRead"
 
-This works just like "beforeRead" but it happens after any regular markings (effects) on the artifact are shown
+This works just like "beforeRead" but it happens after any regular markings (effects) on the artifact are shown. It
+can be used to display additional text or perform additional logic after the "normal" effects are shown. 
 
 Parameters:
 - arg (string) - What the player typed after READ (e.g., "read *book*" )
 - artifact (Artifact) - The artifact that matched the arg (if any)
-- command (ReadCommand) - A reference to the actual Command object, to allow setting the "markings_read" flag
 
 Return value: none
 
 Example:
 
-    "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
+    "afterRead": function(arg: string, artifact: Artifact) {
       let game = Game.getInstance();
       if (artifact !== null && artifact.id === 11) {
         // this artifact is not actually a "readable" type, but has a readable message on it
         game.effects.print(10);
-        command.markings_read = true;
       }
     },
 
@@ -1687,12 +1686,10 @@ Parameters:
 
 Example:
 
-      "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+      "beforeOpen": function(arg: string, artifact: Artifact) {
         let game = Game.getInstance();
         // open a vault door with a combination lock
         if (artifact !== null && artifact.id === 3) {
-          command.opened_something = true; // specific to "open" event handler - this suppress the built-in messages
-          
           // show the modal here
           game.modal.show("Enter combination (use dashes):", function(value) {
             if (value === '11-16-27') {

@@ -68,7 +68,7 @@ export default class EffectRepository {
    * to use the style specified in the effect object
    * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
-  public print(id: number, style: string = 'normal', inline: boolean = false): void {
+  public print(id: number, style: string = null, inline: boolean = false): void {
     let game = Game.getInstance();
     let ef = this.get(id);
     if (ef) {
@@ -77,10 +77,7 @@ export default class EffectRepository {
         game.history.append(" " + ef.text);
       } else {
         // print as a new paragraph
-        let final_style = style;
-        if (final_style === null) {
-          final_style = ef.style;
-        }
+        let final_style = style || ef.style || "normal";
         game.history.write(ef.text, final_style, ef.is_markdown);
       }
       if (ef.next !== null) {

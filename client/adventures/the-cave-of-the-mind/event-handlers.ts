@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -93,15 +92,13 @@ export var event_handlers = {
     }
   },
 
-  "open": function(arg: string, artifact: Artifact, command: OpenCommand) {
+  "afterOpen": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-    if (artifact !== null) {
-      if (artifact.id === 6 && !game.data["open box"]) {
-        // the box
-        game.data["open box"] = true;
-        game.effects.print(3, "special");
-        game.command_parser.run('power', false);
-      }
+    if (artifact && artifact.id === 6 && !game.data["open box"]) {
+      // the box
+      game.data["open box"] = true;
+      game.effects.print(3, "special");
+      game.command_parser.run('power', false);
     }
   },
 
@@ -115,9 +112,7 @@ export var event_handlers = {
     return true;
   },
 
-  // the 'read'/'beforeRead' event handler should set command.markings_read to true if the handler
-  // did something, otherwise the "there are no markings to read" message will appear.
-  "beforeRead": function(arg: string, artifact: Artifact, command: ReadCommand) {
+  "beforeRead": function(arg: string, artifact: Artifact) {
     if (artifact && artifact.id === 17) {
       let game = Game.getInstance();
       game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
@@ -133,6 +128,7 @@ export var event_handlers = {
       game.player.updateInventory();
       game.artifacts.updateVisible();
     }
+    return true;
   },
 
 

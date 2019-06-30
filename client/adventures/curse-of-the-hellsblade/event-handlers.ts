@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -176,7 +175,7 @@ export var event_handlers = {
     return true;
   },
 
-  "beforeOpen": function(arg: string, artifact: Artifact, command: OpenCommand) {
+  "beforeOpen": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 55 && game.data["guardian protects box"]) {

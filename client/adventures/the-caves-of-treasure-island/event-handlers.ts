@@ -3,7 +3,6 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ReadCommand, OpenCommand} from "../../core/commands/core-commands";
 
 export var event_handlers = {
 
@@ -127,23 +126,10 @@ export var event_handlers = {
     }
   },
 
-  "read": function(arg: string, artifact: Artifact, command: ReadCommand) {
-    let game = Game.getInstance();
-    // some readable artifacts have their text contained in the artifact description
-    if (artifact !== null) {
-      if (artifact.id === 34 || artifact.id === 39 || artifact.id === 42 || artifact.id === 44) {
-        if (game.data["read"][artifact.id]) {
-          // the first time, the game will show the description automatically as the artifact is revealed.
-          // subsequent readings require the description to be shown again.
-          game.history.write(artifact.description);
-        } else {
-          game.data["read"][artifact.id] = true;
-        }
-        command.markings_read = true;  // suppresses the "no markings to read" message
-      } else if (artifact.id === 15) {
-        // the book teleports you (and friendly NPCs)
-        game.player.moveToRoom(22);
-      }
+  "afterRead": function(arg: string, artifact: Artifact) {
+    if (artifact.id === 15) {
+      // the book teleports you (and friendly NPCs)
+      Game.getInstance().player.moveToRoom(22);
     }
   },
 
