@@ -49,7 +49,7 @@ class Question extends React.Component<any, any> {
                       className="form-control"
                       autoFocus={true}
                       onChange={this.handleChange}
-                      onKeyUp={this.handleKeyPress}
+                      onKeyDown={this.handleKeyPress}
             /></p>
             <p><button className="btn btn-success" id="return" onClick={this.submitText}>Go</button></p>
           </div>
