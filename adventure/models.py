@@ -97,6 +97,10 @@ class Adventure(models.Model):
     def times_played(self):
         return ActivityLog.objects.filter(type='start adventure', adventure_id=self.id).count()
 
+    @property
+    def avg_ratings(self):
+        return self.ratings.all().aggregate(models.Avg('overall'), models.Avg('combat'), models.Avg('puzzle'))
+
     class Meta:
         ordering = ['name']
 

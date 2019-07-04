@@ -220,27 +220,65 @@ class AdventureList extends React.Component<any, any> {
 
             <div className="adventure-list col-md-10">
               {emptyMessage}
-              {adventures.map((adv) =>
-                <div className="adventure-list-item" key={adv.id}>
-                  <div className="row">
-                    <div className="col-sm-2 d-none d-sm-block"><img src="/static/images/ravenmore/128/map.png" width="64" /></div>
-                    <div className="col-sm-10">
-                      <div className="float-right text-secondary d-none d-md-block adv-id">#{adv.id}</div>
-                      <h3><a href="#" onClick={(ev) => this.gotoAdventure(adv, ev)}>{adv.name}</a></h3>
-                      <p>{adv.authors_display.length ? "By: " + adv.authors_display : ""}</p>
-                    </div>
-                    <div className="col-12">
-                      <p className="desc">{adv.description}</p>
-                      <div className="tags">
+              {adventures.map((adv) => {
+                const ratings = {
+                  overall: adv.avg_ratings.overall__avg
+                    ? Number.parseFloat(adv.avg_ratings.overall__avg).toFixed(1)
+                    : null,
+                  combat: adv.avg_ratings.combat__avg
+                    ? Number.parseFloat(adv.avg_ratings.combat__avg).toFixed(1)
+                    : null,
+                  puzzle: adv.avg_ratings.puzzle__avg
+                    ? Number.parseFloat(adv.avg_ratings.puzzle__avg).toFixed(1)
+                    : null,
+                };
+                return (
+                  <div className="adventure-list-item" key={adv.id}>
+                    <div className="row">
+                      <div className="col-sm-2 d-none d-sm-block">
+                        <img src="/static/images/ravenmore/128/map.png" width="64" alt="Map"/>
+                      </div>
+                      <div className="col-sm-10">
+                        <div className="float-right text-secondary d-none d-md-block adv-id">#{adv.id}</div>
+                        <h3><a href="#" onClick={(ev) => this.gotoAdventure(adv, ev)}>{adv.name}</a></h3>
+                        <p>{adv.authors_display.length ? "By: " + adv.authors_display : ""}</p>
+                      </div>
+                      <div className="col-12">
+                        <p className="desc">{adv.description}</p>
+                      </div>
+                      <div className="tags col-12 col-md-6">
                         {adv.tags.map(tag =>
                           <div className="tag" key={tag}>{tag}</div>
                         )}
                       </div>
+                      <div className="ratings col-12 col-md-6">
+                        {ratings.overall ? (
+                          <span className="rating">
+                            <img src="/static/images/ravenmore/128/star.png"
+                                 alt="Star" title="Overall rating"/>
+                            {ratings.overall}
+                          </span>
+                        ) : ""}
+                        {ratings.combat ? (
+                          <span className="rating">
+                            <img src="/static/images/ravenmore/128/sword.png"
+                                 alt="Sword" title="Combat difficulty"/>
+                            {ratings.combat}
+                          </span>
+                        ) : ""}
+                        {ratings.puzzle ? (
+                          <span className="rating">
+                            <img src="/static/images/ravenmore/128/tome.png"
+                                 alt="Book" title="Puzzle difficulty"/>
+                            {ratings.puzzle}
+                          </span>
+                        ) : ""}
+                      </div>
                     </div>
+                    <div className="clearfix"/>
                   </div>
-                  <div className="clearfix" />
-                </div>
-              )}
+                );
+              })}
             </div>
           </div>
         </div>

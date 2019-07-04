@@ -12,3 +12,12 @@ class SavedGame(models.Model):
 
     def __str__(self):
         return "Player {}, Adventure {}, Slot {}: {}".format(self.player_id, self.adventure_id, self.slot, self.description)
+
+
+class Rating(models.Model):
+    uuid = models.CharField(max_length=255, null=True)
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='ratings')
+    overall = models.IntegerField(null=True, blank=True)
+    combat = models.IntegerField(null=True, blank=True)
+    puzzle = models.IntegerField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)

@@ -20,7 +20,7 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializ
     class Meta:
         model = Adventure
         fields = ('id', 'name', 'description', 'full_description', 'intro_text', 'intro_question', 'slug', 'edx',
-                  'dead_body_id', 'featured_month', 'date_published', 'authors', 'tags', 'times_played')
+                  'dead_body_id', 'featured_month', 'date_published', 'authors', 'tags', 'times_played', 'avg_ratings')
 
 
 class RoomExitSerializer(serializers.ModelSerializer):

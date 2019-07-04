@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from adventure.models import Adventure
-from .models import SavedGame
+from .models import Rating, SavedGame
 
 
 class AdventureMiniSerializer(serializers.ModelSerializer):
@@ -33,4 +33,13 @@ class SavedGameDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SavedGame
+        fields = '__all__'
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    """
+    This serializer presents all the fields, including "data". For use in detail endpoints.
+    """
+    class Meta:
+        model = Rating
         fields = '__all__'

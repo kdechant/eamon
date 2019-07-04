@@ -1,12 +1,13 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from . import views
+from .views import RatingViewSet, SavedGameViewSet
 
-from .views import SavedGameViewSet
+# Note: This file is not currently used. See /adventure/urls.py
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'saves', SavedGameViewSet)
+router.register(r'ratings', RatingViewSet)
 
 urlpatterns = [
     # REST API routes
