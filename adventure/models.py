@@ -135,6 +135,9 @@ class RoomExit(models.Model):
 class Artifact(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='artifacts')
     artifact_id = models.IntegerField(default=0)  # The in-game artifact ID.
+    article = models.CharField(max_length=20, null=True, blank=True,
+                               help_text="Optional article or adjective that appears before the name, "
+                                         "e.g., 'a', 'the', 'some'.")
     name = models.CharField(max_length=255)
     synonyms = models.CharField(
         null=True, max_length=255, blank=True,
@@ -277,6 +280,9 @@ class Monster(models.Model):
     )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='monsters')
     monster_id = models.IntegerField(default=0)  # The in-game monster ID.
+    article = models.CharField(max_length=20, null=True, blank=True,
+                               help_text="Optional article or adjective that appears before the name, "
+                                         "e.g., 'a', 'the', 'some'. Does not apply to group monsters.")
     name = models.CharField(max_length=255)
     name_plural = models.CharField(
         max_length=255, null=True, blank=True,

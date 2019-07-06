@@ -638,16 +638,16 @@ export class Monster extends GameObject {
     let weapon_type = wpn ? wpn.weapon_type : 0;
     if (this.combat_code === 1) {
       // generic "attacks" message for unusual creatures like blob monsters, etc.
-      game.history.write(this.name + " attacks " + target.name);
+      game.history.write(this.name + " attacks " + target.getDisplayName());
     } else if (this.combat_verbs.length) {
       // custom combat messages for this monster. assign these in the game start event handler.
       let attack_verb = this.combat_verbs[Math.floor(Math.random() * this.combat_verbs.length)];
-      game.history.write(this.name + " " + attack_verb + " " + target.name);
+      game.history.write(this.name + " " + attack_verb + " " + target.getDisplayName());
     } else {
       // standard attack message based on type of weapon
       let attack_verbs = Monster.COMBAT_VERBS_ATTACK[weapon_type];
       let attack_verb = attack_verbs[Math.floor(Math.random() * attack_verbs.length)];
-      game.history.write(this.name + " " + attack_verb + " at " + target.name);
+      game.history.write(this.name + " " + attack_verb + " at " + target.getDisplayName());
     }
 
     // calculate hit, miss, or fumble

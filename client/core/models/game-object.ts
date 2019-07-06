@@ -9,6 +9,7 @@ declare var game: Game;
 export class GameObject {
 
   id: number;
+  article: string;
   name: string;
   description: string;
   is_markdown: boolean;  // does the description use markdown formatting?
@@ -33,11 +34,14 @@ export class GameObject {
    * a name "healing potion" and alias "bottle"
    */
   public match(str: string): boolean {
-    let name: string = this.name.toLocaleLowerCase();
-    let plural_name: string = pluralize(name);
+    let names: string[] = [  // all iterations of the monster's name
+      this.name.toLocaleLowerCase(),
+      this.getDisplayName().toLocaleLowerCase(),
+      pluralize(this.name).toLocaleLowerCase()
+    ];
     str = str.toLocaleLowerCase();
     // attempt exact match by name
-    if (str === name || str === plural_name) {
+    if (names.indexOf(str) !== -1) {
       return true;
     }
     // attempt match by alias
@@ -47,10 +51,17 @@ export class GameObject {
       }
     }
     // attempt match by beginning/end of name
-    if (name.startsWith(str) || name.endsWith(str) || plural_name.endsWith(str)) {
-      return true;
+    // FIXME: this should only work with group monsters
+    for (let name of names) {
+      if (name.startsWith(str) || name.endsWith(str)) {
+        return true;
+      }
     }
     return false;
+  }
+
+  public getDisplayName() {
+    return this.article ? `${this.article} ${this.name}` : this.name;
   }
 
   /**

@@ -176,7 +176,7 @@ class StatusMonster extends React.Component<any, any> {
     return (
       <div className={className}>
         {singular ?
-          <span>{ monster.name }</span>
+          <span>{ monster.article } { monster.name }</span>
           :
           <span>{ visible_children.length } { monster.name_plural }</span>
         }{' '}
@@ -193,7 +193,7 @@ class StatusArtifact extends React.Component<any, any> {
 
     return (
       <div className="artifact">
-        { artifact.name }&nbsp;
+        { artifact.article } { artifact.name }&nbsp;
         <span className="artifact-status">
           {(artifact.type == 4 || artifact.type == 8) && (
             <span className="container-status">
@@ -225,7 +225,7 @@ class StatusArtifact extends React.Component<any, any> {
         {artifact.is_open && (
           <div>
             {artifact.contents.map(item => (
-            <div className="artifact-contents" key={item.id}>{ item.name }</div>
+            <div className="artifact-contents" key={item.id}>{ item.getDisplayName() }</div>
               ))}
           </div>
           )}

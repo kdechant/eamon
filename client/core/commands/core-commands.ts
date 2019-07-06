@@ -1289,7 +1289,7 @@ export class BlastCommand implements BaseCommand {
       let damage = game.diceRoll(2, 5);
       if (monster_target) {
         if (game.triggerEvent("blast", arg, monster_target)) {
-          game.history.write(game.player.name + " casts a blast spell at " + monster_target.name);
+          game.history.write(game.player.name + " casts a blast spell at " + monster_target.getDisplayName());
           game.history.write("--a direct hit!", "success no-space");
           monster_target.injure(damage, true);
           monster_target.hurtFeelings();
@@ -1300,7 +1300,7 @@ export class BlastCommand implements BaseCommand {
           if (damage_done === 0) {
             game.history.write("Nothing happens.");
           } else if (damage_done === -1) {
-            throw new CommandException("Why would you blast a " + arg + "?");
+            throw new CommandException("Why would you blast a " + artifact_target.name + "?");
           }
         }
       } else {

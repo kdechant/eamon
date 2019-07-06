@@ -216,13 +216,13 @@ export class Artifact extends GameObject {
     // monsters get moved into the room automatically
     // (the monster-in-container ability is only meant for surprises, e.g., the vampire who awakens when you open his coffin)
     for (let m of monsters) {
-      game.history.write(" - " + m.name, "no-space");
+      game.history.write(" - " + m.getDisplayName(), "no-space");
       m.moveToRoom();
       game.skip_battle_actions = true;  // technically not necessary, but it's confusing to see fighting before the monster desc
     }
     // artifacts stay in the container and just get listed
     for (let a of this.contents) {
-      game.history.write(" - " + a.name, "no-space");
+      game.history.write(" - " + a.getDisplayName(), "no-space");
     }
   }
 

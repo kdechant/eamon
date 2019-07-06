@@ -494,7 +494,7 @@ export default class Game {
           this.triggerEvent("seeMonster", m);
         } else {
           if (!m.children.length) {
-            this.history.write(`${m.name} is here.`, "no-space");
+            this.history.write(`${m.getDisplayName()} is here.`, "no-space");
           } else {
             let count_here = m.children.filter(m => m.isHere()).length;
             if (count_here > 1) {
@@ -513,9 +513,9 @@ export default class Game {
           a.seen = true;
         } else {
           if (a.player_brought) {
-            this.history.write("Your " + a.name + " is here.", "no-space");
+            this.history.write(`Your ${a.name} is here.`, "no-space");
           } else {
-            this.history.write("You see " + a.name + ".", "no-space");
+            this.history.write(`You see ${a.getDisplayName()}.`, "no-space");
           }
         }
       }
