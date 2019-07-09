@@ -174,6 +174,14 @@ export default class Game {
    */
   after_sell_messages: string[] = [];
 
+  /**
+   * Spell recharge rate, per turn. Element 0 can be either "constant" or "percentage"
+   * and element 1 is the amount to increase
+   * e.g., ["constant", 3] recharges each spell ability by 3 points every turn
+   * e.g., ["percentage", 10] recharges each spell ability by 10% of the current value every turn
+   */
+  spell_recharge_rate: [string, number] = ["constant", 1];
+
   // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
 
   /**
@@ -297,6 +305,7 @@ export default class Game {
     this.name = adv.name;
     this.description = adv.description;
     this.intro_text = adv.intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
+    // this.intro_text = [""];  // faster start, for testing
     this.intro_question = adv.intro_question;
     this.dead_body_id = adv.dead_body_id;
 

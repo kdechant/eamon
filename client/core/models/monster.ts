@@ -1120,10 +1120,25 @@ export class Monster extends GameObject {
    *   The amount to recharge. Default is 1 per turn but you can call this in a special effect with a
    *   different value if you like.
    */
-  public rechargeSpellAbilities(amount: number = 1): void {
+  public rechargeSpellAbilities(amount: number): void {
+    let game = Game.getInstance();
+
+    if (typeof amount === 'undefined') {
+      amount = game.spell_recharge_rate[1];
+    }
+
     for (let spell_name in this.spell_abilities) {
+      // Note: you can have a temporary boost to spell abilities above
+      // normal maximum, which doesn't get erased by this code.
       if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
-        this.spell_abilities[spell_name] = Math.min(this.spell_abilities[spell_name] += amount, this.spell_abilities_original[spell_name]);
+        let inc = amount;
+        if (game.spell_recharge_rate[0] === 'percentage') {
+          inc = Math.max(1, Math.floor(this.spell_abilities[spell_name] * amount / 100));
+        }
+        this.spell_abilities[spell_name] = Math.min(
+          this.spell_abilities[spell_name] += inc,
+          this.spell_abilities_original[spell_name]
+        );
       }
     }
   }
