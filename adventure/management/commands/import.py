@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 # multiple adventures in the database
                 for adv in sub_adventures:
                     print("Adventure: '" + adv[0] + "'")
-                    a = Adventure.objects.get(name=adv[0], edx=edx)
+                    a = Adventure.objects.filter(name=adv[0], edx=edx).first()
                     if a is None:
                         adv_id = input('ID for adventure {}?'.format(adv[0]))
                         a = Adventure.objects.get_or_create(id=adv_id, name=adv[0], edx=edx)[0]
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                     a.save()
             else:
                 print("Adventure: " + adv_data[4])
-                a = Adventure.objects.get(name=adv_data[4], edx=edx)
+                a = Adventure.objects.filter(name=adv_data[4], edx=edx).first()
                 if a is None:
                     adv_id = input('ID for adventure {}?'.format(adv_data[4]))
                     a = Adventure.objects.get_or_create(id=adv_id, name=adv_data[4], edx=edx)[0]
@@ -422,7 +422,10 @@ class Command(BaseCommand):
                     else:
                         monster.friendliness = 'random'
                         monster.friend_odds = values[10] - 100
-                    monster.original_group_size = values[11]
+                    # handling EDX special data fields - values[11] = m%(m,14) and values[12] = m%(m,15)
+                    print("m%(14): {}, m%(15): {}".format(values[11], values[12]))
+                    monster.special = values[11]  # custom for some adventures (e.g., kahr-dur)
+                    # values[12] currently unused; would match m%(m,15) in EDX - rarely used
 
                     # description is stored in a separate file
                     bytes = descfile.read(255)
