@@ -7,6 +7,7 @@ import {RoomExit} from "../models/room";
 import {CommandException} from "../utils/command.exception";
 import {ModalQuestion} from "../models/modal";
 import artifact from "../../main-hall/models/artifact";
+import {formatMonsterAction} from "../utils";
 
 export let core_commands = [];
 
@@ -1415,6 +1416,57 @@ export class RestoreCommand implements BaseCommand {
   }
 }
 core_commands.push(new RestoreCommand());
+
+
+export class SmileCommand implements BaseCommand {
+  name: string = "smile";
+  verbs: string[] = ["smile"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    if (game.monsters.visible.length === 0) {
+      game.history.write("Ok. 😃");
+      game.history.write("You know... you look a bit dim, smiling like that, when no one's around.");
+      return;
+    }
+    let friends = game.monsters.visible.filter(m => (m.reaction == Monster.RX_FRIEND));
+    let neutrals = game.monsters.visible.filter(m => (m.reaction == Monster.RX_NEUTRAL));
+    let hostiles = game.monsters.visible.filter(m => (m.reaction == Monster.RX_HOSTILE));
+    if (friends.length > 0) {
+      game.history.write(formatMonsterAction(friends, "smiles back.", "smile back."));
+    }
+    if (neutrals.length > 0) {
+      game.history.write(formatMonsterAction(neutrals, "ignores you.", "ignore you."));
+    }
+    if (hostiles.length > 0) {
+      game.history.write(formatMonsterAction(hostiles, "scowls at you.", "scowl at you."));
+    }
+  }
+}
+core_commands.push(new SmileCommand());
+
+
+export class InventoryCommand implements BaseCommand {
+  name: string = "inventory";
+  verbs: string[] = ["inventory"];
+  run(verb, arg) {
+    let game = Game.getInstance();
+    if (arg === "") {
+      // player
+      game.player.printInventory();
+      game.player.showHealth();
+    } else {
+      // inventory another monster
+      let m = game.monsters.getLocalByName(arg);
+      if (m) {
+        m.printInventory();
+        m.showHealth();
+      } else {
+        throw new CommandException(`No one here by that name!`);
+      }
+    }
+  }
+}
+core_commands.push(new InventoryCommand());
 
 
 // a cheat command used for debugging. say "goto" and the room number (e.g., "goto 5")

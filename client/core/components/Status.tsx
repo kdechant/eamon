@@ -21,6 +21,9 @@ class Status extends React.Component<any, any> {
     // visible exits (normal exits and ones with non-hidden doors)
     const visible_exits = game.rooms.current_room.getVisibleExits();
 
+    let worn = game.player.inventory.filter(a => a.is_worn);
+    let carried = game.player.inventory.filter(a => !a.is_worn);
+
     return (
       <div className="status d-none d-md-block col-md-5">
       <div className="status-widget player">
@@ -141,14 +144,21 @@ class Status extends React.Component<any, any> {
       </div>
 
       <div className="status-widget inventory">
+        {worn.length && (
+          <React.Fragment>
+            <h3 className="heading">You are wearing:</h3>
+            <div className="artifacts-list mb-2">
+              {worn.map(artifact => (
+                <StatusArtifact key={artifact.id} game={this.props.game} artifact={artifact} />
+              ))}
+            </div>
+          </React.Fragment>
+        )}
         <h3 className="heading">You are carrying:</h3>
         <div className="artifacts-list">
-          {game.player.inventory.map(artifact => (
+          {carried.map(artifact => (
             <StatusArtifact key={artifact.id} game={this.props.game} artifact={artifact} />
           ))}
-          {game.player.inventory.length === 0 && (
-            <span className="artifact none">nothing<br/></span>
-          )}
         </div>
         <p className="gold">{ game.player.getMoneyFormatted() }</p>
         <p className="weight">Weight carried: { game.player.weight_carried }/{ game.player.hardiness * 10 }</p>
@@ -212,10 +222,6 @@ class StatusArtifact extends React.Component<any, any> {
 
         {(artifact.is_lit && artifact.inventory_message == '') && (
           <span className="lit">(lit)</span>
-        )}
-
-        {(artifact.is_worn && artifact.inventory_message == '') && (
-          <span className="worn">(wearing)</span>
         )}
 
         {artifact.id == this.props.game.player.weapon_id && (

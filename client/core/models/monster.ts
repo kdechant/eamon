@@ -365,11 +365,21 @@ export class Monster extends GameObject {
   public printInventory(style: string = "normal"): void {
     let game = Game.getInstance();
     if (this.reaction === Monster.RX_FRIEND) {
-      game.history.write(this.name + " is carrying:");
 
       // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
-      let inv = this.inventory.filter(x => x.type !== Artifact.TYPE_DEAD_BODY);
+      let inv = this.inventory;
+      if (this.id !== Monster.PLAYER) {
+        inv = inv.filter(x => x.type !== Artifact.TYPE_DEAD_BODY)
+      }
 
+      let worn = inv.filter(x => x.is_worn === true);
+      if (worn.length) {
+        game.history.write(this.name + " is wearing:");
+        worn.forEach(a => game.history.write(" - " + a.name, "no-space"));
+      }
+
+      game.history.write(this.name + " is carrying:");
+      inv = inv.filter(x => x.is_worn === false);
       if (inv.length === 0) {
         game.history.write(" - (nothing)", "no-space");
       }
@@ -381,18 +391,23 @@ export class Monster extends GameObject {
           if (a.is_lit) {
             notes = "(lit)"
           }
-          if (a.is_worn) {
-            notes = "(worn)"
-          }
           if (a.id === this.weapon_id) {
             notes = "(ready weapon)"
           }
         }
-        game.history.write(" - " + a.name + " " + notes, "no-space");
+        game.history.write(` - ${a.name} ${notes}`, "no-space");
+      }
+      if (this.id === Monster.PLAYER) {
+        game.history.write(` - ${this.getMoneyFormatted()}`, "no-space");
+        game.history.write(`Weight carried: ${ game.player.weight_carried } of ${ game.player.hardiness * 10 } gronds`, "no-space");
       }
     } else {
       if (this.weapon) {
         game.history.write(this.name + " is armed with: " + this.weapon.name);
+      } else if (this.weapon_id === 0) {
+        game.history.write(this.name + " is armed with natural weapons.");
+      } else {
+        game.history.write(this.name + " is unarmed.");
       }
     }
   }
