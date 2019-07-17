@@ -1103,6 +1103,8 @@ export class Monster extends GameObject {
       let roll = game.diceRoll(1, 100);
       if (roll === 100) {
 
+        // TODO: event handler
+
         game.history.write("The strain of attempting to cast " + spell_name.toUpperCase() + " overloads your brain and you forget it completely for the rest of this adventure.");
         game.player.spell_abilities[spell_name] = 0;
 
@@ -1135,7 +1137,7 @@ export class Monster extends GameObject {
    *   The amount to recharge. Default is 1 per turn but you can call this in a special effect with a
    *   different value if you like.
    */
-  public rechargeSpellAbilities(amount: number): void {
+  public rechargeSpellAbilities(amount?: number): void {
     let game = Game.getInstance();
 
     if (typeof amount === 'undefined') {

@@ -125,6 +125,23 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Determines if one or more other artifacts are inside this artifact
+   * @param {number|number[]} ids
+   *   The ID of the artifact, or an array of IDs to check multiple artifacts.
+   * @return {boolean}
+   */
+  public contains(ids: number|number[]) {
+    let game = Game.getInstance();
+    if (typeof ids === 'number') ids = [ids];
+    for (let id of ids) {
+      if (game.artifacts.get(id).container_id !== this.id) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Gets the Monster object for the monster that is carrying the artifact, or the player if the artifact is in the room.
    */
   public getOwner(): Monster {

@@ -121,6 +121,19 @@ export var event_handlers = {
     return true;
   },
 
+  "say": function(phrase) {
+    // let game = Game.getInstance();
+    phrase = phrase.toLowerCase();
+
+    if (phrase === 'knock nikto mellon') {
+      let cauldron = game.artifacts.get(24);
+      if (cauldron.isHere() && cauldron.contains([19,20,21,22])) {
+        game.effects.print(51);
+        game.data['cauldron'] = true;
+      }
+    }
+  },
+
   "seeMonster": function (monster: Monster): void {
     // let game = Game.getInstance();
     // lich
@@ -135,7 +148,16 @@ export var event_handlers = {
   "power": function(roll) {
     let game = Game.getInstance();
 
-    // TODO: knock spell
+    let cauldron = game.artifacts.get(24);
+    if (game.data['cauldron'] && cauldron.isHere() && cauldron.contains([19,20,21,22])) {
+      game.artifacts.get(7).open();
+      game.artifacts.get(7).key_id = null;
+      game.artifacts.get(8).key_id = null;
+      game.data['cauldron'] = false;
+      game.effects.print(52, "special");
+      game.history.write("The cauldron disintegrates!", "special");
+      cauldron.destroy();
+    }
     // TODO: bring companions into/out of pit
 
     if (roll <= 50) {
