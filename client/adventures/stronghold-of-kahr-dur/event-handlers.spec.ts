@@ -24,14 +24,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-afterEach(() => console.log(game.history.summary()));
-// afterEach(() => {
-//   game.history.history.forEach(
-//     h => {
-//       console.log(h.command);
-//       h.results.forEach(r => console.log(r.text));
-//     });
-// });
+// afterEach(() => console.log(game.history.summary()));
 
 // TESTS
 
@@ -139,6 +132,7 @@ it("should have working event handlers", () => {
 
   // pit 2 - with boots
   game.artifacts.get(14).moveToInventory();
+  game.player.wear(game.artifacts.get(14));
   game.player.updateInventory();
   game.command_parser.run('d');
   expectEffectSeen(47);
@@ -153,6 +147,20 @@ it("should have working event handlers", () => {
   game.mock_random_numbers = [1];
   game.command_parser.run("power");
   expect(game.monsters.get(20).room_id).toBe(84);
+  game.history.flush();
+
+  // lich
+  game.player.moveToRoom(109); game.tick();
+  expectEffectSeen(53);
+  game.command_parser.run('say barada lhain');
+  expect(game.effects.get(55).seen).toBeFalsy(); // too soon
+  game.command_parser.run('say i will free you');
+  expectEffectSeen(54);
+  expect(game.data['lich']).toBe(1);
+  game.command_parser.run('say barada lhain');
+  expectEffectSeen(55);
+  expect(game.data['lich']).toBe(2);
+  expect(game.artifacts.get(25).room_id).toBe(109);
   game.history.flush();
 
   // necromancer
@@ -175,7 +183,7 @@ it("should have working event handlers", () => {
   game.artifacts.get(25).moveToInventory();
   game.player.wear(game.artifacts.get(25));
   game.player.updateInventory();
-  game.mock_random_numbers = [1];
+  game.mock_random_numbers = [1]; // only spell roll here
   game.command_parser.run('blast necro');
   expect(game.monsters.get(22).damage).toBeGreaterThan(0);
 });

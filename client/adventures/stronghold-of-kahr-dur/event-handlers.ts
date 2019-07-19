@@ -141,7 +141,7 @@ export var event_handlers = {
     }
     // pit (going down)
     if (room_from.id === 84 && exit.room_to === 94) {
-      if (game.player.hasArtifact(14)) {
+      if (game.player.isWearing(14)) {
         // If descend pit w/ mgk boots, write effect, and allies stay put
         game.effects.print(47);
         game.player.moveToRoom(94, false);
@@ -193,6 +193,18 @@ export var event_handlers = {
       if (cauldron.isHere() && cauldron.contains([19,20,21,22])) {
         game.effects.print(51);
         game.data['cauldron'] = true;
+      }
+    }
+
+    // lich
+    if (game.player.room_id === 109 && game.monsters.get(15).isHere()) {
+      if (phrase === 'i will free you' && game.data['lich'] < 2) {
+        game.effects.print(54);
+        game.data['lich'] = 1;
+      } else if (phrase === 'barada lhain' && game.data['lich'] === 1) {
+        game.effects.print(55);
+        game.data['lich'] = 2;
+        game.artifacts.get(25).moveToRoom();
       }
     }
   },
