@@ -3,14 +3,13 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
+import {CommandException} from "../../core/utils/command.exception";
 
 declare var game: Game;
 
 export var event_handlers = {
 
   "start": function(arg: string) {
-    // let game = Game.getInstance();
-
     // set custom hardiness of monsters based on player's best weapon
     // (which should be the weapon the player readied at game init)
     let wpn = game.player.getWeapon();
@@ -29,9 +28,49 @@ export var event_handlers = {
     game.data['lich'] = 0;
   },
 
-  "endTurn2": function() {
-    // let game = Game.getInstance();
+  "attackOdds": function (attacker: Monster, defender: Monster, odds: number) {
+    // can't hit necromancer
+    if (defender.id === 22) {
+      return 0;
+    }
+    return true;
+  },
 
+  "miss": function(attacker: Monster, defender: Monster) {
+    // special messages when you miss the necromancer
+    if (defender.id === 22) {
+      game.effects.print(60 + game.diceRoll(1, 4), 'special2 no-space');
+      return false;
+    }
+    return true;
+  },
+
+  "blast": function(arg: string, target: Monster) {
+    let game = Game.getInstance();
+    // necromancer
+    if (target.id === 22 && !game.player.isWearing(25)) {
+      game.history.write(`${game.player.name} casts a blast spell at ${target.getDisplayName()}`);
+      game.effects.print(56 + game.diceRoll(1, 4), 'special2 no-space');
+      return false;
+    }
+    return true;
+  },
+
+  "blastDamage": function(attacker: Monster, defender: Monster, damage: number) {
+    // wizard's helm makes blast spell more potent
+    if (attacker.isWearing(25)) {
+      return game.diceRoll(2, 12);
+    }
+    return true;
+  },
+
+  "afterClose": function(arg: string, artifact: Artifact) {
+    if (artifact.id === 3 && game.artifacts.get(4).isHere()) {
+      game.artifacts.get(4).destroy();
+    }
+  },
+
+  "endTurn2": function() {
     // flavor effects
     let odds = game.rooms.get(84).seen ? 10 : 5;
     if (game.diceRoll(1, 100) <= odds) {
@@ -39,9 +78,23 @@ export var event_handlers = {
     }
   },
 
-  "monsterAction": function(monster: Monster) {
-    // let game = Game.getInstance();
+  "look": function(arg: string) {
+    let artifact = game.artifacts.getLocalByName(arg, false);
+    if (artifact) {
+      if (artifact.id === 3 && game.player.isWearing(2)) {
+        artifact.open();
+        game.artifacts.get(4).moveToRoom();
+        return false;
+      }
+      if (artifact.id === 11 && game.player.isWearing(2)) {
+        game.artifacts.get(10).moveToRoom();
+        return false;
+      }
+    }
+    return true;
+  },
 
+  "monsterAction": function(monster: Monster) {
     // Necromancer has several special attacks. He always targets
     // the player and his attacks always ignore armor.
     if (monster.id === 22) {
@@ -81,7 +134,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room_from: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
     // Cannot enter forest if not wearing magical amulet
     if (room_from.id === 92 && exit.room_to === 65 && !game.player.hasArtifact(18)) {
       game.effects.print(45);
@@ -118,11 +170,22 @@ export var event_handlers = {
       }
       return false;
     }
+
+    // secret doors work differently here
+    if (exit.door_id && !game.artifacts.get(exit.door_id).isHere()) {
+      throw new CommandException("You can't go that way!");
+    }
+
     return true;
   },
 
+  "afterOpen": function(arg: string, artifact: Artifact) {
+    if (artifact.id === 3 && game.player.isWearing(2)) {
+      game.artifacts.get(4).moveToRoom();
+    }
+  },
+
   "say": function(phrase) {
-    // let game = Game.getInstance();
     phrase = phrase.toLowerCase();
 
     if (phrase === 'knock nikto mellon') {
@@ -134,20 +197,25 @@ export var event_handlers = {
     }
   },
 
-  "seeMonster": function (monster: Monster): void {
-    // let game = Game.getInstance();
+  "seeMonster": function(monster: Monster): void {
     // lich
     if (monster.id === 15) {
       game.effects.print(53);
     }
   },
 
+  "spellBacklash": function(spell_name: string): boolean {
+    // no forgetting spells completely in this adventure; it
+    // would make it unwinnable; just reduce ability temporarily
+    game.history.write(`Spell backlash! Your ability to cast ${spell_name.toLocaleUpperCase()} temporarily diminishes!`);
+    game.player.spell_abilities[spell_name] = 1;
+    return false;
+  },
+
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
-
     let cauldron = game.artifacts.get(24);
     if (game.data['cauldron'] && cauldron.isHere() && cauldron.contains([19,20,21,22])) {
       game.artifacts.get(7).open();
@@ -158,16 +226,36 @@ export var event_handlers = {
       game.history.write("The cauldron disintegrates!", "special");
       cauldron.destroy();
     }
-    // TODO: bring companions into/out of pit
 
+    // move companions into pit
+    if (isInPit(game.player)) {
+      let friends = game.monsters.all.filter(
+        m => m.seen && m.reaction === Monster.RX_FRIEND
+        && m.status === Monster.STATUS_ALIVE && !isInPit(m));
+      if (friends.length > 0) {
+        for (let f of friends) {
+          game.history.write(`${f.name} suddenly appears!`);
+          f.moveToRoom();
+        }
+      }
+    } else {
+      // move companions out of pit
+      let friends = game.monsters.all.filter(
+        m => m.seen && m.reaction === Monster.RX_FRIEND
+        && m.status === Monster.STATUS_ALIVE && isInPit(m));
+      if (friends.length > 0) {
+        for (let f of friends) {
+          game.history.write(`${f.name} suddenly appears!`);
+          f.moveToRoom();
+        }
+      }
+    }
+
+    // standard effects, if not casting knock or moving friends
     if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+      game.history.write("You hear a loud sonic boom which echoes all around you!", "special");
+    } else if (roll <= 90) {
+      game.history.write("The air crackles with magical energy but nothing interesting happens.", "special");
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
@@ -178,3 +266,6 @@ export var event_handlers = {
 
 
 // declare any functions used by event handlers and custom commands
+function isInPit(monster: Monster) {
+  return monster.room_id > 93 && monster.room_id < 110;
+}

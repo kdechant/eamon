@@ -643,9 +643,13 @@ export class Monster extends GameObject {
 
     // calculate to-hit odds, and let event handler adjust the odds
     let odds = this.getToHitOdds(target);
+    let can_critical = true;
     let odds_adjusted = game.triggerEvent('attackOdds', this, target, odds);
     if (odds_adjusted !== true) {
       odds = odds_adjusted;
+      if (odds_adjusted === 0) {
+        can_critical = false;
+      }
     }
 
     // display attack message
@@ -667,13 +671,13 @@ export class Monster extends GameObject {
 
     // calculate hit, miss, or fumble
     let hit_roll = game.diceRoll(1, 100);
-    if (hit_roll <= odds || hit_roll <= 5) {
+    if (hit_roll <= odds || (can_critical && hit_roll <= 5)) {
       // hit
       let damage = this.rollAttackDamage();
       let multiplier = 1;
       let ignore_armor = false;
       // regular or critical hit
-      if (hit_roll <= 5) {
+      if (can_critical && hit_roll <= 5) {
         game.history.write("-- a critical hit!", "success no-space");
         // roll another die to determine the effect of the critical hit
         let critical_roll = game.diceRoll(1, 100);
@@ -733,9 +737,11 @@ export class Monster extends GameObject {
       // miss or fumble
       // NOTE: monsters with natural weapons can't fumble. they just miss instead.
       if (hit_roll < 97 || this.weapon_id === 0 || this.weapon_id === null) {
-        let miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type] || ['missed'];
-        let miss_verb = miss_verbs[game.diceRoll(1, miss_verbs.length) - 1];
-        game.history.write("-- " + miss_verb + "!", "no-space");
+        if (game.triggerEvent('miss', this, target)) {
+          let miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type] || ['missed'];
+          let miss_verb = miss_verbs[game.diceRoll(1, miss_verbs.length) - 1];
+          game.history.write("-- " + miss_verb + "!", "no-space");
+        }
       } else {
         game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
@@ -1103,10 +1109,10 @@ export class Monster extends GameObject {
       let roll = game.diceRoll(1, 100);
       if (roll === 100) {
 
-        // TODO: event handler
-
-        game.history.write("The strain of attempting to cast " + spell_name.toUpperCase() + " overloads your brain and you forget it completely for the rest of this adventure.");
-        game.player.spell_abilities[spell_name] = 0;
+        if (game.triggerEvent('spellBacklash', spell_name)) {
+          game.history.write(`The strain of attempting to cast ${spell_name.toUpperCase()} overloads your brain and you forget it completely for the rest of this adventure.`);
+          game.player.spell_abilities[spell_name] = 0;
+        }
 
         // always a 5% chance to work and a 5% chance to fail
       } else if (roll <= game.player.spell_abilities[spell_name] || roll <= 5 && roll <= 95) {

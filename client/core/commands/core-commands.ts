@@ -919,7 +919,7 @@ export class OpenCommand implements BaseCommand {
                 if (a.effect_id && !game.effects.get(a.effect_id).seen) {
                   game.effects.print(a.effect_id);
                 }
-                game.triggerEvent('afterOpen', arg, artifact);
+                game.triggerEvent('afterOpen', arg, a);
                 if (a.type === Artifact.TYPE_CONTAINER) {
                   a.printContents();
                 }
@@ -933,7 +933,7 @@ export class OpenCommand implements BaseCommand {
               if (a.effect_id && !game.effects.get(a.effect_id).seen) {
                 game.effects.print(a.effect_id);
               }
-              game.triggerEvent('afterOpen', arg, artifact);
+              game.triggerEvent('afterOpen', arg, a);
               if (a.type === Artifact.TYPE_CONTAINER) {
                 a.printContents();
               }
@@ -1292,6 +1292,12 @@ export class BlastCommand implements BaseCommand {
         if (game.triggerEvent("blast", arg, monster_target)) {
           game.history.write(game.player.name + " casts a blast spell at " + monster_target.getDisplayName());
           game.history.write("--a direct hit!", "success no-space");
+          let damage_adjusted = game.triggerEvent('blastDamage', game.player, monster_target, damage);
+          if (damage_adjusted !== true) {
+            // event handler returns boolean TRUE if no
+            // change occurred (or handler didn't exist)
+            damage = damage_adjusted;
+          }
           monster_target.injure(damage, true);
           monster_target.hurtFeelings();
         }

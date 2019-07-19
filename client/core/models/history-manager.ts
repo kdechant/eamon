@@ -233,4 +233,17 @@ export class HistoryManager {
     this.push("");
   }
 
+  /**
+   * Prints the entire history as plain text (for testing)
+   */
+  summary() {
+    let output = [];
+    this.history.forEach(
+    h => {
+      output.push(`-- ${h.command} --`);
+      h.results.forEach(r => output.push(r.text));
+    });
+    return output;
+  }
+
 }
