@@ -99,14 +99,17 @@ export class MoveCommand implements BaseCommand {
     game.skip_battle_actions = true;
 
     if (game.triggerEvent("beforeMove", arg, game.rooms.current_room, exit)) {
-      if (exit.room_to === RoomExit.EXIT) {
+      if (exit.room_to === RoomExit.EXIT || exit.room_to === RoomExit.EXIT_SILENT) {
         // leaving the adventure
-        game.history.write(game.exit_message);
-        game.exit();
-        return;
-      } else if (exit.room_to === RoomExit.EXIT_SILENT) {
-        // leaving the adventure (silent version)
-        game.exit();
+        game.modal.confirm("Leave this adventure?",
+          answer => {
+            if (answer === 'Yes') {
+              if (exit.room_to === RoomExit.EXIT) {
+                game.history.write(game.exit_message);
+              }
+              game.exit();
+            }
+          });
         return;
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
