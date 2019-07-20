@@ -90,7 +90,7 @@ class SamSlicker extends React.Component<any, any> {
 
     if (weapons.length > 4) {
       return (
-        <div>
+        <div className="sell-items">
           <p>As you enter the Main Hall, {game.lwm_name} approaches you and says, &quot;You have too many weapons to keep them all. Four is the legal limit.&quot;</p>
           <p>Your weapons are:</p>
           <table className="table artifacts-list">
@@ -132,7 +132,7 @@ class SamSlicker extends React.Component<any, any> {
 
     // build the rating buttons
     let ratingButtons = (
-      <div className="container">
+      <div className="container sell-items">
       <div className="row">
         <div className="ratings col-md-6 offset-md-3 p-2">
           <h3>Rate this adventure</h3>
