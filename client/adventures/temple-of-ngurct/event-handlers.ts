@@ -55,7 +55,7 @@ export var event_handlers = {
   "afterGet": function(arg, artifact) {
     let game = Game.getInstance();
 
-    if (artifact && artifact.id) {
+    if (artifact && artifact.id === 41) {
       // scimitar
       game.history.write("Alignment conflict! The evil runes on the scimitar burn with a cold fire against your hand!", "special2");
       game.player.injure(game.diceRoll(1, 8) + 1, true);
