@@ -496,36 +496,42 @@ export default class Game {
     // show monster and artifact descriptions
     if (light || !this.rooms.current_room.is_dark) {
       this.history.write(""); // blank line for white space
+      let space = false;
       for (let m of this.monsters.visible) {
         if (!m.seen) {
           m.showDescription();
           m.seen = true;
+          space = true;  // padding between desc and next monster
           this.triggerEvent("seeMonster", m);
         } else {
           if (!m.children.length) {
-            this.history.write(`${m.getDisplayName()} is here.`, "no-space");
+            this.history.write(`${m.getDisplayName()} is here.`, space ? "" : "no-space");
           } else {
             let count_here = m.children.filter(m => m.isHere()).length;
             if (count_here > 1) {
-              this.history.write(`${count_here} ${m.name_plural} are here.`, "no-space");
+              this.history.write(`${count_here} ${m.name_plural} are here.`, space ? "" : "no-space");
             } else {
               this.history.write(`${m.name} is here.`, "no-space");
             }
           }
+          space = false;
         }
       }
 
+      space = false;
       for (let a of this.artifacts.visible) {
         if (!a.seen) {
           a.showDescription();
+          space = true;  // padding between desc and next monster
           this.triggerEvent("seeArtifact", a);
           a.seen = true;
         } else {
           if (a.player_brought) {
-            this.history.write(`Your ${a.name} is here.`, "no-space");
+            this.history.write(`Your ${a.name} is here.`, space ? "" : "no-space");
           } else {
-            this.history.write(`You see ${a.getDisplayName()}.`, "no-space");
+            this.history.write(`You see ${a.getDisplayName()}.`, space ? "" : "no-space");
           }
+          space = false;
         }
       }
     }
