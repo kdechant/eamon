@@ -23,15 +23,17 @@ export var event_handlers = {
     // illusionary army disappears if attacked/blasted
     if (target.id === 6) {
       armyDisappears();
+      return false;
     }
     return true;
   },
 
-  "blastMonster": function(arg: string, target: Monster) {
+  "blast": function(arg: string, target: Monster) {
     let game = Game.getInstance();
     // illusionary army disappears if attacked/blasted
     if (target.id === 6) {
       armyDisappears();
+      return false;
     }
     return true;
   },
@@ -403,7 +405,7 @@ function armyDisappears() {
   let game = Game.getInstance();
   game.history.write("* * * P O O F * * *", "special2");
   game.history.write("The Illusionary Soldiers vanish!");
-  game.monsters.get(6).room_id = null;
+  game.monsters.get(6).destroy();
 }
 
 /**
