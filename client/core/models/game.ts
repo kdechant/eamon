@@ -155,6 +155,11 @@ export default class Game {
   exit_message: string = "You successfully ride off into the sunset.";
 
   /**
+   * Whether to prompt the player when they try to exit the adventure
+   */
+  exit_prompt = true;
+
+  /**
    * Name of the person who tells you you have too many weapons when you leave
    */
   lwm_name: string = 'Lord William Missilefire';

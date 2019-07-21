@@ -7,6 +7,11 @@ import {ModalQuestion} from "../../core/models/modal";
 
 export var event_handlers = {
 
+  "start": function() {
+    let game = Game.getInstance();
+    game.exit_prompt = false;
+  },
+
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
 
