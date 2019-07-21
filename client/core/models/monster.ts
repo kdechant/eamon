@@ -372,6 +372,9 @@ export class Monster extends GameObject {
         inv = inv.filter(x => x.type !== Artifact.TYPE_DEAD_BODY)
       }
 
+      let delay = game.history.delay;
+      game.history.delay = Math.floor(game.history.delay / 2);
+
       let worn = inv.filter(x => x.is_worn === true);
       if (worn.length) {
         game.history.write(this.name + " is wearing:");
@@ -401,6 +404,7 @@ export class Monster extends GameObject {
         game.history.write(` - ${this.getMoneyFormatted()}`, "no-space");
         game.history.write(`Weight carried: ${ game.player.weight_carried } of ${ game.player.hardiness * 10 } gronds`, "no-space");
       }
+      game.history.delay = delay;
     } else {
       if (this.weapon) {
         game.history.write(this.name + " is armed with: " + this.weapon.name);
@@ -1113,6 +1117,7 @@ export class Monster extends GameObject {
           game.history.write(`The strain of attempting to cast ${spell_name.toUpperCase()} overloads your brain and you forget it completely for the rest of this adventure.`);
           game.player.spell_abilities[spell_name] = 0;
         }
+        return;
 
         // always a 5% chance to work and a 5% chance to fail
       } else if (roll <= game.player.spell_abilities[spell_name] || roll <= 5 && roll <= 95) {
@@ -1140,23 +1145,34 @@ export class Monster extends GameObject {
   /**
    * Recharges the player's spell abilities. Called on game tick.
    * @param {number} amount
-   *   The amount to recharge. Default is 1 per turn but you can call this in a special effect with a
-   *   different value if you like.
+   *   The amount to recharge. Default is 1 per turn but you
+   *   can call this in a special effect with a different value
+   *   if you like.
+   * @param {string} type
+   *   The type of recharge: 'percentage' to recharge an amount based on the
+   *   current ability (e.g., add 10% of current ability) or 'constant'
+   *   (e.g., add 10 points regardless of current ability)
    */
-  public rechargeSpellAbilities(amount?: number): void {
+  public rechargeSpellAbilities(amount?: number, type?: string): void {
     let game = Game.getInstance();
 
-    if (typeof amount === 'undefined') {
-      amount = game.spell_recharge_rate[1];
+    let recharge_type = game.spell_recharge_rate[0];
+    let recharge_amount = game.spell_recharge_rate[1];
+
+    if (typeof amount === 'number') {
+      recharge_amount = amount;
+    }
+    if (typeof type === 'string') {
+      recharge_type = type;
     }
 
     for (let spell_name in this.spell_abilities) {
       // Note: you can have a temporary boost to spell abilities above
       // normal maximum, which doesn't get erased by this code.
       if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
-        let inc = amount;
-        if (game.spell_recharge_rate[0] === 'percentage') {
-          inc = Math.max(1, Math.floor(this.spell_abilities[spell_name] * amount / 100));
+        let inc = recharge_amount;
+        if (recharge_type === 'percentage') {
+          inc = Math.max(1, Math.floor(this.spell_abilities[spell_name] * recharge_amount / 100));
         }
         this.spell_abilities[spell_name] = Math.min(
           this.spell_abilities[spell_name] += inc,

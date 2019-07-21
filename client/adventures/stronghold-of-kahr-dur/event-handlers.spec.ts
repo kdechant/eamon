@@ -24,7 +24,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-// afterEach(() => console.log(game.history.summary()));
+afterEach(() => console.log(game.history.summary()));
 
 // TESTS
 
@@ -41,8 +41,8 @@ it("should have working event handlers", () => {
   // spell backlash
   game.mock_random_numbers = [100];
   game.command_parser.run('speed');
-  // set to 1, plus 1 for end-turn recharge
-  expect(game.player.spell_abilities['speed']).toBe(2);
+  // set to 10, plus 1 for end-turn recharge
+  expect(game.player.spell_abilities['speed']).toBe(11);
 
   // secret doors
   game.monsters.get(11).destroy();  // guards in library
@@ -66,7 +66,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('w');
   expect(game.player.room_id).toBe(19);
   game.command_parser.run('e');
-  game.history.flush();
+  game.history.clear();
   game.command_parser.run('clo arm');
   expect(game.artifacts.get(4).isHere()).toBeFalsy();
   game.command_parser.run('w');
@@ -78,7 +78,7 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(10).isHere()).toBeTruthy();
   game.command_parser.run('n');
   expect(game.player.room_id).toBe(93);
-  game.history.flush();
+  game.history.clear();
 
   // amulet + forest
   game.player.moveToRoom(92); game.tick();
@@ -89,7 +89,7 @@ it("should have working event handlers", () => {
   game.player.updateInventory();
   game.command_parser.run('n');
   expect(game.player.room_id).toBe(65);
-  game.history.flush();
+  game.history.clear();
 
   // portcullis and knock spell
   game.player.moveToRoom(43); game.tick();
@@ -117,7 +117,7 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(7).is_open).toBeFalsy();
   game.command_parser.run('ope eas');
   expect(game.artifacts.get(7).is_open).toBeTruthy();
-  game.history.flush();
+  game.history.clear();
 
   // pit 1 - without boots
   game.player.moveToRoom(94); game.tick();
@@ -128,7 +128,7 @@ it("should have working event handlers", () => {
   game.modal.mock_answers = ['No'];
   game.command_parser.run('d');
   expect(game.player.room_id).toBe(84);
-  game.history.flush();
+  game.history.clear();
 
   // pit 2 - with boots
   game.artifacts.get(14).moveToInventory();
@@ -147,7 +147,7 @@ it("should have working event handlers", () => {
   game.mock_random_numbers = [1];
   game.command_parser.run("power");
   expect(game.monsters.get(20).room_id).toBe(84);
-  game.history.flush();
+  game.history.clear();
 
   // lich
   game.player.moveToRoom(109); game.tick();
@@ -161,15 +161,16 @@ it("should have working event handlers", () => {
   expectEffectSeen(55);
   expect(game.data['lich']).toBe(2);
   expect(game.artifacts.get(25).room_id).toBe(109);
-  game.history.flush();
+  game.history.clear();
 
   // necromancer
+  let necro = game.monsters.get(22);
   game.skip_battle_actions = true;
   game.player.moveToRoom(56); game.tick();
   game.mock_random_numbers = [1, 1];
   game.command_parser.run('attack necro');
   expectEffectSeen(61);
-  expect(game.monsters.get(22).damage).toBe(0);
+  expect(necro.damage).toBe(0);
   game.mock_random_numbers = [
     4, // spell roll
     3, // ability increase roll
@@ -178,14 +179,31 @@ it("should have working event handlers", () => {
   ];
   game.command_parser.run('blast necro');
   expectEffectSeen(57);
-  expect(game.monsters.get(22).damage).toBe(0);
+  expect(necro.damage).toBe(0);
   // with helmet
   game.artifacts.get(25).moveToInventory();
   game.player.wear(game.artifacts.get(25));
   game.player.updateInventory();
   game.mock_random_numbers = [1]; // only spell roll here
   game.command_parser.run('blast necro');
-  expect(game.monsters.get(22).damage).toBeGreaterThan(0);
+  expect(necro.damage).toBeGreaterThan(0);
+  game.history.clear();
+
+  // exit
+  necro.injure(1000);
+  [23, 24, 25].forEach(id => game.monsters.get(id).destroy());
+  game.player.moveToRoom(1); game.tick();
+  game.modal.mock_answers = ['No'];
+  game.command_parser.run('s');
+  expect(game.history.getOutput().text).toBe('You have not succeeded in your quest!');
+  game.player.moveToRoom(56); game.tick();
+  game.command_parser.run('free mirabelle');
+  expect(game.monsters.get(26).isHere()).toBeTruthy();
+  game.player.moveToRoom(1); game.tick();
+  game.modal.mock_answers = ['No'];
+  game.command_parser.run('s');
+  expect(game.history.getOutput().text).toBe('You have succeeded in your quest! Congratulations!');
+
 });
 
 function expectEffectSeen(id) {

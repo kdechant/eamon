@@ -60,7 +60,7 @@ it("should have working event handlers", () => {
   expect(game.history.getOutput(0).text).toBe("That wouldn't be very nice!");
   expect(game.monsters.get(1).reaction).toBe(Monster.RX_NEUTRAL);
 
-  game.history.flush();
+  game.history.clear();
 
   // prince 2
   game.player.moveToRoom(5); game.tick();
@@ -89,7 +89,7 @@ it("should have working event handlers", () => {
   expect(groo.room_id).toBe(11);
   expect(game.monsters.get(14).room_id).toBe(10);
 
-  game.history.flush();
+  game.history.clear();
 
   // max
   game.command_parser.run("use wand of castratia"); // when max is not here
@@ -139,7 +139,7 @@ it("should have working event handlers", () => {
   expect(game.player.room_id).toBe(46);  // back to wizard's cave
   expect(game.player.hasArtifact(49)).toBeTruthy();  // get crystal
 
-  game.history.flush();
+  game.history.clear();
 
   // chichester
   let chi = game.monsters.get(16);
@@ -161,7 +161,7 @@ it("should have working event handlers", () => {
   game.tick();
   expect(game.monsters.get(18).isHere()).toBeTruthy();
 
-  game.history.flush();
+  game.history.clear();
 
   // arba/dakarba/sage
   let sage = game.monsters.get(21);
@@ -184,7 +184,7 @@ it("should have working event handlers", () => {
   expect(game.effects.get(72).seen).toBeTruthy();
   expect(game.monsters.get(34).room_id).toBeNull();
 
-  game.history.flush();
+  game.history.clear();
 
   // sage / gate / brandy
   game.player.moveToRoom(11);
@@ -220,7 +220,7 @@ it("should have working event handlers", () => {
   expect(game.history.getOutput(0).text).toBe('Sage tells you to bite something.');
   expect(sage.hasArtifact(6)).toBeTruthy();
 
-  game.history.flush();
+  game.history.clear();
 
   // granite slab
   game.player.moveToRoom(35);
@@ -252,7 +252,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('get orb');
   expect(game.player.hasArtifact(45)).toBeTruthy();
 
-  game.history.flush();
+  game.history.clear();
 
   // misc
   groo.injure(100);
@@ -285,7 +285,7 @@ it("should have working event handlers", () => {
   expect(game.effects.get(84).seen).toBeTruthy();
   expect(game.data['hot room']).toBe(-1);
 
-  game.history.flush();
+  game.history.clear();
 
   // altar
   game.monsters.get(41).destroy();  // joey

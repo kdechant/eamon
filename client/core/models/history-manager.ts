@@ -51,6 +51,18 @@ export class HistoryManager {
   }
 
   /**
+   * Outputs everything in the history with no delay. Used if you
+   * need to ask a question to the user after some output has
+   * been displayed.
+   */
+  flush() {
+    let delay = this.delay;
+    this.delay = 0;
+    this.display();
+    this.delay = delay;
+  }
+
+  /**
    * Pushes a command onto the history
    */
   push(command: string) {
@@ -227,7 +239,7 @@ export class HistoryManager {
   /**
    * Clears the history. Used for tests.
    */
-  flush() {
+  clear() {
     this.history = [];
     this.index = this.history.length;
     this.push("");

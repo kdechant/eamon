@@ -72,9 +72,15 @@ export var event_handlers = {
 
   "endTurn2": function() {
     // flavor effects
-    let odds = game.rooms.get(84).seen ? 10 : 5;
-    if (game.diceRoll(1, 100) <= odds) {
-      game.effects.print(game.diceRoll(1, 5) + 64);
+    if (!game.in_battle) {
+      let odds = game.rooms.get(84).seen ? 10 : 5;
+      if (game.diceRoll(1, 100) <= odds) {
+        game.effects.print(game.diceRoll(1, 5) + 64);
+      }
+    }
+    // wizard's helm makes spell ability recharge faster
+    if (game.player.isWearing(25)) {
+      game.player.rechargeSpellAbilities(5, 'constant');
     }
   },
 
@@ -111,7 +117,9 @@ export var event_handlers = {
 
       switch (action) {
         case 1:  // spell drain
-          game.player.spell_abilities = game.player.spell_abilities.map(a => a *= 0.8);
+          for (let a in game.player.spell_abilities) {
+            game.player.spell_abilities[a] = Math.round(game.player.spell_abilities[a] *= 0.8);
+          }
           return false;
         case 2:  // lightning
           game.player.injure(game.diceRoll(1,8), true);
@@ -176,6 +184,23 @@ export var event_handlers = {
       throw new CommandException("You can't go that way!");
     }
 
+    if (exit.room_to === RoomExit.EXIT) {
+      // FIXME: this text is displaying after the exit question
+      if (game.monsters.get(22).status === Monster.STATUS_DEAD
+        && game.monsters.get(26).room_id === 1) {
+        game.history.write("You have succeeded in your quest! Congratulations!");
+      } else {
+        game.history.write("You have not succeeded in your quest!");
+        if (game.monsters.get(22).status === Monster.STATUS_ALIVE) {
+          game.history.write("The evil force here has not been vanquished.");
+        }
+        if (game.monsters.get(26).room_id !== 1) {
+          game.history.write("Lady Mirabelle has not been rescued.");
+        }
+      }
+      game.history.flush();
+    }
+
     return true;
   },
 
@@ -220,8 +245,18 @@ export var event_handlers = {
     // no forgetting spells completely in this adventure; it
     // would make it unwinnable; just reduce ability temporarily
     game.history.write(`Spell backlash! Your ability to cast ${spell_name.toLocaleUpperCase()} temporarily diminishes!`);
-    game.player.spell_abilities[spell_name] = 1;
+    game.player.spell_abilities[spell_name] = 10;
     return false;
+  },
+
+  "wear": function(arg: string, artifact: Artifact) {
+    let game = Game.getInstance();
+    // helm gives boost to blast spell (in addition to making it do more damage)
+    if (artifact.id === 25) {
+      game.history.write("You feel the tingle of magic flowing through you!", "success");
+      game.player.spell_abilities['blast'] += 100;
+    }
+    return true;
   },
 
   // every adventure should have a "power" event handler.
@@ -237,6 +272,7 @@ export var event_handlers = {
       game.effects.print(52, "special");
       game.history.write("The cauldron disintegrates!", "special");
       cauldron.destroy();
+      return;
     }
 
     // move companions into pit
@@ -250,6 +286,7 @@ export var event_handlers = {
           f.moveToRoom();
         }
       }
+      return;
     } else {
       // move companions out of pit
       let friends = game.monsters.all.filter(
@@ -261,6 +298,7 @@ export var event_handlers = {
           f.moveToRoom();
         }
       }
+      return;
     }
 
     // standard effects, if not casting knock or moving friends

@@ -58,7 +58,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('buy shrubbery');
   expect(game.player.hasArtifact(3)).toBeTruthy();
 
-  game.history.flush();
+  game.history.clear();
 
   // the Knights Who Say Nee
   game.player.moveToRoom(25); game.tick();
