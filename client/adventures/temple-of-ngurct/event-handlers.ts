@@ -80,11 +80,12 @@ export var event_handlers = {
         if (victim.rollSavingThrow('agility', a.weapon_odds)) {
           game.history.write(victim.name + " narrowly avoids the trap!");
         } else {
-        // damage is stored in dice and sides, just like weapons.
-        // the "armor_penalty" field should be either 1 (ignore armor) or 0 (armor absorbs hits)
+          // damage is stored in dice and sides, just like weapons.
+          // the "armor_penalty" field should be either 1 (ignore armor) or 0 (armor absorbs hits)
           victim.injure(game.diceRoll(a.dice, a.sides), a.armor_penalty === 1);
         }
         monster_ids.splice(monster_index, 1);
+        if (!monster_ids.length) break;  // no more targets left
       }
       a.embedded = false;
     }
