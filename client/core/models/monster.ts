@@ -988,7 +988,7 @@ export class Monster extends GameObject {
       if (game.triggerEvent("death", this)) {
 
         this.status = Monster.STATUS_DEAD;
-        this.inventory.forEach(a => a.room_id = this.room_id);
+        this.inventory.forEach(a => a.moveToRoom(this.room_id));
 
         // if a member of a group, update or remove the parent
         if (this.parent) {

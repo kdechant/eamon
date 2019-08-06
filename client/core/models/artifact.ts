@@ -83,6 +83,7 @@ export class Artifact extends GameObject {
     if (this.type !== Artifact.TYPE_BOUND_MONSTER)
       this.monster_id = null;
     this.container_id = null;
+    this.is_worn = false;
   }
 
   /**
@@ -94,6 +95,7 @@ export class Artifact extends GameObject {
         this.monster_id = monster_id || 0;
         this.room_id = null;
         this.container_id = null;
+        this.is_worn = false;
       } else {
         throw new CommandException("Monster # " + monster_id + " does not exist.")
       }
@@ -194,6 +196,7 @@ export class Artifact extends GameObject {
       this.container_id = container.id;
       this.room_id = null;
       this.monster_id = null;
+      this.is_worn = false;
       game.player.updateInventory();
       game.artifacts.updateVisible();
     } else {
@@ -429,7 +432,7 @@ export class Artifact extends GameObject {
     if (this.type === Artifact.TYPE_DEAD_BODY) {
       // if it's a dead body, hack it to bits
       game.history.write("You " + (source === "attack" ? "hack" : "blast") + " it to bits.");
-      this.room_id = null;
+      this.destroy();
 
     } else if (this.type === Artifact.TYPE_CONTAINER || this.type === Artifact.TYPE_DOOR) {
       // if it's a door or container, try to break it open.
@@ -480,6 +483,7 @@ export class Artifact extends GameObject {
     this.monster_id = null;
     this.room_id = null;
     this.container_id = null;
+    this.is_worn = false;
     game.artifacts.updateVisible();
     game.player.updateInventory();
   }
