@@ -4,7 +4,7 @@
   "license": "ISC",
   "version": "2.1.0",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "ie-array-find-polyfill": "^1.1.0",
     "js-cookie": "^2.2.0",
     "lz-string": "^1.4.4",
