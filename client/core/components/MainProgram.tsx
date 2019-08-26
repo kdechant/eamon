@@ -21,7 +21,9 @@ class MainProgram extends React.Component<any, any> {
     // the game object is created globally and gets added to the props here
     this.state = {
       game,
-      uuid: window.localStorage.getItem('eamon_uuid')
+      uuid: window.localStorage.getItem('eamon_uuid'),
+      statusOpen: false,
+      menuOpen: false
     };
   }
 
@@ -94,6 +96,22 @@ class MainProgram extends React.Component<any, any> {
     this.setState({ game });
   };
 
+  /**
+   * Toggles whether the status window is open (for mobile)
+   */
+  public toggleStatus = () => {
+    console.log("toggle status");
+    this.setState({statusOpen: !this.state.statusOpen});
+  };
+
+  /**
+   * Toggles whether the menu window is open (for mobile)
+   */
+  public toggleMenu = () => {
+    this.setState({menuOpen: !this.state.menuOpen});
+    console.log("toggle menu to", this.state.menuOpen);
+  };
+
   public render() {
 
     const game = this.state.game;
@@ -101,7 +119,9 @@ class MainProgram extends React.Component<any, any> {
     if (!game || !game.player) {
       return (
         <div className="container-fluid" id="game">
-          <h1>{game.name}</h1>
+          <div className="main-heading">
+            <h1>{game.name}</h1>
+          </div>
 
           <div className="parchment">
             <div className="parchment-inner">
@@ -116,11 +136,11 @@ class MainProgram extends React.Component<any, any> {
     if (!game.started && game.intro_text) {
       return (
         <div className="container-fluid" id="game">
-          <h1>{game.name}</h1>
+          <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
 
           <div className="parchment">
             <div className="parchment-inner">
-        <IntroText game={this.state.game} setGameState={this.setGameState}/>
+              <IntroText game={this.state.game} setGameState={this.setGameState}/>
             </div>
           </div>
         </div>
@@ -130,7 +150,7 @@ class MainProgram extends React.Component<any, any> {
     if (game.selling) {
       return (
         <div className="container-fluid" id="game">
-          <h1>{game.name}</h1>
+          <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
 
           <div className="parchment">
             <div className="parchment-inner">
@@ -142,21 +162,23 @@ class MainProgram extends React.Component<any, any> {
     }
 
     // the regular game engine
+    let historyClass = this.state.statusOpen ? 'd-none': '';
+    let menuClass = this.state.menuOpen ? '' : 'd-none';
     return (
       <div className="container-fluid" id="game">
-        <h1>{game.name}</h1>
+          <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
 
         <div className="game row">
 
           {/* history parchment and command prompt */}
-          <div className="command col-md-7">
+          <div className={`command col-md-7 ${historyClass}`}>
             <div className="parchment">
               <div className="parchment-inner">
                 <History game={this.state.game}/>
                 {!game.modal.visible && (
                   <div>
                     <CommandPrompt game={this.state.game} setGameState={this.setGameState}/>
-                    <div className="hints-command-list">
+                    <div className="hints-command-list d-none d-md-block">
                       <HowToPlay game={this.state.game}/>
                       <Hints game={this.state.game}/>
                       <CommandList game={this.state.game}/>
@@ -172,8 +194,26 @@ class MainProgram extends React.Component<any, any> {
           </div>
 
           {/* status box (outside the parchment */}
-          <Status game={this.state.game}/>
+          <Status game={this.state.game} open={this.state.statusOpen}/>
 
+          {/* hamburger menu */}
+          <div id="menu" className={'container-fluid ' + menuClass}>
+            <div className="row">
+              <ul>
+                <li>How to Play</li>
+                <li>Hints</li>
+                <li>List Commands</li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Eamon</a></li>
+                <li><a href="/news">News</a></li>
+                <li><a href="/manual">Manual</a></li>
+                <li><a href="https://github.com/kdechant/eamon" target="_blank">Source Code</a></li>
+                <li><a href="https://github.com/kdechant/eamon/issues" target="_blank">Report a Bug</a></li>
+                <li><a href="https://www.kdechant.com/">About the Author</a></li>
+                <li><a href="/privacy">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -181,3 +221,42 @@ class MainProgram extends React.Component<any, any> {
 }
 
 export default MainProgram;
+
+class GameHeading extends React.Component<any, any> {
+
+  public render() {
+    let game = this.props.game;
+    return (
+      <div className="container-fluid main-heading">
+        <div className="row no-gutters">
+          <div className="col-6 col-md-12">
+            <h1>{game.name}</h1>
+          </div>
+          <div className="player-name col-4 text-right">
+            <span>{game.player.name}<br />
+              ({ game.player.hardiness - game.player.damage }/{ game.player.hardiness })</span>
+          </div>
+          <div className="player-menu col-1">
+            <button aria-haspopup={true} aria-expanded={this.props.statusOpen}
+              onClick={this.props.toggleStatus}>
+              {this.props.statusOpen ?
+                <img src="/static/images/ravenmore/128/backpack.png" alt="Backpack Icon - Opens status screen"
+                     title="View Status"/> :
+                <img src="/static/images/ravenmore/128/backpack_open.png" alt="Backpack Icon - Closes status screen"
+                     title="Hide Status"/>
+              }
+            </button>
+          </div>
+          <div className="player-menu col-1">
+            <button className={'sidebarIconToggle' + (this.props.menuOpen ? ' open' : ' closed')} aria-haspopup={true} aria-expanded={this.props.menuOpen}
+              onClick={this.props.toggleMenu}>
+              <div className="spinner diagonal part-1" />
+              <div className="spinner horizontal" />
+              <div className="spinner diagonal part-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

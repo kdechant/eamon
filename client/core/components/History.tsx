@@ -5,6 +5,7 @@ import Game from "../models/game";
 class History extends React.Component<any, any> {
 
   private historyDiv;
+  private timeout;
 
   public componentDidMount() {
     this.scrollToBottom();
@@ -21,11 +22,20 @@ class History extends React.Component<any, any> {
   }
 
   public componentDidUpdate() {
-    this.scrollToBottom();
+    if (document.documentElement.clientWidth < 768) {
+      if (this.timeout) clearTimeout(this.timeout);
+      this.timeout = setTimeout(this.scrollToBottom, 25);
+    } else {
+      this.scrollToBottom();
+    }
   }
 
   public scrollToBottom() {
-    this.historyDiv.scrollTop = this.historyDiv.scrollHeight;
+    if (document.documentElement.clientWidth < 768) {
+      document.documentElement.scrollTop = document.documentElement.scrollHeight;
+    } else {
+      this.historyDiv.scrollTop = this.historyDiv.scrollHeight;
+    }
   }
 
   public continue = () => {

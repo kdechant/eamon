@@ -8,13 +8,13 @@ class Status extends React.Component<any, any> {
 
   public render() {
     const game = this.props.game;
-    
+
     if (!game || !game.player) {
       return <div>Loading...</div>
     }
 
     const inTheDark = game.rooms.current_room.is_dark && !game.artifacts.isLightSource();
-    let agilityClass = "agility col-sm-2";
+    let agilityClass = "agility col-2";
 
     if (game.player.speed_multiplier > 1) { agilityClass += " success" }
 
@@ -24,27 +24,37 @@ class Status extends React.Component<any, any> {
     let worn = game.player.inventory.filter(a => a.is_worn);
     let carried = game.player.inventory.filter(a => !a.is_worn);
 
+    // console.log('status open?', this.props.open)
+    let statusClass = this.props.open ? '' : 'd-none';
+
     return (
-      <div className="status d-none d-md-block col-md-5">
-      <div className="status-widget player">
+      <div className={`status ${statusClass} d-md-block col-md-5`}>
+      <div className="status-widget player-stats">
         <div className="container">
           <div className="row">
             <h3 className="heading">{game.player.name}</h3>
           </div>
 
           <div className="stats row">
-            <div className="hardiness col-sm-2">HD: { game.player.hardiness }</div>
+            <div className="hardiness col-2">HD: { game.player.hardiness }</div>
             <div className={agilityClass}>AG: <span>{ game.player.agility * game.player.speed_multiplier}</span></div>
-            <div className="charisma col-sm-2">CH: { game.player.charisma }</div>
-            <div className="charisma col-sm-5 text-right">HP: { game.player.hardiness - game.player.damage }/{ game.player.hardiness }</div>
+            <div className="charisma col-2">CH: { game.player.charisma }</div>
+            <div className="charisma col-5 text-right">HP: { game.player.hardiness - game.player.damage }/{ game.player.hardiness }</div>
           </div>
 
           <div className="weapon-abilities row">
-            <div className="axe col-sm">Axe:<br />{ game.player.weapon_abilities[1]}%</div>
-            <div className="bow col-sm">Bow:<br />{ game.player.weapon_abilities[2]}%</div>
-            <div className="club col-sm">Club:<br />{ game.player.weapon_abilities[3]}%</div>
-            <div className="spear col-sm">Spear:<br />{ game.player.weapon_abilities[4]}%</div>
-            <div className="sword col-sm">Sword:<br />{ game.player.weapon_abilities[5]}%</div>
+            <div className="axe col">Axe:<br />{ game.player.weapon_abilities[1]}%</div>
+            <div className="bow col">Bow:<br />{ game.player.weapon_abilities[2]}%</div>
+            <div className="club col">Club:<br />{ game.player.weapon_abilities[3]}%</div>
+            <div className="spear col">Spear:<br />{ game.player.weapon_abilities[4]}%</div>
+            <div className="sword col">Sword:<br />{ game.player.weapon_abilities[5]}%</div>
+          </div>
+
+          <div className="spell-abilities row">
+            <div className="col">Blast:<br/>{ game.player.spell_abilities.blast }%</div>
+            <div className="col">Heal:<br/>{ game.player.spell_abilities.heal }%</div>
+            <div className="col">Power:<br/>{ game.player.spell_abilities.power }%</div>
+            <div className="col">Speed:<br/>{ game.player.spell_abilities.speed }%</div>
           </div>
 
           <div className="ae row">Armor expertise: { game.player.armor_expertise }%</div>
@@ -186,7 +196,7 @@ class StatusMonster extends React.Component<any, any> {
     return (
       <div className={className}>
         {singular ?
-          <span>{ monster.article } { monster.name }</span>
+          <span>{ monster.getDisplayName() }</span>
           :
           <span>{ visible_children.length } { monster.name_plural }</span>
         }{' '}

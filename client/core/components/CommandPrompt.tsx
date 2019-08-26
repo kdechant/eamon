@@ -102,6 +102,7 @@ class CommandPrompt extends React.Component<any, any> {
           <div className="command-prompt form-group">
             <span className="prompt">Your Command:</span>
             <input name="command"
+                   id="command"
                    type="text"
                    value={this.state.command}
                    onChange={this.handleChange}
