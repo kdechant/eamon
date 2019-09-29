@@ -24,6 +24,7 @@ six = "==1.12.0"
 sqlparse = "~=0.2"
 Django = "==2.2.4"
 PyYAML = "~=5.1.2"
+fabric = "*"
 
 [dev-packages]
 
