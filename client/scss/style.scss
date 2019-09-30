@@ -3,13 +3,15 @@
 $status-border: #b97;
 $status-bg: #dc9;
 
+html {
+  scroll-behavior: smooth;
+}
 body {
   background-image: url(/static/images/sf_dustywall02.jpg);
   font-family: 'Mirza', serif;
   font-weight: 400;
   font-size: 20px;
   line-height: 1.2;
-  scroll-behavior: smooth;
 }
 
 h1 {
