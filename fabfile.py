@@ -1,6 +1,7 @@
-from fabric import task
 from datetime import datetime
 from fabric import Connection
+from fabric import task
+from glob import glob
 from invoke import run as local
 
 # global connections
@@ -51,8 +52,7 @@ def _db_push(tables=None):
     local('7z.exe a {0}.gz {0} -y'.format(fn), hide='out')  # windows only
     print('uploading DB...')
     c.put("{}.gz".format(fn))
-    print('backing up DB on server...')
-    c.run('mysqldump eamon -u eamon -p{} | gzip > {}/db/{}.gz'.format(pw, server_root, fn))
+    _db_backup()
     print('importing DB on server...')
     c.run('gunzip {}.gz'.format(fn))
     c.run('mysql eamon -u eamon -p{} < {}'.format(pw, fn))
@@ -65,12 +65,15 @@ def _db_migrate():
     c.run('{} {}/manage.py migrate'.format(server_python, server_root))
 
 
+def _db_backup():
+    print('backing up DB on server...')
+    pw = _get_db_pw()
+    t = datetime.now()
+    fn = 'eamon-{0.year}-{0.month:0>2}-{0.day:0>2}-{0.hour:0>2}-{0.minute:0>2}-{0.second:0>2}.sql'.format(t)
+    c.run('mysqldump eamon -u eamon -p{} | gzip > {}/db/{}.gz'.format(pw, server_root, fn))
+
+
 # tasks
-@task
-def pw(context):
-    print(_get_db_pw())
-
-
 @task
 def disk_space(context):
     c.run('df -h')
@@ -118,18 +121,25 @@ def deploy(context):
     """deploys code - NOT TESTED YET"""
     print('building JS files locally...')
     local('git stash save "pre-deployment"')
-    local('cd client; npm run build')
+    local('cd client && npm run build')
+    _db_backup()
     print('pulling new code...')
     # with cd() is not in fabric 2 yet
     c.run('cd {} && git pull'.format(server_root))
     print('installing python packages...')
     c.run('cd {} && pipenv install'.format(server_root))
     _db_migrate()
-    print('uploading JS files...')
+    print('uploading JS and CSS files...')
     remote_static = '{}/client/build/static/'.format(server_root)
-    c.put('client/build/static/*.js', remote=remote_static)
-    c.put('client/build/static/adventures/*.js', remote=remote_static)
+    files = glob('client/build/static/*.js')
+    for file in files:
+        c.put(file, remote=remote_static)
+    files = glob('client/build/static/**/*.js')
+    for file in files:
+        c.put(file, remote='{}/adventures/'.format(remote_static))
+    c.put('client/build/static/css/style.css', remote='{}/css/'.format(remote_static))
     print('collecting static...')
     c.run('{} {}/manage.py collectstatic --no-input'.format(server_python, server_root))
     print('restarting server...')
     c.run('sudo apachectl graceful')
+    local('git stash pop')
