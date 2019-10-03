@@ -82,7 +82,7 @@ class Status extends React.Component<any, any> {
       </div>
 
       <div className="status-widget room">
-        {!inTheDark && (
+        {!inTheDark ? (
           <div>
             {/* onClick={this.toggleDesc()} */}
             <h3 className="heading">Current Location:</h3>
@@ -98,10 +98,21 @@ class Status extends React.Component<any, any> {
               ))}
             </div>
           </div>
-        )}
-        {inTheDark && (
+        ) : (
           <div>
-            <p className="room-name">Current Location: in the dark</p>
+            {game.rooms.current_room.dark_description ? (
+              <React.Fragment>
+                <h3 className="heading">Current Location:</h3>
+                <p className="room-name">{ game.rooms.current_room.dark_name }</p>
+              </React.Fragment>
+            ) : (
+              <p className="room-name">Current Location: in the dark</p>
+            )}
+            {game.rooms.current_room.dark_description && (
+              <ReactMarkdown className="room-description"
+                 source={game.rooms.current_room.dark_description}
+                 escapeHtml={false}/>
+            )}
           </div>
         )}
       </div>
@@ -122,7 +133,7 @@ class Status extends React.Component<any, any> {
         {/* special messages when it's dark */}
         {inTheDark && (
           <div className="monsters-list">
-            {game.monsters.visible.length && (
+            {game.monsters.visible.length > 0 && (
               <span className="monster none">You hear movement but it's too dark to see.</span>
             )}
             {game.monsters.visible.length === 0 && (

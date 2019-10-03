@@ -9,8 +9,7 @@ export class RoomExit extends Loadable {
   public direction: string;
   public room_to: number;
   public door_id: number;
-  public open: number;
-  public message: string;
+  public effect_id: number;
 
   private directions: { [key: string]: string; } = {
     "n": "north",
@@ -58,7 +57,10 @@ export class Room extends Loadable {
   public is_markdown: boolean;
   public exits: RoomExit[] = [];
   public seen: boolean = false;
+  public visited_in_dark: boolean = false;
   public is_dark: boolean;
+  public dark_name: string;
+  public dark_description: string;
   public effect: number;
   public effect_inline: number;
 
@@ -93,6 +95,14 @@ export class Room extends Loadable {
     if (this.effect_inline != null) {
       game.effects.print(this.effect_inline, null, true);
     }
+  }
+
+  /**
+   * Shows the dark version of the room description (used when there isn't a light source).
+   */
+  public show_dark_description() {
+    let game = Game.getInstance();
+    game.history.write(this.dark_description, "normal", this.is_markdown);
   }
 
   /**

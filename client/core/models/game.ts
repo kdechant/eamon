@@ -481,7 +481,17 @@ export default class Game {
     let light = this.artifacts.isLightSource();
     // show room name and description
     if (this.rooms.current_room.is_dark && !light) {
-      this.history.write("It's too dark to see anything.");
+      if (!!this.rooms.current_room.dark_name) {
+        this.history.write(this.rooms.current_room.dark_name);
+      }
+      if (!!this.rooms.current_room.dark_description) {
+        if (!this.rooms.current_room.visited_in_dark) {
+          this.rooms.current_room.show_dark_description();
+          this.rooms.current_room.visited_in_dark = true;
+        }
+      } else {
+        game.history.write("It's too dark to see anything.");
+      }
     } else {
       this.history.write(this.rooms.current_room.name);
       if (Game.getInstance().data['bort']) {

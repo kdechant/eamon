@@ -26,7 +26,7 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializ
 class RoomExitSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomExit
-        fields = ('direction', 'room_to', 'door_id', 'message')
+        fields = ('direction', 'room_to', 'door_id', 'effect_id')
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -35,7 +35,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ('id', 'name', 'description', 'is_markdown', 'is_dark', 'effect', 'effect_inline', 'exits')
+        fields = ('id', 'name', 'description', 'is_markdown', 'is_dark', 'dark_name', 'dark_description',
+                  'effect', 'effect_inline', 'exits')
 
 
 class ArtifactSerializer(serializers.ModelSerializer):

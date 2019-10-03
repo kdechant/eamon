@@ -58,6 +58,9 @@ export class MoveCommand implements BaseCommand {
     if (exit === null) {
       throw new CommandException("You can't go that way!");
     }
+    if (!exit.room_to && exit.effect_id) {
+      throw new CommandException(game.effects.get(exit.effect_id).text);
+    }
 
     // hostile monsters prevent the player from moving
     if (game.in_battle) {
@@ -121,6 +124,9 @@ export class MoveCommand implements BaseCommand {
       } else {
         let room_to = game.rooms.getRoomById(exit.room_to);
         if (room_to) {
+          if (exit.effect_id) {
+            game.effects.print(exit.effect_id);
+          }
           game.player.moveToRoom(room_to.id, true);
 
           game.triggerEvent("afterMove", arg, room_from, room_to);
