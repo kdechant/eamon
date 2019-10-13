@@ -480,12 +480,16 @@ export class Artifact extends GameObject {
    */
   public destroy(): void {
     let game = Game.getInstance();
+    let monster_id = this.monster_id;
     this.monster_id = null;
     this.room_id = null;
     this.container_id = null;
     this.is_worn = false;
     game.artifacts.updateVisible();
     game.player.updateInventory();
+    if (monster_id) {
+      game.monsters.get(monster_id).updateInventory();
+    }
   }
 
   /**

@@ -111,6 +111,11 @@ export default class Game {
   data: { [key: string]: any; } = {};
 
   /**
+   * A container for game counters. See countdown()
+   */
+  counters: { [key: string]: any; } = {};
+
+  /**
    * The game timer. Keeps track of the number of game clock ticks.
    */
   timer: number = 0;
@@ -609,6 +614,21 @@ export default class Game {
     let index = this.diceRoll(1, array.length) - 1;
     if (typeof(array[index]) === 'undefined') { console.log('oops: getRandomElement rolled index: ', index, array); }
     return array[index];
+  }
+
+  /**
+   * Counts down a game counter and returns true if it just counted
+   * down to zero
+   * @param key
+   */
+  public countdown(key: string): boolean {
+    if (this.counters[key] > 0) {
+      this.counters[key] -= 1;
+      if (this.counters[key] === 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

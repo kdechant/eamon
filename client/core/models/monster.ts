@@ -4,6 +4,8 @@ import {GameObject} from "../models/game-object";
 import {Artifact} from "../models/artifact";
 import {RoomExit} from "../models/room";
 
+declare var game: Game;
+
 /**
  * Monster class. Represents all properties of a single monster
  */
@@ -126,13 +128,11 @@ export class Monster extends GameObject {
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
-    let from_room_id = this.room_id;
     this.room_id = room_id || Game.getInstance().player.room_id;
     this.container_id = null;
 
     // when the player moves, set the current room reference
     if (this.id === Monster.PLAYER) {
-      let game = Game.getInstance();
       game.rooms.current_room = game.rooms.getRoomById(room_id);
 
       // check if monsters should move
@@ -169,8 +169,6 @@ export class Monster extends GameObject {
    * Monster flees out a random exit
    */
   public chooseRandomExit(): RoomExit {
-    let game = Game.getInstance();
-
     // choose a random exit
     // exclude any locked/hidden exits and the game exit
     return game.rooms.get(this.room_id).chooseRandomExit();
@@ -194,13 +192,13 @@ export class Monster extends GameObject {
         // calculate reaction based on random odds
 
         this.reaction = Monster.RX_FRIEND;
-        let friend_odds = this.friend_odds + ((Game.getInstance().player.charisma - 10) * 2);
+        let friend_odds = this.friend_odds + ((game.player.charisma - 10) * 2);
         // first roll determines a neutral vs. friendly monster
-        let roll1 = Game.getInstance().diceRoll(1, 100);
+        let roll1 = game.diceRoll(1, 100);
         if (roll1 > friend_odds) {
           this.reaction = Monster.RX_NEUTRAL;
           // second roll determines a hostile vs. neutral monster
-          let roll2 = Game.getInstance().diceRoll(1, 100);
+          let roll2 = game.diceRoll(1, 100);
           if (roll2 > friend_odds) {
             this.reaction = Monster.RX_HOSTILE;
           }
@@ -217,7 +215,7 @@ export class Monster extends GameObject {
    * @returns {boolean}
    */
   public checkCourage(following: boolean = false): boolean {
-    let fear = Game.getInstance().diceRoll(1, 100);
+    let fear = game.diceRoll(1, 100);
     let effective_courage = this.courage;
     if (this.damage > this.hardiness * 0.2) {
       // wounded
@@ -289,6 +287,7 @@ export class Monster extends GameObject {
   public pickUp(artifact: Artifact): void {
     artifact.room_id = null;
     artifact.monster_id = this.id;
+    game.triggerEvent('pickUpArtifact', this, artifact);
     this.updateInventory();
   }
 
@@ -306,7 +305,7 @@ export class Monster extends GameObject {
       this.weapon_id = null;
       this.weapon = null;
     }
-
+    game.triggerEvent('dropArtifact', this, artifact);
     this.updateInventory();
   }
 
@@ -617,12 +616,14 @@ export class Monster extends GameObject {
           } else if (this.spells.indexOf('blast') !== -1) {
             // blast
             let target = this.chooseTarget();
-            let damage = game.diceRoll(2, 5);
-            game.history.write(this.name + " casts a Blast spell at " + target.name + "!");
-            game.history.write("--a direct hit!", "success");
-            target.injure(damage, true);
-            this.spell_points--;
-            return;
+            if (target) {
+              let damage = game.diceRoll(2, 5);
+              game.history.write(this.name + " casts a Blast spell at " + target.name + "!");
+              game.history.write("--a direct hit!", "success");
+              target.injure(damage, true);
+              this.spell_points--;
+              return;
+            }
           }
         }
       }
@@ -892,9 +893,6 @@ export class Monster extends GameObject {
    *   Whether to show the flee message. Usually omitted, except for internal logic dealing with group monsters
    */
   public flee(show_message: boolean = true) {
-    let game = Game.getInstance();
-    // console.log(`monster #${this.id} is fleeing`, show_message);
-
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
       if (show_message) {
@@ -920,7 +918,6 @@ export class Monster extends GameObject {
    * @returns Artifact
    */
   public getWeapon(): Artifact {
-    let game = Game.getInstance();
     return game.artifacts.get(this.weapon_id);
   }
 
@@ -929,7 +926,6 @@ export class Monster extends GameObject {
    * @returns string
    */
   public getMoneyFormatted(): string {
-    let game = Game.getInstance();
     return this.gold.toLocaleString() + " " + pluralize(game.money_name, this.gold);
   }
 
@@ -938,7 +934,6 @@ export class Monster extends GameObject {
    * @returns Monster
    */
   public chooseTarget(): Monster {
-    let game = Game.getInstance();
     let monsters = [game.player].concat(game.monsters.visible);
     let targets: Monster[] = [];
     for (let m of monsters) {
@@ -949,7 +944,10 @@ export class Monster extends GameObject {
       }
     }
     if (targets.length) {
-      return targets[Math.floor(Math.random() * targets.length)];
+      let target = targets[Math.floor(Math.random() * targets.length)];
+      let target_adjusted = game.triggerEvent('chooseTarget', this, target);
+      // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
+      return target_adjusted === true ? target : target_adjusted;
     }
     return null;
   }
@@ -962,7 +960,6 @@ export class Monster extends GameObject {
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
-    let game = Game.getInstance();
 
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
@@ -985,10 +982,10 @@ export class Monster extends GameObject {
     // handle death
     if (this.damage >= this.hardiness) {
 
-      if (game.triggerEvent("death", this)) {
+      if (game.triggerEvent("death", this, attacker)) {
 
         this.status = Monster.STATUS_DEAD;
-        this.inventory.forEach(a => a.moveToRoom(this.room_id));
+        this.inventory.forEach(a => this.drop(a));
 
         // if a member of a group, update or remove the parent
         if (this.parent) {
@@ -1026,7 +1023,7 @@ export class Monster extends GameObject {
     if (!this.dead_body_id) {
       return;
     }
-    let body = Game.getInstance().artifacts.get(this.dead_body_id);
+    let body = game.artifacts.get(this.dead_body_id);
     if (body) {
       body.room_id = this.room_id;
     }
@@ -1036,7 +1033,6 @@ export class Monster extends GameObject {
    * Removes a monster from the game
    */
   public destroy(): void {
-    let game = Game.getInstance();
     this.room_id = null;
     game.monsters.updateVisible();
   }
@@ -1057,7 +1053,6 @@ export class Monster extends GameObject {
    * Shows monster health status
    */
   public showHealth(): void {
-    let game = Game.getInstance();
     let status = (this.hardiness - this.damage) / this.hardiness;
     let name = this.name;
 
@@ -1097,7 +1092,6 @@ export class Monster extends GameObject {
    * @returns boolean
    */
   public spellCast(spell_name: string): boolean {
-    let game = Game.getInstance();
 
     if (!game.player.spell_abilities[spell_name]) {
       game.history.write("You don't know that spell!");
@@ -1154,7 +1148,6 @@ export class Monster extends GameObject {
    *   (e.g., add 10 points regardless of current ability)
    */
   public rechargeSpellAbilities(amount?: number, type?: string): void {
-    let game = Game.getInstance();
 
     let recharge_type = game.spell_recharge_rate[0];
     let recharge_amount = game.spell_recharge_rate[1];
@@ -1186,7 +1179,6 @@ export class Monster extends GameObject {
    * Sells the player's items when they return to the main hall
    */
   public sellItems(): void {
-    let game = Game.getInstance();
     game.selling = true;
 
     // remove all items from containers
@@ -1203,7 +1195,7 @@ export class Monster extends GameObject {
       a.destroy();
     }
 
-    Game.getInstance().triggerEvent("afterSell");
+    game.triggerEvent("afterSell");
 
   }
 
@@ -1244,7 +1236,6 @@ export class GroupMonster extends Monster {
    * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
-    const game = Game.getInstance();
     super.init(source);
 
     // default plural name for group monsters. if you want a better name, enter it in the database.
@@ -1261,7 +1252,6 @@ export class GroupMonster extends Monster {
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
-    // console.log(`group monster ${this.id} moving to room ${room_id}`);
     let from_room_id = this.room_id;
 
     super.moveToRoom(room_id, monsters_follow);
@@ -1277,7 +1267,6 @@ export class GroupMonster extends Monster {
    * Moves the virtual "group monster" pointer to the correct place
    */
   public updateVirtualMonster() {
-    const game = Game.getInstance();
     const visible_children = this.children.filter(c => c.isHere());
     if (visible_children.length) {
       this.room_id = game.player.room_id;  // move virtual group pointer
@@ -1291,7 +1280,6 @@ export class GroupMonster extends Monster {
    * Spawns a new child member for the group
    */
   public spawnChild() {
-    let game = Game.getInstance();
     this.count++;
     // There is one Monster object for each child monster, with an ID that's based on the group's id.
     // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
@@ -1312,7 +1300,6 @@ export class GroupMonster extends Monster {
    * @param {number} num The number of children to remove
    */
   public removeChildren(num: Number = 1) {
-    // console.log(`Removing ${num} children from ${this.name}`);
     this.children = this.children.slice(0, -num);
     if (!this.children.length) {
       this.destroy();
@@ -1338,7 +1325,6 @@ export class GroupMonster extends Monster {
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
   public doBattleActions(): void {
-    let game = Game.getInstance();
 
     // if something happened, where an event handler stopped combat, the monster should do nothing
     if (game.skip_battle_actions) {
@@ -1384,8 +1370,6 @@ export class GroupMonster extends Monster {
    *   Whether to show the flee message. Usually omitted, except for internal logic dealing with group monsters
    */
   public flee(show_message: boolean = true) {
-    let game = Game.getInstance();
-    // console.log(`group monster #${this.id} is fleeing`, show_message);
 
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
@@ -1417,7 +1401,6 @@ export class GroupMonster extends Monster {
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
-    let game = Game.getInstance();
 
     // when attacking a group monster, we actually attack a random one of the children
     let visible_children = this.children.filter(c => c.isHere());
@@ -1432,7 +1415,6 @@ export class GroupMonster extends Monster {
    * Removes a monster from the game
    */
   public destroy(): void {
-    let game = Game.getInstance();
     this.room_id = null;
 
     // for group monsters, we also destroy all members
@@ -1448,7 +1430,6 @@ export class GroupMonster extends Monster {
    * @param {number} amount - The amount of hit points to heal
    */
   public heal(amount): void {
-    let game = Game.getInstance();
     let child = game.getRandomElement(this.children.filter(c => c.isHere()));
     child.heal(amount);
   }

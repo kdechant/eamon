@@ -210,6 +210,23 @@ Working with effects is easy:
 
 The text styles available are the same ones described in the "Writing messages to the output" section above.
 
+### Countdown
+
+For timed effects, you can set a counter on the game object.
+
+    game.counters['my counter'] = 5;
+    
+Then to count the counter down and return true when it runs out, you can
+ call `game.countdown()` from within any event handler. This returns true
+ if the countdown expired, and false otherwise. This usually works best
+ when called from one of the "endTurn" event handlers, which run every turn.
+ 
+    "endTurn1": function () { 
+      if (game.countdown('my counter')) {
+        // do something when the countdown runs out
+      }
+    }
+
 # Example event handlers
 
 The following is a list of all the available event handlers, how they're used, and a sample handler of each type.
@@ -1324,6 +1341,30 @@ Example:
         }
         return true;  // otherwise, use regular fumble logic
       },
+
+### Choose Target
+
+The "chooseTarget" event handler allows you to alter the target that a monster
+will attack during their attack phase.
+
+Parameters:
+- attacker (Monster) - the one doing the attacking
+- defender (Monster) - the monster that would be attacked based on the standard game logic
+
+Return value:
+- a Monster object which the attacker will now attack
+- null if the monster should not attack
+
+Note: if not changing anything here, return either TRUE or the original value
+of 'defender', which is the randomly chosen defender from the basic game
+logic. You can also return null to make the monster skip their attack.
+
+Example:
+
+    "chooseTarget": function (attacker, defender): Monster {
+      // this monster always attacks the player
+      return attacker.id === 1 ? game.player : defender;
+    },
 
 ### Attack Odds
 
