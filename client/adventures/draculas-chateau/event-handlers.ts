@@ -18,6 +18,9 @@ export var event_handlers = {
       'dracula': 0
     };
 
+    // EDX 5.0 recharge rate is 10% of current rate per turn
+    game.spell_recharge_rate = ['percentage', 10];
+
     game.player.moveToRoom(63);
   },
 
@@ -51,6 +54,7 @@ export var event_handlers = {
   "death": function(monster: Monster, attacker: Monster) {
     // player / belg
     if (monster.id === 0 && attacker && attacker.id === 26) {
+      game.history.pause();
       attacker.destroy();
       game.effects.print(16);
       game.rooms.get(98).description = game.effects.get(4).text;
@@ -107,13 +111,11 @@ export var event_handlers = {
     if (game.monsters.get(16).isHere()) {
       game.effects.print(14);
     }
-    if (game.data['drunk counter'] > 0) {
-      game.data['drunk counter']--;
-      if (game.data['drunk counter'] === 0) {
-        game.effects.print(28);
-        game.player.hardiness = game.data['original hd'];
-        game.player.agility = game.data['original ag'];
-      }
+    if (game.countdown('drunk')) {
+      game.effects.print(28);
+      game.player.hardiness = game.data['original hd'];
+      game.player.agility = game.data['original ag'];
+      game.player.status_message = '';
     }
   },
 
@@ -152,6 +154,7 @@ export var event_handlers = {
   "dropArtifact": function(monster: Monster, artifact: Artifact): void {
     // dracula drops goldenwrath (either during combat, or as he dies)
     if (monster.id === 2 && artifact.id === 8) {
+      game.effects.print(3);
       put_out_goldenwrath();
     }
   },
@@ -265,6 +268,8 @@ export var event_handlers = {
             } else {
               target.injure(game.diceRoll(2, 8), true);
             }
+            game.artifacts.get(11).destroy();
+            game.artifacts.get(12).moveToInventory();
           }
           return true;
         };
@@ -287,14 +292,15 @@ export var event_handlers = {
       // thrown to sharks
       game.effects.print(22);
       game.die();
-    } else if (roll <= 50 && game.player['drunk counter'] === 0) {
+    } else if (roll <= 50 && game.counters['drunk'] === 0) {
       // drunk
       game.effects.print(21);
       game.data['original hd'] = game.player.hardiness;
       game.data['original ag'] = game.player.agility;
       game.player.hardiness += 2;
       game.player.agility -= 3;
-      game.player['drunk counter'] = 20;
+      game.counters['drunk'] = 20;
+      game.player.status_message = 'drunk';
     } else if (roll <= 65) {
       // ground shakes
       game.effects.print(23);

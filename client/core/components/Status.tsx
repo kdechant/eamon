@@ -14,7 +14,7 @@ class Status extends React.Component<any, any> {
     }
 
     const inTheDark = game.rooms.current_room.is_dark && !game.artifacts.isLightSource();
-    let agilityClass = "agility col-2";
+    let agilityClass = "agility col-4";
 
     if (game.player.speed_multiplier > 1) { agilityClass += " success" }
 
@@ -32,17 +32,19 @@ class Status extends React.Component<any, any> {
       <div className="status-widget player-stats">
         <div className="container">
           <div className="row">
-            <h3 className="heading">{game.player.name}</h3>
+            <h3 className="heading col-8">{game.player.name}</h3>
+            <div className="hp col-4 text-right">HP: { game.player.hardiness - game.player.damage }/{ game.player.hardiness }</div>
           </div>
 
-          <div className="stats row">
-            <div className="hardiness col-2">HD: { game.player.hardiness }</div>
+          <div className="stats row no-gutters">
+            <div className="hardiness col-4">HD: { game.player.hardiness }</div>
             <div className={agilityClass}>AG: <span>{ game.player.agility * game.player.speed_multiplier}</span></div>
-            <div className="charisma col-2">CH: { game.player.charisma }</div>
-            <div className="charisma col-5 text-right">HP: { game.player.hardiness - game.player.damage }/{ game.player.hardiness }</div>
+            <div className="charisma col-4">CH: { game.player.charisma }</div>
+            {game.player.status_message ?
+              <div className="status-text col-12">({game.player.status_message})</div> : ''}
           </div>
 
-          <div className="weapon-abilities row">
+          <div className="weapon-abilities row no-gutters">
             <div className="axe col">Axe:<br />{ game.player.weapon_abilities[1]}%</div>
             <div className="bow col">Bow:<br />{ game.player.weapon_abilities[2]}%</div>
             <div className="club col">Club:<br />{ game.player.weapon_abilities[3]}%</div>
@@ -50,32 +52,36 @@ class Status extends React.Component<any, any> {
             <div className="sword col">Sword:<br />{ game.player.weapon_abilities[5]}%</div>
           </div>
 
-          <div className="spell-abilities row">
+          <div className="spell-abilities row no-gutters">
             <div className="col">Blast:<br/>{ game.player.spell_abilities.blast }%</div>
             <div className="col">Heal:<br/>{ game.player.spell_abilities.heal }%</div>
             <div className="col">Power:<br/>{ game.player.spell_abilities.power }%</div>
             <div className="col">Speed:<br/>{ game.player.spell_abilities.speed }%</div>
           </div>
 
-          <div className="ae row">Armor expertise: { game.player.armor_expertise }%</div>
+          <div className="ae row">
+            <div className="col">Armor expertise: { game.player.armor_expertise }%</div>
+          </div>
 
           {game.player.weapon ? (
-            <div className="weapon row">Ready weapon: { titleCase(game.player.weapon.name) }{' '}
+            <div className="weapon row">
+              <div className="col">Ready weapon: { titleCase(game.player.weapon.name) }{' '}
               ({ game.player.weapon.dice }d{ game.player.weapon.sides })
+              </div>
             </div>
           ) : (
-            <div className="weapon none row">Ready weapon: none!</div>
+            <div className="weapon none row"><div className="col">Ready weapon: none!</div></div>
           )}
 
           {game.player.armor_class > 0 && (
-            <div className="armor row">Armor:&nbsp;
+            <div className="armor row"><div className="col">Armor:&nbsp;
               {game.player.armor_worn.map(armor => titleCase(armor.name)).join(" and ")}
               &nbsp;({ game.player.armor_class })
-            </div>
+            </div></div>
           )}
 
           {game.player.armor_class === 0 && (
-            <div className="armor none row">Armor: none!</div>
+            <div className="armor none row"><div className="col">Armor: none!</div></div>
           )}
 
         </div>

@@ -92,6 +92,7 @@ export class Monster extends GameObject {
   // game-state properties
   reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
+  status_message: string = "";
   original_group_size: number;
   damage: number = 0;
   weight_carried: number = 0;
@@ -1162,7 +1163,7 @@ export class Monster extends GameObject {
     for (let spell_name in this.spell_abilities) {
       // Note: you can have a temporary boost to spell abilities above
       // normal maximum, which doesn't get erased by this code.
-      if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
+      if (this.spell_abilities[spell_name] && this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
         let inc = recharge_amount;
         if (recharge_type === 'percentage') {
           inc = Math.max(1, Math.floor(this.spell_abilities[spell_name] * recharge_amount / 100));

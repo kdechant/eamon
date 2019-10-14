@@ -31,6 +31,15 @@ afterEach(() => { game.history.history.map((h) => console.log(h.command, h.resul
 test("general event handlers", () => {
   // non-standard starting room
   expect(game.player.room_id).toBe(63);
+
+  // zero room exit effect
+  game.player.moveToRoom(71); game.tick();
+  game.command_parser.run('e');
+  expect(game.history.getOutput().text).toBe(game.effects.get(1).text);
+  game.player.moveToRoom(80); game.tick();
+  game.command_parser.run('w');
+  expect(game.history.getOutput().text).toBe("You can't go that way!");
+
 });
 
 test("dig", () => {
@@ -100,8 +109,9 @@ test("slime should damage weapons", () => {
 
 test("belg", () => {
   game.skip_battle_actions = true;
+  game.player.damage = 2;
   game.player.moveToRoom(98); game.tick();
-  // this could still fail if belg gets a critical hit
+  // this test could still fail if belg gets a critical hit
   game.command_parser.run('flee');
   expectEffectSeen(9);
   game.player.damage = game.player.hardiness - 1;
@@ -109,6 +119,7 @@ test("belg", () => {
   expectEffectSeen(16);
   expect(game.rooms.get(98).description).toBe(game.effects.get(4).text);
   expect(game.monsters.get(26).isHere()).toBeFalsy();
+  expect(game.player.damage).toBe(2);  // fixed up to where it was when you met belg
 });
 
 test("blast belg", () => {
@@ -127,6 +138,8 @@ test("silver bullet", () => {
   game.modal.mock_answers = ['werewolf'];
   game.command_parser.run('use pistol');
   expect(game.monsters.get(4).room_id).toBeNull();
+  expect(game.artifacts.get(11).room_id).toBeNull();
+  expect(game.artifacts.get(12).isHere()).toBeTruthy();
 });
 
 test("see key in dark", () => {
