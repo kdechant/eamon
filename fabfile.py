@@ -42,11 +42,11 @@ def _db_pull(tables=None):
     local('mysql -u root eamon -e "source {}"'.format(fn))
 
 
-def _db_push(tables=None):
+def _db_push(prefix="eamon", tables=None):
     pw = _get_db_pw()
-    tables = "".join(tables) if tables is not None else ""
+    tables = " ".join(tables) if tables is not None else ""
     t = datetime.now()
-    fn = 'eamon-{0.year}-{0.month:0>2}-{0.day:0>2}-{0.hour:0>2}-{0.minute:0>2}-{0.second:0>2}.sql'.format(t)
+    fn = '{0}-{1.year}-{1.month:0>2}-{1.day:0>2}-{1.hour:0>2}-{1.minute:0>2}-{1.second:0>2}.sql'.format(prefix, t)
     print('exporting DB locally...')
     local('mysqldump eamon -u root -r {} {}'.format(fn, tables))
     local('7z.exe a {0}.gz {0} -y'.format(fn), hide='out')  # windows only
@@ -96,17 +96,17 @@ def dbpull_player(context):
 @task
 def dbpush_adventure(context):
     """push DB from local to remote - non-player adventure tables only"""
-    tables = ['adventure_adventure', 'adventure_artifact', 'adventure_author', 'adventure_effect',
-              'adventure_hint', 'adventure_hintanswer', 'adventure_monster', 'adventure_room',
+    tables = ['adventure_adventure', 'adventure_artifact', 'adventure_author', 'adventure_adventure_authors',
+              'adventure_effect', 'adventure_hint', 'adventure_hintanswer', 'adventure_monster', 'adventure_room',
               'adventure_roomexit', 'taggit_tag', 'taggit_taggeditem']
-    _db_push(tables)
+    _db_push('eamon-adventure', tables)
 
 
 @task
 def dbpush_news(context):
     """push DB from local to remote - news tables only"""
     tables = ['news_article']
-    _db_push(tables)
+    _db_push('eamon-news', tables)
 
 
 @task
@@ -142,4 +142,5 @@ def deploy(context):
     c.run('{} {}/manage.py collectstatic --no-input'.format(server_python, server_root))
     print('restarting server...')
     c.run('sudo apachectl graceful')
+    print('Popping stash locally...')
     local('git stash pop')
