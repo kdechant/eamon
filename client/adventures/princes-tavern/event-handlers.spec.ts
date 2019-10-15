@@ -211,6 +211,7 @@ test("exit logic", () => {
   game.artifacts.get(25).monster_id = Monster.PLAYER;
   game.artifacts.get(25).room_id = null;
   game.player.updateInventory();
+  game.exit_prompt = false;
   game.command_parser.run('s');
   expect(game.effects.get(41).seen).toBeTruthy();
   expect(game.won).toBeTruthy();

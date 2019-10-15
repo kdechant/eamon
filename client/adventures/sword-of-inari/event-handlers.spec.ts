@@ -18,6 +18,7 @@ afterAll(() => { delete global['game']; });
 beforeEach(() => {
   game.registerAdventureLogic(event_handlers, custom_commands);
   game.slug = 'sword-of-inari';
+  game.exit_prompt = false;
   return initLiveGame(game);
 });
 

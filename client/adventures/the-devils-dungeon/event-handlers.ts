@@ -149,8 +149,8 @@ export var event_handlers = {
     if (artifact.id === 17) {
       // mad scientist's potion
       game.effects.print(5);
-      let roll = game.diceRoll(1, 5);
-      if (roll > 3) {
+      let roll = game.diceRoll(1, 4);
+      if (roll >= 3) {
         roll = -1;
       }
       game.player.hardiness += roll;

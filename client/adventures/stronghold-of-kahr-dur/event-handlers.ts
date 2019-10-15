@@ -285,8 +285,8 @@ export var event_handlers = {
           game.history.write(`${f.name} suddenly appears!`);
           f.moveToRoom();
         }
+        return;
       }
-      return;
     } else {
       // move companions out of pit
       let friends = game.monsters.all.filter(
@@ -297,8 +297,8 @@ export var event_handlers = {
           game.history.write(`${f.name} suddenly appears!`);
           f.moveToRoom();
         }
+        return;
       }
-      return;
     }
 
     // standard effects, if not casting knock or moving friends

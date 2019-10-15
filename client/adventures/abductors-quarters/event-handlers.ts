@@ -179,12 +179,8 @@ export var event_handlers = {
 
   "use": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
-    if (artifact.isHere()) {
-      switch (artifact.name) {
-        case 'bottle':
-          game.history.write("Try lighting it.");
-          break;
-      }
+    if (artifact.isHere() && artifact.name === 'bottle') {
+      game.history.write("Try lighting it.");
     }
   },
 

@@ -28,15 +28,14 @@ beforeEach(() => {
 
 it("should have working event handlers", () => {
   expect(game.rooms.rooms.length).toBe(26);
-  expect(game.artifacts.all.length).toBe(24 + 5); // includes player artifacts
+  expect(game.artifacts.all.length).toBe(30 + 5); // includes player artifacts
   expect(game.effects.all.length).toBe(12);
   expect(game.monsters.all.length).toBe(12); // 8 base monsters + 3 group members + player
 
-
   // ready weapon
-  expect(game.player.weapon_id).toBe(27);
+  expect(game.player.weapon_id).toBe(33);
   game.command_parser.run("ready firebrand");
-  expect(game.player.weapon_id).toBe(26);
+  expect(game.player.weapon_id).toBe(32);
   let tr = game.artifacts.get(10);
   tr.moveToRoom();
   game.player.pickUp(tr);

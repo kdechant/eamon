@@ -4,6 +4,8 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "start": function(arg: string) {
@@ -62,13 +64,20 @@ export var event_handlers = {
     }
   },
 
-  "death": function(monster: Monster): boolean {
-    if (monster.id === 8) {
-      // trollsfire goes out when pirate dies
+  "dropArtifact": function(monster: Monster, artifact: Artifact): void {
+    if (monster.id === 8 && artifact.id === 10) {
+      // trollsfire goes out when pirate dies or drops it
       Game.getInstance().effects.print(3);
       put_out_trollsfire();
     }
-    return true;
+  },
+
+  "pickUpArtifact": function(monster, artifact) {
+    // pirate re-lights trollsfire when he picks it up
+    if (monster.id === 8 && artifact.id === 10) {
+      game.effects.print(2);
+      light_trollsfire();
+    }
   },
 
   "flee": function() {
@@ -110,6 +119,13 @@ export var event_handlers = {
     // 'say trollsfire' is the same as running the command 'trollsfire'
     if (phrase === 'trollsfire') {
       game.command_parser.run('trollsfire', false);
+    }
+  },
+
+  "seeMonster": function (monster: Monster): void {
+    // pirate / trollsfire effect
+    if (monster.id === 8 && monster.weapon.id === 10) {
+      game.effects.print(2);
     }
   },
 

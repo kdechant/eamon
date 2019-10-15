@@ -696,8 +696,12 @@ export var event_handlers = {
     } else if (roll <= 80) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      // valid destinations are 1-23 and 27-35
+      // valid destinations are 1-23 (except 3) and 27-35
       let room_id = game.diceRoll(1, 32);
+      // don't let this choose the sage's house (3)
+      while (room_id === 3) {
+        room_id = game.diceRoll(1, 32);
+      }
       if (room_id >= 24) room_id += 3;
       game.player.moveToRoom(room_id);
       game.skip_battle_actions = true;

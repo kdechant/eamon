@@ -12,6 +12,11 @@ export var event_handlers = {
     // custom attack messages
     game.monsters.get(44).combat_verbs = ["claws at", "breathes fire at", "slashes at"];
 
+    // merlin's spells
+    game.monsters.get(48).spells = ['blast', 'heal'];
+    game.monsters.get(48).spell_points = 10;
+    game.monsters.get(48).spell_frequency = 40;
+
   },
 
   "death": function(monster: Monster) {

@@ -64,8 +64,7 @@ export var event_handlers = {
   "say": function(phrase) {
     let game = Game.getInstance();
     phrase = phrase.toLowerCase();
-    if (phrase === 'dragon vanish' && game.player.hasArtifact(7)
-      && game.artifacts.get(7).is_worn && game.monsters.get(9).isHere()) {
+    if (phrase === 'dragon vanish' && game.player.isWearing(7) && game.monsters.get(9).isHere()) {
       game.data['dragon vanish']++;
       game.effects.print(2 + game.data['dragon vanish'])
       if (game.data['dragon vanish'] >= 3) {

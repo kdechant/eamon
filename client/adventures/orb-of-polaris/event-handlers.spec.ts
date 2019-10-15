@@ -142,6 +142,7 @@ it("should have working event handlers", () => {
   expect(warlock.isHere()).toBeFalsy();
 
   // exit
+  game.exit_prompt = false;
   game.command_parser.run('n');
   expect(game.won).toBeTruthy();
 });

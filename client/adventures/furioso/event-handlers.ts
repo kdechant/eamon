@@ -139,7 +139,7 @@ export var event_handlers = {
 
   "attackArtifact": function(arg: string, target: Artifact) {
     let game = Game.getInstance();
-    // bozworth disappears if attacked/blasted
+    // oarmen
     if (target.id === 69) {
       game.history.write("They have enough problems already!");
       return false;
