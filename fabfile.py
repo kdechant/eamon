@@ -117,19 +117,32 @@ def migrate(context):
 
 
 @task
-def deploy(context):
-    """deploys code - NOT TESTED YET"""
-    print('building JS files locally...')
+def build_js(context):
+    """builds js and css for production deploy"""
+    print('-- building JS and CSS locally...')
     local('git stash save "pre-deployment"')
     local('cd client && npm run build')
+    local('git stash pop --quiet')
+
+
+@task
+def deploy(context):
+    """full deployment - python and js/css"""
+    build_js(context)
     _db_backup()
-    print('pulling new code...')
+    print('-- pulling new code...')
     # with cd() is not in fabric 2 yet
     c.run('cd {} && git pull'.format(server_root))
-    print('installing python packages...')
+    print('-- installing python packages...')
     c.run('cd {} && pipenv install'.format(server_root))
     _db_migrate()
-    print('uploading JS and CSS files...')
+    deploy_js(context)
+
+
+@task
+def deploy_js(context):
+    build_js(context)
+    print('-- uploading JS and CSS files...')
     remote_static = '{}/client/build/static/'.format(server_root)
     files = glob('client/build/static/*.js')
     for file in files:
@@ -138,9 +151,7 @@ def deploy(context):
     for file in files:
         c.put(file, remote='{}/adventures/'.format(remote_static))
     c.put('client/build/static/css/style.css', remote='{}/css/'.format(remote_static))
-    print('collecting static...')
+    print('-- collecting static...')
     c.run('{} {}/manage.py collectstatic --no-input'.format(server_python, server_root))
-    print('restarting server...')
+    print('-- restarting server...')
     c.run('sudo apachectl graceful')
-    print('Popping stash locally...')
-    local('git stash pop')
