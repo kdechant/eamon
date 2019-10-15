@@ -764,6 +764,10 @@ export class AttackCommand implements BaseCommand {
     }
 
     let monster_target = game.monsters.getLocalByName(arg);
+    if (arg === '') {
+      // no target specified: attack a random hostile monster
+      let monster_target = game.player.chooseTarget();
+    }
     let artifact_target = game.artifacts.getLocalByName(arg);
     if (monster_target) {
 
@@ -809,6 +813,11 @@ export class LightCommand implements BaseCommand {
   verbs: string[] = ["light"];
   run(verb, arg) {
     let game = Game.getInstance();
+
+    if (arg === '') {
+      throw new CommandException('Light what?')
+    }
+
     let artifact = game.artifacts.getLocalByName(arg);
 
     if (game.triggerEvent('light', arg, artifact) !== false ) {
@@ -848,6 +857,10 @@ export class ReadCommand implements BaseCommand {
     // can't read anything if it's dark
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
       throw new CommandException("You can't read in the dark!");
+    }
+
+    if (arg === '') {
+      throw new CommandException('Read what?')
     }
 
     // see if we're reading an artifact that has markings
@@ -899,6 +912,11 @@ export class OpenCommand implements BaseCommand {
   verbs: string[] = ["open"];
   run(verb, arg) {
     let game = Game.getInstance();
+
+    if (arg === '') {
+      throw new CommandException('Open what?')
+    }
+
     let a: Artifact = game.artifacts.getLocalByName(arg, false);
     if (a !== null) {
       if (game.triggerEvent("beforeOpen", arg, a)) {
@@ -990,10 +1008,13 @@ core_commands.push(new OpenCommand());
 export class CloseCommand implements BaseCommand {
   name: string = "close";
   verbs: string[] = ["close"];
-  closed_something: boolean = false;
   run(verb, arg) {
     let game = Game.getInstance();
-    this.closed_something = false;
+
+    if (arg === '') {
+      throw new CommandException('Close what?')
+    }
+
     let a = game.artifacts.getLocalByName(arg, false);  // not revealing embedded artifacts automatically
     if (a !== null) {
       if (game.triggerEvent('beforeClose', arg, a)) {
@@ -1195,6 +1216,10 @@ export class FreeCommand implements BaseCommand {
     let monster: Monster = null;
     let message: string = "";
 
+    if (arg === '') {
+      throw new CommandException('Free what?')
+    }
+
     let a = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent('beforeFree', arg, a)) {
       if (a !== null) {
@@ -1302,6 +1327,10 @@ export class BlastCommand implements BaseCommand {
     if (game.player.spellCast(verb)) {
 
       let monster_target = game.monsters.getLocalByName(arg);
+      if (arg === '') {
+        // no target specified: blast a random hostile monster
+        let monster_target = game.player.chooseTarget();
+      }
       let artifact_target = game.artifacts.getLocalByName(arg);
       let damage = game.diceRoll(2, 5);
       if (monster_target) {
