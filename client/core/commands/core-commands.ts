@@ -6,8 +6,9 @@ import {Monster} from "../models/monster";
 import {RoomExit} from "../models/room";
 import {CommandException} from "../utils/command.exception";
 import {ModalQuestion} from "../models/modal";
-import artifact from "../../main-hall/models/artifact";
 import {formatMonsterAction} from "../utils";
+
+declare var game: Game;
 
 export let core_commands = [];
 
@@ -44,8 +45,6 @@ export class MoveCommand implements BaseCommand {
   }
 
   run(verb, arg) {
-
-    let game = Game.getInstance();
 
     // turn long words ("north") into short ("n")
     if (this.directions.hasOwnProperty(verb)) {
@@ -146,7 +145,6 @@ export class LookCommand implements BaseCommand {
   name: string = "look";
   verbs: string[] = ["look", "examine"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     // look event. can be used to reveal secret doors, etc.
     if (!game.triggerEvent("look", arg)) {
@@ -250,7 +248,6 @@ export class SayCommand implements BaseCommand {
   name: string = "say";
   verbs: string[] = ["say"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     if (arg !== "") {
       game.history.write("Ok... \"" + arg + "\"");
@@ -277,7 +274,6 @@ export class GetCommand implements BaseCommand {
   verbs: string[] = ["get"];
   run(verb: string, arg: string) {
 
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     let match = false;
 
@@ -387,7 +383,6 @@ export class RemoveCommand implements BaseCommand {
   verbs: string[] = ["remove"];
   run(verb: string, arg: string) {
 
-    let game = Game.getInstance();
     let match = false;
 
     // check if we're removing something from a container
@@ -468,7 +463,6 @@ export class PutCommand implements BaseCommand {
   verbs: string[] = ["put"];
   run(verb: string, arg: string) {
 
-    let game = Game.getInstance();
     let match = false;
 
     // check if we're putting something into a container
@@ -548,7 +542,6 @@ export class DropCommand implements BaseCommand {
   verbs: string[] = ["drop"];
   run(verb: string, arg: string) {
 
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
 
     let match = false;
@@ -582,7 +575,6 @@ export class ReadyCommand implements BaseCommand {
   verbs: string[] = ["ready"];
   run(verb, arg) {
 
-    let game = Game.getInstance();
     let old_wpn = game.player.weapon;
     let wpn = game.player.findInInventory(arg);
     if (wpn) {
@@ -615,7 +607,6 @@ export class WearCommand implements BaseCommand {
   verbs: string[] = ["wear"];
   run(verb: string, arg: string) {
 
-    let game = Game.getInstance();
     let artifact = game.player.findInInventory(arg);
     if (game.triggerEvent('wear', arg, artifact)) {
       if (artifact) {
@@ -650,8 +641,6 @@ export class FleeCommand implements BaseCommand {
   name: string = "flee";
   verbs: string[] = ["flee"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     if (!game.in_battle) {
       throw new CommandException("Calm down. There is no danger here.");
     }
@@ -684,7 +673,6 @@ export class DrinkCommand implements BaseCommand {
   name: string = "drink";
   verbs: string[] = ["drink"];
   run(verb, arg) {
-    let game = Game.getInstance();
     let item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("drink", arg, item) !== false) {
       if (item) {
@@ -711,7 +699,6 @@ export class EatCommand implements BaseCommand {
   name: string = "eat";
   verbs: string[] = ["eat"];
   run(verb, arg) {
-    let game = Game.getInstance();
     let item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("eat", arg, item) !== false) {
       if (item) {
@@ -736,7 +723,6 @@ export class UseCommand implements BaseCommand {
   name: string = "use";
   verbs: string[] = ["use"];
   run(verb, arg) {
-    let game = Game.getInstance();
     let item: Artifact = game.artifacts.getLocalByName(arg);
     if (item) {
       if (item.quantity === null || item.quantity > 0) {
@@ -757,18 +743,12 @@ export class AttackCommand implements BaseCommand {
   name: string = "attack";
   verbs: string[] = ["attack"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     if (!game.player.weapon_id) {
       throw new CommandException("You don't have a weapon ready!");
     }
 
-    let monster_target = game.monsters.getLocalByName(arg);
-    if (arg === '') {
-      // no target specified: attack a random hostile monster
-      let monster_target = game.player.chooseTarget();
-    }
-    let artifact_target = game.artifacts.getLocalByName(arg);
+    let [monster_target, artifact_target] = findTarget(arg);
     if (monster_target) {
 
       if (game.triggerEvent('attackMonster', arg, monster_target)) {
@@ -812,7 +792,6 @@ export class LightCommand implements BaseCommand {
   name: string = "light";
   verbs: string[] = ["light"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     if (arg === '') {
       throw new CommandException('Light what?')
@@ -852,7 +831,6 @@ export class ReadCommand implements BaseCommand {
   name: string = "read";
   verbs: string[] = ["read"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     // can't read anything if it's dark
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
@@ -911,7 +889,6 @@ export class OpenCommand implements BaseCommand {
   name: string = "open";
   verbs: string[] = ["open"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     if (arg === '') {
       throw new CommandException('Open what?')
@@ -1009,7 +986,6 @@ export class CloseCommand implements BaseCommand {
   name: string = "close";
   verbs: string[] = ["close"];
   run(verb, arg) {
-    let game = Game.getInstance();
 
     if (arg === '') {
       throw new CommandException('Close what?')
@@ -1057,7 +1033,6 @@ export class GiveCommand implements BaseCommand {
   verbs: string[] = ["give"];
   run(verb: string, arg: string) {
 
-    let game: Game = Game.getInstance();
     let match = false;
 
     let regex_result = /(.+) to (.*)/.exec(arg);
@@ -1149,7 +1124,6 @@ export class TakeCommand implements BaseCommand {
   verbs: string[] = ["take", "request"];
   run(verb: string, arg: string) {
 
-    let game: Game = Game.getInstance();
     let match = false;
 
     let regex_result = /(.+) from (.*)/.exec(arg);
@@ -1212,7 +1186,6 @@ export class FreeCommand implements BaseCommand {
   verbs: string[] = ["free", "release"];
   run(verb: string, arg: string) {
 
-    let game: Game = Game.getInstance();
     let monster: Monster = null;
     let message: string = "";
 
@@ -1269,8 +1242,6 @@ export class PowerCommand implements BaseCommand {
   name: string = "power";
   verbs: string[] = ["power"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     if (game.player.spellCast(verb)) {
       //  this spell has no effect except what is defined in the adventure
       let roll = game.diceRoll(1, 100);
@@ -1285,8 +1256,6 @@ export class HealCommand implements BaseCommand {
   name: string = "heal";
   verbs: string[] = ["heal"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     game.triggerEvent("heal", arg);
 
     let target = null;
@@ -1322,16 +1291,9 @@ export class BlastCommand implements BaseCommand {
   name: string = "blast";
   verbs: string[] = ["blast"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     if (game.player.spellCast(verb)) {
 
-      let monster_target = game.monsters.getLocalByName(arg);
-      if (arg === '') {
-        // no target specified: blast a random hostile monster
-        let monster_target = game.player.chooseTarget();
-      }
-      let artifact_target = game.artifacts.getLocalByName(arg);
+      let [monster_target, artifact_target] = findTarget(arg);
       let damage = game.diceRoll(2, 5);
       if (monster_target) {
         if (game.triggerEvent("blast", arg, monster_target)) {
@@ -1368,8 +1330,6 @@ export class SpeedCommand implements BaseCommand {
   name: string = "speed";
   verbs: string[] = ["speed"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     if (game.player.spellCast(verb)) {
       game.triggerEvent("speed", arg);
       // double player's agility
@@ -1388,8 +1348,6 @@ export class SaveCommand implements BaseCommand {
   name: string = "save";
   verbs: string[] = ["save"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     if (game.demo) {
       throw new CommandException("Saved games are not available when playing as the demo character.");
     }
@@ -1438,8 +1396,6 @@ export class RestoreCommand implements BaseCommand {
   name: string = "restore";
   verbs: string[] = ["restore"];
   run(verb, arg) {
-    let game = Game.getInstance();
-
     if (game.demo) {
       throw new CommandException("Saved games are not available when playing as the demo character.");
     }
@@ -1473,7 +1429,6 @@ export class SmileCommand implements BaseCommand {
   name: string = "smile";
   verbs: string[] = ["smile"];
   run(verb, arg) {
-    let game = Game.getInstance();
     if (game.monsters.visible.length === 0) {
       game.history.write("Ok. 😃");
       game.history.write("You know... you look a bit dim, smiling like that, when no one's around.");
@@ -1500,7 +1455,6 @@ export class InventoryCommand implements BaseCommand {
   name: string = "inventory";
   verbs: string[] = ["inventory"];
   run(verb, arg) {
-    let game = Game.getInstance();
     if (arg === "") {
       // player
       game.player.printInventory();
@@ -1525,7 +1479,6 @@ export class GotoCommand implements BaseCommand {
   name: string = "goto";
   verbs: string[] = ["xgoto"];
   run(verb, arg) {
-    let game = Game.getInstance();
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
     }
@@ -1544,7 +1497,6 @@ export class DebuggerCommand implements BaseCommand {
   name: string = "debugger";
   verbs: string[] = ["xdebugger"];
   run(verb, arg) {
-    let game = Game.getInstance();
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
     }
@@ -1558,7 +1510,6 @@ export class AccioCommand implements BaseCommand {
   name: string = "accio";
   verbs: string[] = ["xaccio"];
   run(verb, arg) {
-    let game = Game.getInstance();
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
     }
@@ -1572,3 +1523,23 @@ export class AccioCommand implements BaseCommand {
   }
 }
 core_commands.push(new AccioCommand());
+
+/**
+ * Helper function to find a target to attack or blast
+ * @param arg
+ */
+function findTarget(arg: string) {
+    let monster_target = null;
+    let artifact_target = null;
+    if (arg === '') {
+      // no target specified: attack a random hostile monster
+      monster_target = game.player.chooseTarget();
+      if (!monster_target) {
+        throw new CommandException("Calm down. There are no hostile monsters here.");
+      }
+    } else {
+      monster_target = game.monsters.getLocalByName(arg);
+      artifact_target = game.artifacts.getLocalByName(arg);
+    }
+    return [monster_target, artifact_target];
+}
