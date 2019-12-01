@@ -4,13 +4,13 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+// The "game" object contains the event handlers and custom commands defined for the loaded adventure.
+declare var game;
+
 export var event_handlers = {
 
   "start": function(arg: string) {
-    let game = Game.getInstance();
-
     // add your custom game start code here
-
   },
 
   // add your custom event handlers here
@@ -19,7 +19,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
