@@ -23,11 +23,11 @@ export default class Bank extends React.Component<any, any> {
       return false;
     }
     if (amt > player.gold) {
-      this.setState({message: "Shylock looks very pleased when you tell him the sum. Then he scowls when he sees that you don't have that much gold."});
+      this.setState({message: "Seamus looks very pleased when you tell him the sum. Then he scowls when he sees that you don't have that much gold."});
       return false;
     }
 
-    this.setState({message: "Shylock takes your money, puts it in his bag, and listens to it jingle with a smile on his face."});
+    this.setState({message: "Seamus takes your money, puts it in his bag, and listens to it jingle with a smile on his face."});
     player.gold -= amt;
     player.gold_in_bank += amt;
     this.props.setPlayerState(player);
@@ -42,11 +42,11 @@ export default class Bank extends React.Component<any, any> {
       return false;
     }
     if (amt > player.gold_in_bank) {
-      this.setState({message: "Shylock throws you a terrible glance and says, \"That's more than you have in your account! You know I don't make loans to adventurers!\""});
+      this.setState({message: "Seamus throws you a terrible glance and says, \"That's more than you have in your account! You know I don't make loans to adventurers!\""});
       return false;
     }
 
-    this.setState({message: "Shylock hands you your gold and shakes your hand."});
+    this.setState({message: "Seamus hands you your gold and shakes your hand."});
     player.gold += amt;
     player.gold_in_bank -= amt;
     this.props.setPlayerState(player);
@@ -62,7 +62,7 @@ export default class Bank extends React.Component<any, any> {
     return (
       <div className="bank">
         <h2><img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" />Bank of Eamon Towne</h2>
-        <p>You have no trouble spotting Shylock McFenney, the local banker, due to his large belly. You attract his attention, and he comes over to you.</p>
+        <p>You have no trouble spotting Seamus McFenney, the local banker, due to his large belly. You attract his attention, and he comes over to you.</p>
         <p>&quot;Well, {this.props.player.name}, my dear {this.props.player.gender === 'm' ? 'boy' : 'lass'}, what a pleasure
           to see you! Do you want to make a deposit or a withdrawal?&quot;</p>
         <p>You have {this.props.player.gold} gold pieces in hand, and {this.props.player.gold_in_bank} gold pieces in
@@ -114,5 +114,4 @@ export default class Bank extends React.Component<any, any> {
       </div>
     );
   }
-  
 }
