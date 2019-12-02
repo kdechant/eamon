@@ -1048,6 +1048,18 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Resurrects a monster and places it in the current room
+   */
+  public resurrect() {
+    this.moveToRoom();
+    this.damage = 0;
+    let body = game.artifacts.get(this.dead_body_id);
+    if (body) {
+      body.destroy();
+    }
+  }
+
+  /**
    * Heals a monster
    * @param {number} amount - The amount of hit points to heal
    */

@@ -50,7 +50,7 @@ export default class ArtifactRepository {
     let a = new Artifact();
     // "synonyms" in the back end are called "aliases" here
     if (artifact_data.synonyms) {
-      artifact_data.aliases = artifact_data.synonyms.split(",");
+      artifact_data.aliases = artifact_data.synonyms.split(",").map(s => s.trim());
     }
     a.init(artifact_data);
 

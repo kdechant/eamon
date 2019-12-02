@@ -1441,13 +1441,37 @@ export class SmileCommand implements BaseCommand {
     let neutrals = game.monsters.visible.filter(m => (m.reaction == Monster.RX_NEUTRAL));
     let hostiles = game.monsters.visible.filter(m => (m.reaction == Monster.RX_HOSTILE));
     if (friends.length > 0) {
-      game.history.write(formatMonsterAction(friends, "smiles back.", "smile back."));
+      let smiles = [];
+      friends.forEach(m => {
+        if (game.triggerEvent('monsterSmile', m)) {
+          smiles.push(m);
+        }
+      });
+      if (smiles.length) {
+        game.history.write(formatMonsterAction(smiles, "smiles back.", "smile back."));
+      }
     }
     if (neutrals.length > 0) {
-      game.history.write(formatMonsterAction(neutrals, "ignores you.", "ignore you."));
+      let ignores = [];
+      neutrals.forEach(m => {
+        if (game.triggerEvent('monsterSmile', m)) {
+          ignores.push(m);
+        }
+      });
+      if (ignores.length) {
+        game.history.write(formatMonsterAction(ignores, "ignores you.", "ignore you."));
+      }
     }
     if (hostiles.length > 0) {
-      game.history.write(formatMonsterAction(hostiles, "scowls at you.", "scowl at you."));
+      let growls = [];
+      hostiles.forEach(m => {
+        if (game.triggerEvent('monsterSmile', m)) {
+          growls.push(m);
+        }
+      });
+      if (growls.length) {
+        game.history.write(formatMonsterAction(growls, "scowls at you.", "scowl at you."));
+      }
     }
   }
 }
