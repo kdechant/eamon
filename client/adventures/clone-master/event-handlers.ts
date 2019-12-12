@@ -75,11 +75,7 @@ export var event_handlers = {
         game.history.write("You hack at the machines, but it's going to take a while to do enough damage. More guards are on the way!");
         if (game.diceRoll(1, 2) === 2) {
           // move some guards into the room
-          if (game.monsters.get(23).isHere()) {
-            game.monsters.get(23).count++;
-          } else {
-            game.monsters.get(23).moveToRoom();
-          }
+          game.monsters.get(23).moveToRoom();
         }
       }
       return false;
@@ -120,24 +116,28 @@ export var event_handlers = {
         if (artifact.monster_id === Monster.PLAYER) {
           game.history.write("Better put it down first!");
         } else {
-          if (game.artifacts.get(6).isHere()) {
+          if (game.artifacts.get(6).isHere()) {  // west side
             game.effects.print(1);
             game.history.write("* * B O O M * *", "special");
             artifact.destroy();
             game.artifacts.get(6).destroy();
             game.artifacts.get(9).moveToRoom();
-            game.artifacts.get(9).reveal();
             game.artifacts.get(10).moveToRoom(11);
-            game.artifacts.get(10).hidden = false;
-          } else if (game.artifacts.get(8).isHere()) {
+            let re = new RoomExit();
+            re.direction = 'e';
+            re.room_to = 11;
+            game.rooms.current_room.addExit(re);
+          } else if (game.artifacts.get(8).isHere()) {  // east side
             game.effects.print(1);
             game.history.write("* * B O O M * *", "special");
             artifact.destroy();
             game.artifacts.get(8).destroy();
             game.artifacts.get(11).moveToRoom();
-            game.artifacts.get(11).reveal();
             game.artifacts.get(12).moveToRoom(16);
-            game.artifacts.get(10).hidden = false;
+            let re = new RoomExit();
+            re.direction = 'w';
+            re.room_to = 16;
+            game.rooms.current_room.addExit(re);
           } else {
             game.history.write("Save that for when you need it.");
           }

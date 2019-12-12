@@ -27,13 +27,7 @@ beforeEach(() => {
 
 // TESTS
 
-it("should have working event handlers", () => {
-  // expect(game.rooms.rooms.length).toBe(46, "Wrong room count. Check data.");
-  // expect(game.artifacts.all.length).toBe(43 + 5, "Wrong artifact count. Check data."); // includes player artifacts
-  // expect(game.effects.all.length).toBe(3, "Wrong effect count. Check data.");
-  // expect(game.monsters.all.length).toBe(23, "Wrong monster count. Check data."); // includes player
-
-  // big fight
+test("big fight", () => {
   game.player.moveToRoom(4, true);
   game.command_parser.run("attack clone army");
   expect(game.effects.get(9).seen).toBeTruthy();
@@ -43,20 +37,54 @@ it("should have working event handlers", () => {
   // main gate blocked
   game.command_parser.run("s");
   expect(game.player.room_id).toBe(4);
+});
 
-  // blow stuff up
-  game.player.moveToRoom(2);
-  game.player.pickUp(game.artifacts.get(5));
+function getDynamite() {
+  game.player.moveToRoom(2); game.tick();
+  game.command_parser.run('get dynamite');
+}
+
+test('west wall', () => {
+  getDynamite();
+  let dynamite = game.artifacts.get(5);
+  let crack = game.artifacts.get(6);
   game.player.moveToRoom(6);
-  game.player.drop(game.artifacts.get(5));
-  game.command_parser.run("light dynamite", false);
-  expect(game.artifacts.get(5).room_id).toBeNull();
-  expect(game.artifacts.get(6).room_id).toBeNull();
+  game.command_parser.run('e');
+  expect(game.player.room_id).toBe(6);
+  game.command_parser.run('open crack');
+  expect(crack.is_open).toBeFalsy();
+  game.command_parser.run('drop dynamite');
+  game.command_parser.run('light dynamite');
+  expectEffectSeen(1);
+  expect(dynamite.room_id).toBeNull();
+  expect(crack.room_id).toBeFalsy();
   expect(game.artifacts.get(9).room_id).toBe(6);
   expect(game.artifacts.get(10).room_id).toBe(11);
-  expect(game.effects.get(1).seen).toBeTruthy();
+  game.command_parser.run('e');
+  expect(game.player.room_id).toBe(11);
+});
 
-  // inner gate
+test('east wall', () => {
+  getDynamite();
+  let dynamite = game.artifacts.get(5);
+  let crack = game.artifacts.get(8);
+  game.player.moveToRoom(8);
+  game.command_parser.run('w');
+  expect(game.player.room_id).toBe(8);
+  game.command_parser.run('open crack');
+  expect(crack.is_open).toBeFalsy();
+  game.command_parser.run('drop dynamite');
+  game.command_parser.run('light dynamite');
+  expectEffectSeen(1);
+  expect(dynamite.room_id).toBeNull();
+  expect(crack.room_id).toBeFalsy();
+  expect(game.artifacts.get(11).room_id).toBe(8);
+  expect(game.artifacts.get(12).room_id).toBe(16);
+  game.command_parser.run('w');
+  expect(game.player.room_id).toBe(16);
+});
+
+test('inner gate', () => {
   game.player.moveToRoom(20);
   expect(game.artifacts.get(22).is_open).toBeFalsy();
   game.player.moveToRoom(14);
@@ -75,12 +103,12 @@ it("should have working event handlers", () => {
   game.player.moveToRoom(20);
   game.command_parser.run('close gate');
   expect(game.artifacts.get(22).is_open).toBeTruthy();
+});
 
-  // cannon
+test('cannon', () => {
+  game.monsters.all.filter(m => m.room_id === 18).forEach(m => m.destroy());
+  game.player.moveToRoom(18); game.tick();
   game.modal.mock_answers = ['Battlefield', 'Power Station', 'Inner Gate'];
-  game.player.moveToRoom(18);
-  game.monsters.get(27).destroy(); // otherwise they stop you from using the cannon
-  game.monsters.get(12).destroy(); // these guys followed player from a different room earlier in the test
   game.command_parser.run('use cannon');
   expect(game.effects.get(5).seen).toBeTruthy();
   game.command_parser.run('use cannon');
@@ -93,19 +121,69 @@ it("should have working event handlers", () => {
   expect(game.effects.get(8).seen).toBeTruthy();
   expect(game.artifacts.get(19).room_id).toBeNull();
   expect(game.artifacts.get(20).room_id).toBe(18);
+});
 
-  // dragon
+test('dragon', () => {
   game.player.moveToRoom(34);
   game.command_parser.run('free dragon');
   expect(game.monsters.get(19).room_id).toBeNull();
   expect(game.monsters.get(20).children.length).toBe(14);
-
-  // clone room stuff - needs work
-  // game.player.moveToRoom(30);
-  // game.command_parser.run('attack clonatorium');  // update this because it now requires multiple hits
-  // expect(game.effects.get(11).seen).toBeTruthy('effect 11 should be seen');
-  // expect(game.artifacts.get(34).room_id).toBeNull();
-  // expect(game.artifacts.get(35).room_id).toBe(30);
-  // also add the other artifacts that can destroy it
-
 });
+
+test('tesla coil', () => {
+  game.monsters.all
+    .filter(m => m.room_id === 30)
+    .forEach(m => m.destroy());
+  game.artifacts.get(45).moveToInventory();
+  game.player.updateInventory();
+  game.player.moveToRoom(30); game.tick();
+  game.command_parser.run('use transformer');
+  expectEffectSeen(14);
+  expect(game.artifacts.get(34).room_id).toBeNull();
+  expect(game.artifacts.get(35).room_id).toBe(30);
+});
+
+test('grenade', () => {
+  game.monsters.all
+    .filter(m => m.room_id === 30)
+    .forEach(m => m.destroy());
+  game.artifacts.get(25).moveToInventory();
+  game.player.updateInventory();
+  game.player.moveToRoom(30); game.tick();
+  game.command_parser.run('use grenade');
+  expectEffectSeen(15);
+  expect(game.artifacts.get(34).room_id).toBeNull();
+  expect(game.artifacts.get(35).room_id).toBe(30);
+});
+
+test('attack clonatorium', () => {
+  game.monsters.all
+    .filter(m => m.room_id === 30)
+    .forEach(m => m.destroy());
+  game.player.moveToRoom(30);
+  let guards = game.monsters.get(23);
+  expect(guards.isHere()).toBeFalsy();
+  game.mock_random_numbers = [1, 1];
+  game.command_parser.run('attack clonatorium');
+  expectEffectNotSeen(11);
+  expect(guards.isHere()).toBeFalsy();
+  game.mock_random_numbers = [1, 2];
+  game.command_parser.run('attack clonatorium');
+  expectEffectNotSeen(11);
+  expect(guards.isHere()).toBeTruthy();
+  guards.destroy();
+  game.mock_random_numbers = [100, 2];
+  game.command_parser.run('attack clonatorium');
+  expectEffectSeen(11);
+  expect(game.artifacts.get(34).room_id).toBeNull();
+  expect(game.artifacts.get(35).room_id).toBe(30);
+  expect(guards.isHere()).toBeFalsy();
+});
+
+function expectEffectSeen(id) {
+  expect(game.effects.get(id).seen).toBeTruthy();
+}
+
+function expectEffectNotSeen(id) {
+  expect(game.effects.get(id).seen).toBeFalsy();
+}
