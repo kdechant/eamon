@@ -59,6 +59,8 @@ export function initLiveGame(game) {
 
      game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
 
+     game.died = false;
+     game.won = false;
      game.start();
    });
 }
