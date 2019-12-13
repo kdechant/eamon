@@ -623,6 +623,9 @@ export class WearCommand implements BaseCommand {
           if (artifact.armor_type === Artifact.ARMOR_TYPE_SHIELD && game.player.weapon && game.player.weapon.hands === 2) {
             throw new CommandException("You are using a two-handed weapon. You can only use a shield with a one-handed weapon.");
           }
+          if (artifact.armor_type === Artifact.ARMOR_TYPE_HELMET && game.player.isUsingHelmet()) {
+            throw new CommandException("Try removing your other helmet first.");
+          }
           game.player.wear(artifact);
           game.history.write("You put on the " + artifact.name + ".");
         } else {

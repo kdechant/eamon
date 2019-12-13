@@ -62,6 +62,8 @@ test('west wall', () => {
   expect(game.artifacts.get(10).room_id).toBe(11);
   game.command_parser.run('e');
   expect(game.player.room_id).toBe(11);
+  game.command_parser.run('w');
+  expect(game.player.room_id).toBe(6);
 });
 
 test('east wall', () => {
@@ -82,6 +84,8 @@ test('east wall', () => {
   expect(game.artifacts.get(12).room_id).toBe(16);
   game.command_parser.run('w');
   expect(game.player.room_id).toBe(16);
+  game.command_parser.run('e');
+  expect(game.player.room_id).toBe(8);
 });
 
 test('inner gate', () => {
@@ -127,7 +131,7 @@ test('dragon', () => {
   game.player.moveToRoom(34);
   game.command_parser.run('free dragon');
   expect(game.monsters.get(19).room_id).toBeNull();
-  expect(game.monsters.get(20).children.length).toBe(14);
+  expect(game.monsters.get(20).children.length).toBe(12);
 });
 
 test('tesla coil', () => {

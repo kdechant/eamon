@@ -29,6 +29,7 @@ export class Artifact extends GameObject {
   static TYPE_USER_3: number = 16;
   static ARMOR_TYPE_ARMOR: number = 0;
   static ARMOR_TYPE_SHIELD: number = 1;
+  static ARMOR_TYPE_HELMET: number = 2;
 
   // data properties
   room_id: number; // if on the ground, which room
@@ -515,6 +516,8 @@ export class Artifact extends GameObject {
           return "armor";
         case Artifact.ARMOR_TYPE_SHIELD:
           return "shield";
+        case Artifact.ARMOR_TYPE_HELMET:
+          return "helmet";
       }
     } else {
       return "treasure";
@@ -557,6 +560,8 @@ export class Artifact extends GameObject {
             return this.armor_class < 3 ? "leather" : "armor";
           case Artifact.ARMOR_TYPE_SHIELD:
             return "shield";
+          case Artifact.ARMOR_TYPE_HELMET:
+            return "helmet";
         }
       case Artifact.TYPE_CONTAINER:
         return "backpack";
@@ -575,7 +580,7 @@ export class Artifact extends GameObject {
    * Returns whether the artifact is armor
    */
   public isArmor(): boolean {
-    return (this.type === Artifact.TYPE_WEARABLE && (this.armor_type === Artifact.ARMOR_TYPE_ARMOR || this.armor_type === Artifact.ARMOR_TYPE_SHIELD));
+    return (this.type === Artifact.TYPE_WEARABLE && (this.armor_type !== null));
   }
 
 }

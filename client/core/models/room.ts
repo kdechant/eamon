@@ -168,6 +168,17 @@ export class Room extends Loadable {
   }
 
   /**
+   * Creates a new exit from the room in a given direction (shorthand version)
+   */
+  public createExit(direction: string, room_to: number, door_id: number = null): void {
+    let new_exit = new RoomExit();
+    new_exit.direction = direction;
+    new_exit.room_to = room_to;
+    new_exit.door_id = door_id;
+    this.exits.push(new_exit);
+  }
+
+  /**
    * Determines whether a given word is in the room name or description
    */
   public textMatch(str: string): boolean {

@@ -467,22 +467,34 @@ export class Monster extends GameObject {
   public wearBestArmor(): void {
     let best_armor = null;
     let best_shield = null;
+    let best_helmet = null;
     for (let art of this.inventory.filter(x => x.type === Artifact.TYPE_WEARABLE)) {
-      if (art.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
-        if (best_armor === null || art.armor_class > best_armor.armor_class) {
-          best_armor = art;
-        }
-      } else {
-        if (best_shield === null || art.armor_class > best_shield.armor_class) {
-          best_shield = art;
-        }
-      }
+      switch (art.armor_type) {
+        case Artifact.ARMOR_TYPE_ARMOR:
+          if (best_armor === null || art.armor_class > best_armor.armor_class) {
+            best_armor = art;
+          }
+          break;
+        case Artifact.ARMOR_TYPE_SHIELD:
+          if (best_shield === null || art.armor_class > best_shield.armor_class) {
+            best_shield = art;
+          }
+          break;
+        case Artifact.ARMOR_TYPE_HELMET:
+          if (best_helmet === null || art.armor_class > best_helmet.armor_class) {
+            best_helmet = art;
+          }
+          break;
+      }  // other armor types are not accounted for yet
     }
     if (best_armor) {
       this.wear(best_armor);
     }
     if (best_shield && this.weapon && this.weapon.hands === 1) {
       this.wear(best_shield);
+    }
+    if (best_helmet) {
+      this.wear(best_helmet);
     }
   }
 
@@ -508,24 +520,21 @@ export class Monster extends GameObject {
    * Determines if the player is wearing armor
    */
   public isWearingArmor(): boolean {
-    for (let i of this.inventory) {
-      if (i.armor_type === Artifact.ARMOR_TYPE_ARMOR && i.is_worn) {
-        return true;
-      }
-    }
-    return false;
+    return this.inventory.some(i => i.armor_type === Artifact.ARMOR_TYPE_ARMOR && i.is_worn)
   }
 
   /**
    * Determines if the player is using a shield
    */
   public isUsingShield(): boolean {
-    for (let i of this.inventory) {
-      if (i.armor_type === Artifact.ARMOR_TYPE_SHIELD && i.is_worn) {
-        return true;
-      }
-    }
-    return false;
+    return this.inventory.some(i => i.armor_type === Artifact.ARMOR_TYPE_SHIELD && i.is_worn)
+  }
+
+  /**
+   * Determines if the player is wearing a helmet
+   */
+  public isUsingHelmet(): boolean {
+    return this.inventory.some(i => i.armor_type === Artifact.ARMOR_TYPE_HELMET && i.is_worn)
   }
 
   /**

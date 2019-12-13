@@ -18,7 +18,7 @@ export var event_handlers = {
 
   },
 
-  "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
+  "beforeMove": function(arg: string, current_room: Room, exit: RoomExit): boolean {
     let game = Game.getInstance();
 
     switch (exit.room_to) {
@@ -33,6 +33,10 @@ export var event_handlers = {
         }
         break;
       case 3:
+        if (current_room.id === 2 && !game.player.hasArtifact(5)) {
+          game.history.write('One of the commandos says, "Don\'t forget the dynamite. You\'ll need it."');
+          return false;
+        }
         if (game.artifacts.get(34).room_id === null || game.monsters.get(21).room_id === null) {
           game.effects.print(12);
           game.exit();
@@ -72,10 +76,14 @@ export var event_handlers = {
         game.effects.print(11);
         destroy_clonatorium();
       } else {
-        game.history.write("You hack at the machines, but it's going to take a while to do enough damage. More guards are on the way!");
+        game.history.write("You hack at the machines, but it's going to take a while to do enough damage.");
         if (game.diceRoll(1, 2) === 2) {
-          // move some guards into the room
+          // move guards into the room
+          game.history.write("A guard enters the room!", 'emphasis');
+          game.monsters.get(23).damage = 0;
           game.monsters.get(23).moveToRoom();
+        } else {
+          game.history.write("Better hurry! More guards are on the way!");
         }
       }
       return false;
@@ -108,6 +116,21 @@ export var event_handlers = {
     return true;
   },
 
+  "flee": function(arg: string, exit: RoomExit) {
+    let game = Game.getInstance();
+    if (game.monsters.get(20).isHere() && game.player.room_id === 28) {
+      // big group of soldiers
+      if (arg === 's' || arg === 'south') {
+        game.history.write("The soldiers block the entrance!");
+      } else {
+        game.player.moveToRoom(27);  // always flee north
+        game.skip_battle_actions = true;
+      }
+      return false;
+    }
+    return true;
+  },
+
   "light": function(arg: string, artifact: Artifact) {
     let game = Game.getInstance();
     if (artifact !== null) {
@@ -123,10 +146,8 @@ export var event_handlers = {
             game.artifacts.get(6).destroy();
             game.artifacts.get(9).moveToRoom();
             game.artifacts.get(10).moveToRoom(11);
-            let re = new RoomExit();
-            re.direction = 'e';
-            re.room_to = 11;
-            game.rooms.current_room.addExit(re);
+            game.rooms.current_room.createExit('e', 11);
+            game.rooms.get(11).createExit('w', 6);
           } else if (game.artifacts.get(8).isHere()) {  // east side
             game.effects.print(1);
             game.history.write("* * B O O M * *", "special");
@@ -134,10 +155,8 @@ export var event_handlers = {
             game.artifacts.get(8).destroy();
             game.artifacts.get(11).moveToRoom();
             game.artifacts.get(12).moveToRoom(16);
-            let re = new RoomExit();
-            re.direction = 'w';
-            re.room_to = 16;
-            game.rooms.current_room.addExit(re);
+            game.rooms.current_room.createExit('w', 16);
+            game.rooms.get(16).createExit('e', 8);
           } else {
             game.history.write("Save that for when you need it.");
           }
@@ -167,7 +186,7 @@ export var event_handlers = {
       // dragon
       game.effects.print(10);
       monster.destroy();
-      game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length / 3));
+      game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length * 0.4));
     }
   },
 
@@ -216,8 +235,8 @@ export var event_handlers = {
         case 'console':
           if (!game.data['power off']) {
             game.history.write("You use the console to shut down power to parts of the complex. You hear startled shouts from outside, and the sounds of soldiers running.");
-            // reduce the size of the big guard group by 1/3
-            game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length / 3));
+            // reduce the size of the big guard group
+            game.monsters.get(20).removeChildren(Math.floor(game.monsters.get(20).children.length * 0.4));
             game.data['power off'] = true;
           } else {
             game.history.write("You can't figure out how to turn off any more power feeds.");
