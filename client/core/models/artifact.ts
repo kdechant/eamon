@@ -4,6 +4,8 @@ import {Monster} from "./monster";
 import {CommandException} from "../utils/command.exception";
 import ArtifactRepository from "../repositories/artifact.repo";
 
+declare var game;
+
 /**
  * Artifact class. Represents all properties of a single artifact
  */
@@ -97,13 +99,13 @@ export class Artifact extends GameObject {
         this.room_id = null;
         this.container_id = null;
         this.is_worn = false;
+        game.monsters.get(this.monster_id).updateInventory();
       } else {
         throw new CommandException("Monster # " + monster_id + " does not exist.")
       }
     } else {
       throw new CommandException("moveToInventory() can't be used on bound monster artifacts.")
     }
-
   }
 
   /**

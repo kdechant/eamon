@@ -1,8 +1,9 @@
 /**
  * This file contains some helper functions used during unit testing.
  */
-// import Game from "../../core/models/game";
 import axios from "axios";
+
+declare var game;
 
 /**
  * Init from the mock data. Used in the unit tests.
@@ -64,3 +65,29 @@ export function initLiveGame(game) {
      game.start();
    });
 }
+
+export function expectEffectSeen(id) {
+  expect(game.effects.get(id).seen).toBeTruthy();
+}
+
+export function expectEffectNotSeen(id) {
+  expect(game.effects.get(id).seen).toBeFalsy();
+}
+
+/**
+ * Has one monster attack another (with the necessary mock dice rolls)
+ * @param Monster attacker  Who is attacking
+ * @param Monster defender  What to attack
+ * @param boolean hit  Whether or not the player should hit the target
+ * @param Number damage  The amount of damage the attack should do (before armor)
+ * @param Number[] special  Results of any dice rolls in the attackDamageAfter event handler
+ */
+export function monsterAttack(attacker, defender, hit, damage, special) {
+  game.mock_random_numbers = [
+    hit ? 5 : 96,
+    damage,
+    ...special
+  ];
+  attacker.attack(defender);
+}
+

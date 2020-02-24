@@ -104,11 +104,6 @@ export class Monster extends GameObject {
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
   profit: number = 0; // the money the player makes for selling items when they leave the adventure
 
-  /**
-   * A container for custom data used by specific adventures
-   */
-  data: { [key: string]: any; } = {};
-
   constructor (){
     super();
   }
@@ -216,6 +211,7 @@ export class Monster extends GameObject {
    * @returns {boolean}
    */
   public checkCourage(following: boolean = false): boolean {
+    console.log('courage check');
     let fear = game.diceRoll(1, 100);
     let effective_courage = this.courage;
     if (this.damage > this.hardiness * 0.2) {
@@ -685,9 +681,11 @@ export class Monster extends GameObject {
     }
 
     // calculate hit, miss, or fumble
+    console.log('rolling hit');
     let hit_roll = game.diceRoll(1, 100);
     if (hit_roll <= odds || (can_critical && hit_roll <= 5)) {
       // hit
+      console.log('rolling damage');
       let damage = this.rollAttackDamage();
       let multiplier = 1;
       let ignore_armor = false;
@@ -944,6 +942,7 @@ export class Monster extends GameObject {
    * @returns Monster
    */
   public chooseTarget(): Monster {
+    console.log('choosing target');
     let monsters = [game.player].concat(game.monsters.visible);
     let targets: Monster[] = [];
     for (let m of monsters) {
@@ -954,7 +953,7 @@ export class Monster extends GameObject {
       }
     }
     if (targets.length) {
-      let target = targets[Math.floor(Math.random() * targets.length)];
+      let target = game.getRandomElement(targets);
       let target_adjusted = game.triggerEvent('chooseTarget', this, target);
       // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
       return target_adjusted === true ? target : target_adjusted;

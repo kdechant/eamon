@@ -582,7 +582,6 @@ export default class Game {
     // for unit testing, it's possible to set mock random numbers
     if (this.mock_random_numbers.length) {
       let num = this.mock_random_numbers.shift();
-      // console.log('using mock random number: ' + num);
       return num;
     }
 

@@ -30,6 +30,7 @@ class AuthorAdmin(admin.ModelAdmin):
 
 class RoomExitInline(admin.TabularInline):
     model = RoomExit
+    extra = 4
 
 
 @admin.register(Room)

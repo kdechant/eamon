@@ -19,6 +19,11 @@ export class GameObject {
   seen: boolean = false;
 
   /**
+   * A container for custom data used by specific adventures
+   */
+  data: { [key: string]: any; } = {};
+
+  /**
    * Loads data from JSON source into the object properties.
    * @param {Object} source an object, e.g., from JSON.
    */

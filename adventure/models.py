@@ -110,7 +110,7 @@ class Room(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='rooms')
     room_id = models.IntegerField(default=0)  # The in-game room ID.
     name = models.CharField(max_length=255)
-    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    is_markdown = models.BooleanField(default=False, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
     # The ID of an effect to display after the description
     effect = models.IntegerField(null=True, blank=True)
@@ -155,7 +155,7 @@ class Artifact(models.Model):
         null=True, max_length=255, blank=True,
         help_text="Other terms for this artifact. E.g., if the artifact name is 'secret door in"
                   " north wall' you could have a synonym of 'door' to help the player find it.")
-    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    is_markdown = models.BooleanField(default=False, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
     # The ID of an effect to display after the description
     effect = models.IntegerField(null=True, blank=True)
@@ -257,6 +257,7 @@ class ArtifactMarking(models.Model):
 class Effect(models.Model):
     STYLES = (
         ('', 'Normal'),
+        ('emphasis', 'Bold'),
         ('success', 'Success (green)'),
         ('special', 'Special 1 (blue)'),
         ('special2', 'Special 1 (purple)'),
@@ -265,7 +266,7 @@ class Effect(models.Model):
     )
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='effects')
     effect_id = models.IntegerField(default=0)  # The in-game effect ID.
-    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    is_markdown = models.BooleanField(default=False, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     text = models.TextField(max_length=65535)
     style = models.CharField(max_length=20, null=True, blank=True, choices=STYLES)  # display effect text in color
     next = models.IntegerField(null=True, blank=True,
@@ -302,7 +303,7 @@ class Monster(models.Model):
     synonyms = models.CharField(
         null=True, max_length=255, blank=True,
         help_text="Other names used for this monster. If the name is 'python' a synonym might be 'snake'")
-    is_markdown = models.BooleanField(default=0, choices=MARKDOWN_CHOICES, verbose_name="Text format")
+    is_markdown = models.BooleanField(default=False, choices=MARKDOWN_CHOICES, verbose_name="Text format")
     description = models.TextField(max_length=1000)
     # The ID of an effect to display after the description
     effect = models.IntegerField(null=True, help_text="Used only with EDX conversions")
