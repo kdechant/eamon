@@ -282,10 +282,45 @@ test('free prisoners', () => {
 });
 
 test('letter', () => {
-  // TODO
-  // give to v
-  // give to duke
-  // test cf_defeated flag
+  game.data.old_man_rescued = true;
+  let letter = game.artifacts.get(8);
+  letter.moveToInventory();
+  game.player.moveToRoom(67); game.tick();
+  game.command_parser.run('give letter to velatha');
+  expectEffectSeen(40);
+  expect(game.data.letter_velatha).toBeTruthy();
+  // give to velatha
+  game.player.moveToRoom(3);
+  game.command_parser.run('n');
+  // velatha gives to duke
+  expectEffectSeen(41);
+  expectEffectSeen(42);
+  expect(game.data.letter_duke).toBeTruthy();
+  expect(game.monsters.get(4).reaction).toBe(Monster.RX_FRIEND);
+  expect(game.monsters.get(5).reaction).toBe(Monster.RX_FRIEND);
+  game.command_parser.run('s');
+  expectEffectSeen(43);
+  expect(game.monsters.get(6).reaction).toBe(Monster.RX_HOSTILE);
+  expect(game.monsters.get(7).reaction).toBe(Monster.RX_HOSTILE);
+  expect(game.monsters.get(3).reaction).toBe(Monster.RX_HOSTILE);
+
+  // after fight with inquisitors
+  game.monsters.all.filter(m => m.isHere() && m.special === 'inquisitor').forEach(m => m.injure(1000));
+  game.tick();
+  expect(game.data.cf_defeated).toBeTruthy();
+  expect(game.artifacts.get(5).room_id).toBeNull();
+  expectEffectSeen(44);
+  expectEffectSeen(45);
   // change everyone's talk message
+  expect(game.monsters.get(9).data.talk).toBe(299);
+
+  // old man / standing stones
+  expectEffectSeen(46);
+  expect(game.monsters.get(14).room_id).toBe(46);
+
   // go to old man at standing stones
+  game.player.moveToRoom(46); game.tick();
+  expectEffectSeen(48);
+  expect(game.player.hasArtifact(6));
+
 });

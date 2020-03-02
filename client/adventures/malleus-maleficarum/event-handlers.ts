@@ -9,7 +9,7 @@ declare var game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function (arg: string) {
     // monster talk effects
     game.monsters.get(1).data.talk = 1;  // maya
     // most monsters have a talk effect 200 + id
@@ -29,9 +29,12 @@ export var event_handlers = {
       fine_due: false,
       jailbreak: false,
       house: false,
-      maya_letter: false,
+      letter_duke: false,
+      letter_maya: false,
+      letter_velatha: false,
       maya_sees_orb: false,
-      // talia: false
+      old_man_rescued: false,
+      given_ring: false,
     };
 
     // monster combat effects and spells - TODO
@@ -40,6 +43,8 @@ export var event_handlers = {
     for (let id of [28, 32, 33, 34, 35, 36]) {
       game.artifacts.get(id).data.for_sale = true;
     }
+    // no teleport into jail (22-30), safe house (67-68), or castle (51-54)
+    game.data.no_teleport_rooms = [22, 23, 24, 25, 26, 27, 28, 29, 30, 51, 52, 53, 54, 67, 68];
   },
 
   //region combat
@@ -54,7 +59,7 @@ export var event_handlers = {
 
   "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
     // shambling mound/assassin vine
-    if (attacker.special === 'plant' && game.diceRoll(1,2) > 1) {
+    if (attacker.special === 'plant' && game.diceRoll(1, 2) > 1) {
       // engulfs its target
       let name = defender.id === Monster.PLAYER ? 'you' : defender.name;
       if (attacker.id === 19) {
@@ -74,7 +79,7 @@ export var event_handlers = {
     return defender.data.engulfed === attacker.id ? 100 : odds;
   },
 
-  "attackMonster": function(arg: string, target: Monster) {
+  "attackMonster": function (arg: string, target: Monster) {
     if (target.reaction !== Monster.RX_HOSTILE) {
       // soldiers and duke
       if (game.data.cf_defeated) {
@@ -96,16 +101,27 @@ export var event_handlers = {
     return true;
   },
 
-  "afterDeath": function(monster: Monster) {
+  "afterDeath": function (monster: Monster) {
     // free anyone engulfed by the dying monster
     game.monsters.all.filter(m => m.data.engulfed === monster.id)
       .forEach(m => {
         m.data.engulfed = false;
         m.status_message = '';
       });
+
+    // if all inquisitors are dead, and you gave the duke the letter
+    // console.log("inquisitors")
+    // if (game.data.letter_duke && !game.data.cf_defeated) {
+    //   let inquisitors = game.monsters.all.filter(m => m.special === 'inquisitor');
+    //   console.log(inquisitors)
+    //   if (inquisitors.every(m => m.status === Monster.STATUS_DEAD)) {
+    //     console.log("got 'em")
+    //     game.data.cf_defeated = true;
+
+    // }
   },
 
-  "flee": function() {
+  "flee": function () {
     if (game.player.data.engulfed) {
       let m = game.monsters.get(game.player.data.engulfed);
       game.history.write(`You are held fast by the ${m.name} and cannot flee!`, "emphasis");
@@ -120,9 +136,19 @@ export var event_handlers = {
     // stuff that happens after room desc is shown, but before monster/artifacts
 
     // old man, after fight
-    if (game.monsters.get(14).isHere() && !game.monsters.get(15).isHere()) {
+    let old_man = game.monsters.get(14);
+    if (old_man.isHere() && !game.monsters.get(15).isHere() && !game.data.old_man_rescued) {
       game.effects.print(12);
-      game.monsters.get(14).destroy();
+      old_man.destroy();
+      game.data.old_man_rescued = true;
+    }
+    // old man, at standing stones
+    if (old_man.isHere() && game.data.cf_defeated && !game.data.given_ring) {
+      game.effects.print(48);
+      let ring = game.artifacts.get(6);
+      game.history.write("You get: ${ring.name}");
+      ring.moveToInventory();
+      game.data.given_ring = true;
     }
     // magic weapon
     if (inquisitorIsHere() && game.player.weapon && game.player.weapon.type === Artifact.TYPE_MAGIC_WEAPON) {
@@ -133,8 +159,11 @@ export var event_handlers = {
     }
   },
 
-  "endTurn2": function() {
+  "endTurn2": function () {
     let maya = game.monsters.get(1);
+    let duke = game.monsters.get(4);
+    let inquisitor = game.monsters.get(6);
+
     // grandmother's house
     if (game.player.room_id === 35 && !game.data.house) {
       game.data.house = true;
@@ -160,8 +189,7 @@ export var event_handlers = {
     }
 
     // ainha / maya
-    if (game.monsters.get(1).isHere() && game.monsters.get(33).isHere() &&
-        !game.data.ainha_maya) {
+    if (maya.isHere() && game.monsters.get(33).isHere() && !game.data.ainha_maya) {
       game.data.ainha_maya = true;
       game.effects.print(23);
     }
@@ -170,10 +198,9 @@ export var event_handlers = {
     if (orb.room_id === game.rooms.current_room.id) {
       // orb is on the ground
       game.effects.print(37);
-      let inquisitor = game.monsters.get(6);
       game.monsters.visible.filter(m => isCobaltFront(m)).forEach(m => {
-          m.moveToRoom(inquisitor.room_id);
-          m.reaction = Monster.RX_NEUTRAL;
+        m.moveToRoom(inquisitor.room_id);
+        m.reaction = Monster.RX_NEUTRAL;
       });
     }
     if (game.player.hasArtifact(orb.id) && cobaltFrontIsHere()) {
@@ -187,6 +214,59 @@ export var event_handlers = {
     if (game.monsters.get(34).isHere() && game.player.room_id !== 30) {
       game.effects.print(26);
       game.monsters.get(34).destroy();
+    }
+
+    // mages confront duke
+    if (game.data.letter_velatha && !game.data.letter_duke &&
+        game.monsters.get(30).isHere() && duke.isHere()) {
+      game.effects.print(41);
+      game.data.letter_duke = true;
+      game.monsters.get(4).reaction = Monster.RX_FRIEND;
+      game.monsters.get(5).reaction = Monster.RX_FRIEND;
+    }
+
+    // duke vs. inquisitors
+    if (game.data.letter_duke && duke.isHere() && inquisitor.isHere()) {
+      game.effects.print(43);
+      game.monsters.all.filter(isCobaltFront).forEach(m => m.reaction = Monster.RX_HOSTILE);
+    }
+
+    // after inquisitors defeated
+    if (game.data.letter_duke && !game.data.cf_defeated &&
+        !inquisitor.room_id && !game.monsters.get(7).room_id) {
+      game.data.cf_defeated = true;
+      game.effects.print(44);
+      if (duke.isHere()) {
+        game.effects.print(45);
+        game.player.gold += 1000;
+      } else {
+        game.effects.print(49);
+      }
+      // mages take the magic stuff
+      game.artifacts.get(3).destroy();
+      game.artifacts.get(4).destroy();
+      game.artifacts.get(5).destroy();
+      game.monsters.all.filter(m => m.status === Monster.STATUS_ALIVE && [2, 30, 31, 32].indexOf(m.id) !== -1).forEach(m => {
+        m.moveToRoom(51);
+        m.reaction = Monster.RX_NEUTRAL;
+      });
+      // duke and guards move back to palace
+      game.monsters.all.filter(m => m.status === Monster.STATUS_ALIVE && m.special === 'virrat').forEach(m => {
+        m.moveToRoom(4);
+        m.reaction = Monster.RX_NEUTRAL;
+      });
+      // cobalt front gets the boot
+      game.monsters.all.filter(isCobaltFront).forEach(m => m.destroy());
+      game.monsters.all.filter(m => !isCobaltFront(m)).forEach(m => m.data.talk = 299);
+      // the old man's ring
+      if (game.data.old_man_rescued) {
+        game.monsters.get(14).moveToRoom(46);
+        game.effects.print(46);
+      } else {
+        // if player hasn't seen old man and thugs yet, they just go away (and no ring!)
+        game.monsters.get(14).destroy();
+        game.monsters.get(15).destroy();
+      }
     }
 
     // display items for sale
@@ -207,7 +287,7 @@ export var event_handlers = {
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
     if (artifact && artifact.id === 16) {
-      // vault door
+      // safe house door
       game.modal.show(`A slit slides open, and a voice says, "What's the password?"`, function(value) {
         if (value.toLowerCase() === 'owlfeather') {
           game.history.write("The door opens!", "success");
@@ -234,6 +314,18 @@ export var event_handlers = {
       }
       return false;
     }
+    // letter
+    if (artifact.id === 8 && recipient.id === 30) {
+      // velatha
+      game.effects.print(40);
+      game.data.letter_velatha = true;
+      game.monsters.get(30).reaction = Monster.RX_FRIEND;
+      game.monsters.get(31).reaction = Monster.RX_FRIEND;
+      return false;
+    } else if (artifact.id === 8 && recipient.id === 4) {
+      game.effects.print(47);
+      return false;
+    }
     return true;
   },
 
@@ -245,6 +337,13 @@ export var event_handlers = {
           m.moveToRoom(inquisitor.room_id);
           m.reaction = Monster.RX_NEUTRAL;
       });
+    } else if (artifact.id === 8) {
+      if (recipient.id === 30 && !game.data.velatha_letter) {
+        game.effects.print(40);
+        game.monsters.get(30).reaction = Monster.RX_FRIEND;
+        game.monsters.get(31).reaction = Monster.RX_FRIEND;
+        game.monsters.get(33).reaction = Monster.RX_FRIEND;
+      }
     }
   },
 
@@ -288,24 +387,7 @@ export var event_handlers = {
   },
 
   "beforeSpell": function(spell_name: string) {
-    // get arrested
-    if (cobaltFrontIsHere()) {
-      if (game.data.jailbreak) {
-        soldiersAttack();
-        return true;
-      } else {
-        game.effects.print(27);
-        goToJail();
-      }
-      // maya
-      // if (game.monsters.get(1).isHere()) {
-      //   if (game.data.talia) {
-      //     game.monsters.get(1).moveToRoom(67);
-      //   }
-      // }
-      return false;
-    }
-    return true;
+    return !checkIfCaughtUsingMagic();
   },
 
   "use": function(arg, artifact) {
@@ -344,13 +426,17 @@ export var event_handlers = {
     }
 
     if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
+      game.history.write("The air crackles around you, and nearby animals scatter in all directions. Other than your hair standing on end, nothing seems to have happened.");
     } else if (roll <= 75) {
       // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      game.history.write("Your vision wavers. You find yourself standing, disoriented, somewere far from where you just were.");
+      let room = game.rooms.getRandom(game.data.no_teleport_rooms);
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
+
+      // you can get arrested for teleporting into a room with cf soldiers in it
+      checkIfCaughtUsingMagic();
+
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
@@ -375,6 +461,19 @@ export function inquisitorIsHere(include_hostile = false) {
     return game.monsters.visible.some(m => m.special === 'inquisitor');
   }
   return game.monsters.visible.some(m => m.special === 'inquisitor' && m.reaction !== Monster.RX_HOSTILE);
+}
+
+function checkIfCaughtUsingMagic() {
+  if (cobaltFrontIsHere()) {
+    if (game.data.jailbreak) {
+      soldiersAttack();
+    } else {
+      game.effects.print(27);
+      goToJail();
+    }
+    return true;
+  }
+  return false;
 }
 
 function goToJail() {

@@ -53,6 +53,12 @@ custom_commands.push({
         return;
       }
 
+      // no one has much to say after you win
+      if (game.data.cf_defeated) {
+        game.effects.print(299);
+        return;
+      }
+
       // generic talk logic
       if (monster.data.talk) {
         game.effects.print(monster.data.talk);
@@ -63,7 +69,6 @@ custom_commands.push({
 
       // special stuff that happens when certain monsters talk
       if (monster.id === 2) {  // talia
-        // game.data.talia = true;
         game.monsters.get(1).data.talk = 3;
       } else if (monster.id === 30) {  // velatha
         if (!game.data.orb_quest) {
