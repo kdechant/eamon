@@ -32,6 +32,8 @@ export class Artifact extends GameObject {
   static ARMOR_TYPE_ARMOR: number = 0;
   static ARMOR_TYPE_SHIELD: number = 1;
   static ARMOR_TYPE_HELMET: number = 2;
+  static ARMOR_TYPE_GLOVES: number = 3;
+  static ARMOR_TYPE_RING: number = 4;
 
   // data properties
   room_id: number; // if on the ground, which room
@@ -520,6 +522,10 @@ export class Artifact extends GameObject {
           return "shield";
         case Artifact.ARMOR_TYPE_HELMET:
           return "helmet";
+        case Artifact.ARMOR_TYPE_GLOVES:
+          return "gloves";
+        case Artifact.ARMOR_TYPE_RING:
+          return "ring";
       }
     } else {
       return "treasure";
@@ -535,35 +541,24 @@ export class Artifact extends GameObject {
       case Artifact.TYPE_MAGIC_WEAPON:
         let t: string = "";
         switch (this.weapon_type) {
-          case 1:
-            t = "axe";
-            break;
-          case 2:
-            t = "bow";
-            break;
           case 3:
             t = "hammer";
             break;
           case 4:
             t = "upg_spear";  // there is no default spear in the icon set
             break;
-          case 5:
-            t = "sword";
-            break;
+          default:
+            t = this.getTypeName();
         }
-
         if (this.type === Artifact.TYPE_MAGIC_WEAPON && this.weapon_type !== 4) {
           t = t + '2';
         }
         return t;
       case Artifact.TYPE_WEARABLE:
-        switch (this.armor_type) {
-          case Artifact.ARMOR_TYPE_ARMOR:
-            return this.armor_class < 3 ? "leather" : "armor";
-          case Artifact.ARMOR_TYPE_SHIELD:
-            return "shield";
-          case Artifact.ARMOR_TYPE_HELMET:
-            return "helmet";
+        if (this.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
+          return this.armor_class < 3 ? "leather" : "armor";
+        } else {
+          return this.getTypeName();
         }
       case Artifact.TYPE_CONTAINER:
         return "backpack";

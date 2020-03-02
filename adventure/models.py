@@ -45,6 +45,8 @@ ARMOR_TYPES = (
     (0, 'Armor'),
     (1, 'Shield'),
     (2, 'Helmet'),
+    (3, 'Gloves'),
+    (4, 'Ring'),
 )
 MARKDOWN_CHOICES = [(False, "Plain text"), (True, "Markdown")]
 
@@ -428,6 +430,8 @@ class PlayerArtifact(models.Model):
         (0, 'Armor'),
         (1, 'Shield'),  # different in EDX - see manual
         (2, 'Helmet'),
+        (3, 'Gloves'),
+        (4, 'Ring'),
     )
     HANDS = (
         (1, 'One-handed'),

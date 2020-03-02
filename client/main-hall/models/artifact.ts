@@ -26,6 +26,8 @@ export default class Artifact extends GameObject {
   static ARMOR_TYPE_ARMOR: number = 0;
   static ARMOR_TYPE_SHIELD: number = 1;
   static ARMOR_TYPE_HELMET: number = 2;
+  static ARMOR_TYPE_GLOVES: number = 3;
+  static ARMOR_TYPE_RING: number = 4;
 
   // data properties
   room_id: number; // if on the ground, which room
@@ -109,6 +111,10 @@ export default class Artifact extends GameObject {
           return "shield";
         case Artifact.ARMOR_TYPE_HELMET:
           return "helmet";
+        case Artifact.ARMOR_TYPE_GLOVES:
+          return "gloves";
+        case Artifact.ARMOR_TYPE_RING:
+          return "ring";
       }
     }
     return "treasure";
@@ -145,15 +151,11 @@ export default class Artifact extends GameObject {
         }
         return t;
       case Artifact.TYPE_WEARABLE:
-        switch (this.armor_type) {
-          case Artifact.ARMOR_TYPE_ARMOR:
-            return this.armor_class < 3 ? "leather" : "armor";
-          case Artifact.ARMOR_TYPE_SHIELD:
-            return "shield";
-          case Artifact.ARMOR_TYPE_HELMET:
-            return "helmet";
+        if (this.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
+          return this.armor_class < 3 ? "leather" : "armor";
+        } else {
+          return this.getTypeName();
         }
-        break;
       case Artifact.TYPE_CONTAINER:
         return "backpack";
       case Artifact.TYPE_GOLD:
@@ -165,7 +167,6 @@ export default class Artifact extends GameObject {
       default:
         return "tools";
     }
-    return "backpack"; // default value in case we don't know what it is
   }
 
   /**
