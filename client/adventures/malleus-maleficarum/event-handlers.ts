@@ -5,11 +5,13 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare var game: Game;
 
 export var event_handlers = {
 
   "start": function (arg: string) {
+    game.show_exits = true;
+
     // monster talk effects
     game.monsters.get(1).data.talk = 1;  // maya
     // most monsters have a talk effect 200 + id
@@ -32,6 +34,7 @@ export var event_handlers = {
       letter_duke: false,
       letter_maya: false,
       letter_velatha: false,
+      found_orb: false,
       maya_sees_orb: false,
       old_man_rescued: false,
       given_ring: false,
@@ -59,7 +62,7 @@ export var event_handlers = {
 
   "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
     // shambling mound/assassin vine
-    if (attacker.special === 'plant' && game.diceRoll(1, 2) > 1) {
+    if (attacker.special === 'plant' && !defender.data.engulfed && game.diceRoll(1, 2) > 1) {
       // engulfs its target
       let name = defender.id === Monster.PLAYER ? 'you' : defender.name;
       if (attacker.id === 19) {
@@ -70,6 +73,18 @@ export var event_handlers = {
       defender.data.engulfed = attacker.id;
       if (defender.id === Monster.PLAYER) {
         defender.status_message = 'constricted';
+      }
+    }
+    // chance to break free if engulfed
+    if (attacker.data.engulfed === defender.id && game.diceRoll(1, 2) > 1) {
+      breakFree(attacker);
+    }
+    // thugs
+    console.log(defender);
+    if (defender.id === 15) {
+      if (defender.children.some(m => m.damage > m.hardiness / 2)) {
+        game.effects.print(50);
+        defender.destroy();
       }
     }
   },
@@ -103,22 +118,18 @@ export var event_handlers = {
 
   "afterDeath": function (monster: Monster) {
     // free anyone engulfed by the dying monster
-    game.monsters.all.filter(m => m.data.engulfed === monster.id)
-      .forEach(m => {
-        m.data.engulfed = false;
-        m.status_message = '';
-      });
+    game.monsters.all.filter(m => m.data.engulfed === monster.id).forEach(breakFree);
+  },
 
-    // if all inquisitors are dead, and you gave the duke the letter
-    // console.log("inquisitors")
-    // if (game.data.letter_duke && !game.data.cf_defeated) {
-    //   let inquisitors = game.monsters.all.filter(m => m.special === 'inquisitor');
-    //   console.log(inquisitors)
-    //   if (inquisitors.every(m => m.status === Monster.STATUS_DEAD)) {
-    //     console.log("got 'em")
-    //     game.data.cf_defeated = true;
-
-    // }
+  "attackArtifact": function(arg: string, target: Artifact) {
+    if (target.id === 10 || target.id === 11) {
+      game.history.write("The vines seem to grow back as fast as you cut them.");
+      return false;
+    } else if (target.id === 23 || target.id === 24) {
+      game.history.write("The boards are too tough. It would take hours to chop through them, and you would create a terrible racket.");
+      return false;
+    }
+    return true;
   },
 
   "flee": function () {
@@ -131,6 +142,16 @@ export var event_handlers = {
   },
 
   //endregion
+
+  "eat": function(arg: string, artifact: Artifact) {
+    if (artifact) {
+      if (artifact.id === 40) {
+        game.history.write("Sorry, I'm not hungry.");
+        return false;
+      }
+    }
+    return true;
+  },
 
   "endTurn1": function () {
     // stuff that happens after room desc is shown, but before monster/artifacts
@@ -149,13 +170,7 @@ export var event_handlers = {
       game.history.write("You get: ${ring.name}");
       ring.moveToInventory();
       game.data.given_ring = true;
-    }
-    // magic weapon
-    if (inquisitorIsHere() && game.player.weapon && game.player.weapon.type === Artifact.TYPE_MAGIC_WEAPON) {
-      game.effects.print(13);
-      game.player.weapon.moveToRoom(24);
-      game.player.updateInventory();
-      game.data.fine_due = true;
+      game.monsters.get(1).data.talk = 9;
     }
   },
 
@@ -163,6 +178,15 @@ export var event_handlers = {
     let maya = game.monsters.get(1);
     let duke = game.monsters.get(4);
     let inquisitor = game.monsters.get(6);
+
+    // magic weapons confiscated
+    if (inquisitorIsHere() && game.player.weapon && game.player.weapon.type === Artifact.TYPE_MAGIC_WEAPON) {
+      game.effects.get(13).replacements = {'{weapon name}': game.player.weapon.name};
+      game.effects.print(13);
+      game.player.weapon.moveToRoom(24);
+      game.player.updateInventory();
+      game.data.fine_due = true;
+    }
 
     // grandmother's house
     if (game.player.room_id === 35 && !game.data.house) {
@@ -195,19 +219,30 @@ export var event_handlers = {
     }
 
     // soldiers / orb
-    if (orb.room_id === game.rooms.current_room.id) {
-      // orb is on the ground
-      game.effects.print(37);
-      game.monsters.visible.filter(m => isCobaltFront(m)).forEach(m => {
-        m.moveToRoom(inquisitor.room_id);
-        m.reaction = Monster.RX_NEUTRAL;
-      });
+    if (cobaltFrontIsHere()) {
+      if (orb.room_id === game.rooms.current_room.id) {
+        // orb is on the ground
+        game.effects.print(37);
+        orb.moveToInventory(6);
+        game.monsters.visible.filter(m => isCobaltFront(m)).forEach(m => {
+          m.moveToRoom(inquisitor.room_id);
+          m.reaction = Monster.RX_NEUTRAL;
+        });
+      }
+      if (game.player.hasArtifact(orb.id)) {
+        game.effects.print(15);
+        game.monsters.visible.filter(m => isCobaltFront(m)).forEach(
+          m => m.reaction = Monster.RX_HOSTILE
+        );
+      }
     }
-    if (game.player.hasArtifact(orb.id) && cobaltFrontIsHere()) {
-      game.effects.print(15);
-      game.monsters.visible.filter(m => isCobaltFront(m)).forEach(
-        m => m.reaction = Monster.RX_HOSTILE
-      );
+
+    // velatha / orb
+    let bag = game.artifacts.get(4);
+    if (game.monsters.get(30).isHere() && (game.player.hasArtifact(5) || hasOrbInBag())) {
+      game.effects.print(22);
+      game.monsters.get(30).data.talk = 22;
+      maya.data.talk = 7;
     }
 
     // old mage (after escaping prison)
@@ -226,7 +261,7 @@ export var event_handlers = {
     }
 
     // duke vs. inquisitors
-    if (game.data.letter_duke && duke.isHere() && inquisitor.isHere()) {
+    if (game.data.letter_duke && duke.isHere() && inquisitor.isHere() && inquisitor.reaction !== Monster.RX_HOSTILE) {
       game.effects.print(43);
       game.monsters.all.filter(isCobaltFront).forEach(m => m.reaction = Monster.RX_HOSTILE);
     }
@@ -258,10 +293,12 @@ export var event_handlers = {
       // cobalt front gets the boot
       game.monsters.all.filter(isCobaltFront).forEach(m => m.destroy());
       game.monsters.all.filter(m => !isCobaltFront(m)).forEach(m => m.data.talk = 299);
+      maya.data.talk = 9;
       // the old man's ring
       if (game.data.old_man_rescued) {
         game.monsters.get(14).moveToRoom(46);
         game.effects.print(46);
+        maya.data.talk = 10;
       } else {
         // if player hasn't seen old man and thugs yet, they just go away (and no ring!)
         game.monsters.get(14).destroy();
@@ -270,11 +307,19 @@ export var event_handlers = {
     }
 
     // display items for sale
-    let for_sale = game.artifacts.all.filter(a => a.data.for_sale && game.monsters.get(a.monster_id).isHere());
+    let for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
     if (for_sale.length) {
       game.history.write("Items for sale here: " + for_sale.map(a => a.name).join(', '));
     }
 
+  },
+
+  "afterGet": function(arg, artifact) {
+    if (artifact && artifact.id == 5) {
+      game.data.found_orb = true;
+      game.monsters.get(30).data.talk = 22;
+    }
+    return true;
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
@@ -349,16 +394,23 @@ export var event_handlers = {
 
   "say": function(phrase) {
     phrase = phrase.toLowerCase();
-    if (phrase === 'irkm desmet daem' && game.player.hasArtifact(5)) {
-      if (game.artifacts.get(24).isHere() || game.artifacts.get(23).isHere()) {
-        game.effects.print(21);
-        game.artifacts.get(23).destroy();
-        game.artifacts.get(24).destroy();
-        game.artifacts.get(37).moveToRoom(39);
-        game.artifacts.get(38).moveToRoom(22);
-        game.data.jailbreak = true;
-      } else {
-        game.effects.print(20);
+    if (phrase === 'irkm desmet daem') {
+      if (game.player.hasArtifact(5)) {
+        if (game.artifacts.get(24).isHere() || game.artifacts.get(23).isHere()) {
+          game.effects.print(21);
+          game.artifacts.get(23).destroy();
+          game.artifacts.get(24).destroy();
+          game.artifacts.get(37).moveToRoom(39);
+          game.artifacts.get(38).moveToRoom(22);
+          game.data.jailbreak = true;
+        } else if (game.player.room_id >= 51 && game.player.room_id <= 54) {
+          game.effects.print(51);
+          game.player.injure(game.diceRoll(1, 4), true);
+        } else {
+          game.effects.print(20);
+        }
+      } else if (hasOrbInBag()) {
+        game.history.write("The metal bag blocks the magic!");
       }
     }
   },
@@ -393,19 +445,25 @@ export var event_handlers = {
   "use": function(arg, artifact) {
     switch (artifact.id) {
       case 3:  // wand
-        let plant_monsters = game.monsters.all.filter(m => m.special === 'plant');
+        let defoliated = false;
+        let plant_monsters = game.monsters.all.filter(m => m.special === 'plant' && m.isHere());
         if (plant_monsters.length) {
-          plant_monsters.forEach(m => m.injure(game.diceRoll(1, 10)));
+          game.history.write("A ray of brown light shoots from the Wand of Defoliation!", 'special');
+          plant_monsters.forEach(m => m.injure(game.diceRoll(3, 3), true));
+          defoliated = true;
         }
         if (game.artifacts.get(10).isHere()) {
           game.effects.print(17);
           game.artifacts.get(10).destroy();
+          defoliated = true;
         }
         if (game.artifacts.get(11).isHere() && !game.data.defoliated) {
           game.effects.print(18);
           game.artifacts.get(5).moveToRoom();
           game.data.defoliated = true;
-        } else {
+          defoliated = true;
+        }
+        if (!defoliated) {
           game.history.write("Some nearby weeds shrivel and die.");
         }
         break;
@@ -422,6 +480,7 @@ export var event_handlers = {
     if (game.data.arrested && game.player.room_id === 30) {
       game.effects.print(25);
       game.rooms.get(30).createExit('u', 36);
+      game.rooms.get(36).createExit('d', 30);
       return;
     }
 
@@ -478,6 +537,9 @@ function checkIfCaughtUsingMagic() {
 
 function goToJail() {
   game.player.inventory.forEach(a => a.moveToRoom(24));
+  let sack = game.artifacts.get(39);
+  sack.value = game.player.gold;
+  sack.moveToRoom(24);
   game.player.updateInventory();
   game.player.moveToRoom(30, false);
   game.data.arrested = true;
@@ -488,4 +550,21 @@ function soldiersAttack() {
   game.monsters.all
     .filter(m => isCobaltFront(m) || m.special === 'virrat')
     .forEach(m => m.reaction = Monster.RX_HOSTILE);
+}
+
+/**
+ * Break free of the engulfing monster
+ * @param attacker
+ */
+function breakFree(monster: Monster) {
+  if (monster.data.engulfed) {
+    const captor = game.monsters.get(monster.data.engulfed);
+    game.history.write(`${monster.name} breaks free of the ${captor.name}!`)
+    monster.data.engulfed = false;
+    monster.status_message = '';
+  }
+}
+
+function hasOrbInBag() {
+  return game.player.hasArtifact(4) && game.artifacts.get(4).contains(5);
 }

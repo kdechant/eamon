@@ -110,8 +110,8 @@ export class Room extends Loadable {
    */
   public getVisibleExits(): RoomExit[] {
     let game = Game.getInstance();
-    return this.exits.filter(r =>
-      !r.door_id || !game.artifacts.get(r.door_id).hidden
+    return this.exits.filter(r => r.room_to !== 0 &&
+      (!r.door_id || !game.artifacts.get(r.door_id).hidden)
     );
   }
 

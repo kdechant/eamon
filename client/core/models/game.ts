@@ -14,6 +14,7 @@ import {CommandParser} from "../models/command-parser";
 import EventHandler from "../commands/event-handler";
 import {ILoggerService, DummyLoggerService} from "../utils/logger.interface";
 import {getAxios} from "../../main-hall/utils/api";
+import * as React from "react";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game;
@@ -178,6 +179,12 @@ export default class Game {
    * Name of the money in this adventure
    */
   money_name: string = 'gold piece';
+
+  /**
+   * Whether to automatically show room exits next to the description in the
+   * history window. (Opt-in by setting this in start event handler)
+   */
+  show_exits: boolean = false;
 
   /**
    * Messages that are displayed during the exit phase, after the sale of treasure
@@ -500,9 +507,12 @@ export default class Game {
     } else {
       this.history.write(this.rooms.current_room.name);
       if (Game.getInstance().data['bort']) {
-        this.history.append(" (" + this.rooms.current_room.id + ")");
+        this.history.append(` (${this.rooms.current_room.id})`);
       }
-
+      if (this.show_exits) {
+        const visible_exits = this.rooms.current_room.getVisibleExits().map(x => x.direction).join('/').toUpperCase();
+        this.history.append(` (${visible_exits})`);
+      }
       if (!this.rooms.current_room.seen) {
         this.rooms.current_room.show_description();
         this.rooms.current_room.seen = true;

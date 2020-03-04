@@ -27,7 +27,7 @@ custom_commands.push({
     }
 
     game.modal.confirm(`That costs ${artifact.value} gold pieces. Do you want to buy it?`, () => {
-      game.history.write(`You buy the ${artifact.name}`);
+      game.history.write(`You buy the ${artifact.name}.`);
       artifact.showDescription();
       artifact.moveToInventory();
       game.player.gold -= artifact.value;
@@ -62,8 +62,9 @@ custom_commands.push({
       // generic talk logic
       if (monster.data.talk) {
         game.effects.print(monster.data.talk);
+      } else if (monster.parent && monster.parent.data.talk) {
+        game.effects.print(monster.parent.data.talk);
       } else {
-        // TODO: handle group monsters
         game.history.write(`${monster.name} has nothing to say.`)
       }
 
@@ -74,6 +75,9 @@ custom_commands.push({
         if (!game.data.orb_quest) {
           game.data.orb_quest = true;
           game.monsters.get(1).data.talk = 5;
+          let bag = game.artifacts.get(4);
+          bag.moveToInventory();
+          game.history.write("You get: ${bag.name}");
         }
       } else if (monster.id === 32) {  // zinnah
         game.artifacts.get(3).moveToRoom(9);

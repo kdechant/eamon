@@ -626,6 +626,7 @@ export class WearCommand implements BaseCommand {
           if (artifact.armor_type === Artifact.ARMOR_TYPE_HELMET && game.player.isUsingHelmet()) {
             throw new CommandException("Try removing your other helmet first.");
           }
+          // TODO: gloves + rings
           game.player.wear(artifact);
           game.history.write("You put on the " + artifact.name + ".");
         } else {
@@ -1545,6 +1546,7 @@ export class AccioCommand implements BaseCommand {
       if (!a.seen)
         a.showDescription();
       a.moveToInventory();
+      a.data.for_sale = false;
       game.player.updateInventory();
     }
   }

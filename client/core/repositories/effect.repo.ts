@@ -72,13 +72,19 @@ export default class EffectRepository {
     let game = Game.getInstance();
     let ef = this.get(id);
     if (ef) {
+      let text = ef.text;
+      if (ef.replacements) {
+        for (const key in ef.replacements) {
+          text = text.replace(key, ef.replacements[key]);
+        }
+      }
       if (inline) {
         // print on the same line as the last effect
-        game.history.append(" " + ef.text);
+        game.history.append(" " + text);
       } else {
         // print as a new paragraph
         let final_style = style || ef.style || "normal";
-        game.history.write(ef.text, final_style, ef.is_markdown);
+        game.history.write(text, final_style, ef.is_markdown);
       }
       if (ef.next !== null) {
         this.print(ef.next, style);

@@ -4,7 +4,7 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {Artifact} from "../../core/models/artifact";
-import {initLiveGame, expectEffectSeen, expectEffectNotSeen} from "../../core/utils/testing";
+import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttack} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -55,7 +55,16 @@ test("virrat city", () => {
 });
 
 test('save old man', () => {
-  // TODO
+  game.player.moveToRoom(15); game.tick();
+  game.command_parser.run('e');
+  game.mock_random_numbers = playerAttack(true, 8);
+  game.command_parser.run('attack thug');
+  expectEffectSeen(50);
+  expect(game.monsters.get(15).room_id).toBeNull();
+  expect(game.monsters.get(15).children.every(m => m.room_id === null)).toBeTruthy();
+  expectEffectSeen(12);
+  expect(game.monsters.get(14).isHere()).toBeFalsy();
+  expect(game.data.old_man_rescued).toBeTruthy();
 });
 
 test('buy stuff', () => {
@@ -129,7 +138,7 @@ test('swamp thing', () => {
   game.mock_random_numbers = [0, 2, 10, 2, 2];
   game.command_parser.run('look');
   expect(maya.data.engulfed).toBe(19);
-  // kill it with fire!
+  // kill it and be free
   game.mock_random_numbers = [10, 100];
   game.command_parser.run('attack mound');
   expect(game.monsters.get(19).isHere()).toBeFalsy();
@@ -258,6 +267,9 @@ test("orb", () => {
   expectEffectSeen(19);
   game.command_parser.run('say irkm desmet daem');
   expectEffectSeen(20);
+  game.player.moveToRoom(52); game.tick();
+  game.command_parser.run('say irkm desmet daem');
+  expectEffectSeen(51);
   game.player.moveToRoom(39); game.tick();
   game.command_parser.run('say irkm desmet daem');
   expectEffectSeen(21);

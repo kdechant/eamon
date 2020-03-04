@@ -82,12 +82,44 @@ export function expectEffectNotSeen(id) {
  * @param Number damage  The amount of damage the attack should do (before armor)
  * @param Number[] special  Results of any dice rolls in the attackDamageAfter event handler
  */
-export function monsterAttack(attacker, defender, hit, damage, special) {
-  game.mock_random_numbers = [
-    hit ? 5 : 96,
+// export function monsterAttack(attacker, defender, hit, damage, special) {
+//   game.mock_random_numbers = [
+//     hit ? 5 : 96,
+//     damage,
+//     ...special
+//   ];
+//   attacker.attack(defender);
+// }
+
+/**
+ * Creates mock random numbers for the player attacking. The target is
+ * specified
+ * @param boolean hit  Whether or not the player should hit the target
+ * @param Number damage  The amount of damage the attack should do (before armor)
+ * @param special  Results of any dice rolls in the attackDamageAfter event handler
+ */
+export function playerAttack(hit: boolean, damage: number, special: number[] = []) {
+  return [
+    hit ? 6 : 96,  // 6 = non-critical hit, 96 = non-fumble miss
     damage,
     ...special
-  ];
-  attacker.attack(defender);
+  ]
 }
 
+// /**
+//  * Creates mock random numbers for an NPC attack
+//  * @param boolean flee  Whether or not the NPC should flee
+//  * @param Number target  The ID of the monster to attack
+//  * @param boolean hit  Whether or not the NPC should hit
+//  * @param Number damage  The amount of damage the attack should do (before armor)
+//  * @param special  Results of any dice rolls in the attackDamageAfter event handler
+//  */
+// export function monsterAttack(flee, target, hit, damage, special) {
+//   // Note: to mock non-player fighting, use the following mock numbers:
+//   // [flee chance, target, hit roll, damage roll]
+//   // For player attack, you only need:
+//   // [hit roll, damage roll]
+//   // If there is an attackDamageAfter e.h., add any numbers for it to the
+//   // end of the array.
+//
+// }

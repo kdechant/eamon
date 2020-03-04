@@ -211,7 +211,6 @@ export class Monster extends GameObject {
    * @returns {boolean}
    */
   public checkCourage(following: boolean = false): boolean {
-    console.log('courage check');
     let fear = game.diceRoll(1, 100);
     let effective_courage = this.courage;
     if (this.damage > this.hardiness * 0.2) {
@@ -681,11 +680,9 @@ export class Monster extends GameObject {
     }
 
     // calculate hit, miss, or fumble
-    console.log('rolling hit');
     let hit_roll = game.diceRoll(1, 100);
     if (hit_roll <= odds || (can_critical && hit_roll <= 5)) {
       // hit
-      console.log('rolling damage');
       let damage = this.rollAttackDamage();
       let multiplier = 1;
       let ignore_armor = false;
@@ -942,7 +939,6 @@ export class Monster extends GameObject {
    * @returns Monster
    */
   public chooseTarget(): Monster {
-    console.log('choosing target');
     let monsters = [game.player].concat(game.monsters.visible);
     let targets: Monster[] = [];
     for (let m of monsters) {

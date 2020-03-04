@@ -11,5 +11,5 @@ export class Effect extends GameObject {
   style: string;
   next: number;  // another effect chained onto this one
   next_inline: number;  // a chained effect that is printed without a paragraph break
-
+  replacements: object;  // strings that will be replaced within the effect text
 }
