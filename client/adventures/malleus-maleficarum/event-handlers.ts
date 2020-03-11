@@ -80,7 +80,6 @@ export var event_handlers = {
       breakFree(attacker);
     }
     // thugs
-    console.log(defender);
     if (defender.id === 15) {
       if (defender.children.some(m => m.damage > m.hardiness / 2)) {
         game.effects.print(50);
@@ -258,6 +257,7 @@ export var event_handlers = {
       game.data.letter_duke = true;
       game.monsters.get(4).reaction = Monster.RX_FRIEND;
       game.monsters.get(5).reaction = Monster.RX_FRIEND;
+      game.monsters.get(5).children.forEach(c => c.reaction = Monster.RX_FRIEND);
     }
 
     // duke vs. inquisitors
@@ -284,11 +284,17 @@ export var event_handlers = {
       game.monsters.all.filter(m => m.status === Monster.STATUS_ALIVE && [2, 30, 31, 32].indexOf(m.id) !== -1).forEach(m => {
         m.moveToRoom(51);
         m.reaction = Monster.RX_NEUTRAL;
+        if (m.children) {
+          m.children.forEach(c => c.reaction = Monster.RX_NEUTRAL);
+        }
       });
       // duke and guards move back to palace
       game.monsters.all.filter(m => m.status === Monster.STATUS_ALIVE && m.special === 'virrat').forEach(m => {
         m.moveToRoom(4);
         m.reaction = Monster.RX_NEUTRAL;
+        if (m.children) {
+          m.children.forEach(c => c.reaction = Monster.RX_NEUTRAL);
+        }
       });
       // cobalt front gets the boot
       game.monsters.all.filter(isCobaltFront).forEach(m => m.destroy());
@@ -359,15 +365,8 @@ export var event_handlers = {
       }
       return false;
     }
-    // letter
-    if (artifact.id === 8 && recipient.id === 30) {
-      // velatha
-      game.effects.print(40);
-      game.data.letter_velatha = true;
-      game.monsters.get(30).reaction = Monster.RX_FRIEND;
-      game.monsters.get(31).reaction = Monster.RX_FRIEND;
-      return false;
-    } else if (artifact.id === 8 && recipient.id === 4) {
+    // letter / Duke
+    if (artifact.id === 8 && recipient.id === 4) {
       game.effects.print(47);
       return false;
     }
@@ -385,8 +384,10 @@ export var event_handlers = {
     } else if (artifact.id === 8) {
       if (recipient.id === 30 && !game.data.velatha_letter) {
         game.effects.print(40);
+        game.data.letter_velatha = true;
         game.monsters.get(30).reaction = Monster.RX_FRIEND;
         game.monsters.get(31).reaction = Monster.RX_FRIEND;
+        game.monsters.get(31).children.forEach(c => c.reaction = Monster.RX_FRIEND);
         game.monsters.get(33).reaction = Monster.RX_FRIEND;
       }
     }

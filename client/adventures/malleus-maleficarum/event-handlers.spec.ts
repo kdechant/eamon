@@ -103,20 +103,23 @@ test("lieto", () => {
 
 test("castle", () => {
   game.artifacts.get(3).moveToInventory();
-  game.player.moveToRoom(51); game.tick();
   game.monsters.get(19).reaction = Monster.RX_NEUTRAL;
   game.monsters.get(20).destroy();
   game.monsters.get(21).reaction = Monster.RX_NEUTRAL;
-  game.command_parser.run('w');
+  game.player.moveToRoom(51); game.tick();
   game.command_parser.run('use wand');
   expect(game.monsters.get(19).damage).toBeGreaterThan(0);
+  game.command_parser.run('w');
+  game.command_parser.run('use wand');
   expect(game.artifacts.get(10).room_id).toBeNull();
   game.command_parser.run('s');
   expect(game.player.room_id).toBe(53);
-  game.command_parser.run('use wand');
-  expect(game.monsters.get(21).damage).toBeGreaterThan(0);
   game.command_parser.run('e');
   game.command_parser.run('use wand');
+  expect(game.monsters.get(21).damage).toBeGreaterThan(0);
+  game.monsters.get(21).destroy();
+  game.command_parser.run('use wand');
+  expect(game.artifacts.get(5).isHere()).toBeTruthy();
 });
 
 test('swamp thing', () => {
@@ -301,6 +304,9 @@ test('letter', () => {
   game.command_parser.run('give letter to velatha');
   expectEffectSeen(40);
   expect(game.data.letter_velatha).toBeTruthy();
+  expect(game.monsters.get(30).reaction).toBe(Monster.RX_FRIEND);
+  expect(game.monsters.get(31).reaction).toBe(Monster.RX_FRIEND);
+  expect(game.monsters.get(31.0001).reaction).toBe(Monster.RX_FRIEND);
   // give to velatha
   game.player.moveToRoom(3);
   game.command_parser.run('n');
