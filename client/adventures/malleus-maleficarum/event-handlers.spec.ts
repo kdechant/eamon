@@ -49,7 +49,8 @@ test("virrat city", () => {
   expect(game.history.getOutput().text).toBe(game.effects.get(2).text);
   game.player.moveToRoom(14); game.tick();
   game.command_parser.run('talk to Talia');
-  // expect(game.data.talia).toBeTruthy();
+  expectEffectSeen(52);  // talia gives potion to maya
+  expect(game.monsters.get(1).hasArtifact(41)).toBeTruthy();
   game.command_parser.run('talk to maya');
   expectEffectSeen(3);
 });
@@ -341,4 +342,48 @@ test('letter', () => {
   expectEffectSeen(48);
   expect(game.player.hasArtifact(6));
 
+});
+
+test('maya potion', () => {
+  game.artifacts.get(41).moveToInventory(1);
+  game.monsters.get(1).damage = 10;
+  game.mock_random_numbers = [4];
+  game.tick();
+  expect(game.monsters.get(1).damage).toBe(6);
+  expect(game.history.getLastOutput(3).text).toBe("Maya sips her healing potion.");
+});
+
+test('maya resurrection', () => {
+  let maya = game.monsters.get(1);
+  maya.injure(50);
+  expect(maya.status).toBe(Monster.STATUS_DEAD);
+  game.tick();
+  game.command_parser.run('heal maya');
+  expectEffectSeen(61);
+  game.command_parser.run('get unconscious maya');
+  game.player.moveToRoom(67); game.tick();
+  expectEffectSeen(62);
+  expectEffectSeen(65);
+  expect(maya.status).toBe(Monster.STATUS_ALIVE);
+  expect(maya.room_id).toBe(68);
+  expect(maya.data.talk).toBe(66);
+  expect(maya.reaction).toBe(Monster.RX_NEUTRAL);
+});
+
+test('maya resurrection 2', () => {
+  let maya = game.monsters.get(1);
+  let ainha = game.monsters.get(33);
+  ainha.moveToRoom();
+  maya.injure(50);
+  expect(maya.status).toBe(Monster.STATUS_DEAD);
+  game.tick();
+  expectEffectSeen(63);
+  expect(maya.status).toBe(Monster.STATUS_ALIVE);
+  expect(maya.room_id).toBe(68);
+  expect(ainha.room_id).toBe(67);
+  expect(maya.data.talk).toBe(66);
+  expect(maya.reaction).toBe(Monster.RX_NEUTRAL);
+  expect(game.data.maya_healed).toBeTruthy();
+  game.player.moveToRoom(67); game.tick()
+  expectEffectSeen(65);
 });

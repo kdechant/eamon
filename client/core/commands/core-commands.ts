@@ -1260,31 +1260,31 @@ export class HealCommand implements BaseCommand {
   name: string = "heal";
   verbs: string[] = ["heal"];
   run(verb, arg) {
-    game.triggerEvent("heal", arg);
+    if (game.triggerEvent("heal", arg)) {
+      let target = null;
 
-    let target = null;
-
-    // determine the target
-    if (arg !== "") {
-      // heal a monster
-      target = game.monsters.getLocalByName(arg);
-      if (!target) {
-        throw new CommandException("No one here by that name.");
-      }
-    } else {
-      // heal the player
-      target = game.player;
-    }
-
-    if (game.player.spellCast(verb)) {
-
-      let heal_amount = game.diceRoll(2, 6);
-      if (target.id == game.player.id) {
-        game.history.write("Some of your wounds seem to clear up.");
+      // determine the target
+      if (arg !== "") {
+        // heal a monster
+        target = game.monsters.getLocalByName(arg);
+        if (!target) {
+          throw new CommandException("No one here by that name.");
+        }
       } else {
-        game.history.write("Some of " + target.name + "'s wounds seem to clear up.");
+        // heal the player
+        target = game.player;
       }
-      target.heal(heal_amount);
+
+      if (game.player.spellCast(verb)) {
+
+        let heal_amount = game.diceRoll(2, 6);
+        if (target.id == game.player.id) {
+          game.history.write("Some of your wounds seem to clear up.");
+        } else {
+          game.history.write("Some of " + target.name + "'s wounds seem to clear up.");
+        }
+        target.heal(heal_amount);
+      }
     }
   }
 }

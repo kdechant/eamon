@@ -70,7 +70,11 @@ custom_commands.push({
 
       // special stuff that happens when certain monsters talk
       if (monster.id === 2) {  // talia
-        game.monsters.get(1).data.talk = 3;
+        if (game.monsters.get(1).isHere()) {
+          game.effects.print(52);
+          game.artifacts.get(41).moveToInventory(1);
+          game.monsters.get(1).data.talk = 3;
+        }
       } else if (monster.id === 30) {  // velatha
         if (!game.data.orb_quest) {
           game.data.orb_quest = true;

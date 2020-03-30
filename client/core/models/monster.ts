@@ -1048,6 +1048,7 @@ export class Monster extends GameObject {
   public resurrect() {
     this.moveToRoom();
     this.damage = 0;
+    this.status = Monster.STATUS_ALIVE;
     let body = game.artifacts.get(this.dead_body_id);
     if (body) {
       body.destroy();

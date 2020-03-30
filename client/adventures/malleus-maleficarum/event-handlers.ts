@@ -38,6 +38,7 @@ export var event_handlers = {
       maya_sees_orb: false,
       old_man_rescued: false,
       given_ring: false,
+      maya_healed: false,
     };
 
     // monster combat effects and spells - TODO
@@ -177,6 +178,8 @@ export var event_handlers = {
     let maya = game.monsters.get(1);
     let duke = game.monsters.get(4);
     let inquisitor = game.monsters.get(6);
+    let velatha = game.monsters.get(30);
+    let ainha = game.monsters.get(33);
 
     // magic weapons confiscated
     if (inquisitorIsHere() && game.player.weapon && game.player.weapon.type === Artifact.TYPE_MAGIC_WEAPON) {
@@ -212,7 +215,7 @@ export var event_handlers = {
     }
 
     // ainha / maya
-    if (maya.isHere() && game.monsters.get(33).isHere() && !game.data.ainha_maya) {
+    if (maya.isHere() && ainha.isHere() && !game.data.ainha_maya) {
       game.data.ainha_maya = true;
       game.effects.print(23);
     }
@@ -238,7 +241,7 @@ export var event_handlers = {
 
     // velatha / orb
     let bag = game.artifacts.get(4);
-    if (game.monsters.get(30).isHere() && (game.player.hasArtifact(5) || hasOrbInBag())) {
+    if (velatha.isHere() && (game.player.hasArtifact(5) || hasOrbInBag())) {
       game.effects.print(22);
       game.monsters.get(30).data.talk = 22;
       maya.data.talk = 7;
@@ -252,7 +255,7 @@ export var event_handlers = {
 
     // mages confront duke
     if (game.data.letter_velatha && !game.data.letter_duke &&
-        game.monsters.get(30).isHere() && duke.isHere()) {
+        velatha.isHere() && duke.isHere()) {
       game.effects.print(41);
       game.data.letter_duke = true;
       game.monsters.get(4).reaction = Monster.RX_FRIEND;
@@ -312,6 +315,36 @@ export var event_handlers = {
       }
     }
 
+    // Maya's healing potion
+    if (maya.isHere() && maya.damage > maya.hardiness / 2 && maya.hasArtifact(41) && !cobaltFrontIsHere()) {
+      game.history.write("Maya sips her healing potion.");
+      game.artifacts.get(41).use();
+    }
+
+    // resurrect Maya
+    let mages = game.monsters.get(31);
+    if (game.artifacts.get(101).isHere()) {
+      // take to safe house
+      if (game.player.room_id === 67 && (velatha.isHere() || mages.isHere())) {
+        game.effects.print(62);
+        healMaya();
+      } else if (ainha.isHere()) {
+        game.effects.print(63);
+        healMaya();
+        ainha.moveToRoom(67);
+        game.data.maya_healed = true;
+      } else if (velatha.isHere()) {
+        game.effects.print(64);
+        healMaya();
+        ainha.moveToRoom(67);
+        game.data.maya_healed = true;
+      }
+    }
+    if (game.player.room_id === 67 && velatha.isHere() || mages.isHere() && game.data.maya_healed) {
+      game.data.maya_healed = false;
+      game.effects.print(65);
+    }
+
     // display items for sale
     let for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
     if (for_sale.length) {
@@ -368,6 +401,15 @@ export var event_handlers = {
     // letter / Duke
     if (artifact.id === 8 && recipient.id === 4) {
       game.effects.print(47);
+      return false;
+    }
+    return true;
+  },
+
+  "heal": function(arg) {
+    let artifact = game.artifacts.getLocalByName(arg);
+    if (artifact && artifact.id === 101) {  // maya
+      game.effects.print(61);
       return false;
     }
     return true;
@@ -568,4 +610,12 @@ function breakFree(monster: Monster) {
 
 function hasOrbInBag() {
   return game.player.hasArtifact(4) && game.artifacts.get(4).contains(5);
+}
+
+function healMaya() {
+  let maya = game.monsters.get(1);
+  maya.resurrect();
+  maya.moveToRoom(68);
+  maya.reaction = Monster.RX_NEUTRAL;
+  maya.data.talk = 66;
 }
