@@ -1028,9 +1028,11 @@ export class Monster extends GameObject {
     if (!this.dead_body_id) {
       return;
     }
-    let body = game.artifacts.get(this.dead_body_id);
-    if (body) {
-      body.room_id = this.room_id;
+    let body: Artifact = game.artifacts.get(this.dead_body_id);
+    // if there is no matching artifact, or the "matching" artifact is
+    // actually player's gear they brought, then there is no dead body.
+    if (body && !body.player_brought) {
+      body.moveToRoom(this.room_id);
     }
   }
 
@@ -1265,7 +1267,7 @@ export class GroupMonster extends Monster {
   }
 
   /**
-   * Moves the monster to a specific room.
+   * Moves the group monster (and all children) to a specific room.
    * @param {Number} room_id  The ID of the room to move to. If null or zero, this moves the monster to the player's current room
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */

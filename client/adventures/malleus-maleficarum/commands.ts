@@ -26,13 +26,17 @@ custom_commands.push({
       throw new CommandException(`That costs ${artifact.value} gold pieces and you only have ${game.player.gold}.`);
     }
 
-    game.modal.confirm(`That costs ${artifact.value} gold pieces. Do you want to buy it?`, () => {
-      game.history.write(`You buy the ${artifact.name}.`);
-      artifact.showDescription();
-      artifact.moveToInventory();
-      game.player.gold -= artifact.value;
-      game.player.updateInventory();
-      artifact.data.for_sale = false;
+    game.modal.confirm(`That costs ${artifact.value} gold pieces. Do you want to buy it?`, answer => {
+      if (answer === 'Yes') {
+        game.history.write(`You buy the ${artifact.name}.`);
+        artifact.showDescription();
+        artifact.moveToInventory();
+        game.player.gold -= artifact.value;
+        game.player.updateInventory();
+        artifact.data.for_sale = false;
+      } else {
+        game.history.write(`"Maybe next time."`);
+      }
     });
   }
 });
@@ -81,7 +85,7 @@ custom_commands.push({
           game.monsters.get(1).data.talk = 5;
           let bag = game.artifacts.get(4);
           bag.moveToInventory();
-          game.history.write("You get: ${bag.name}");
+          game.history.write(`You receive: ${bag.name}`);
         }
       } else if (monster.id === 32) {  // zinnah
         game.artifacts.get(3).moveToRoom(9);

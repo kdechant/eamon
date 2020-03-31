@@ -3,7 +3,6 @@
  */
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
-import {Artifact} from "../../core/models/artifact";
 import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttack} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -72,7 +71,7 @@ test('buy stuff', () => {
   game.player.moveToRoom(70); game.tick();
   expect(game.history.getLastOutput().text).toBe("Items for sale here: battle axe#, pike");  // demo char has a battle axe, so this one is battle axe#
   let gold = game.player.gold;
-  game.modal.mock_answers = ['yes'];
+  game.modal.mock_answers = ['Yes'];
   game.command_parser.run('buy pike');
   expect(game.player.hasArtifact(33)).toBeTruthy();
   expect(game.player.gold).toBe(gold - game.artifacts.get(33).value);
@@ -93,6 +92,7 @@ test("lieto", () => {
   game.command_parser.run('open door');
   expect(game.artifacts.get(16).is_open).toBeTruthy();
   game.command_parser.run('d');
+  expectEffectNotSeen(65);  // related to maya's injury
   game.command_parser.run('talk to velatha');
   expectEffectSeen(230);
   expect(game.data.orb_quest).toBeTruthy();
@@ -115,10 +115,11 @@ test("castle", () => {
   expect(game.artifacts.get(10).room_id).toBeNull();
   game.command_parser.run('s');
   expect(game.player.room_id).toBe(53);
-  game.command_parser.run('e');
+  game.player.moveToRoom(77); game.tick();
   game.command_parser.run('use wand');
   expect(game.monsters.get(21).damage).toBeGreaterThan(0);
   game.monsters.get(21).destroy();
+  game.player.moveToRoom(54); game.tick();
   game.command_parser.run('use wand');
   expect(game.artifacts.get(5).isHere()).toBeTruthy();
 });
@@ -287,8 +288,9 @@ test("orb", () => {
 });
 
 test('free prisoners', () => {
+  game.monsters.get(39).destroy();  // guards
   game.player.moveToRoom(25);
-  game.artifacts.get(17).moveToInventory();
+  game.artifacts.get(17).moveToInventory();  // keys
   game.tick();
   game.command_parser.run('w');
   expectEffectSeen(23);  // ainha/maya
@@ -336,6 +338,7 @@ test('letter', () => {
   // old man / standing stones
   expectEffectSeen(46);
   expect(game.monsters.get(14).room_id).toBe(46);
+  expect(game.monsters.get(14).reaction).toBe(Monster.RX_NEUTRAL);
 
   // go to old man at standing stones
   game.player.moveToRoom(46); game.tick();
@@ -386,4 +389,21 @@ test('maya resurrection 2', () => {
   expect(game.data.maya_healed).toBeTruthy();
   game.player.moveToRoom(67); game.tick()
   expectEffectSeen(65);
+});
+
+test('maya rejoins', () => {
+  let maya = game.monsters.get(1);
+  maya.moveToRoom(68);
+  maya.reaction = Monster.RX_NEUTRAL;
+  // now shortcut to end game
+  game.data.letter_duke = true;
+  game.monsters.get(6).destroy();
+  game.monsters.get(7).destroy();
+  game.tick();
+  for (let i=0; i<4; i++) {
+    game.command_parser.run('s');
+  }
+  expect(maya.isHere()).toBeTruthy();
+  expect(maya.reaction).toBe(Monster.RX_FRIEND);
+  expectEffectSeen(67);
 });

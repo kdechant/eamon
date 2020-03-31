@@ -14,14 +14,14 @@ export var event_handlers = {
 
     // monster talk effects
     game.monsters.get(1).data.talk = 1;  // maya
-    // most monsters have a talk effect 200 + id
+    // soldiers + inquisitors all say the same thing
+    game.monsters.all.filter(m => m.name === 'soldier' || m.name === 'inquisitor').forEach(m => m.data.talk = 203);
+    // many monsters have a talk effect equal to 200 + id
     game.monsters.all.forEach(m => {
       if (game.effects.get(200 + m.id)) {
         m.data.talk = 200 + m.id;
       }
     });
-    // soldiers + inquisitors all say the same thing
-    game.monsters.all.filter(m => m.name === 'soldier' || m.name === 'inquisitor').forEach(m => m.data.talk = 203);
 
     game.data = {
       ainha_maya: false,
@@ -34,14 +34,23 @@ export var event_handlers = {
       letter_duke: false,
       letter_maya: false,
       letter_velatha: false,
-      found_orb: false,
       maya_sees_orb: false,
+      velatha_sees_orb: false,
       old_man_rescued: false,
       given_ring: false,
       maya_healed: false,
     };
 
-    // monster combat effects and spells - TODO
+    // monster combat effects and spells
+    game.monsters.get(19).combat_verbs = ['gropes at', 'slithers toward', 'heaves rotting vegetation at'];
+    game.monsters.get(20).combat_verbs = ['swings a branchlike arm at', 'shoots lightning bolts toward', 'flails at'];
+    game.monsters.get(21).combat_verbs = ['snaps a razor-sharp tendril at', 'whips a vine toward', 'bites at'];
+    game.monsters.get(38).combat_verbs = ['bites at', 'chews on', 'wallops'];
+    game.monsters.get(30).spells = ['blast', 'heal'];
+    game.monsters.get(30).spell_points = 10;
+    game.monsters.get(30).spell_frequency = 40;
+    let mage_verbs = ['conjures a firebolt at', 'swings at', 'shoots lightning at'];
+    game.monsters.get(31).children.forEach(c => c.combat_verbs = mage_verbs);
 
     // items for sale
     for (let id of [28, 32, 33, 34, 35, 36]) {
@@ -153,6 +162,16 @@ export var event_handlers = {
     return true;
   },
 
+  "endTurn": function() {
+    // maya / letter
+    let maya = game.monsters.get(1);
+    if (game.artifacts.get(8).isHere() && maya.isHere() && !game.data.maya_letter) {
+      game.data.maya_letter = true;
+      game.effects.print(8);
+      maya.data.talk = 8;
+    }
+  },
+
   "endTurn1": function () {
     // stuff that happens after room desc is shown, but before monster/artifacts
 
@@ -167,10 +186,21 @@ export var event_handlers = {
     if (old_man.isHere() && game.data.cf_defeated && !game.data.given_ring) {
       game.effects.print(48);
       let ring = game.artifacts.get(6);
-      game.history.write("You get: ${ring.name}");
+      game.history.write(`You receive: ${ring.name}`);
       ring.moveToInventory();
       game.data.given_ring = true;
       game.monsters.get(1).data.talk = 9;
+    }
+
+    // Maya's return
+    let maya = game.monsters.get(1);
+    if (game.countdown('maya')) {
+      maya.moveToRoom();
+      maya.reaction = Monster.RX_FRIEND;
+      game.effects.print(67);
+      if (game.artifacts.get(1).isHere()) {
+        game.effects.print(68);
+      }
     }
   },
 
@@ -207,13 +237,6 @@ export var event_handlers = {
       maya.data.talk = 6;
     }
 
-    // maya / letter
-    if (game.artifacts.get(8).isHere() && maya.isHere() && !game.data.maya_letter) {
-      game.data.maya_letter = true;
-      game.effects.print(8);
-      maya.data.talk = 8;
-    }
-
     // ainha / maya
     if (maya.isHere() && ainha.isHere() && !game.data.ainha_maya) {
       game.data.ainha_maya = true;
@@ -240,8 +263,8 @@ export var event_handlers = {
     }
 
     // velatha / orb
-    let bag = game.artifacts.get(4);
-    if (velatha.isHere() && (game.player.hasArtifact(5) || hasOrbInBag())) {
+    if (velatha.isHere() && (game.player.hasArtifact(5) || hasOrbInBag()) && !game.data.velatha_sees_orb) {
+      game.data.velatha_sees_orb = true;
       game.effects.print(22);
       game.monsters.get(30).data.talk = 22;
       maya.data.talk = 7;
@@ -267,6 +290,9 @@ export var event_handlers = {
     if (game.data.letter_duke && duke.isHere() && inquisitor.isHere() && inquisitor.reaction !== Monster.RX_HOSTILE) {
       game.effects.print(43);
       game.monsters.all.filter(isCobaltFront).forEach(m => m.reaction = Monster.RX_HOSTILE);
+      // move some combatants to the square to cut down on the crowds
+      game.monsters.get(5).moveToRoom(2);
+      game.monsters.get(31).children.slice(2).forEach(c => c.moveToRoom(2));
     }
 
     // after inquisitors defeated
@@ -274,6 +300,9 @@ export var event_handlers = {
         !inquisitor.room_id && !game.monsters.get(7).room_id) {
       game.data.cf_defeated = true;
       game.effects.print(44);
+      if (duke.status === Monster.STATUS_ALIVE) {
+        duke.moveToRoom();  // in case he fled, or you did...
+      }
       if (duke.isHere()) {
         game.effects.print(45);
         game.player.gold += 1000;
@@ -306,12 +335,17 @@ export var event_handlers = {
       // the old man's ring
       if (game.data.old_man_rescued) {
         game.monsters.get(14).moveToRoom(46);
+        game.monsters.get(14).reaction = Monster.RX_NEUTRAL;
         game.effects.print(46);
         maya.data.talk = 10;
       } else {
         // if player hasn't seen old man and thugs yet, they just go away (and no ring!)
         game.monsters.get(14).destroy();
         game.monsters.get(15).destroy();
+      }
+      // if maya was recovering from injuries, she comes back in a few moves
+      if (maya.room_id === 68) {
+        game.counters['maya'] = 4;
       }
     }
 
@@ -340,7 +374,7 @@ export var event_handlers = {
         game.data.maya_healed = true;
       }
     }
-    if (game.player.room_id === 67 && velatha.isHere() || mages.isHere() && game.data.maya_healed) {
+    if (game.player.room_id === 67 && (velatha.isHere() || mages.isHere()) && game.data.maya_healed) {
       game.data.maya_healed = false;
       game.effects.print(65);
     }
@@ -392,7 +426,7 @@ export var event_handlers = {
     }
     if ([3,4,5].indexOf(artifact.id) !== -1 && !isCobaltFront(recipient)) {
       if (recipient.special === 'quest') {
-        game.history.write(`${recipient.name} says, "Hold on to that. Don't give it to anyone until you free the prisoners.`);
+        game.history.write(`${recipient.name} says, "Hold on to that. Don't give it to anyone until you free the prisoners."`);
       } else {
         game.history.write(`${recipient.name} says, "Is that magic? Better keep it hidden!"`);
       }
@@ -513,6 +547,13 @@ export var event_handlers = {
       case 5: // orb
         game.effects.print(19);
         break;
+      case 48: // strange potion
+        game.history.write("A strange sensation comes over you. Your movements seem to quicken.");
+        game.player.agility += 2;
+        break;
+      case 50: // detector
+        game.effects.print(53);
+        break;
     }
   },
 
@@ -602,7 +643,7 @@ function soldiersAttack() {
 function breakFree(monster: Monster) {
   if (monster.data.engulfed) {
     const captor = game.monsters.get(monster.data.engulfed);
-    game.history.write(`${monster.name} breaks free of the ${captor.name}!`)
+    game.history.write(`${monster.name} breaks free of the ${captor.name}!`, 'success');
     monster.data.engulfed = false;
     monster.status_message = '';
   }
