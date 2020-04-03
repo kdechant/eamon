@@ -52,6 +52,16 @@ export var event_handlers = {
     let mage_verbs = ['conjures a firebolt at', 'swings at', 'shoots lightning at'];
     game.monsters.get(31).children.forEach(c => c.combat_verbs = mage_verbs);
 
+    game.monsters.get(1).health_messages = [
+      "is in perfect health.",
+      "is in good shape.",
+      "is hurting.",
+      "is in pain.",
+      "is very badly injured.",
+      "is barely standing!",
+      "is knocked unconscious!"
+    ];
+
     // items for sale
     for (let id of [28, 32, 33, 34, 35, 36]) {
       game.artifacts.get(id).data.for_sale = true;
@@ -91,7 +101,7 @@ export var event_handlers = {
     }
     // thugs
     if (defender.id === 15) {
-      if (defender.children.some(m => m.damage > m.hardiness / 2)) {
+      if (defender.children.some(m => m.damage > m.hardiness * 2 / 3)) {
         game.effects.print(50);
         defender.destroy();
       }
@@ -128,6 +138,12 @@ export var event_handlers = {
   "afterDeath": function (monster: Monster) {
     // free anyone engulfed by the dying monster
     game.monsters.all.filter(m => m.data.engulfed === monster.id).forEach(breakFree);
+    // last bandit drops the key
+    // TODO: make this a core feature of group monsters, that the last one drops
+    //  any non-weapon artifacts in the group inventory
+    // if (monster.parent && monster.parent.id === 22 && !game.monsters.get(22).children.some(c => c.isActive())) {
+    //   game.monsters.get(22).inventory.forEach(a => a.moveToRoom());
+    // }
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -162,13 +178,12 @@ export var event_handlers = {
     return true;
   },
 
-  "endTurn": function() {
-    // maya / letter
-    let maya = game.monsters.get(1);
-    if (game.artifacts.get(8).isHere() && maya.isHere() && !game.data.maya_letter) {
-      game.data.maya_letter = true;
-      game.effects.print(8);
-      maya.data.talk = 8;
+  "afterMove": function(arg: string, room_from: Room, room_to: Room) {
+    // if you leave the prison by the front entrance
+    if (room_from.id === 22 && room_to.id === 21 && game.monsters.get(8).room_id === 21 && game.monsters.get(8).reaction !== Monster.RX_HOSTILE) {
+      // FIXME: this isn't working, and effect should be displayed in endTurn2
+      game.effects.print(54);
+      game.monsters.get(8).reaction = Monster.RX_HOSTILE;
     }
   },
 
@@ -243,14 +258,39 @@ export var event_handlers = {
       game.effects.print(23);
     }
 
+    // inquisitor / orb
+    if (game.player.hasArtifact(orb.id) && inquisitorIsHere()) {
+      game.effects.print(57);
+      game.die();
+      return;
+    }
+    // if soldiers took orb to inquisitor
+    let inquisitor_has_orb = game.monsters.all.find(m =>
+      m.special === 'inquisitor' && m.hasArtifact(orb.id) && m.isHere());
+    if (inquisitor_has_orb) {
+      game.effects.print(38);
+      game.die();
+      return;
+    }
     // soldiers / orb
     if (cobaltFrontIsHere()) {
       if (orb.room_id === game.rooms.current_room.id) {
         // orb is on the ground
         game.effects.print(37);
-        orb.moveToInventory(6);
+        if (inquisitor.isActive()) {
+          orb.moveToInventory(6);
+        } else if (game.monsters.get(7).isActive()) {
+          orb.moveToInventory(7);
+        } else {
+          // goes to prison; no way to get it back
+          orb.moveToRoom(24);
+        }
         game.monsters.visible.filter(m => isCobaltFront(m)).forEach(m => {
-          m.moveToRoom(inquisitor.room_id);
+          if (inquisitor.isActive()) {
+            m.moveToRoom(inquisitor.room_id);
+          } else {
+            m.moveToRoom(69);
+          }
           m.reaction = Monster.RX_NEUTRAL;
         });
       }
@@ -274,6 +314,18 @@ export var event_handlers = {
     if (game.monsters.get(34).isHere() && game.player.room_id !== 30) {
       game.effects.print(26);
       game.monsters.get(34).destroy();
+    }
+    // freed prisoner - runs away immediately after her description is shown
+    if (game.monsters.get(41).isHere()) {
+      game.monsters.get(41).destroy();
+      game.monsters.updateVisible();
+    }
+
+    // maya / letter
+    if (game.artifacts.get(8).isHere() && maya.isHere() && !game.data.maya_letter) {
+      game.data.maya_letter = true;
+      game.effects.print(8);
+      maya.data.talk = 8;
     }
 
     // mages confront duke
@@ -300,7 +352,7 @@ export var event_handlers = {
         !inquisitor.room_id && !game.monsters.get(7).room_id) {
       game.data.cf_defeated = true;
       game.effects.print(44);
-      if (duke.status === Monster.STATUS_ALIVE) {
+      if (duke.isActive()) {
         duke.moveToRoom();  // in case he fled, or you did...
       }
       if (duke.isHere()) {
@@ -313,15 +365,18 @@ export var event_handlers = {
       game.artifacts.get(3).destroy();
       game.artifacts.get(4).destroy();
       game.artifacts.get(5).destroy();
-      game.monsters.all.filter(m => m.status === Monster.STATUS_ALIVE && [2, 30, 31, 32].indexOf(m.id) !== -1).forEach(m => {
+      game.monsters.all.filter(m => m.isAlive() && (m.id === 30 || m.id === 31)).forEach(m => {
         m.moveToRoom(51);
         m.reaction = Monster.RX_NEUTRAL;
         if (m.children) {
-          m.children.forEach(c => c.reaction = Monster.RX_NEUTRAL);
+          m.children.forEach(c => {
+            c.moveToRoom(51);
+            c.reaction = Monster.RX_NEUTRAL;
+          });
         }
       });
       // duke and guards move back to palace
-      game.monsters.all.filter(m => m.status === Monster.STATUS_ALIVE && m.special === 'virrat').forEach(m => {
+      game.monsters.all.filter(m => m.isAlive() && m.special === 'virrat').forEach(m => {
         m.moveToRoom(4);
         m.reaction = Monster.RX_NEUTRAL;
         if (m.children) {
@@ -377,6 +432,11 @@ export var event_handlers = {
     if (game.player.room_id === 67 && (velatha.isHere() || mages.isHere()) && game.data.maya_healed) {
       game.data.maya_healed = false;
       game.effects.print(65);
+    }
+
+    // orb warning
+    if (game.player.hasArtifact(orb.id) && !cobaltFrontIsHere() && !velatha.isHere()) {
+      game.effects.print(24);
     }
 
     // display items for sale
@@ -458,7 +518,7 @@ export var event_handlers = {
           m.reaction = Monster.RX_NEUTRAL;
       });
     } else if (artifact.id === 8) {
-      if (recipient.id === 30 && !game.data.velatha_letter) {
+      if (recipient.id === 30 || Math.floor(recipient.id) === 31 && !game.data.velatha_letter) {
         game.effects.print(40);
         game.data.letter_velatha = true;
         game.monsters.get(30).reaction = Monster.RX_FRIEND;
@@ -472,9 +532,14 @@ export var event_handlers = {
   "say": function(phrase) {
     phrase = phrase.toLowerCase();
     if (phrase === 'irkm desmet daem') {
-      if (game.player.hasArtifact(5)) {
+      if (hasOrbInBag()) {
+        game.effects.print(56);
+      } else if (game.player.hasArtifact(5)) {
         if (game.artifacts.get(24).isHere() || game.artifacts.get(23).isHere()) {
           game.effects.print(21);
+          if (game.monsters.get(1).isHere()) {
+            game.effects.print(68);
+          }
           game.artifacts.get(23).destroy();
           game.artifacts.get(24).destroy();
           game.artifacts.get(37).moveToRoom(39);
@@ -486,8 +551,6 @@ export var event_handlers = {
         } else {
           game.effects.print(20);
         }
-      } else if (hasOrbInBag()) {
-        game.history.write("The metal bag blocks the magic!");
       }
     }
   },
@@ -516,6 +579,12 @@ export var event_handlers = {
   },
 
   "beforeSpell": function(spell_name: string) {
+    // spells don't work in prison due to shielding
+    console.log('casting spell in room ' + game.player.room_id);
+    if (game.player.room_id >= 22 && game.player.room_id <= 29) {
+      game.effects.print(55);
+      return false;
+    }
     return !checkIfCaughtUsingMagic();
   },
 
@@ -545,7 +614,11 @@ export var event_handlers = {
         }
         break;
       case 5: // orb
-        game.effects.print(19);
+        if (hasOrbInBag()) {
+          game.effects.print(56);
+        } else {
+          game.effects.print(19);
+        }
         break;
       case 48: // strange potion
         game.history.write("A strange sensation comes over you. Your movements seem to quicken.");

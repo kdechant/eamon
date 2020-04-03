@@ -106,7 +106,9 @@ export class Room extends Loadable {
   }
 
   /**
-   * Gets the exit from the room in a given direction
+   * Gets the visible/known exits from the room.
+   *
+   * Excludes zero-connection exits and exits with hidden secret doors.
    */
   public getVisibleExits(): RoomExit[] {
     let game = Game.getInstance();

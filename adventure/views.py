@@ -98,7 +98,7 @@ class ArtifactViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Lists artifact data for an adventure.
     """
-    queryset = Artifact.objects.all()
+    queryset = Artifact.objects.order_by('artifact_id')
     serializer_class = serializers.ArtifactSerializer
 
     def get_queryset(self):

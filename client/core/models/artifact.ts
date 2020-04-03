@@ -96,7 +96,7 @@ export class Artifact extends GameObject {
    */
   public moveToInventory(monster_id: number = null): void {
     if (this.type !== Artifact.TYPE_BOUND_MONSTER) {
-      if (monster_id === null || Game.getInstance().monsters.get(monster_id)) {
+      if (monster_id === null || game.monsters.get(monster_id)) {
         this.monster_id = monster_id || 0;
         this.room_id = null;
         this.container_id = null;

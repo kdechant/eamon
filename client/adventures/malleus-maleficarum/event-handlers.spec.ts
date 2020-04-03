@@ -266,8 +266,17 @@ test("soldiers and orb (in bag)", () => {
   expect(game.monsters.get(3).reaction).toBe(Monster.RX_NEUTRAL);
 });
 
+test('orb in shielded bag', () => {
+  game.artifacts.get(4).moveToInventory();
+  game.artifacts.get(5).moveToInventory(); game.tick();
+  game.command_parser.run('put orb into bag');
+  game.command_parser.run('say irkm desmet daem');
+  expectEffectSeen(56);
+});
+
 test("orb", () => {
   game.artifacts.get(5).moveToInventory(); game.tick();
+  expectEffectSeen(24);
   game.command_parser.run('use orb');
   expectEffectSeen(19);
   game.command_parser.run('say irkm desmet daem');
@@ -278,6 +287,7 @@ test("orb", () => {
   game.player.moveToRoom(39); game.tick();
   game.command_parser.run('say irkm desmet daem');
   expectEffectSeen(21);
+  expectEffectSeen(68);
   expect(game.artifacts.get(24).isHere()).toBeFalsy();
   expect(game.artifacts.get(37).isHere()).toBeTruthy();
   expect(game.artifacts.get(23).room_id).toBeNull();
@@ -289,6 +299,7 @@ test("orb", () => {
 
 test('free prisoners', () => {
   game.monsters.get(39).destroy();  // guards
+  game.monsters.get(40).destroy();  // inquisitor in dungeon
   game.player.moveToRoom(25);
   game.artifacts.get(17).moveToInventory();  // keys
   game.tick();
@@ -297,6 +308,25 @@ test('free prisoners', () => {
   game.command_parser.run('e');
   game.command_parser.run('e');
   expectEffectSeen(29);  // generic prisoners
+  game.command_parser.run('w');
+  game.command_parser.run('s');
+  game.command_parser.run('free woman');
+  expect(game.artifacts.get(28).isHere()).toBeFalsy();  // bound monster
+  expect(game.monsters.get(41).isHere()).toBeFalsy();  // woman runs away
+});
+
+test('warden attacks', () => {
+  game.player.moveToRoom(22); game.tick();
+  game.command_parser.run('open doors');
+  game.command_parser.run('s');
+  expectEffectSeen(54);
+  expect(game.monsters.get(8).reaction).toBe(Monster.RX_HOSTILE);
+});
+
+test('magic shielding', () => {
+  game.player.moveToRoom(22); game.tick();
+  game.command_parser.run('heal');
+  expectEffectSeen(55);
 });
 
 test('letter', () => {

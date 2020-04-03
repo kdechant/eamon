@@ -1,6 +1,8 @@
 import { Monster, GroupMonster } from "../models/monster";
 import Game from "../models/game";
 
+declare var game: Game;
+
 /**
  * Class MonsterRepository.
  * Storage class for all monster data.
@@ -47,8 +49,18 @@ export default class MonsterRepository {
             count: 1,
             weapon_id
           });
+          if (weapon_id > 0) {
+            game.artifacts.get(weapon_id).monster_id = child.id;
+          }
           monster.children.push(child);
         }
+        // any non-weapon artifacts the group is carrying get given to the first member
+        monster.updateInventory();
+        monster.inventory.forEach(a => {
+          a.monster_id = monster.children[0].id
+        });
+        monster.updateInventory();
+        monster.children.forEach(c => c.updateInventory());
       }
     });
 

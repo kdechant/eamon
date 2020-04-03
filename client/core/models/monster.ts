@@ -1070,6 +1070,20 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Determines if monster is alive and active (i.e., not removed from the game)
+   */
+  public isActive(): boolean {
+    return this.status === Monster.STATUS_ALIVE && this.room_id !== null;
+  }
+
+  /**
+   * Determines if monster is alive and active (i.e., not removed from the game)
+   */
+  public isAlive(): boolean {
+    return this.status === Monster.STATUS_ALIVE;
+  }
+
+  /**
    * Shows monster health status
    */
   public showHealth(): void {
@@ -1428,11 +1442,15 @@ export class GroupMonster extends Monster {
       return;  // currently impossible to injure members in a different room
     }
     let child = game.getRandomElement(visible_children);
-    return child.injure(damage, ignore_armor, attacker);
+    let damage_dealt = child.injure(damage, ignore_armor, attacker);
+    // if
+    return damage_dealt;
   }
 
   /**
-   * Removes a monster from the game
+   * Removes a monster from the game.
+   *
+   * For group monsters, this also removes all children.
    */
   public destroy(): void {
     this.room_id = null;
@@ -1452,6 +1470,24 @@ export class GroupMonster extends Monster {
   public heal(amount): void {
     let child = game.getRandomElement(this.children.filter(c => c.isHere()));
     child.heal(amount);
+  }
+
+  /**
+   * Determines if monster is alive and active (i.e., not removed from the game)
+   *
+   * A group monster is active if any of its children are.
+   */
+  public isActive(): boolean {
+    return this.children.some(c => c.isActive());
+  }
+
+  /**
+   * Determines if monster is alive
+   *
+   * A group monster is active if any of its children are.
+   */
+  public isAlive(): boolean {
+    return this.children.some(c => c.isAlive());
   }
 
 }
