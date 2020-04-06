@@ -86,9 +86,16 @@ custom_commands.push({
           let bag = game.artifacts.get(4);
           bag.moveToInventory();
           game.history.write(`You receive: ${bag.name}`);
+          bag.showDescription();
         }
       } else if (monster.id === 32) {  // zinnah
         game.artifacts.get(3).moveToRoom(9);
+      } else if (monster.id === 34) {  // old mage in prison
+        if (!game.player.spell_abilities.power) {
+          game.effects.print(58);
+          game.player.spell_abilities.power += 50;
+          game.player.spell_abilities_original.power += 50;
+        }
       }
       return;
     }

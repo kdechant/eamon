@@ -63,11 +63,11 @@ export var event_handlers = {
     ];
 
     // items for sale
-    for (let id of [28, 32, 33, 34, 35, 36]) {
+    for (let id of [32, 33, 34, 35, 36, 54]) {
       game.artifacts.get(id).data.for_sale = true;
     }
     // no teleport into jail (22-30), safe house (67-68), or castle (51-54)
-    game.data.no_teleport_rooms = [22, 23, 24, 25, 26, 27, 28, 29, 30, 51, 52, 53, 54, 67, 68];
+    game.data.no_teleport_rooms = [22, 23, 24, 25, 26, 27, 28, 29, 30, 51, 52, 53, 54, 67, 68, 74, 75, 76, 77];
   },
 
   //region combat
@@ -138,12 +138,6 @@ export var event_handlers = {
   "afterDeath": function (monster: Monster) {
     // free anyone engulfed by the dying monster
     game.monsters.all.filter(m => m.data.engulfed === monster.id).forEach(breakFree);
-    // last bandit drops the key
-    // TODO: make this a core feature of group monsters, that the last one drops
-    //  any non-weapon artifacts in the group inventory
-    // if (monster.parent && monster.parent.id === 22 && !game.monsters.get(22).children.some(c => c.isActive())) {
-    //   game.monsters.get(22).inventory.forEach(a => a.moveToRoom());
-    // }
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -226,13 +220,12 @@ export var event_handlers = {
     let velatha = game.monsters.get(30);
     let ainha = game.monsters.get(33);
 
-    // magic weapons confiscated
-    if (inquisitorIsHere() && game.player.weapon && game.player.weapon.type === Artifact.TYPE_MAGIC_WEAPON) {
-      game.effects.get(13).replacements = {'{weapon name}': game.player.weapon.name};
-      game.effects.print(13);
-      game.player.weapon.moveToRoom(24);
-      game.player.updateInventory();
-      game.data.fine_due = true;
+    // maya, after you escape prison
+    if (maya.isHere() && game.data.arrested && !game.data.maya_gives_money) {
+      game.effects.print(59);
+      game.history.write(`You receive: 125 gold pieces`);
+      game.player.gold += 125;
+      game.data.maya_gives_money = true;
     }
 
     // grandmother's house
@@ -343,7 +336,7 @@ export var event_handlers = {
       game.effects.print(43);
       game.monsters.all.filter(isCobaltFront).forEach(m => m.reaction = Monster.RX_HOSTILE);
       // move some combatants to the square to cut down on the crowds
-      game.monsters.get(5).moveToRoom(2);
+      game.monsters.get(5).children.slice(2).forEach(c => c.moveToRoom(2));
       game.monsters.get(31).children.slice(2).forEach(c => c.moveToRoom(2));
     }
 
@@ -432,6 +425,15 @@ export var event_handlers = {
     if (game.player.room_id === 67 && (velatha.isHere() || mages.isHere()) && game.data.maya_healed) {
       game.data.maya_healed = false;
       game.effects.print(65);
+    }
+
+    // magic weapons confiscated
+    if (inquisitorIsHere() && game.player.weapon && game.player.weapon.type === Artifact.TYPE_MAGIC_WEAPON) {
+      game.effects.get(13).replacements = {'{weapon name}': game.player.weapon.name};
+      game.effects.print(13);
+      game.player.weapon.moveToRoom(24);
+      game.player.updateInventory();
+      game.data.fine_due = true;
     }
 
     // orb warning
@@ -563,11 +565,6 @@ export var event_handlers = {
       case 18:
         game.effects.print(14);
         break;
-      // case 34:  // old mage
-      //   if (game.data.arrested) {
-      //     game.effects.print(24);
-      //   }
-      //   break;
     }
   },
 
@@ -580,12 +577,19 @@ export var event_handlers = {
 
   "beforeSpell": function(spell_name: string) {
     // spells don't work in prison due to shielding
-    console.log('casting spell in room ' + game.player.room_id);
     if (game.player.room_id >= 22 && game.player.room_id <= 29) {
       game.effects.print(55);
       return false;
     }
     return !checkIfCaughtUsingMagic();
+  },
+
+  "beforeUse": function(arg) {
+    if (game.artifacts.get(5).match(arg) && hasOrbInBag()) {
+      game.effects.print(56);
+      return false;
+    }
+    return true;
   },
 
   "use": function(arg, artifact) {
@@ -595,7 +599,7 @@ export var event_handlers = {
         let plant_monsters = game.monsters.all.filter(m => m.special === 'plant' && m.isHere());
         if (plant_monsters.length) {
           game.history.write("A ray of brown light shoots from the Wand of Defoliation!", 'special');
-          plant_monsters.forEach(m => m.injure(game.diceRoll(3, 3), true));
+          plant_monsters.forEach(m => m.injure(game.diceRoll(3, 4), true));
           defoliated = true;
         }
         if (game.artifacts.get(10).isHere()) {
@@ -697,7 +701,11 @@ function goToJail() {
   let sack = game.artifacts.get(39);
   sack.value = game.player.gold;
   sack.moveToRoom(24);
+  game.player.gold = 0;
   game.player.updateInventory();
+  if (game.monsters.get(1).isHere()) {
+    game.monsters.get(1).moveToRoom(1);
+  }
   game.player.moveToRoom(30, false);
   game.data.arrested = true;
 }

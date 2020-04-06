@@ -727,17 +727,18 @@ export class UseCommand implements BaseCommand {
   name: string = "use";
   verbs: string[] = ["use"];
   run(verb, arg) {
-    let item: Artifact = game.artifacts.getLocalByName(arg);
-    if (item) {
-      if (item.quantity === null || item.quantity > 0) {
-        item.use();
+    if (game.triggerEvent('beforeUse', arg)) {
+      let item: Artifact = game.artifacts.getLocalByName(arg);
+      if (item) {
+        if (item.quantity === null || item.quantity > 0) {
+          item.use();
+        } else {
+          throw new CommandException("There's none left!");
+        }
       } else {
-        throw new CommandException("There's none left!");
+        throw new CommandException("You aren't carrying it!");
       }
-    } else {
-      throw new CommandException("You aren't carrying it!");
     }
-
   }
 }
 core_commands.push(new UseCommand());

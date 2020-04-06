@@ -57,7 +57,7 @@ test("virrat city", () => {
 test('save old man', () => {
   game.player.moveToRoom(15); game.tick();
   game.command_parser.run('e');
-  game.mock_random_numbers = playerAttack(true, 8);
+  game.mock_random_numbers = playerAttack(true, 12);
   game.command_parser.run('attack thug');
   expectEffectSeen(50);
   expect(game.monsters.get(15).room_id).toBeNull();
@@ -136,11 +136,25 @@ test('swamp thing', () => {
   let maya = game.monsters.get(1);
   maya.combat_code = Monster.COMBAT_CODE_NEVER_FIGHT;
   // engulf player
-  game.mock_random_numbers = [0, 1, 10, 2, 2];
+  game.mock_random_numbers = [
+    0,  // maya doesn't flee
+    0,  // mound doesn't flee
+    1,  // target
+    10, // hit roll
+    2,  // damage
+    2   // engulfs = yes
+  ];
   game.player.moveToRoom(51); game.tick();
   expect(game.player.data.engulfed).toBe(19);
   // engulf maya
-  game.mock_random_numbers = [0, 2, 10, 2, 2];
+  game.mock_random_numbers = [
+    0,  // maya doesn't flee
+    0,  // mound doesn't flee
+    2,  // target = maya
+    10, // hit roll
+    2,  // damage
+    2   // engulfs = yes
+  ];
   game.command_parser.run('look');
   expect(maya.data.engulfed).toBe(19);
   // kill it and be free
@@ -177,9 +191,14 @@ test("go directly to jail", () => {
   let inventory = game.player.inventory.map(a => a);
   expect(game.player.inventory.length).toBe(0);
   inventory.forEach(a => expect(a.room_id).toBe(24));
+  expect(game.player.gold).toBe(0);
   game.mock_random_numbers = [1, 1];
   game.command_parser.run('power');
   expect(game.rooms.current_room.getVisibleExits().some(x => x.direction === 'u')).toBeTruthy();
+  // find maya again
+  game.player.moveToRoom(1); game.tick();
+  expectEffectSeen(59);
+  expect(game.player.gold).toBe(125);
 });
 
 test("busted for magic (after jailbreak)", () => {
