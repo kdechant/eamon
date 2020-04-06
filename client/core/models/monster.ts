@@ -460,36 +460,32 @@ export class Monster extends GameObject {
    * Puts on the best armor the monster is carrying, and a shield if using a 1-handed weapon
    */
   public wearBestArmor(): void {
-    let best_armor = null;
-    let best_shield = null;
-    let best_helmet = null;
-    for (let art of this.inventory.filter(x => x.type === Artifact.TYPE_WEARABLE)) {
-      switch (art.armor_type) {
-        case Artifact.ARMOR_TYPE_ARMOR:
-          if (best_armor === null || art.armor_class > best_armor.armor_class) {
-            best_armor = art;
-          }
-          break;
-        case Artifact.ARMOR_TYPE_SHIELD:
-          if (best_shield === null || art.armor_class > best_shield.armor_class) {
-            best_shield = art;
-          }
-          break;
-        case Artifact.ARMOR_TYPE_HELMET:
-          if (best_helmet === null || art.armor_class > best_helmet.armor_class) {
-            best_helmet = art;
-          }
-          break;
-      }  // other armor types are not accounted for yet
+    let types = [
+      Artifact.ARMOR_TYPE_ARMOR,
+      Artifact.ARMOR_TYPE_SHIELD,
+      Artifact.ARMOR_TYPE_HELMET,
+      Artifact.ARMOR_TYPE_GLOVES,
+      Artifact.ARMOR_TYPE_RING,
+    ];
+    let best = {};
+    for (let type of types) {
+      best[type] = null;
     }
-    if (best_armor) {
-      this.wear(best_armor);
+    for (let art of this.inventory.filter(x => x.type === Artifact.TYPE_WEARABLE && x.armor_type !== null)) {
+      if (best[art.armor_type] === null || art.armor_class > best[art.armor_type].armor_class) {
+        best[art.armor_type] = art;
+      }
     }
-    if (best_shield && this.weapon && this.weapon.hands === 1) {
-      this.wear(best_shield);
-    }
-    if (best_helmet) {
-      this.wear(best_helmet);
+    for (let type of types) {
+      if (best[type] !== null) {
+        if (type === Artifact.ARMOR_TYPE_SHIELD) {
+          if (!this.weapon || this.weapon.hands === 1) {
+            this.wear(best[type]);
+          }
+        } else {
+          this.wear(best[type]);
+        }
+      }
     }
   }
 
