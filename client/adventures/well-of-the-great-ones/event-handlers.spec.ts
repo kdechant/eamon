@@ -24,7 +24,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
@@ -53,7 +53,7 @@ test("summon and unsummon zombies", () => {
   // summon
   game.monsters.get(13).injure(14, true);
   game.player.moveToRoom(14); game.tick();
-  game.command_parser.run('say ai ai pulvis commutare vigor yogsothoth'); // testing alternate string
+  game.command_parser.run('say yogsothoth vigor commutare pulvis ai ai'); // testing alternate string
   expectEffectSeen(3);
   expectEffectSeen(12);
   expectEffectSeen(13);

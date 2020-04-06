@@ -131,7 +131,7 @@ export var event_handlers = {
       }
     }
     // lammasu can cast heal
-    if (monster.id === 15 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
+    if (monster.id === 15 && game.data['lammasu spells'] > 0 && game.diceRoll(1,3) === 3) {
       if (monster.damage > monster.hardiness * 0.4) {
         game.history.write(monster.name + " casts a heal spell!");
         let heal_amount = game.diceRoll(2, 6);

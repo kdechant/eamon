@@ -17,12 +17,14 @@ custom_commands.push({
         if (game.player.gold < 75) {
           game.history.write('"It costs 75 kopins," says Stan. "Come back when you have enough money."');
         } else {
-          game.modal.confirm('"I can sell it to you for 75 kopins," says Stan. "Deal?"', () => {
-            game.history.write("Stan rolls out a keg of brandy.");
-            game.data['brandy'] = true;
-            game.artifacts.get(28).moveToRoom();
-            game.player.gold -= 75;
-            game.monsters.get(8).updateInventory();
+          game.modal.confirm('"I can sell it to you for 75 kopins," says Stan. "Deal?"', answer => {
+            if (answer === 'Yes') {
+              game.history.write("Stan rolls out a keg of brandy.");
+              game.data['brandy'] = true;
+              game.artifacts.get(28).moveToRoom();
+              game.player.gold -= 75;
+              game.monsters.get(8).updateInventory();
+            }
           })
         }
       } else {
