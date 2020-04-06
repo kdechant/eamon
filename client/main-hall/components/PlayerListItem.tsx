@@ -8,7 +8,7 @@ import {getAxios} from "../utils/api";
 class PlayerListItem extends React.Component<any, any> {
   static propTypes = {
     /** The player object */
-    player: Player,
+    player: PropTypes.instanceOf(Player),
     /** A function to reload the player list (from PlayerList) */
     loadPlayers: PropTypes.func,
   };
