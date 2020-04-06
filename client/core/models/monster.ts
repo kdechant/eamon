@@ -561,19 +561,16 @@ export class Monster extends GameObject {
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
   public doBattleActions(): void {
-    let game = Game.getInstance();
 
     // if something happened, where an event handler stopped combat, the monster should do nothing
     if (game.skip_battle_actions) {
       return;
     }
 
-    if (this.reaction === Monster.RX_NEUTRAL || this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
-      // neutral and never-fight monsters do nothing here.
+    if (this.reaction === Monster.RX_NEUTRAL) {
+      // neutral monsters do nothing here.
       return;
     }
-
-    // console.log(`battle action for monster #${this.id}: ${this.name}`);
 
     if (game.triggerEvent('monsterAction', this)) {
 
@@ -584,6 +581,11 @@ export class Monster extends GameObject {
           this.flee();
           return;
         }
+      }
+
+      // never-fight monsters can flee but that's it.
+      if (this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
+        return;
       }
 
       // pick up weapon
@@ -641,6 +643,8 @@ export class Monster extends GameObject {
         }
       }
 
+      game.monsters.updateVisible();
+      game.artifacts.updateVisible();
     }
   }
 

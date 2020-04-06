@@ -465,8 +465,6 @@ export default class Game {
         if (m.id !== Monster.PLAYER && m.isHere() && this.player.status === Monster.STATUS_ALIVE && !m.parent) {
           m.doBattleActions();
         }
-        this.artifacts.updateVisible();
-        this.monsters.updateVisible();
       }
     }
 
