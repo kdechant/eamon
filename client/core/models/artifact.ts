@@ -450,16 +450,15 @@ export class Artifact extends GameObject {
         this.hardiness -= damage;
         if (this.hardiness <= 0) {
           this.is_broken = true;
-          game.history.write("The " + this.name + " smashes to pieces!");
+          this.is_open = true;
+          game.history.write("The " + this.name + " breaks open!");
           if (this.type === Artifact.TYPE_CONTAINER) {
             for (let item of this.contents) {
               item.moveToRoom();
             }
-            this.destroy();
           } else {
-            this.is_open = true;
-
-            // some doors have two sides, represented as two artifacts in different rooms. break open the "other side" too
+            // Some doors have two sides, represented as two artifacts in
+            // different rooms. Break open the "other side" too.
             if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
               let linked_door = game.artifacts.get(this.linked_door_id);
               if (linked_door) {
