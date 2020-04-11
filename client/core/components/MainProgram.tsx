@@ -23,7 +23,12 @@ class MainProgram extends React.Component<any, any> {
       game,
       uuid: window.localStorage.getItem('eamon_uuid'),
       statusOpen: false,
-      menuOpen: false
+      menuOpen: false,
+      modals: {
+        how_to_play: false,
+        hints: false,
+        command_list: false,
+      }
     };
   }
 
@@ -100,7 +105,6 @@ class MainProgram extends React.Component<any, any> {
    * Toggles whether the status window is open (for mobile)
    */
   public toggleStatus = () => {
-    console.log("toggle status");
     this.setState({statusOpen: !this.state.statusOpen});
   };
 
@@ -109,8 +113,29 @@ class MainProgram extends React.Component<any, any> {
    */
   public toggleMenu = () => {
     this.setState({menuOpen: !this.state.menuOpen});
-    console.log("toggle menu to", this.state.menuOpen);
   };
+
+  /**
+   * Toggles whether a modal is open
+   */
+  public toggleModal = (modal: string) => {
+    let modals = {
+      ...this.state.modals,
+    };
+    modals[modal] = !this.state.modals[modal];
+    this.setState({modals: modals});
+  };
+
+  /**
+   * Closes the active modal
+   */
+  public closeModal = () => {
+    let modals = {...this.state.modals};
+    for (let m in modals) {
+      modals[m] = false;
+    }
+    this.setState({modals: modals});
+  }
 
   public render() {
 
@@ -179,9 +204,15 @@ class MainProgram extends React.Component<any, any> {
                   <div>
                     <CommandPrompt game={this.state.game} setGameState={this.setGameState}/>
                     <div className="hints-command-list d-none d-md-block">
-                      <HowToPlay game={this.state.game}/>
-                      <Hints game={this.state.game}/>
-                      <CommandList game={this.state.game}/>
+                      <button type="button" className="btn btn-secondary" onClick={() => this.toggleModal('how_to_play')}>
+                        How to Play
+                      </button>
+                      <button type="button" className="btn btn-secondary" onClick={() => this.toggleModal('hints')}>
+                        Hints
+                      </button>
+                      <button type="button" className="btn btn-secondary" onClick={() => this.toggleModal('command_list')}>
+                        Command List
+                      </button>
                     </div>
                   </div>
                 )}
@@ -200,9 +231,9 @@ class MainProgram extends React.Component<any, any> {
           <div id="menu" className={'container-fluid ' + menuClass}>
             <div className="row">
               <ul>
-                <li>How to Play</li>
-                <li>Hints</li>
-                <li>List Commands</li>
+                <li><a className="text-primary" onClick={() => this.toggleModal('how_to_play')}>How to Play</a></li>
+                <li><a className="text-primary" onClick={() => this.toggleModal('hints')}>Hints</a></li>
+                <li><a className="text-primary" onClick={() => this.toggleModal('command_list')}>Command List</a></li>
                 <li><a href="/">Home</a></li>
                 <li><a href="/about">About Eamon</a></li>
                 <li><a href="/news">News</a></li>
@@ -214,6 +245,12 @@ class MainProgram extends React.Component<any, any> {
               </ul>
             </div>
           </div>
+
+          {/* modals */}
+          <HowToPlay game={this.state.game} visible={this.state.modals.how_to_play} toggle={this.closeModal}/>
+          <Hints game={this.state.game} visible={this.state.modals.hints} toggle={this.closeModal}/>
+          <CommandList game={this.state.game} visible={this.state.modals.command_list} toggle={this.closeModal}/>
+
         </div>
       </div>
     );
