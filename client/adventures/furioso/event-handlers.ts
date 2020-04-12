@@ -261,8 +261,12 @@ export var event_handlers = {
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
     let game = Game.getInstance();
-    if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && !game.artifacts.get(70).isHere()) {
-      game.artifacts.get(70).moveToRoom();
+    let ball = game.artifacts.get(70);
+    if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && !ball.isHere()) {
+      ball.moveToRoom();
+      ball.is_lit = true;
+      ball.showDescription();
+      ball.seen = true;
     } else {
       let roll = game.diceRoll(1, 3);
       if (roll === 1 && game.player.damage > 0) {
