@@ -16,7 +16,14 @@ export class MoveCommand implements BaseCommand {
   name: string = "move";
   verbs: string[] = ["north", "n", "south", "s", "east", "e", "west", "w",
     "up", "u", "down", "d",
-    "ne", "northeast", "se", "southeast", "sw", "southwest", "nw", "northwest"];
+    "northeast", "ne", "southeast", "se", "southwest", "sw", "northwest", "nw"];
+  category: string = "movement";
+  description: string = "Moves in a direction";
+  examples: string[] = [
+    'N - Go to the North',
+    'S - Go to the South',
+    'Note: The diagonal directions (NE, SE, SW, NW) only work in some adventures.'
+  ];
   directions: { [key: string]: string; } = {
     "north": "n",
     "northeast": "ne",
@@ -144,6 +151,14 @@ core_commands.push(new MoveCommand());
 export class LookCommand implements BaseCommand {
   name: string = "look";
   verbs: string[] = ["look", "examine"];
+  category: string = "miscellaneous";
+  description: string = "Inspects a room, artifact, or monster. Can often be used to find hidden items in rooms.";
+  examples: string[] = [
+    'LOOK - Show the description of the current room',
+    'LOOK TORCH - Show the description of an artifact',
+    'LOOK WALL - If the room description mentions something odd about a wall (or a rock, tapestry, throne, etc.) and you think there might be a secret item or door, this might find it.',
+    'LOOK EDDIE - Shows the description of a monster or NPC named Eddie, and his health status.'
+  ];
   run(verb, arg) {
 
     // look event. can be used to reveal secret doors, etc.
@@ -247,6 +262,9 @@ core_commands.push(new LookCommand());
 export class SayCommand implements BaseCommand {
   name: string = "say";
   verbs: string[] = ["say"];
+  category: string = "interactive";
+  description: string = "Allows you to say a word or phrase, like a magic word or something you might say to an NPC.";
+  examples: string[] = ['SAY OPEN SESAME'];
   run(verb, arg) {
 
     if (arg !== "") {
@@ -272,6 +290,13 @@ core_commands.push(new SayCommand());
 export class GetCommand implements BaseCommand {
   name: string = "get";
   verbs: string[] = ["get"];
+  category: string = "artifact manipulation";
+  description: string = "Picks something up.";
+  examples: string[] = [
+    'GET GOLD COINS',
+    'GET GO - Same as GET GOLD COINS, with partial word matching',
+    'GET ALL - Tries to pick up everything in the room. This command will ignore some items, like dead bodies, but you can pick those up individually if you want.'
+  ];
   run(verb: string, arg: string) {
 
     arg = arg.toLowerCase();
@@ -381,6 +406,12 @@ core_commands.push(new GetCommand());
 export class RemoveCommand implements BaseCommand {
   name: string = "remove";
   verbs: string[] = ["remove"];
+  category: string = "artifact manipulation";
+  description: string = "Has two uses: To remove an item from a container, or to take off an article of clothing or armor.";
+  examples: string[] = [
+    "REMOVE JEWEL FROM CHEST - Removes an item from a container, and adds it to your character's inventory",
+    'REMOVE PLATE ARMOR - Takes off a wearable item, for example if you wanted to put on a different armor.'
+  ];
   run(verb: string, arg: string) {
 
     let match = false;
@@ -418,6 +449,7 @@ export class RemoveCommand implements BaseCommand {
               throw new CommandException("There is no " + item_name + " inside the " + container_name + "!");
             }
           } else {
+            // fixme: this lets you guess what's in a closed container
             throw new CommandException("Try opening the " + container_name + " first.");
           }
         } else {
@@ -461,6 +493,11 @@ core_commands.push(new RemoveCommand());
 export class PutCommand implements BaseCommand {
   name: string = "put";
   verbs: string[] = ["put"];
+  category: string = "artifact manipulation";
+  description: string = "Places an item into a container.";
+  examples: string[] = [
+    "PUT SWORD INTO SCABBARD",
+  ];
   run(verb: string, arg: string) {
 
     let match = false;
@@ -540,6 +577,12 @@ core_commands.push(new PutCommand());
 export class DropCommand implements BaseCommand {
   name: string = "drop";
   verbs: string[] = ["drop"];
+  category: string = "artifact manipulation";
+  description: string = "Drops an item you are carrying.";
+  examples: string[] = [
+    "DROP SWORD",
+    "DROP ALL - Tries to drop everything you are carrying.",
+  ];
   run(verb: string, arg: string) {
 
     arg = arg.toLowerCase();
@@ -573,6 +616,11 @@ core_commands.push(new DropCommand());
 export class ReadyCommand implements BaseCommand {
   name: string = "ready";
   verbs: string[] = ["ready"];
+  category: string = "artifact manipulation";
+  description: string = "Changes your ready weapon.";
+  examples: string[] = [
+    "READY TROLLSFIRE - Put your current weapon into your pack and hold the Trollsfire sword in your hand.",
+  ];
   run(verb, arg) {
 
     let old_wpn = game.player.weapon;
@@ -605,6 +653,12 @@ core_commands.push(new ReadyCommand());
 export class WearCommand implements BaseCommand {
   name: string = "wear";
   verbs: string[] = ["wear"];
+  category: string = "artifact manipulation";
+  description: string = "Puts on an article of clothing or armor.";
+  examples: string[] = [
+    "WEAR PLATE ARMOR",
+    "WEAR SHIELD - In Eamon, you don't READY shields, you WEAR them like clothing."
+  ];
   run(verb: string, arg: string) {
 
     let artifact = game.player.findInInventory(arg);
@@ -644,6 +698,12 @@ core_commands.push(new WearCommand());
 export class FleeCommand implements BaseCommand {
   name: string = "flee";
   verbs: string[] = ["flee"];
+  category: string = "movement";
+  description: string = "Runs away from a fight. Note that you might not always be able to escape.";
+  examples: string[] = [
+    "FLEE - If no direction is given, you will run in a random direction.",
+    "FLEE N - Try to flee to the north. This might not always work. If a dragon is guarding a cave entrance in that direction, you might need to try to flee in a different direction.",
+  ];
   run(verb, arg) {
     if (!game.in_battle) {
       throw new CommandException("Calm down. There is no danger here.");
@@ -676,6 +736,11 @@ core_commands.push(new FleeCommand());
 export class DrinkCommand implements BaseCommand {
   name: string = "drink";
   verbs: string[] = ["drink"];
+  category: string = "artifact manipulation";
+  description: string = "Take a drink from a drinkable artifact.";
+  examples: string[] = [
+    "DRINK HEALING POTION",
+  ];
   run(verb, arg) {
     let item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("drink", arg, item) !== false) {
@@ -702,6 +767,11 @@ core_commands.push(new DrinkCommand());
 export class EatCommand implements BaseCommand {
   name: string = "eat";
   verbs: string[] = ["eat"];
+  category: string = "artifact manipulation";
+  description: string = "Eats an edible item.";
+  examples: string[] = [
+    "EAT SANDWICH",
+  ];
   run(verb, arg) {
     let item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("eat", arg, item) !== false) {
@@ -726,6 +796,12 @@ core_commands.push(new EatCommand());
 export class UseCommand implements BaseCommand {
   name: string = "use";
   verbs: string[] = ["use"];
+  category: string = "artifact manipulation";
+  description: string = "Uses the special ability of an item, either something you're carrying or something in the room.";
+  examples: string[] = [
+    "USE ROPE - If you're carrying a rope, this might attach it to the wall or ceiling so you can climb.",
+    "USE LEVER - A lever in a room might open a nearby door. This command will activate it."
+  ];
   run(verb, arg) {
     if (game.triggerEvent('beforeUse', arg)) {
       let item: Artifact = game.artifacts.getLocalByName(arg);
@@ -747,6 +823,15 @@ core_commands.push(new UseCommand());
 export class AttackCommand implements BaseCommand {
   name: string = "attack";
   verbs: string[] = ["attack"];
+  category: string = "interactive";
+  description: string = "Attacks a monster or NPC, or sometimes an artifact like a locked door or chest.";
+  examples: string[] = [
+    "ATTACK DRAGON",
+    "AT DR - Shorthand for the same thing",
+    "A DRAGON - Another shorthand",
+    "ATTACK DOOR - Try to smash open a door",
+    "ATTACK EVIL MACHINE - Try to destroy something"
+  ];
   run(verb, arg) {
 
     if (!game.player.weapon_id) {
@@ -796,6 +881,11 @@ core_commands.push(new AttackCommand());
 export class LightCommand implements BaseCommand {
   name: string = "light";
   verbs: string[] = ["light"];
+  category: string = "artifact manipulation";
+  description: string = "Ignites or turns on a light source, or puts it out if it's already lit.";
+  examples: string[] = [
+    "LIGHT TORCH",
+  ];
   run(verb, arg) {
 
     if (arg === '') {
@@ -835,6 +925,11 @@ core_commands.push(new LightCommand());
 export class ReadCommand implements BaseCommand {
   name: string = "read";
   verbs: string[] = ["read"];
+  category: string = "artifact manipulation";
+  description: string = "Reads an item like a book, scroll, sign, or inscription.";
+  examples: string[] = [
+    "READ BOOK",
+  ];
   run(verb, arg) {
 
     // can't read anything if it's dark
@@ -893,6 +988,12 @@ core_commands.push(new ReadCommand());
 export class OpenCommand implements BaseCommand {
   name: string = "open";
   verbs: string[] = ["open"];
+  category: string = "artifact manipulation";
+  description: string = "Tries to open a closed door, gate, or container.";
+  examples: string[] = [
+    "OPEN DOUBLE DOORS",
+    "OPEN WOODEN CHEST",
+  ];
   run(verb, arg) {
 
     if (arg === '') {
@@ -990,6 +1091,12 @@ core_commands.push(new OpenCommand());
 export class CloseCommand implements BaseCommand {
   name: string = "close";
   verbs: string[] = ["close"];
+  category: string = "artifact manipulation";
+  description: string = "Tries to close an open door, gate, or container.";
+  examples: string[] = [
+    "CLOSE DOUBLE DOORS",
+    "CLOSE WOODEN CHEST",
+  ];
   run(verb, arg) {
 
     if (arg === '') {
@@ -1036,6 +1143,13 @@ core_commands.push(new CloseCommand());
 export class GiveCommand implements BaseCommand {
   name: string = "give";
   verbs: string[] = ["give"];
+  category: string = "artifact manipulation";
+  description: string = "Gives an artifact to a monster or NPC.";
+  examples: string[] = [
+    "GIVE SWORD TO EDDIE - If you give a weapon to an NPC, and they don't already have one, they will ready it.",
+    "GIVE HEALING POTION TO EDDIE - If you give an edible or drinkable artifact to an NPC, they will take one bite or drink and give it back to you.",
+    "GIVE 100 TO EDDIE - Gives an NPC named Eddie 100 gold pieces",
+  ];
   run(verb: string, arg: string) {
 
     let match = false;
@@ -1127,6 +1241,12 @@ core_commands.push(new GiveCommand());
 export class TakeCommand implements BaseCommand {
   name: string = "take";
   verbs: string[] = ["take", "request"];
+  category: string = "interactive";
+  description: string = "Takes an item back from a monster or NPC. However, they might not want to give it to you. This usually only works with friendly monsters.";
+  examples: string[] = [
+    "REQUEST SWORD FROM EDDIE",
+    "TAKE SWORD FROM EDDIE",
+  ];
   run(verb: string, arg: string) {
 
     let match = false;
@@ -1189,6 +1309,11 @@ core_commands.push(new TakeCommand());
 export class FreeCommand implements BaseCommand {
   name: string = "free";
   verbs: string[] = ["free", "release"];
+  category: string = "interactive";
+  description: string = "Frees a bound monster. Note that a nearby monster may be guarding the bound monster and may prevent this.";
+  examples: string[] = [
+    "FREE PRISONER",
+  ];
   run(verb: string, arg: string) {
 
     let monster: Monster = null;
@@ -1246,6 +1371,11 @@ core_commands.push(new FreeCommand());
 export class PowerCommand implements BaseCommand {
   name: string = "power";
   verbs: string[] = ["power"];
+  category: string = "magic";
+  description: string = "Casts the POWER spell. This spell has different effects in every adventure, and may be necessary to complete certain quests.";
+  examples: string[] = [
+    "POWER",
+  ];
   run(verb, arg) {
     if (game.player.spellCast(verb)) {
       //  this spell has no effect except what is defined in the adventure
@@ -1260,6 +1390,12 @@ core_commands.push(new PowerCommand());
 export class HealCommand implements BaseCommand {
   name: string = "heal";
   verbs: string[] = ["heal"];
+  category: string = "magic";
+  description: string = "Casts the HEAL spell.";
+  examples: string[] = [
+    "HEAL - With no target, this will heal your character.",
+    "HEAL EDDIE - With a target, this will heal someone else.",
+  ];
   run(verb, arg) {
     if (game.triggerEvent("heal", arg)) {
       let target = null;
@@ -1295,6 +1431,12 @@ core_commands.push(new HealCommand());
 export class BlastCommand implements BaseCommand {
   name: string = "blast";
   verbs: string[] = ["blast"];
+  category: string = "magic";
+  description: string = "Casts the BLAST spell. This is a standard magic missile type spell that can damage monsters and some artifacts like doors and chests.";
+  examples: string[] = [
+    "BLAST ORC - Casts a magic attack at a monster",
+    "BLAST WOODEN CHEST - Casts a magic attack at an artifact, trying to smash it open",
+  ];
   run(verb, arg) {
     if (game.player.spellCast(verb)) {
 
@@ -1323,7 +1465,7 @@ export class BlastCommand implements BaseCommand {
           }
         }
       } else {
-        throw new CommandException("Blast whom?");
+        throw new CommandException("Blast whom or what?");
       }
     }
   }
@@ -1334,6 +1476,11 @@ core_commands.push(new BlastCommand());
 export class SpeedCommand implements BaseCommand {
   name: string = "speed";
   verbs: string[] = ["speed"];
+  category: string = "magic";
+  description: string = "Casts the SPEED spell. This increases your agility for a short time, making you a better fighter. Useful just before a tough combat.";
+  examples: string[] = [
+    "SPEED",
+  ];
   run(verb, arg) {
     if (game.player.spellCast(verb)) {
       game.triggerEvent("speed", arg);
@@ -1352,6 +1499,11 @@ core_commands.push(new SpeedCommand());
 export class SaveCommand implements BaseCommand {
   name: string = "save";
   verbs: string[] = ["save"];
+  category: string = "miscellaneous";
+  description: string = "Saves your game.";
+  examples: string[] = [
+    "SAVE",
+  ];
   run(verb, arg) {
     if (game.demo) {
       throw new CommandException("Saved games are not available when playing as the demo character.");
@@ -1400,6 +1552,11 @@ core_commands.push(new SaveCommand());
 export class RestoreCommand implements BaseCommand {
   name: string = "restore";
   verbs: string[] = ["restore"];
+  category: string = "miscellaneous";
+  description: string = "Restores from a saved game.";
+  examples: string[] = [
+    "RESTORE",
+  ];
   run(verb, arg) {
     if (game.demo) {
       throw new CommandException("Saved games are not available when playing as the demo character.");
@@ -1433,6 +1590,11 @@ core_commands.push(new RestoreCommand());
 export class SmileCommand implements BaseCommand {
   name: string = "smile";
   verbs: string[] = ["smile"];
+  category: string = "interactive";
+  description: string = "Greets monsters to see if they are friendly or not.";
+  examples: string[] = [
+    "SMILE",
+  ];
   run(verb, arg) {
     if (game.monsters.visible.length === 0) {
       game.history.write("Ok. 😃");
@@ -1483,6 +1645,12 @@ core_commands.push(new SmileCommand());
 export class InventoryCommand implements BaseCommand {
   name: string = "inventory";
   verbs: string[] = ["inventory"];
+  category: string = "miscellaneous";
+  description: string = "Shows what you are carrying, or what someone else is carrying.";
+  examples: string[] = [
+    "INVENTORY (or INV for short) - Shows what you are carrying",
+    "INV EDDIE - Shows what an NPC named Eddie is carrying. If Eddie is not friendly, this command will only show you his ready weapon.",
+  ];
   run(verb, arg) {
     if (arg === "") {
       // player
@@ -1507,6 +1675,7 @@ core_commands.push(new InventoryCommand());
 export class GotoCommand implements BaseCommand {
   name: string = "goto";
   verbs: string[] = ["xgoto"];
+  secret: boolean = true;
   run(verb, arg) {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
@@ -1525,6 +1694,7 @@ core_commands.push(new GotoCommand());
 export class DebuggerCommand implements BaseCommand {
   name: string = "debugger";
   verbs: string[] = ["xdebugger"];
+  secret: boolean = true;
   run(verb, arg) {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
@@ -1538,6 +1708,7 @@ core_commands.push(new DebuggerCommand());
 export class AccioCommand implements BaseCommand {
   name: string = "accio";
   verbs: string[] = ["xaccio"];
+  secret: boolean = true;
   run(verb, arg) {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")

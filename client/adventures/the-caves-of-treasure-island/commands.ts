@@ -7,6 +7,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "dig",
   verbs: ["dig"],
+  description: "Digs a hole.",
+  examples: ['DIG'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 
@@ -23,6 +25,8 @@ custom_commands.push({
 custom_commands.push({
   name: "play",
   verbs: ["play"],
+  description: "Plays a musical instrument.",
+  examples: ['PLAY GUITAR'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 

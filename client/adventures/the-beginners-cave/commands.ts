@@ -1,5 +1,4 @@
 import Game from "../../core/models/game";
-import {Monster} from "../../core/models/monster";
 import {light_trollsfire, put_out_trollsfire} from "./event-handlers";
 
 export var custom_commands = [];
@@ -7,6 +6,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "trollsfire",
   verbs: ["trollsfire"],
+  description: "Activates a special item.",
+  examples: ['TROLLSFIRE or SAY TROLLSFIRE'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     let trollsfire = game.artifacts.get(10);

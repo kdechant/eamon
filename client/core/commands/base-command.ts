@@ -7,6 +7,10 @@ import Game from "../models/game";
 export interface BaseCommand {
   name: string;
   verbs: string[];
+  category?: string;
+  description?: string;
+  examples?: string[];
+  secret?: boolean;
   /**
    * Optional function to change what appears in the history window.
    * @param verb
@@ -28,6 +32,9 @@ export interface BaseCommand {
 export class CustomCommand implements BaseCommand {
   name: string;
   verbs: string[];
+  category?: string;
+  description?: string;
+  examples?: string[];
   game: Game;
   run(verb: string, arg: string) { }
 }

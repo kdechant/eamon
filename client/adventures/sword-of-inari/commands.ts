@@ -7,6 +7,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "buy",
   verbs: ["buy"],
+  description: "Buys things from merchants.",
+  examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 
@@ -27,6 +29,8 @@ custom_commands.push({
 custom_commands.push({
   name: "rent",
   verbs: ["rent"],
+  description: "Rents a room at the inn.",
+  examples: ['RENT ROOM'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 
@@ -46,6 +50,8 @@ custom_commands.push({
 custom_commands.push({
   name: "pay",
   verbs: ["pay"],
+  description: "Gives money to a few NPCs who ask for it.",
+  examples: ['PAY BARTENDER'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 
@@ -69,6 +75,8 @@ custom_commands.push({
 custom_commands.push({
   name: "pull",
   verbs: ["pull"],
+  description: "Pulls on something.",
+  examples: ['PULL ROPE'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 

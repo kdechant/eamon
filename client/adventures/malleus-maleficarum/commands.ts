@@ -10,6 +10,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "buy",
   verbs: ["buy"],
+  description: "Buys an item from a merchant. Items that are for sale will be listed in the game window.",
+  examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
     arg = arg.toLowerCase();
     let artifact = game.artifacts.getByName(arg);
@@ -44,6 +46,8 @@ custom_commands.push({
 custom_commands.push({
   name: "talk",
   verbs: ["talk"],
+  description: "Talks to an NPC to get information.",
+  examples: ['TALK TO MAYA'],
   run: function(verb: string, arg: string): void {
     if (arg.indexOf('to ') !== -1) {
       arg = arg.slice(3);
@@ -119,6 +123,8 @@ custom_commands.push({
 custom_commands.push({
   name: "pay",
   verbs: ["pay"],
+  description: "Pays for things you owe, e.g., fines. To buy things from merchants, use the BUY command instead.",
+  examples: ['PAY FINE'],
   run: function(verb: string, arg: string): void {
     if (arg === 'fine' || arg === 'inquisitor') {
       if (game.data.fine_due && inquisitorIsHere()) {

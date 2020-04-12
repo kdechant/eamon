@@ -7,6 +7,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "kiss",
   verbs: ["kiss"],
+  description: "Kiss someone or something.",
+  examples: ['KISS (NAME OF NPC)'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 

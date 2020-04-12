@@ -6,6 +6,9 @@ export var custom_commands = [];
 custom_commands.push({
   name: "locate",
   verbs: ["locate"],
+  category: "magic",
+  description: "Activates a special spell. You'll need to learn this before you can use it.",
+  examples: ['LOCATE TORCH', 'LOCATE HOKAS TOKAS'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     if (game.data['locate active']) {
@@ -49,6 +52,8 @@ custom_commands.push({
 custom_commands.push({
   name: "pay",
   verbs: ["pay"],
+  description: "Pays for your purchases. In this place, that usually means drinks.",
+  examples: ['PAY'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     if (game.player.room_id === 36 && game.data['bar tab']) {

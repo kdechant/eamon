@@ -8,6 +8,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "buy",
   verbs: ["buy"],
+  description: "Buys an item from a merchant.",
+  examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     arg = arg.toLowerCase();
@@ -60,6 +62,8 @@ custom_commands.push({
 custom_commands.push({
   name: "talk",
   verbs: ["talk"],
+  description: "Talks to an NPC to get information.",
+  examples: ['TALK TO IRON MIKE'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 

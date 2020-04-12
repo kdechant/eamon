@@ -6,6 +6,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "push",
   verbs: ["push", "hit"],
+  description: "Used for pushing buttons on machinery.",
+  examples: ['PUSH BUTTON', 'HIT BUTTON'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 

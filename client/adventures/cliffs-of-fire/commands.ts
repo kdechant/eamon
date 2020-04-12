@@ -7,6 +7,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "wave",
   verbs: ["wave"],
+  description: "Waves something in the air.",
+  examples: ['WAVE WAND'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
 

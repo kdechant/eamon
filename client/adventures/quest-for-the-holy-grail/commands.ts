@@ -7,6 +7,8 @@ export var custom_commands = [];
 custom_commands.push({
   name: "throw",
   verbs: ["throw","toss","chuck","heave"],
+  description: "Throws something.",
+  examples: ['THROW HOLY HAND GRENADE'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     let artifact = game.artifacts.getLocalByName(arg);
@@ -28,6 +30,8 @@ custom_commands.push({
 custom_commands.push({
   name: "enter",
   verbs: ["enter"],
+  description: "Try to go into a building.",
+  examples: ['ENTER CASTLE'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     if (arg === 'castle') {
@@ -53,6 +57,8 @@ custom_commands.push({
 custom_commands.push({
   name: "buy",
   verbs: ["buy","purchase"],
+  description: "Buys an item from a merchant.",
+  examples: ['BUY CHEESE'],
   run: function(verb: string, arg: string): void {
     let game = Game.getInstance();
     let artifact = game.artifacts.getByName(arg);

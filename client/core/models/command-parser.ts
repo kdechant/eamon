@@ -31,6 +31,9 @@ export class CommandParser {
       let cmd = new CustomCommand();
       cmd.name = c.name;
       cmd.verbs = c.verbs;
+      cmd.category = c.category;  // for command list modal
+      cmd.description = c.description;  // for command list modal
+      cmd.examples = c.examples;  // for command list modal
       cmd.run = c.run;
       this.register(cmd);
     }
