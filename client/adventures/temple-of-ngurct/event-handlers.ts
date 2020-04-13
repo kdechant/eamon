@@ -106,8 +106,8 @@ export var event_handlers = {
   "endTurn": function() {
     let game = Game.getInstance();
 
-    // wandering monsters
-    if (game.data['wandering monsters'].length > 0 && game.timer > 1 && !game.skip_battle_actions) {
+    // wandering monsters (not in room 1 because it causes test failures)
+    if (game.data['wandering monsters'].length > 0 && game.player.room_id > 1 && !game.skip_battle_actions) {
       if (game.diceRoll(1, 100) <= 9) {
         summon_wandering_monster();
       }

@@ -76,6 +76,7 @@ test("summon something nasty", () => {
   game.artifacts.get(15).moveToInventory();
   game.artifacts.get(15).is_lit = true;
   game.player.moveToRoom(54); game.tick();
+  game.mock_random_numbers = [1];  // don't run
   game.command_parser.run('say ' + game.data.phrases.ygolonac);
   expectEffectSeen(5);
   expect(game.monsters.get(3).isHere()).toBeTruthy();

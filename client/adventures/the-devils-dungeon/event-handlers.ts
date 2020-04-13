@@ -78,29 +78,16 @@ export var event_handlers = {
 
     // if player is carrying the crystal ball, look for possible hostile monsters in the next room
     if (game.player.hasArtifact(10)) {
-      let monsters = game.monsters.getByRoom(exit.room_to);
-      let danger = false;
-      for (let m of monsters) {
-        if (!m.seen) {
-          danger = true;
-        }
-      }
+      let danger = game.monsters.all.some(m => m.room_id === exit.room_to && !m.seen);
       if (danger) {
-        let q1 = new ModalQuestion;
-        q1.type = 'multiple_choice';
-        q1.question = "The crystal ball warns of possible danger ahead! Do you wish to proceed?";
-        q1.choices = ['Yes', 'No'];
-        q1.callback = function (answer) {
+        game.modal.confirm("The crystal ball warns of possible danger ahead! Do you wish to proceed?", answer => {
           if (answer.toLowerCase() === 'yes') {
-            let room_to = game.rooms.getRoomById(exit.room_to);
+            let room_to = game.rooms.get(exit.room_to);
             let room_from = game.rooms.current_room;
             game.player.moveToRoom(room_to.id, true);
             game.triggerEvent("afterMove", arg, room_from, room_to);
           }
-          return true;
-        };
-        game.modal.questions = [q1];
-        game.modal.run();
+        });
         // always return false here because the actual movement happens in the callback.
         return false;
       } else {

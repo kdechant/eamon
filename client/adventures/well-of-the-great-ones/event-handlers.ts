@@ -4,10 +4,9 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
-import {put_out_trollsfire} from "../the-beginners-cave/event-handlers";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare var game: Game;
 
 export var event_handlers = {
 

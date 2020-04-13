@@ -217,8 +217,6 @@ cd client
 yarn test
 ```
 
-Note: A couple of the tests can be a bit finicky and produce false positives. If you get a sporadic error, try running the tests again. 
-
 Tests can also be run one file at a time, which is much faster than running the whole suite. To run a single test, append a filename to the command, like this:
 
 ```

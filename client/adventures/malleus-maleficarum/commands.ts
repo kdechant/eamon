@@ -1,9 +1,8 @@
 import Game from "../../core/models/game";
-import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 import {inquisitorIsHere} from "./event-handlers";
 
-declare var game;
+declare var game: Game;
 
 export var custom_commands = [];
 

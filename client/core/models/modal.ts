@@ -13,6 +13,13 @@ export class Modal {
   public mock_answers: string[] = [];
 
   /**
+   * Whether a mock answer was used. Used to prevent double game clock ticks
+   * when using mock answers in tests.
+   * @type {boolean}
+   */
+  private mock_answer_used: boolean = false;
+
+  /**
    * The easy way to ask a question of the player. Asks a question that takes a text answer.
    * The game will be paused waiting for player input.
    *
@@ -65,6 +72,7 @@ export class Modal {
       if (this.mock_answers.length > 0) {
         let answer = this.mock_answers.shift();
         console.log("mock answer: ", answer);
+        this.mock_answer_used = true;
         this.submit(answer);
       }
     } else {
@@ -96,7 +104,10 @@ export class Modal {
     this.visible = false;
     if (!game.won && !game.died) {
       game.resume();
-      game.tick();
+      if (!this.mock_answer_used) {
+        // prevents double game clock tick during tests with mock answers
+        game.tick();
+      }
     }
   }
 }

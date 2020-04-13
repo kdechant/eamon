@@ -57,12 +57,12 @@ test("general event handlers", () => {
   expect(game.effects.get(12).seen).toBeTruthy();
 
   // mad piano player
+  game.monsters.get(6).courage = 999;  // prevent fleeing
   game.player.moveToRoom(game.monsters.get(6).room_id);
   game.command_parser.run("say gronk");
   expect(game.effects.get(43).seen).toBeTruthy();
   game.artifacts.get(8).moveToInventory();
   game.player.updateInventory();
-  // game.monsters.updateVisible();
   expect(game.monsters.get(6).isHere()).toBeTruthy();
   expect(game.player.hasArtifact(8)).toBeTruthy();
   game.command_parser.run("give lamp to mad piano player");
@@ -94,25 +94,21 @@ test("general event handlers", () => {
   game.command_parser.run('drink rum');
   expect(game.effects.get(27).seen).toBeTruthy();
   expect(game.monsters.get(11).room_id).toBe(33);
-
 });
 
 test("gerschter bar", () => {
-
   game.player.moveToRoom(7);
   game.command_parser.run('speed');
   expect(game.effects.get(10).seen).toBeTruthy();
   game.monsters.get(8).moveToRoom();
-  // game.monsters.updateVisible();
+  game.monsters.get(8).courage = 999;  // prevent fleeing
   game.command_parser.run('attack ogre');
   expect(game.effects.get(9).seen).toBeTruthy();
   expect(game.player.room_id).toBe(63);
   expect(game.monsters.get(8).room_id).toBe(63);
-
 });
 
 test("blood alcohol content", () => {
-
   game.data['drinks'] = 18; // mock player has HD of 50
   game.data['sober counter'] = 100;
   game.triggerEvent('endTurn');
@@ -129,7 +125,6 @@ test("blood alcohol content", () => {
   game.data['drinks'] = 33;
   game.triggerEvent('endTurn');
   expect(game.history.getLastOutput().text).toBe(drunk_messages[4].text);
-
 });
 
 test("more event handlers", () => {

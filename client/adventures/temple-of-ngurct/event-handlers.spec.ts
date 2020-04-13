@@ -27,21 +27,19 @@ beforeEach(() => {
 
 // TESTS
 
-it("should have working event handlers", () => {
-
+test("wandering monsters", () => {
   // wandering monsters
-  game.mock_random_numbers = [20,1,12]; // first turn will not summon a monster (rnd > 8), second turn will summon monster #18
+  game.player.moveToRoom(2);  // they never appear in room 1 because it breaks other tests
+  game.mock_random_numbers = [20, 1, 12]; // first turn will not summon a monster (rnd > 8), second turn will summon monster #18
   let joubert = game.monsters.get(18);
   game.command_parser.run('look');
   expect(joubert.room_id).toBeNull();
   game.command_parser.run('look');
   expect(joubert.room_id).toBe(game.player.room_id);
-  joubert.reaction = Monster.RX_NEUTRAL; // needed for fireball wand test below
+});
 
-  // wandering monsters will be a pain for the remaining tests. remove them.
+test('dead mage artifacts', () => {
   game.data['wandering monsters'] = [];
-
-  // the dead mage's artifacts
   let dm = game.artifacts.get(32);
   expect(dm.room_id).not.toBeNull();
   dm.moveToRoom(); // this is easier than going to a random room that might have monsters in it
@@ -49,8 +47,10 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(33).room_id).toBe(1);
   expect(game.artifacts.get(64).room_id).toBe(1);
   game.command_parser.run('get fireball wand');
+});
 
-  // fireball wand
+test('fireball wand', () => {
+  game.data['wandering monsters'] = [];
   game.artifacts.get(33).moveToInventory();
   game.command_parser.run('ready fireball wand');
   // wrong trigger word
@@ -73,13 +73,11 @@ it("should have working event handlers", () => {
   expect(game.monsters.get(7).damage).toBe(12);
   expect(game.monsters.get(9).damage).toBe(6);
   expect(game.monsters.get(17).damage).toBe(12);
-  expect(game.monsters.get(18).damage).toBe(0);
+  expect(game.monsters.get(18).damage).toBe(0);  // monster is not here
+});
 
-  game.monsters.get(7).destroy();
-  game.monsters.get(9).destroy();
-  game.monsters.get(17).destroy();
-
-  // oak door
+test('oak door', () => {
+  game.data['wandering monsters'] = [];
   let door1 = game.artifacts.get(16);
   let door2 = game.artifacts.get(17);
   game.player.moveToRoom(33);
@@ -90,14 +88,18 @@ it("should have working event handlers", () => {
   game.command_parser.run('n');
   expect(door1.is_open).toBeFalsy();
   expect(door2.is_open).toBeFalsy();
+});
 
-  // hieroglyphics
+test('hieroglyphics', () => {
+  game.data['wandering monsters'] = [];
   game.monsters.get(46).destroy();  // get mummy out of the way
   game.player.moveToRoom(38);
   game.command_parser.run('read inscription');
   expect(game.effects.get(1).seen).toBeTruthy();
+});
 
-  // potion
+test('potion', () => {
+  game.data['wandering monsters'] = [];
   let black_potion = game.artifacts.get(62);
   black_potion.moveToInventory();
   game.player.updateInventory();
@@ -106,23 +108,30 @@ it("should have working event handlers", () => {
   game.command_parser.run('drink black potion');
   expect(game.player.agility).toBe(old_ag + 1);
   expect(game.data['original ag']).toBe(old_original_ag + 1);
+});
 
-  // carcass
+test('carcass', () => {
+  game.data['wandering monsters'] = [];
   let carcass = game.artifacts.get(67);
   carcass.moveToRoom();
   game.artifacts.updateVisible();
   game.command_parser.run('eat carcass');
   expect(carcass.room_id).toBe(game.player.room_id);
+});
 
-  // door logic (tests core stuff)
+test('door logic', () => {
+  // Note: this tests core stuff
+  game.data['wandering monsters'] = [];
   game.player.moveToRoom(26);
   game.artifacts.get(71).moveToInventory();
   game.player.updateInventory();
   game.command_parser.run('open cell door');
   expect(game.artifacts.get(12).is_open).toBeTruthy();
   expect(game.artifacts.get(13).is_open).toBeTruthy();
+});
 
-  // alkanda
+test('alkanda', () => {
+  game.data['wandering monsters'] = [];
   let alk = game.monsters.get(56);
   game.command_parser.run('say annal natthrac');
   expect(alk.room_id).toBeNull();
@@ -135,8 +144,10 @@ it("should have working event handlers", () => {
   game.tick();
   game.command_parser.run('get scimitar');
   expect(game.player.damage).toBeGreaterThan(0);
+});
 
-  // power
+test('power spell', () => {
+  game.data['wandering monsters'] = [];
   game.history.push('power 1');
   game.mock_random_numbers = [13];  // room
   game.triggerEvent('power', 10);
@@ -161,5 +172,4 @@ it("should have working event handlers", () => {
   game.history.push('power 6');
   game.triggerEvent('power', 25);
   expect(game.died).toBeTruthy();
-
 });

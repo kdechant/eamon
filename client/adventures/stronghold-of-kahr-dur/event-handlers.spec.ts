@@ -24,7 +24,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-afterEach(() => console.log(game.history.summary()));
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
