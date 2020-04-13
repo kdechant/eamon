@@ -163,6 +163,15 @@ export class Artifact extends GameObject {
   }
 
   /**
+   * Determines if the artifact is in an open container that is "here" (in room or in player inv)
+   */
+  public isInLocalContainer(): boolean {
+    if (!this.container_id) return false;
+    const container = game.artifacts.get(this.container_id);
+    return (container.isHere() && container.is_open);
+  }
+
+  /**
    * Removes an artifact from a container and places it in the player's inventory
    * or the room where the container is (depending on size of artifact)
    */

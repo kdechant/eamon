@@ -756,7 +756,14 @@ export class DrinkCommand implements BaseCommand {
           throw new CommandException("You can't drink that!");
         }
       } else {
-        throw new CommandException("I don't know what you mean.");
+        // trying to drink something that's not here
+        let item = game.artifacts.getByName(arg);
+        if (item.isInLocalContainer()) {
+          const container = game.artifacts.get(item.container_id);
+          throw new CommandException(`Try removing it from the ${container.name} first.`);
+        } else {
+          throw new CommandException("I don't know what you mean.");
+        }
       }
     }
   }
@@ -785,6 +792,15 @@ export class EatCommand implements BaseCommand {
           }
         } else {
           throw new CommandException("You can't eat that!");
+        }
+      } else {
+        // trying to eat something that's not here
+        let item = game.artifacts.getByName(arg);
+        if (item.isInLocalContainer()) {
+          const container = game.artifacts.get(item.container_id);
+          throw new CommandException(`Try removing it from the ${container.name} first.`);
+        } else {
+          throw new CommandException("I don't know what you mean.");
         }
       }
     }
