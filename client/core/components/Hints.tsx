@@ -54,7 +54,7 @@ class Hints extends React.Component<any, any> {
                         <span className="blur">{h.answers[h.current_index].answer}</span><br />
                         <span className="small">Spoiler alert! <a onClick={() => this.reveal(h)}>Click here to show the answer</a>.</span>
                       </span> :
-                      <ReactMarkdown source={h.answers[h.current_index].answer} escapeHtml={false} /> }
+                      <ReactMarkdown source={h.answers[h.current_index].answer} escapeHtml={false} linkTarget="_blank" /> }
                   </div>
                   {h.answers.length > 1 && (
                   <div className="hint-next-prev">
