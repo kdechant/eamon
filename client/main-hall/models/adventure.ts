@@ -5,6 +5,7 @@ import GameObject from "./game-object";
  */
 export default class Adventure extends GameObject {
 
+  name_sort: string;
   description: string;
   full_description: string;
   slug: string;

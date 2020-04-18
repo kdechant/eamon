@@ -26,6 +26,8 @@ class AdventureList extends React.Component<any, any> {
           d.authors_display = d.authors.join(' and ');
           let adv = new Adventure();
           adv.init(d);
+          adv.name_sort = adv.name.slice(0,4) === 'The ' ? adv.name.slice(4) : adv.name;
+          console.log(adv.name_sort);
           all_adventures.push(adv);
 
           for (let tag of adv.tags) {
@@ -75,7 +77,7 @@ class AdventureList extends React.Component<any, any> {
 
     // sort
     let sort_option = this.state.currentSort;
-    let sort_field = 'name';
+    let sort_field = 'name_sort';
     let dir = 'asc';
     if (this.state.currentTag === 'featured') {
       // featured filter uses a custom default sort order
@@ -84,7 +86,7 @@ class AdventureList extends React.Component<any, any> {
     // translate the chosen option to a field and direction
     switch (sort_option) {
       case 'alphabetical':
-        sort_field = 'name';
+        sort_field = 'name_sort';
         dir = 'asc';
         break;
       case 'featured_month':
