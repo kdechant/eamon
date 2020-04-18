@@ -139,22 +139,12 @@ export class HistoryManager {
    * Used for recalling the history with the arrow keys.
    */
   getOlderCommand() {
-
-    // this should be a unique list of the history
-    // so if you ran the same command multiple times you don't have to
-    // arrow back through the duplicates.
-    // see https://codeburst.io/javascript-array-distinct-5edc93501dc4
-
-    // it should display the most recent commands at the end of the list,
-    // e.g., if you ran:
-    // 'n' 'e' 'n' 'w' 'n'
-    // the list should be, from oldest to newest: 'e', 'w', 'n'
-
-    // or else, combine duplicates only if they appear consecutively. (this might not be hard.)
-
     let commands = this.getPastCommands();
     if (this.index > 0) {
       this.index--;
+    }
+    if (this.index > commands.length) {
+      this.index = commands.length - 1;
     }
     if (this.index >= 0 && this.index < commands.length) {
       return commands[this.index];
@@ -172,9 +162,12 @@ export class HistoryManager {
     if (this.index <= commands.length) {
       this.index++;
     }
+    if (this.index > commands.length + 1) {
+      this.index = commands.length;
+    }
     if (this.index >= 0 && this.index < commands.length) {
       return commands[this.index];
-    } else if (this.index === this.history.length) {
+    } else if (this.index === commands.length) {
       // reached the newest command. clear the field.
       return "";
     } else {
@@ -224,16 +217,22 @@ export class HistoryManager {
   }
 
   /**
-   * Gets the list of commands the player ran, for use when paging through the history
+   * Gets the list of commands the player ran, for use when paging through the history.
+   *
+   * This performs some simple de-duplication, squashing multiple consecutive commands
+   * into one entry, so you don't have to keep paging through them all. It also does not
+   * include the latest command the user typed, because that is the same as what will
+   * appear when the prompt is empty.
    */
   getPastCommands() {
     let commands = [];
+
     this.history.forEach(e => {
-      if (commands[commands.length - 1] !== e.command) {
+      if (e.command !== '' && commands[commands.length - 1] !== e.command) {
         commands.push(e.command);
       }
     });
-    return commands;
+    return commands.slice(0, -1);  // no need to include the latest command here
   }
 
   /**
