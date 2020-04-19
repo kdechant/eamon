@@ -41,6 +41,7 @@
     "babel-jest": "^25.3.0",
     "babel-loader": "^8.01.0",
     "concurrently": "^5.1.0",
+    "core-js": "^3.6.5",
     "html-webpack-plugin": "^4.2.0",
     "jest": "^25.3.0",
     "node-sass": "^4.13.1",
