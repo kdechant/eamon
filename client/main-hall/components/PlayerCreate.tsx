@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import diceRoll from "../utils/dice";
 import {getHeaders} from '../utils/api';
@@ -21,7 +21,7 @@ class PlayerCreate extends React.Component {
 
     // set the UUID if it's not already in local storage
     if (!window.localStorage.getItem('eamon_uuid')) {
-      window.localStorage.setItem('eamon_uuid', uuid());
+      window.localStorage.setItem('eamon_uuid', uuidv4());
     }
   }
 

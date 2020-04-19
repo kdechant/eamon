@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as React from 'react';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
@@ -25,7 +25,7 @@ class PlayerList extends React.Component {
 
     // set the UUID if it's not already in local storage
     if (!eamon_uuid) {
-      eamon_uuid = uuid();
+      eamon_uuid = uuidv4();
       window.localStorage.setItem('eamon_uuid', eamon_uuid);
     }
     this.setState({ eamon_uuid, socialLoginId, socialPlatform }, this.loadPlayers);
@@ -85,7 +85,7 @@ class PlayerList extends React.Component {
     window.localStorage.removeItem('social_id');
     window.localStorage.removeItem('social_platform');
     // set new uuid to clear the player list
-    const new_uuid = uuid();
+    const new_uuid = uuidv4();
     window.localStorage.setItem('eamon_uuid', new_uuid);
     this.setState({
       socialLoginId: null,

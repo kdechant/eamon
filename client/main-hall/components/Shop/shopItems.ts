@@ -1,6 +1,6 @@
 import Artifact from "../../models/artifact";
 import diceRoll from "../../utils/dice";
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export let weapons: Artifact[] = [];
 export const armors: Artifact[] = [];
@@ -9,7 +9,7 @@ export const armors: Artifact[] = [];
 let item: Artifact;
 for (let t = 1; t <= 5; t++) {
   item = new Artifact();
-  item.uuid = uuid();
+  item.uuid = uuidv4();
   item.type = Artifact.TYPE_WEAPON;
   item.weapon_type = t;
   item.weapon_odds = 10;
@@ -54,7 +54,7 @@ let magic_weapons: Artifact[] = [];
 let num_weapons: number = 3;
 for (let i = 0; i < num_weapons; i++) {
   item = new Artifact();
-  item.uuid = uuid();
+  item.uuid = uuidv4();
   item.type = Artifact.TYPE_MAGIC_WEAPON;
   item.weapon_type = diceRoll(1, 5);
 
@@ -83,7 +83,7 @@ weapons = weapons.concat(magic_weapons);
 let armor_types = ["leather", "chain", "scale", "plate"];
 for (let a of armor_types) {
   item = new Artifact;
-  item.uuid = uuid();
+  item.uuid = uuidv4();
   item.type = Artifact.TYPE_WEARABLE;
   item.armor_type = Artifact.ARMOR_TYPE_ARMOR;
   if (a === 'chain') {
@@ -121,7 +121,7 @@ for (let a of armor_types) {
   armors.push(item);
 }
 item = new Artifact;
-item.uuid = uuid();
+item.uuid = uuidv4();
 item.type = Artifact.TYPE_WEARABLE;
 item.armor_type = Artifact.ARMOR_TYPE_SHIELD;
 item.name = "shield";

@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * GameObject class. Parent class for monsters and artifacts.
@@ -25,7 +25,7 @@ export default class GameObject {
    * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
-    this.uuid = uuid();
+    this.uuid = uuidv4();
     for (let prop in source) {
       this[prop] = source[prop];
     }
