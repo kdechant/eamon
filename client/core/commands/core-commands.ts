@@ -1531,14 +1531,14 @@ export class SaveCommand implements BaseCommand {
     q1.choices = [];
     for (let slot = 1; slot <= 10; slot++) {
       if (game.saved_games.hasOwnProperty(slot.toString())) {
-        q1.choices.push(slot + ": " + game.saved_games[slot].description);
+        q1.choices.push(slot + ": " + (game.saved_games[slot].description ? game.saved_games[slot].description : "no description"));
       } else {
-        q1.choices.push(slot + ": blank");
+        q1.choices.push(slot + ": unused");
       }
     }
-    q1.choices.push('cancel');
+    q1.choices.push('Cancel');
     q1.callback = function (answer) {
-      if (answer === 'cancel') {
+      if (answer.toLowerCase() === 'cancel') {
         return false;
       }
       let slot = parseInt(answer);
@@ -1584,12 +1584,12 @@ export class RestoreCommand implements BaseCommand {
     q1.choices = [];
     for (let i = 1; i <= 10; i++) {
       if (game.saved_games.hasOwnProperty(i)) {
-        q1.choices.push(i + ": " + game.saved_games[i].description);
+        q1.choices.push(i + ": " + (game.saved_games[i].description ? game.saved_games[i].description : "no description"));
       }
     }
-    q1.choices.push('cancel');
+    q1.choices.push('Cancel');
     q1.callback = answer => {
-      if (answer === 'cancel') {
+      if (answer.toLowerCase() === 'cancel') {
         return false;
       }
       let slot = parseInt(answer, 10);

@@ -68,6 +68,7 @@ export class Modal {
     if (this.questions) {
       this.visible = true;
       this.current_question = this.questions[0];
+      this.setupHotKeys();
       this.counter = 0;
       if (this.mock_answers.length > 0) {
         let answer = this.mock_answers.shift();
@@ -94,10 +95,33 @@ export class Modal {
         this.close();
       } else {
         this.current_question = this.questions[this.counter];
+        this.setupHotKeys();
       }
     } else {
       this.close();
     }
+  }
+
+  /**
+   * Configures automatic hot keys for each choice in the question. The key for each choice will be the
+   * first character in the string, unless that key has already been assigned to a different choice.
+   * In that case, it will proceed with the second character, third, and so on until it finds a
+   * valid key. E.g., in the save dialog, slot #10 gets '0' as its hot key because '1' is already
+   * taken by the first slot.
+   */
+  private setupHotKeys() {
+    if (this.current_question.type !== 'multiple_choice') return;
+    this.current_question.hotkey_positions = [];
+    this.current_question.choices.forEach((c, index) => {
+      for (let i = 0; i < c.length; i++) {
+        let letter = c[i].toLowerCase();
+        if (!this.current_question.hotkeys.hasOwnProperty(letter)) {
+          this.current_question.hotkeys[letter] = c;
+          this.current_question.hotkey_positions[index] = i;
+          break;
+        }
+      }
+    });
   }
 
   private close() {
@@ -110,6 +134,20 @@ export class Modal {
       }
     }
   }
+
+  /**
+   * Returns the choice text for the current question, split into an array containing:
+   *   * characters before the hotkey
+   *   * the hotkey
+   *   * characters after the hotkey
+   * @param {number} index
+   */
+  public splitByHotkey(index) {
+    let pos = this.current_question.hotkey_positions[index];
+    let choice = this.current_question.choices[index];
+    return [choice.slice(0, pos), choice.slice(pos, pos + 1), choice.slice(pos + 1)];
+  }
+
 }
 
 export class ModalQuestion {
@@ -134,4 +172,13 @@ export class ModalQuestion {
    * Callback function that will be called when the player answers the question
    */
   callback: Function;
+
+  /**
+   * Keys that will trigger answers by key press. (multiple choice only)
+   */
+  hotkeys: { [key: string]: string; } = {};
+  /**
+   * Positions of the hotkeys within each answer. (multiple choice only)
+   */
+  hotkey_positions: number[];
 }
