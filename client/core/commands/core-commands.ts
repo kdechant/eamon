@@ -193,8 +193,11 @@ export class LookCommand implements BaseCommand {
         }
 
         // Reveal artifacts "hidden" in this artifact - e.g., a ring on a dead body, etc.
-        // This only applies to artifacts that are not containers. To set up this effect, give the "contained" item
-        // a "container_id" of another artifact that is not a container (see Temple of Ngurct fireball wand for example)
+        // This only applies to artifacts that are not containers. To set up this effect,
+        // give the "contained" item a "container_id" of another artifact that is not a
+        // container (see Temple of Ngurct fireball wand for example)
+        // Note: This currently doesn't work to reveal secret doors, because they must be
+        // in the room for normal room exit logic to work. Use a 'look' event handler for those.
         a.updateContents(true); // override the container logic to have contents of any artifact type, just for this logic
         if (a.type !== Artifact.TYPE_CONTAINER && a.contents.length > 0) {
           game.history.write("You found something!");
