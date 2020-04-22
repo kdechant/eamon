@@ -133,39 +133,39 @@ class SamSlicker extends React.Component<any, any> {
     // build the rating buttons
     let ratingButtons = (
       <div className="container sell-items">
-      <div className="row">
-        <div className="ratings col-md-6 offset-md-3 p-2">
-          <h3>Rate this adventure</h3>
-          <p>What did you think of this adventure overall?</p>
-          <p>
-            {[1,2,3,4,5].map(i => (
-              <a key={i} href="#"
-                 onClick={() => this.updateRating('overall', i)}
-                 className={this.state.rating.overall >= i ? 'active' : 'inactive'}>
-                <img src="/static/images/ravenmore/128/star.png" alt={"Star " + i} />
-              </a>
-            ))}
-          </p>
-          <p>How would you rate the difficulty of combat?</p>
-          <p>
-            {[1,2,3,4,5].map(i => (
-              <a key={i} href="#"
-                 onClick={() => this.updateRating('combat', i)}
-                 className={this.state.rating.combat >= i ? 'active' : ''}>
-                <img src="/static/images/ravenmore/128/sword.png" alt={"Sword " + i} />
-              </a>
-            ))}
-          </p>
-          <p>How would you rate the difficulty of the puzzles?</p>
-            {[1,2,3,4,5].map(i => (
-              <a key={i} href="#"
-                 onClick={() => this.updateRating('puzzle', i)}
-                 className={this.state.rating.puzzle >= i ? 'active' : ''}>
-                <img src="/static/images/ravenmore/128/tome.png" alt={"Book " + i} />
-              </a>
-            ))}
+        <div className="row">
+          <div className="ratings col-md-6 offset-md-3 p-2">
+            <h3>Rate this adventure</h3>
+            <p>What did you think of this adventure overall?</p>
+            <p>
+              {[1,2,3,4,5].map(i => (
+                <a key={i}
+                   onClick={() => this.updateRating('overall', i)}
+                   className={this.state.rating.overall >= i ? 'active' : 'inactive'}>
+                  <img src="/static/images/ravenmore/128/star.png" alt={"Star " + i} />
+                </a>
+              ))}
+            </p>
+            <p>How would you rate the difficulty of combat?</p>
+            <p>
+              {[1,2,3,4,5].map(i => (
+                <a key={i}
+                   onClick={() => this.updateRating('combat', i)}
+                   className={this.state.rating.combat >= i ? 'active' : ''}>
+                  <img src="/static/images/ravenmore/128/sword.png" alt={"Sword " + i} />
+                </a>
+              ))}
+            </p>
+            <p>How would you rate the difficulty of the puzzles?</p>
+              {[1,2,3,4,5].map(i => (
+                <a key={i}
+                   onClick={() => this.updateRating('puzzle', i)}
+                   className={this.state.rating.puzzle >= i ? 'active' : ''}>
+                  <img src="/static/images/ravenmore/128/tome.png" alt={"Book " + i} />
+                </a>
+              ))}
+          </div>
         </div>
-      </div>
       </div>
     );
 

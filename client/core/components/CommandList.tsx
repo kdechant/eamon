@@ -31,14 +31,17 @@ const CommandList = (props) => {
     }
   }
 
+  // verbs to remove from the list
+  const hidden_commands = ['n', 's', 'e', 'w', 'u', 'd', 'ne', 'se', 'sw', 'nw'];
+
   return (
     <Modal isOpen={props.visible} toggle={props.toggle} size="xl">
-      <ModalHeader toggle={props.toggle}>
+      <ModalHeader toggle={props.toggle} tag="h3">
         Available Commands
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="command-list">
         <p>
-          <a href="#" id="how-to-type-commands">How to type commands</a>
+          <a id="how-to-type-commands" tabIndex={0}>How to type commands</a>
           <Popover placement="bottom" isOpen={popoverOpen} target="how-to-type-commands" toggle={toggle}>
             <PopoverHeader>Tips for typing commands</PopoverHeader>
             <PopoverBody>
@@ -61,8 +64,9 @@ const CommandList = (props) => {
                 <h4 className="mt-2 mb-0">{name.toUpperCase()}</h4>
                 <div className="row">
                   {commands.map((c: BaseCommand) =>
-                    c.verbs.map(v => <CommandVerb key={v} verb={v} description={c.description} examples={c.examples} />)
-                  )}
+                    c.verbs.filter(v => hidden_commands.indexOf(v) === -1).map(v =>
+                      <CommandVerb key={v} verb={v} description={c.description} examples={c.examples} />
+                  ))}
                 </div>
               </div>
             )
@@ -70,7 +74,7 @@ const CommandList = (props) => {
         })}
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onClick={props.toggle}>Close</button>
+        <button type="button" className="btn btn-primary" onClick={props.toggle} tabIndex={0}>Close</button>
       </ModalFooter>
     </Modal>
   );
@@ -81,7 +85,7 @@ const CommandVerb = (props) => {
   const toggle = () => setPopoverOpen(!popoverOpen);
   return (
     <div className="command-list-item col-4 col-sm-3">
-      <a href="#" id={'command-' + props.verb}>{props.verb.toUpperCase()}</a><br/>
+      <a id={'command-' + props.verb} tabIndex={0} onKeyPress={toggle}>{props.verb.toUpperCase()}</a><br/>
       {(props.description || props.examples) && (
         <Popover placement="bottom" isOpen={popoverOpen} target={'command-' + props.verb} toggle={toggle}>
           <PopoverHeader>{props.description}</PopoverHeader>

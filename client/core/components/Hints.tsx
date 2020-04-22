@@ -36,7 +36,7 @@ class Hints extends React.Component<any, any> {
     const game = this.props.game;
     return (
       <Modal isOpen={this.props.visible} toggle={this.props.toggle} size="lg">
-        <ModalHeader toggle={this.props.toggle}>
+        <ModalHeader toggle={this.props.toggle} tag="h3">
           { game.name } Hints
         </ModalHeader>
         <ModalBody>

@@ -4,12 +4,12 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 const HowToPlay = (props) => {
    return (
       <Modal isOpen={props.visible} toggle={props.toggle} size="xl">
-        <ModalHeader toggle={props.toggle}>
+        <ModalHeader toggle={props.toggle} tag="h3">
           Welcome to Eamon!
         </ModalHeader>
         <ModalBody>
           {props.game.demo && (
-            <div>
+            <div className="alert alert-info" role="alert">
               <p>You are playing as the demo character. You can explore the adventure as normal, but you won't be able to save your progress or keep any items or treasure you collect after you exit the adventure.</p>
               <p>You can create your own character later from the Main Hall if you want to keep your items and take them on future adventures.</p>
             </div>
