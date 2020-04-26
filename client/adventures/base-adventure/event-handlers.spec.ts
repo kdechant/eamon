@@ -4,7 +4,7 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {Artifact} from "../../core/models/artifact";
-import {initLiveGame} from "../../core/utils/testing";
+import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttack, movePlayer} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -28,10 +28,18 @@ beforeEach(() => {
 
 // TESTS
 
-it("should have working event handlers", () => {
+test("effect 1", () => {
   // do some game actions and write assertions here
 
   // for example:
-  expect(game.rooms.getRoomById(1)).not.toBeNull();
+  expect(game.rooms.get(1)).not.toBeNull();
+
+});
+
+test("effect 2", () => {
+  // do some game actions and write assertions here
+
+  // for example:
+  expect(game.rooms.get(1)).not.toBeNull();
 
 });

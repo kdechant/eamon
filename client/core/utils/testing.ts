@@ -2,8 +2,9 @@
  * This file contains some helper functions used during unit testing.
  */
 import axios from "axios";
+import Game from "../../core/models/game";
 
-declare var game;
+declare var game: Game;
 
 /**
  * Init from the mock data. Used in the unit tests.
@@ -33,7 +34,7 @@ export function initMockGame(game) {
 /**
  * Init from the live game data (data gotten from database)
  */
-export function initLiveGame(game) {
+export function initLiveGame(game: Game) {
 
   let path = "http://localhost:8000/api/adventures/" + game.slug;
   return axios.all([
@@ -104,6 +105,12 @@ export function playerAttack(hit: boolean, damage: number, special: number[] = [
     damage,
     ...special
   ]
+}
+
+export function movePlayer(room_id) {
+  game.skip_battle_actions = true;
+  game.player.moveToRoom(room_id);
+  game.tick();
 }
 
 // /**
