@@ -12,7 +12,7 @@ import Status from "./Status";
 import SamSlicker from "./SamSlicker";
 import Logger from "../utils/logger";
 
-declare var game;
+declare var game: Game;
 
 class MainProgram extends React.Component<any, any> {
 
@@ -259,41 +259,38 @@ class MainProgram extends React.Component<any, any> {
 
 export default MainProgram;
 
-class GameHeading extends React.Component<any, any> {
-
-  public render() {
-    let game = this.props.game;
-    return (
-      <div className="container-fluid main-heading">
-        <div className="row no-gutters">
-          <div className="col-6 col-md-12">
-            <h1>{game.name}</h1>
-          </div>
-          <div className="player-name col-4 text-right">
-            <span>{game.player.name}<br />
-              ({ game.player.hardiness - game.player.damage }/{ game.player.hardiness })</span>
-          </div>
-          <div className="player-menu col-1">
-            <button aria-haspopup={true} aria-expanded={this.props.statusOpen}
-              onClick={this.props.toggleStatus}>
-              {this.props.statusOpen ?
-                <img src="/static/images/ravenmore/128/backpack.png" alt="Backpack Icon - Opens status screen"
-                     title="View Status"/> :
-                <img src="/static/images/ravenmore/128/backpack_open.png" alt="Backpack Icon - Closes status screen"
-                     title="Hide Status"/>
-              }
-            </button>
-          </div>
-          <div className="player-menu col-1">
-            <button className={'sidebarIconToggle' + (this.props.menuOpen ? ' open' : ' closed')} aria-haspopup={true} aria-expanded={this.props.menuOpen}
-              onClick={this.props.toggleMenu}>
-              <div className="spinner diagonal part-1" />
-              <div className="spinner horizontal" />
-              <div className="spinner diagonal part-2" />
-            </button>
-          </div>
+const GameHeading = (props) => {
+  let game = props.game;
+  return (
+    <div className="container-fluid main-heading">
+      <div className="row no-gutters">
+        <div className="col-6 col-md-12">
+          <h1>{game.name}</h1>
+        </div>
+        <div className="player-name col-4 text-right">
+          <span>{game.player.name}<br />
+            ({ game.player.hardiness - game.player.damage }/{ game.player.hardiness })</span>
+        </div>
+        <div className="player-menu col-1">
+          <button aria-haspopup={true} aria-expanded={props.statusOpen}
+            onClick={props.toggleStatus}>
+            {props.statusOpen ?
+              <img src="/static/images/ravenmore/128/backpack.png" alt="Backpack Icon - Opens status screen"
+                   title="View Status"/> :
+              <img src="/static/images/ravenmore/128/backpack_open.png" alt="Backpack Icon - Closes status screen"
+                   title="Hide Status"/>
+            }
+          </button>
+        </div>
+        <div className="player-menu col-1">
+          <button className={'sidebarIconToggle' + (props.menuOpen ? ' open' : ' closed')} aria-haspopup={true} aria-expanded={props.menuOpen}
+            onClick={props.toggleMenu}>
+            <div className="spinner diagonal part-1" />
+            <div className="spinner horizontal" />
+            <div className="spinner diagonal part-2" />
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }

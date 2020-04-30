@@ -195,74 +195,68 @@ class Status extends React.Component<any, any> {
 export default Status;
 
 // some helper components
-class StatusMonster extends React.Component<any, any> {
-  public render() {
-    let monster = this.props.monster;
-    let className = "monster ";
-    if (monster.reaction === Monster.RX_FRIEND) { className += "friendly" }
-    if (monster.reaction === Monster.RX_HOSTILE) { className += "hostile" }
+const StatusMonster = (props) => {
+  let monster = props.monster;
+  let className = "monster ";
+  if (monster.reaction === Monster.RX_FRIEND) { className += "friendly" }
+  if (monster.reaction === Monster.RX_HOSTILE) { className += "hostile" }
 
-    let visible_children = monster.children.filter(m => m.isHere());
-    let singular = monster.count === 1 || visible_children.length === 1;
+  let visible_children = monster.children.filter(m => m.isHere());
+  let singular = monster.count === 1 || visible_children.length === 1;
 
-    return (
-      <div className={className}>
-        {singular ?
-          <span>{ monster.getDisplayName() }</span>
-          :
-          <span>{ visible_children.length } { monster.name_plural }</span>
-        }{' '}
-        - { monster.reaction }
-      </div>
-    );
-
-  }
+  return (
+    <div className={className}>
+      {singular ?
+        <span>{ monster.getDisplayName() }</span>
+        :
+        <span>{ visible_children.length } { monster.name_plural }</span>
+      }{' '}
+      - { monster.reaction }
+    </div>
+  );
 }
 
-class StatusArtifact extends React.Component<any, any> {
-  public render() {
-    let artifact = this.props.artifact;
+const StatusArtifact = (props) => {
+  let artifact = props.artifact;
 
-    return (
-      <div className="artifact">
-        { artifact.article } { artifact.name }&nbsp;
-        <span className="artifact-status">
-          {(artifact.type == 4 || artifact.type == 8) && (
-            <span className="container-status">
-              {artifact.is_open && (
-                <span className="open">(open)</span>
-              )}
-              {!artifact.is_open && (
-                <span className="closed">(closed)</span>
-              )}
-            </span>
+  return (
+    <div className="artifact">
+      { artifact.article } { artifact.name }&nbsp;
+      <span className="artifact-status">
+        {(artifact.type == 4 || artifact.type == 8) && (
+          <span className="container-status">
+            {artifact.is_open && (
+              <span className="open">(open)</span>
             )}
-        </span>
-        {artifact.inventory_message && (
-          <span className="custom">({ artifact.inventory_message })</span>
-        )}
-
-        {(artifact.is_lit && artifact.inventory_message == '') && (
-          <span className="lit">(lit)</span>
-        )}
-
-        {(artifact.is_worn && artifact.inventory_message == '') && (
-          <span className="worn">(wearing)</span>
-        )}
-
-        {artifact.id == this.props.game.player.weapon_id && (
-          <span className="ready">(ready weapon)</span>
-        )}
-
-        {artifact.is_open && (
-          <div>
-            {artifact.contents.map(item => (
-            <div className="artifact-contents" key={item.id}>{ item.getDisplayName() }</div>
-              ))}
-          </div>
+            {!artifact.is_open && (
+              <span className="closed">(closed)</span>
+            )}
+          </span>
           )}
-      </div>
-    );
+      </span>
+      {artifact.inventory_message && (
+        <span className="custom">({ artifact.inventory_message })</span>
+      )}
 
-  }
+      {(artifact.is_lit && artifact.inventory_message == '') && (
+        <span className="lit">(lit)</span>
+      )}
+
+      {(artifact.is_worn && artifact.inventory_message == '') && (
+        <span className="worn">(wearing)</span>
+      )}
+
+      {artifact.id == props.game.player.weapon_id && (
+        <span className="ready">(ready weapon)</span>
+      )}
+
+      {artifact.is_open && (
+        <div>
+          {artifact.contents.map(item => (
+          <div className="artifact-contents" key={item.id}>{ item.getDisplayName() }</div>
+            ))}
+        </div>
+        )}
+    </div>
+  );
 }

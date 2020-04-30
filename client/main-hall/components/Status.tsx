@@ -1,63 +1,60 @@
 import * as React from 'react';
 import { ucFirst } from "../utils";
 
-class Status extends React.Component<any, any> {
+const Status = (props: any) => {
 
-  public render() {
-
-    if (!this.props.player) {
-      return (
-        <p>Loading...</p>
-      )
-    }
-
-    // sort artifacts by type - weapons first, then armor
-    let artifacts = this.props.player.inventory.sort((a, b) => {
-      let typeA = a.type === 2 || a.type === 3 ? 2 : a.type;
-      let typeB = b.type === 2 || b.type === 3 ? 2 : b.type;
-      return typeA - typeB;
-    });
-
+  if (!props.player) {
     return (
-      <div>
-        <div className="status-widget player">
-          <div className="container">
-            <div className="row">
-              <h3 className="heading">You are the { this.props.player.getGenderLabel() } { this.props.player.name }</h3>
-            </div>
+      <p>Loading...</p>
+    )
+  }
 
-            <div className="stats row">
-              <div className="col-3 hardiness">HD: { this.props.player.hardiness }</div>
-              <div className="col-3 agility">AG: { this.props.player.agility }</div>
-              <div className="col-3 charisma">CH: { this.props.player.charisma }</div>
-            </div>
+  // sort artifacts by type - weapons first, then armor
+  let artifacts = props.player.inventory.sort((a, b) => {
+    let typeA = a.type === 2 || a.type === 3 ? 2 : a.type;
+    let typeB = b.type === 2 || b.type === 3 ? 2 : b.type;
+    return typeA - typeB;
+  });
 
-            <div className="weapon-abilities row">
-              <div className="axe col-md">Axe:<br />{ this.props.player.wpn_axe }%</div>
-              <div className="bow col-md">Bow:<br />{ this.props.player.wpn_bow }%</div>
-              <div className="club col-md">Club:<br />{ this.props.player.wpn_club }%</div>
-              <div className="spear col-md">Spear:<br />{ this.props.player.wpn_spear }%</div>
-              <div className="sword col-md">Sword:<br />{ this.props.player.wpn_sword }%</div>
-            </div>
-
-            <div className="spell-abilities row">
-              <div className="col-6 col-md">Blast:<br/>{ this.props.player.spell_abilities_original.blast }%</div>
-              <div className="col-6 col-md">Heal:<br/>{ this.props.player.spell_abilities_original.heal }%</div>
-              <div className="col-6 col-md">Power:<br/>{ this.props.player.spell_abilities_original.power }%</div>
-              <div className="col-6 col-md">Speed:<br/>{ this.props.player.spell_abilities_original.speed }%</div>
-            </div>
-
-            <div className="ae row">
-              <div className="col-sm-12">Armor expertise: { this.props.player.armor_expertise }%</div>
-            </div>
-
-            <div className="gold row">
-              <div className="col-sm">Gold in hand: { this.props.player.gold }</div>
-              <div className="col-sm">Gold in bank: { this.props.player.gold_in_bank }</div>
-            </div>
+  return (
+    <div>
+      <div className="status-widget player">
+        <div className="container">
+          <div className="row">
+            <h3 className="heading">You are the {props.player.getGenderLabel()} {props.player.name}</h3>
           </div>
 
+          <div className="stats row">
+            <div className="col-3 hardiness">HD: {props.player.hardiness}</div>
+            <div className="col-3 agility">AG: {props.player.agility}</div>
+            <div className="col-3 charisma">CH: {props.player.charisma}</div>
+          </div>
+
+          <div className="weapon-abilities row">
+            <div className="axe col-md">Axe:<br/>{props.player.wpn_axe}%</div>
+            <div className="bow col-md">Bow:<br/>{props.player.wpn_bow}%</div>
+            <div className="club col-md">Club:<br/>{props.player.wpn_club}%</div>
+            <div className="spear col-md">Spear:<br/>{props.player.wpn_spear}%</div>
+            <div className="sword col-md">Sword:<br/>{props.player.wpn_sword}%</div>
+          </div>
+
+          <div className="spell-abilities row">
+            <div className="col-6 col-md">Blast:<br/>{props.player.spell_abilities_original.blast}%</div>
+            <div className="col-6 col-md">Heal:<br/>{props.player.spell_abilities_original.heal}%</div>
+            <div className="col-6 col-md">Power:<br/>{props.player.spell_abilities_original.power}%</div>
+            <div className="col-6 col-md">Speed:<br/>{props.player.spell_abilities_original.speed}%</div>
+          </div>
+
+          <div className="ae row">
+            <div className="col-sm-12">Armor expertise: {props.player.armor_expertise}%</div>
+          </div>
+
+          <div className="gold row">
+            <div className="col-sm">Gold in hand: {props.player.gold}</div>
+            <div className="col-sm">Gold in bank: {props.player.gold_in_bank}</div>
+          </div>
         </div>
+      </div>
 
       <div className="status-widget inventory">
         <h3 className="heading">Inventory</h3>
@@ -99,8 +96,7 @@ class Status extends React.Component<any, any> {
 
       </div>
     </div>
-    );
-  }
+  );
 }
 
 export default Status;
