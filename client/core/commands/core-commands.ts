@@ -1737,6 +1737,7 @@ export class AccioCommand implements BaseCommand {
       if (!a.seen)
         a.showDescription();
       a.moveToInventory();
+      game.history.write(`${a.name} taken.`);
       a.data.for_sale = false;
       game.player.updateInventory();
     }

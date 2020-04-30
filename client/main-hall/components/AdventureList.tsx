@@ -27,7 +27,6 @@ class AdventureList extends React.Component<any, any> {
           let adv = new Adventure();
           adv.init(d);
           adv.name_sort = adv.name.slice(0,4) === 'The ' ? adv.name.slice(4) : adv.name;
-          console.log(adv.name_sort);
           all_adventures.push(adv);
 
           for (let tag of adv.tags) {

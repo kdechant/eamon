@@ -99,7 +99,7 @@ export var event_handlers = {
   "look": function(arg: string) {
     let throne = game.artifacts.get(26);
     let door = game.artifacts.get(36);
-    if (throne.match(arg) && throne.isHere() && door.embedded) {
+    if (arg !== "" && throne.match(arg) && throne.isHere() && door.embedded) {
       game.effects.print(3);
       door.reveal();
     }

@@ -28,6 +28,17 @@ export var event_handlers = {
     game.monsters.get(5).data.reward = 50;
     game.monsters.get(6).data.reward = 50;
     game.monsters.get(7).data.reward = 50;
+
+    // skullcleaver
+    game.monsters.get(25).health_messages = [
+      "is undamaged.",
+      "has barely a scratch.",
+      "is nicked.",
+      "is damaged.",
+      "is badly damaged.",
+      "is barely holding together!",
+      "falls to the ground, lifeless!"
+    ];
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -60,6 +71,8 @@ export var event_handlers = {
     if (monster.id === 1) {
       game.effects.print(18);
       game.monsters.get(25).moveToRoom();
+      game.monsters.get(25).showDescription();
+      game.monsters.get(25).seen = true;
       game.data.orion_died = true;
     }
     return true;
