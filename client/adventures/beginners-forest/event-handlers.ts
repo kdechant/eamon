@@ -4,13 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "start": function(arg: string) {
-    let game = Game.getInstance();
-
-    // add your custom game start code here
-
     game.data["queen effect"] = game.player.gender === "m" ? 5 : 6;
     game.data["queen artifact"] = game.player.gender === "m" ? 7 : 15;
     game.data["met queen"] = false;
@@ -27,9 +25,7 @@ export var event_handlers = {
     }
 
     // entrance routine, similar to Beginner's Cave
-    // game.effects.print(9);
     game.effects.print(11);
-
     if (game.player.weapon_id === null) {
       game.effects.print(12);
     } else if (game.player.weapon_abilities[1] === 5 &&
@@ -43,11 +39,9 @@ export var event_handlers = {
       game.effects.print(13);
       game.monsters.get(11).moveToRoom(1);
     }
-
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // ranger
     if (target.id === 11) {
       game.history.write(target.name + " is still pretending that you aren't here.");
@@ -57,7 +51,6 @@ export var event_handlers = {
   },
 
   "blast": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // ranger
     if (target.id === 11) {
       game.history.write(target.name + " is still pretending that you aren't here.");
@@ -67,8 +60,7 @@ export var event_handlers = {
   },
 
   "death": function(monster: Monster) {
-    let game = Game.getInstance();
-    // spooks
+    // ghosts
     if (monster.id === 9) {
       game.effects.print(8);
       // reset the count, or else the next time they appear there would be 2
@@ -80,7 +72,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
     // ranger
     if (recipient.id === 11) {
       game.history.write(recipient.name + " is still pretending that you aren't here.");
@@ -90,7 +81,6 @@ export var event_handlers = {
   },
 
   "take": function(arg: string, item: Artifact, monster: Monster) {
-    let game = Game.getInstance();
     // ranger
     if (monster.id === 11) {
       game.history.write(monster.name + " is still pretending that you aren't here.");
@@ -100,54 +90,30 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     switch (exit.room_to) {
       case -2:
-
         game.history.write("The path is washed out!");
         return false;
-
       case -33:
-
         // spooky water
         game.effects.print(3);
         exit.room_to = 1;
         break;
-
       case -34:
-
         // beaver dam
         game.effects.print(1);
         exit.room_to = 33;
         break;
-
       case -35:
-
         // trying to climb the cliff
         game.effects.print(4);
         game.player.injure(4);
         return false;
-
-      case 26:
-
-        // the boulder at the mine entrance
-        if (game.rooms.current_room.id === 6) {
-          if (!game.data['boulder_destroyed']) {
-            game.history.write("The giant boulder blocks your way.");
-            return false;
-          } else {
-            game.history.write("You descend into the mine.");
-          }
-        }
-        break;
-
     }
     return true;
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       // some readable artifacts have their text contained in the artifact description
       if (artifact.id === 19 || artifact.id === 20) {
@@ -166,9 +132,8 @@ export var event_handlers = {
   },
 
   "wear": function(arg: string, target: Artifact) {
-    let game = Game.getInstance();
     // agility ring
-    if (target.id === 2) {
+    if (target && target.id === 2) {
       game.history.write("You can feel the new agility flowing through you!", "success");
       if (game.player.spell_counters['speed'] === 0) {
         game.player.speed_multiplier = 2;
@@ -179,7 +144,6 @@ export var event_handlers = {
   },
 
   "spellExpires": function(spell_name) {
-    let game = Game.getInstance();
     // if wearing the agility ring, it disappears
     let ring = game.artifacts.get(2);
     if (spell_name === 'speed' && ring.monster_id === 0 && ring.is_worn) {
@@ -189,19 +153,17 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
-    // spooks
-    let spooks = game.monsters.get(9);
+    // ghosts
+    let ghosts = game.monsters.get(9);
     if (game.player.room_id > 1 && game.player.room_id <= 5) {
-      // 1 in 3 chance a spook appears in those rooms; limit of 4 in the room
-      if (game.diceRoll(1, 3) == 1 && spooks.children.filter(m => m.isHere()).length < 4) {
+      // 1 in 3 chance a ghost appears in those rooms; limit of 4 in the room
+      if (game.diceRoll(1, 3) == 1 && ghosts.children.filter(m => m.isHere()).length < 4) {
         try {
-          spooks.children.find(m => !m.isHere() && m.status === Monster.STATUS_ALIVE).moveToRoom();
+          ghosts.children.find(m => !m.isHere() && m.status === Monster.STATUS_ALIVE).moveToRoom();
         } catch (e) {
-          // no spooks left; do nothing
+          // no ghosts left; do nothing
         }
-        spooks.seen = false;
+        ghosts.seen = false;
       }
     }
 
@@ -218,16 +180,13 @@ export var event_handlers = {
         blade.destroy();
         game.artifacts.get(8).moveToRoom();
       }
-
     }
-
   },
 
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -243,6 +202,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands
