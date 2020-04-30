@@ -42,21 +42,17 @@ export class GameObject {
     let names: string[] = [  // all iterations of the monster's name
       this.name.toLocaleLowerCase(),
       this.getDisplayName().toLocaleLowerCase(),
-      pluralize(this.name).toLocaleLowerCase()
+      pluralize(this.name).toLocaleLowerCase(),
     ];
+    if (this.aliases) {
+      this.aliases.forEach(a => names.push(a));
+    }
     str = str.toLocaleLowerCase();
     // attempt exact match by name
     if (names.indexOf(str) !== -1) {
       return true;
     }
-    // attempt match by alias
-    for (let i in this.aliases) {
-      if (str === this.aliases[i].toLocaleLowerCase()) {
-        return true;
-      }
-    }
     // attempt match by beginning/end of name
-    // FIXME: this should only work with group monsters
     for (let name of names) {
       if (name.startsWith(str) || name.endsWith(str)) {
         return true;
