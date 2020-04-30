@@ -21,7 +21,6 @@ export function gamevars(value) {
  * @param {string} pluralAction
  */
 export function formatMonsterAction(monsters: Monster[], singularAction: string, pluralAction: string): string {
-  let game = Game.getInstance();
   let plural = false;
   let output: string = "";
   if (monsters.length > 1) { plural = true; }
@@ -44,4 +43,11 @@ export function formatMonsterAction(monsters: Monster[], singularAction: string,
     output+= ` ${singularAction}`;
   }
   return output;
+}
+
+export function formatList(list: string[]) {
+  if (list.length === 0) return '';
+  if (list.length === 1) return list[0];
+  const last = list.pop();
+  return list.join(', ') + " and " + last;
 }

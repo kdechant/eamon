@@ -96,7 +96,6 @@ export class Monster extends GameObject {
   original_group_size: number;
   damage: number = 0;
   weight_carried: number = 0;
-  armor_worn: Artifact[];
   weapon: Artifact;
   inventory: Artifact[];
   spell_counters: { [key: string]: number };  // time remaining on various spells (e.g., speed)
@@ -312,7 +311,6 @@ export class Monster extends GameObject {
     let game = Game.getInstance();
     this.inventory = [];
     if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
-      this.armor_worn = [];
       this.armor_class = 0;
     }
     this.weight_carried = 0;
@@ -321,7 +319,6 @@ export class Monster extends GameObject {
       this.weight_carried += a.weight;
       if (this.id === Monster.PLAYER) {
         if (a.is_worn && a.armor_class) {
-          this.armor_worn.push(a);
           this.armor_class += a.armor_class;
         }
       }

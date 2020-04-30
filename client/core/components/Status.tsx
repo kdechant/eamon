@@ -3,6 +3,7 @@ import * as ReactMarkdown from "react-markdown";
 import * as pluralize from 'pluralize';
 import {titleCase} from "../../main-hall/utils";
 import {Monster} from "../models/monster";
+import {formatList} from "../utils/index";
 
 class Status extends React.Component<any, any> {
 
@@ -21,15 +22,8 @@ class Status extends React.Component<any, any> {
     // visible exits (normal exits and ones with non-hidden doors)
     const visible_exits = game.rooms.current_room.getVisibleExits();
 
-    // let worn = game.player.inventory.filter(a => a.is_worn);
-    let armor_worn = game.player.armor_worn.sort((a, b) => {
-      if (a.armor_type < b.armor_type) {
-        return -1;
-      }
-      if (a.armor_type > b.armor_type) {
-        return 1;
-      }
-      return 0;
+    let armor = game.player.inventory.filter(a => a.is_worn && a.isArmor()).sort((a, b) => {
+      return a.armor_type - b.armor_type;
     });
 
     let statusClass = this.props.open ? '' : 'd-none';
@@ -80,9 +74,9 @@ class Status extends React.Component<any, any> {
             <div className="weapon none row"><div className="col">Ready weapon: none!</div></div>
           )}
 
-          {game.player.armor_class > 0 && (
+          {armor.length > 0 && (
             <div className="armor row"><div className="col">Armor:&nbsp;
-              {game.player.armor_worn.map(armor => titleCase(armor.name)).join(" and ")}
+              {formatList(armor.map(a => titleCase(a.name)))}
               &nbsp;({ game.player.armor_class })
             </div></div>
           )}
