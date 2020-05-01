@@ -159,11 +159,18 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
 )
 
+# Google Analytics
 GA_ID = 'UA-87327244-2'
+
+# JS Debug mode: When True, this turns on the "Bort" debug mode in the
+# MAIN PGM and bypasses the intro text. To use this setting, override it
+# in your local_settings.py file. Do not use this in production!
+JS_DEBUG = False
 
 # the following settings will be available in templates using {{ settings.NAME }} ( e.g., {{ settings.DEBUG }} )
 SETTINGS_EXPORT = [
     'DEBUG',
+    'JS_DEBUG',
     'GA_ID',
 ]
 

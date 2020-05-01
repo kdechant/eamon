@@ -322,7 +322,9 @@ export default class Game {
     this.name = adv.name;
     this.description = adv.description;
     this.intro_text = adv.intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
-    // this.intro_text = [""];  // faster start, for testing
+    if (this.data.bort) {
+      this.intro_text = [""];  // faster start, for local development
+    }
     this.intro_question = adv.intro_question;
     this.dead_body_id = adv.dead_body_id;
 
@@ -345,9 +347,6 @@ export default class Game {
     if (!this.logger) {
       this.logger = new DummyLoggerService;
     }
-
-    // for testing only! turns on debug mode.
-    // this.data.bort = true;
 
     this.skip_battle_actions = true; // prevent fighting when player first arrives in room 1
 

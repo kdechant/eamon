@@ -25,6 +25,10 @@
       {% else %}
         game.demo = false;
       {% endif %}
+
+      {% if settings.JS_DEBUG %}
+        game.data.bort = true;
+      {% endif %}
     </script>
 
     <script type="text/javascript" src="{% static "core.js" %}"></script>
