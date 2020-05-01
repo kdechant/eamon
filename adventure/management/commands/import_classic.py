@@ -1,8 +1,7 @@
-import struct, re, os, os.path, regex
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.management.base import BaseCommand, CommandError
-from django.utils.text import slugify
-from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
+import os, os.path, regex
+from django.core.management.base import BaseCommand
+from adventure.models import Adventure, Room, RoomExit, Artifact, Effect, Monster
+from adventure.import_utils import fix_40char_text
 
 
 class Command(BaseCommand):
@@ -50,8 +49,8 @@ class Command(BaseCommand):
                 # print('---')
                 id = m.group(1)
                 room = Room.objects.get_or_create(adventure=adventure, room_id=id)[0]
-                room.name = m.group(2).lower()
-                room.description = sentence_case(regex.sub(r'\s{2,}', " ", m.group(3)))
+                room.name = m.group(2).lower().strip()
+                room.description = fix_40char_text(m.group(3))
                 room.save()
                 connections = {'n': 4, 's': 6, 'e': 8, 'w': 10, 'u': 12, 'd': 14}
                 for direction, index in connections.items():
@@ -64,7 +63,7 @@ class Command(BaseCommand):
 
         # Artifacts
         artifacts_regex = regex.compile(r'ARTIFACT # ([0-9]+) \[([A-Za-z0-9\' /.()-]+)\]\s+'
-                                    r'DESC:\s+([A-Za-z0-9\'\s \/\.,;()!?-]+)\s+'
+                                    r'DESC:\s+([A-Za-z0-9\'\s \/\.,;:()!?-]+)\s+'
                                     r'VALUE+\.+(-?\d+)+\s+'
                                     r'TYPE\.+(-?\d+)+\s+(\[.+\])?\s+'
                                     r'WEIGHT\.+(-?\d+)+\s+'
@@ -81,30 +80,9 @@ class Command(BaseCommand):
             for m in match:
                 # print('id: ' + m.group(1))  # id
                 id = int(m.group(1))
-                name = sentence_case(m.group(2))
+                name = m.group(2).lower().strip()
                 print('artifact #' + m.group(1) + ': ' + name)
-                desc = sentence_case(regex.sub(r'\s{2,}', " ", m.group(3)))
-                # print('desc: ' + desc)  # desc
-                # print('val: ' + m.group(4))
-                # print('type: ' + m.group(5))
-                # # print(m.group(6))
-                # print('weight ' + m.group(7))
-                # print('room ' + m.group(8))
-                # # print(m.group(9))
-                # # print(m.group(10))
-                # print('odds:')
-                # print(m.group(11))
-                # # print(m.group(12))
-                # # print(m.group(13))
-                # print('w.type: ')
-                # print(m.group(13)) # w type
-                # # print(m.group(15)) # w type
-                # print('dice: ')
-                # print(m.group(16))
-                # # print(m.group(17))
-                # print('sides: ')
-                # print(m.group(18))
-                # print('---')
+                desc = fix_40char_text(m.group(3))
                 a = Artifact.objects.get_or_create(adventure=adventure, artifact_id=id)[0]
                 a.name = name
                 a.description = desc
@@ -132,7 +110,7 @@ class Command(BaseCommand):
                 match = effect_regex.finditer(data, regex.M)
                 for m in match:
                     id = int(m.group(1))
-                    text = sentence_case(regex.sub(r'\s{2,}', " ", m.group(2)))
+                    text = fix_40char_text(m.group(2))
                     print('effect #' + str(id) + ': ' + text)
                     e = Effect.objects.get_or_create(adventure=adventure, effect_id=id)[0]
                     e.text = text
@@ -163,9 +141,9 @@ class Command(BaseCommand):
             match = monsters_regex.finditer(data)
             for m in match:
                 id = int(m.group(1))
-                name = sentence_case(m.group(2))
+                name = m.group(2).lower().strip()
                 print('monster #' + str(id) + ': ' + name)
-                desc = sentence_case(regex.sub(r'\s{2,}', " ", m.group(3)))
+                desc = fix_40char_text(m.group(3))
                 # print('desc: ' + desc)
                 # print('hd: ' + m.group(4))
                 # print('ag: ' + m.group(5))
@@ -201,16 +179,3 @@ class Command(BaseCommand):
                 mn.weapon_dice = m.group(17)
                 mn.weapon_sides = m.group(18)
                 mn.save()
-
-
-def sentence_case(string):
-    """
-    Converts a string to sentence case.
-    From http://stackoverflow.com/questions/39969202/convert-uppercase-string-to-sentence-case-in-python
-    Args:
-        string: The input string
-
-    Returns:
-        The string, now in sentence case
-    """
-    return '. '.join(i.capitalize() for i in string.split('. '))

@@ -1,8 +1,6 @@
-import struct, re, os, regex
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.management.base import BaseCommand, CommandError
-from django.utils.text import slugify
-from adventure.models import Adventure, Room, RoomExit, Artifact, ArtifactMarking, Effect, Monster
+import regex
+from django.core.management.base import BaseCommand
+from adventure.models import Adventure, Room, RoomExit, Artifact, Effect, Monster
 
 
 class Command(BaseCommand):
