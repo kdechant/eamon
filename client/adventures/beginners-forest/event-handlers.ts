@@ -183,6 +183,15 @@ export var event_handlers = {
     }
   },
 
+  "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
+    // player can't break or damage weapon in this adventure
+    if (attacker.id === Monster.PLAYER && fumble_roll > 80) {
+      game.history.write("-- fumble recovered!", "no-space");
+      return false;
+    }
+    return true;  // otherwise, use regular fumble logic
+  },
+
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.

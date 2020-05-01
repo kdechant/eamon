@@ -105,6 +105,15 @@ export var event_handlers = {
     return true;
   },
 
+  "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
+    // player can't break or damage weapon in this adventure
+    if (attacker.id === Monster.PLAYER && fumble_roll > 80) {
+      game.history.write("-- fumble recovered!", "no-space");
+      return false;
+    }
+    return true;  // otherwise, use regular fumble logic
+  },
+
   "give": function(arg: string, artifact: Artifact, monster: Monster): boolean {
     // if giving trollsfire to someone else, put it out
     if (artifact.id === 10) {
