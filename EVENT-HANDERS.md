@@ -23,7 +23,6 @@ object as an parameter, while a "say" event handler might accept the word being 
 An example of a simple event handler:
     
     "say": function(phrase: string) {
-      let game = Game.getInstance();
       if (phrase === 'magic' && game.artifacts.get(5).isHere()) {
         game.history.write("POOF!!", "special");
         game.artifacts.get(5).destroy();
@@ -43,7 +42,6 @@ prevented.
 Another example:
     
       "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-        let game = Game.getInstance();
         if (exit.room_to === -1) {
           // print an effect -- can't go that way
           game.effects.print(3);
@@ -73,11 +71,7 @@ The collections of rooms, artifacts, effects, and monsters are organized into Re
 
 ## The Game object
 
-At the beginning of many event handlers, there is a special line:
-
-    let game = Game.getInstance();
-
-This allows you to access the global Game instance, which is a singleton. This provides access to the object repositories.
+The global "game" object is a singleton. It contains all the game data and some utilities like the dice roller.
 
 The Game object has the following important properties:
 
@@ -241,7 +235,6 @@ Parameters: none
 Sample code:
 
       "intro": function() {
-        let game = Game.getInstance();
         // change the intro text if the player is female
         if (game.player.gender === 'f') {
           game.intro_text = game.intro_text.replace("Larcenous Lil", "Slippery Sven");
@@ -270,8 +263,6 @@ Parameters: none
 Sample code:
 
       "start": function() {
-        let game = Game.getInstance();
-    
         // declare some variables, which can be used in other event handlers as game flags, counters, etc.
         game.data['my var'] = true;
         game.data['another var'] = 5;
@@ -321,8 +312,6 @@ Examples:
 This happens after movement and monster actions, but before the room name or description is shown.
 
       "endTurn": function() {
-        let game = Game.getInstance();
-    
         // merlin appears, if he hasn't already appeared
         if (game.player.room_id == 77 && !game.effects.get(11).seen) {
           game.effects.print(11);
@@ -335,8 +324,6 @@ This happens after movement and monster actions, but before the room name or des
 This happens after the room name or description is shown, but before the artifact and monster names or descriptions are shown. 
 
       "endTurn1": function () {
-        let game = Game.getInstance();
-        
         // the snowman melts when entering a room that's too warm
         if (room_id == 37 && game.monsters.get(2).isHere()) {
             game.history.write("Frosty just melted!", "special2");
@@ -349,8 +336,6 @@ This happens after the room name or description is shown, but before the artifac
 This happens at the very end of the turn, after all names and descriptions are shown.
 
       "endTurn2": function() {
-        let game = Game.getInstance();
-    
         // a sudden death trap that occurs if a certain monster is in the room
         if (game.monsters.get(1).isHere()) {
           game.effects.print(5);
@@ -377,8 +362,6 @@ Parameters:
 Sample:
 
       "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-        let game = Game.getInstance();
-    
         if ((exit.room_to === -5 && !game.data["elevator on"]) {
           game.history.write("The elevator must first be turned on.");
           return false;  // this prevents movement. player will stay in current room
@@ -408,7 +391,6 @@ Parameters:
 Sample:
 
       "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-        let game = Game.getInstance();
         // show a warning when entering this room
         if (room_to.id === 28 && !game.data["player was warned"]) {
           game.data["player was warned"] = true;
@@ -437,7 +419,6 @@ false - stops the door/gate or container from being opened
 Example:
     
     "beforeOpen": function(arg: string, artifact: Artifact) {
-      let game = Game.getInstance();
       if (artifact !== null) {
         if (artifact.id === 23) {
           artifact.reveal();  // this artifact is embedded; trying to open it reveals it.
@@ -461,7 +442,6 @@ Return value: none.
 Example:
 
     "afterOpen": function(arg: string, artifact: Artifact) {
-      let game = Game.getInstance();
       if (artifact !== null) {
         if (artifact.id === 23) {
           // the grain sack is a death trap
@@ -485,7 +465,6 @@ Parameters:
 Example:
 
     "beforeClose": function(arg: string, artifact: Artifact) {
-        let game = Game.getInstance();
         // trying to close a drawbridge when the winch has been smashed
         if (artifact.name === 'drawbridge' && game.data['drawbridge winch smashed']) {
           game.history.write("The winch has been smashed. You can't close it.");
@@ -518,7 +497,6 @@ Return true to allow the "get" operation to continue, or false to prevent the pl
 Example:
 
     "beforeGet": function(arg, artifact) {
-      let game = Game.getInstance();
       // special message when the player tries to pick up the throne
       if (artifact && artifact.id === 1) {
         game.history.write("There's no way you'll ever be able to carry the throne!");
@@ -540,7 +518,6 @@ Parameters:
 Example:
 
     "afterGet": function(arg, artifact) {
-      let game = Game.getInstance();
       // special message when the player finds the treasure
       if (artifact && artifact.id == 3) {
         game.history.write("The magic sword is so shiny you decided to ready it.");
@@ -571,7 +548,6 @@ false: prevent any further logic from executing
 Example:
 
       "specialGet": function(arg): boolean {
-        let game = Game.getInstance();
         // if you try to get the sword when it's still in the brace
         let sword = game.artifacts.get(12);
         if (sword.match(arg) && sword.container_id === 31) {
@@ -604,7 +580,7 @@ Example:
     "drop": function(arg: string, artifact: Artifact): boolean {
       if (artifact.id === 20) {
         // can't drop cursed item
-        Game.getInstance().history.write("You can't pry the cursed sword from your hand!");
+        game.history.write("You can't pry the cursed sword from your hand!");
         return false;
       }
       return true;
@@ -633,7 +609,6 @@ Return true if the artifact should be removed from the container, or false to pr
 Example: 
 
     "beforeRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
-      let game = Game.getInstance();
       if (artifact) {
         if (artifact.id === 14) {
           game.history.write("A magic force is holding the wand in the chest. You can't remove it.");
@@ -656,7 +631,6 @@ Parameters:
 Example:
 
     "afterRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
-      let game = Game.getInstance();
       // special message when the player finds the treasure
       if (artifact && artifact.id === 3) {
         game.history.write("That's a fine-looking sword.");
@@ -686,10 +660,9 @@ false: prevent the item from being put into the container
 Example:
 
     "beforePut": function(arg: string, artifact: Artifact, container: Artifact) {
-      let game = Game.getInstance();
       // can't put a cursed item into a container, because you can't let go of it
       if (artifact.id === 20) {
-        Game.getInstance().history.write("You can't pry the cursed sword from your hand!");
+        game.history.write("You can't pry the cursed sword from your hand!");
         return false;
       }
       return true;
@@ -709,7 +682,6 @@ Return Value: none
 Example:
 
     "afterPut": function(arg: string, item: Artifact, container: Artifact) {
-      let game = Game.getInstance();
       if (item.id === 25 && container.id === 56) {
         game.history.write("The Hellsblade is contained, for now...", "special2");
         container.inventory_message = "with Hellsblade inside";
@@ -733,7 +705,6 @@ false: to
 Example:
 
     "specialPut": function(arg: string, item: Artifact, container: Artifact) {
-      let game = Game.getInstance();
       // rubies / statue
       if (item.id === 14 && container.id === 71) {
         game.history.write("You put the rubies into the statue's scepter and you hear hidden gears grinding. The south wall swings open!");
@@ -754,7 +725,6 @@ Parameters:
 Example:
 
     "wear": function(arg: string, target: Artifact) {
-      let game = Game.getInstance();
       // can't attack or wear backpack
       if (target.id === 13) {
         game.history.write("You don't need to. Just carry it.");
@@ -783,7 +753,6 @@ false: Prevent tha artifact from being taken off
 Example:
 
     "afterRemoveWearable": function(arg: string, artifact: Artifact) {
-      let game = Game.getInstance();
       // take off gauntlets
       if (artifact && artifact.id === 57) {
         game.history.write("You can't take that off!", "special2");
@@ -805,7 +774,6 @@ Return value: none
 Example:
 
     "afterRemoveWearable": function(arg: string, artifact: Artifact) {
-      let game = Game.getInstance();
       // take off gauntlets
       if (artifact && artifact.id === 57 && game.player.hasArtifact(25)) {
         game.history.write("The Hellsblade twitches eagerly!", "special2");
@@ -825,7 +793,6 @@ Parameters:
 Example:
 
     "eat": function(arg: string, artifact: Artifact) {
-        let game = Game.getInstance();
         if (artifact && artifact.name === 'poison donut') {
           game.history.write("You don't like the smell of that donut. Better not eat it.");
           return false; // stops the game from running the rest of the "eat" command logic
@@ -846,7 +813,6 @@ Parameters:
 Example:
 
     "drink": function(arg: string, artifact: Artifact) {
-        let game = Game.getInstance();
         // use the "drink" command (with no arguments) to order a drink from the bartender
         if (game.player.room_id === 5) {  // the bar
           game.history.write("The bartender pours you a drink.");
@@ -872,7 +838,6 @@ Parameters:
 Example:
 
     "use": function(arg: string, artifact: Artifact) {
-        let game = Game.getInstance();
         if (artifact) {
           if (artifact.name === 'strength potion') {
             game.history.write("The potion increased your hardiness!", "special")
@@ -887,7 +852,6 @@ The example above works for using a specific artifact. You can also program in s
 Example 2:
 
     "use": function(arg: string, artifact: Artifact) {
-        let game = Game.getInstance();
         if (arg === "the force") {
           game.history.write("You pull the light saber to you using the Force.");
           game.artifacts.get(10).player_id = Monster.PLAYER;
@@ -911,7 +875,6 @@ Parameters:
 Example:
 
       "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-        let game = Game.getInstance();
         // ranger
         if (recipient.id === 11) {
           game.history.write(recipient.name + " is still pretending that you aren't here.");
@@ -945,7 +908,6 @@ false: skip the rest of the "request" logic. This bypasses the check for whether
 Example:
 
     "beforeRequest": function(arg: string, artifact: Artifact, monster: Monster) {
-      let game = Game.getInstance();
       // in this event handler, you should check for whether the monster and artifact
       // exist, unless your logic doesn't require them to exist.
       if (!monster) return true;
@@ -972,7 +934,6 @@ Parameters:
 Example:
 
     "afterRequest": function(arg: string, artifact: Artifact, monster: Monster) {
-      let game = Game.getInstance();
       if (monster.id === 3 && artifact.id === 1) {
         game.history.write("Alfred says, 'Use it well.'");
       }
@@ -994,7 +955,6 @@ false: skip the rest of the "light something" logic
 Example:
 
     "light": function(arg: string, artifact: Artifact) {
-      let game = Game.getInstance();
       if (artifact !== null) {
         if (artifact.id === 5) {
           if (artifact.monster_id === Monster.PLAYER) {
@@ -1028,7 +988,6 @@ Example:
 
 
     "look": function(arg: string) {
-      let game = Game.getInstance();
       let sword = game.artifacts.get(12);
       if (sword.match(arg) && sword.container_id === 31) {
         if (game.player.room_id === 10) {
@@ -1055,7 +1014,6 @@ Return value: none
 Example (from Training Ground):
 
     "seeMonster": function(monster: Monster): void {
-      let game = Game.getInstance();
       // some monsters speak when you first see them.
   
       // red sun's opening remarks
@@ -1081,7 +1039,6 @@ Return value: none
 Example:
     
     "seeArtifact": function(artifact: Artifact): void {
-      let game = Game.getInstance();
       if (artifact.id === 26) {
         game.artifacts.get(36).reveal();
       }
@@ -1110,7 +1067,6 @@ Example:
 
     "beforeRead": function(arg: string, artifact: Artifact) {
       if (artifact && artifact.id === 17) {
-        let game = Game.getInstance();
         game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
         game.history.write("WEAPONS AND LEAVE VIOLENCE BEHIND YOU ", "special2");
         // teleport all weapons to random rooms
@@ -1139,7 +1095,6 @@ Return value: none
 Example:
 
     "afterRead": function(arg: string, artifact: Artifact) {
-      let game = Game.getInstance();
       if (artifact !== null && artifact.id === 11) {
         // this artifact is not actually a "readable" type, but has a readable message on it
         game.effects.print(10);
@@ -1179,7 +1134,6 @@ Parameters:
 Return value: none
 
     "revealArtifact": function(artifact: Artifact) {
-      let game = Game.getInstance();
       // two secret doors with the same alias. when one is revealed, also reveal the other
       if (artifact.id === 55) {
         game.artifacts.get(56).reveal();
@@ -1198,7 +1152,6 @@ Return value: none
 Example:
 
     "say": function(phrase: string) {
-      let game = Game.getInstance();
       if (phrase === 'magic' && game.artifacts.get(5).isHere()) {
         game.history.write("POOF!!", "special");
         game.artifacts.get(5).destroy();
@@ -1224,7 +1177,6 @@ Return true if the attack should proceed, or false if the attack should be cance
 Example:
 
       "attackMonster": function(arg: string, target: Monster) {
-        let game = Game.getInstance();
         // bozworth the gnome disappears if attacked
         if (target.id === 20) {
           game.effects.print(21);
@@ -1249,7 +1201,6 @@ Return true if the attack should proceed, or false if the attack should be cance
 Example:
 
       "attackArtifact": function(arg: string, target: Artifact) {
-        let game = Game.getInstance();
         // can't attack or wear backpack
         if (target.id === 13) {
           game.history.write("You don't need to.");
@@ -1268,7 +1219,6 @@ Parameters: none
 Return value: true/false: true to allow the flee action to proceed, or false to prevent it
 
       "flee": function() {
-        let game = Game.getInstance();
         if (game.monsters.get(5).isHere() || game.monsters.get(12).isHere()) {
           game.history.write("You are surrounded and cannot escape!", "emphasis");
           return false;  // prevents fleeing
@@ -1284,7 +1234,6 @@ If you want to force a monster to immediately flee, in any situation, there is a
 Here's an example event handler to demonstrate:
 
     "say": function(phrase: string) {
-      let game = Game.getInstance();
       // a scary word that makes a certain monster flee
       let m = game.monsters.get(1);
       if (phrase === 'booga booga' && m.isHere()) {
@@ -1299,7 +1248,6 @@ Normally, the game engine will show a message like "Sir Robin flees" whenever a 
  handler. For example, if you wanted to change the message to "Sir Robin runs away" you could do this:
  
     "start": function(arg: string) {
-      let game = Game.getInstance();
       game.flee_verbs = {'singular': 'runs away', 'plural': 'run away'};
     },
 
@@ -1333,7 +1281,6 @@ inventory. The monster will still lose their turn even if this event handler ret
 Example:
     
       "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
-        let game = Game.getInstance();
         // cannot drop a cursed weapon
         if (attacker.id === 0 && attacker.weapon.name === 'hellsblade') {
           game.history.write("-- fumble recovered!", "no-space");  // this fakes a normal fumble message
@@ -1386,7 +1333,6 @@ This can return true if no adjustment should be made, or it can return a number 
 Example:
 
       "attackOdds": function (attacker: Monster, defender: Monster, odds: number) {
-        let game = Game.getInstance();
         // the umber hulk's gaze makes it harder to hit
         if (attacker.id === Monster.PLAYER && defender.name === 'Umber Hulk') {
           game.history.write("Your vision seems to swim making it hard to concentrate on fighting.");
@@ -1415,7 +1361,6 @@ This can return true if no adjustment should be made, or it can return a number 
 Example:
 
       "attackDamage": function (attacker: Monster, defender: Monster, odds: number) {
-        let game = Game.getInstance();
         // a dragon-slaying weapon
         if (attacker.weapon.name === 'dragonlance' && defender.name === 'green dragon') {
           return damage * 2;
@@ -1438,7 +1383,6 @@ Parameters:
 Example:
 
       "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
-        let game = Game.getInstance();
         // polaris gets hit by flamethrower
         if (defender.id === 1 && attacker.weapon_id === 12) {
           game.effects.print(2, 'special');
@@ -1460,7 +1404,6 @@ Parameters:
 Example:
     
       "armorClass": function (monster: Monster) {
-        let game = Game.getInstance();
         if (monster.id === Monster.PLAYER && monster.spell_counters['protection'] > 0) {
           // protection spell ac bonus
           monster.armor_class += 3;
@@ -1481,7 +1424,6 @@ Return value:
 Example: 
 
       "death": function(monster: Monster): boolean {
-        let game = Game.getInstance();
         if (monster.id === 8) {
           // print an effect when a certain monster dies
           game.effects.print(3);
@@ -1509,7 +1451,6 @@ Parameters:
 Example:
 
       "power": function(roll) {
-        let game = Game.getInstance();
         if (roll <= 50) {
           game.history.write("You hear a loud sonic boom which echoes all around you!");
         } else if (roll <= 75) {
@@ -1531,7 +1472,6 @@ This is called when the player tries to use the BLAST spell on a monster. Return
 Example:
 
       "blast": function(arg: string, target: Monster) {
-        let game = Game.getInstance();
         // this monster disappears if blasted
         if (target.id === 20) {
           game.effects.print(21);  // this effect contains the description of the monster disappearing
@@ -1550,7 +1490,6 @@ Parameters:
 Example:
 
       "beforeSpell": function(spell_name: string) {
-        let game = Game.getInstance();
         // this prevents all spell casting in a certain room
         if (game.player.room_id === 7) {
           game.history.write("This is an anti-magic area!");
@@ -1579,7 +1518,6 @@ Note: Since this was written, there is now a better way to teach spells to an NP
 Example:
 
       "monsterAction": function(monster: Monster) {
-        let game = Game.getInstance();
     
         // this monster knows a "heal" spell and will sometimes cast it if injured
         if (monster.id === 17 game.diceRoll(1,3) === 3 && monster.damage > monster.hardiness * 0.4) {
@@ -1602,7 +1540,6 @@ Parameters: none
 Example:
 
       "afterSell": function() {
-        let game = Game.getInstance();
         let cynthia = game.monsters.get(3);
         // Duke Luxom's Reward - given if Cynthia made it to the exit and still likes the player.
         // The "here" in "isHere()" refers to the last room the player was in before stepping out the exit.
@@ -1728,7 +1665,6 @@ Parameters:
 Example:
 
       "beforeOpen": function(arg: string, artifact: Artifact) {
-        let game = Game.getInstance();
         // open a vault door with a combination lock
         if (artifact !== null && artifact.id === 3) {
           // show the modal here
