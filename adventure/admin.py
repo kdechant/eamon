@@ -8,7 +8,7 @@ admin.site.site_header = 'Eamon Adventure Admin'
 
 @admin.register(Adventure)
 class AdventureAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id', 'author_list', 'edx', 'edx_version', 'active', 'tag_list')
+    list_display = ('id', 'name', 'author_list', 'edx', 'edx_version', 'active', 'tag_list')
     list_filter = ['edx', 'edx_version', 'authors', 'active']
     ordering = ['name']
     exclude = ('edx', 'edx_version', 'edx_room_offset', 'edx_artifact_offset', 'edx_effect_offset', 'edx_monster_offset', 'edx_program_file', 'directions', 'first_hint', 'last_hint')
@@ -69,7 +69,7 @@ class EffectAdmin(admin.ModelAdmin):
 
 @admin.register(Monster)
 class MonsterAdmin(admin.ModelAdmin):
-    list_display = ('adventure', 'monster_id', 'name', 'room_id', 'hardiness', 'agility')
+    list_display = ('adventure', 'monster_id', 'name', 'room_id', 'count', 'hardiness', 'agility', 'weapon_id')
     list_display_links = ('name', )
     list_filter = ['adventure']
     ordering = ['adventure_id', 'monster_id']
