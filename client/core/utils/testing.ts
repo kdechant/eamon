@@ -113,6 +113,10 @@ export function movePlayer(room_id) {
   game.tick();
 }
 
+export function runCommand(command) {
+  game.command_parser.run(command);
+}
+
 // /**
 //  * Creates mock random numbers for an NPC attack
 //  * @param boolean flee  Whether or not the NPC should flee

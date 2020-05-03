@@ -4,23 +4,12 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+// The "game" object contains the event handlers and custom commands defined for the loaded adventure.
+declare var game;
+
 export var event_handlers = {
 
-  "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-    if (exit.room_to === -70) {
-      game.effects.print(15);
-      return false;
-    }
-    if (exit.room_to === -71) {
-      game.effects.print(9);
-      return false;
-    }
-    return true;
-  },
-
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    let game = Game.getInstance();
     if (room_to.id === 46 && !game.effects.get(11).seen) {
       game.effects.print(11);
     }
@@ -30,8 +19,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
-
     if (game.player.room_id === 1 && !game.effects.get(1).seen) {
       game.effects.print(1);
     }
@@ -57,19 +44,16 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
-    if (artifact) {
-      if (artifact.id === 17) {
-        game.history.write("* * * EARTHQUAKE * * *", "special");
-        if (game.player.room_id === 61) {
-          let wall = game.artifacts.get(37);
-          game.history.write("The room shakes for several seconds. The wall collapses into rubble! You have saved the realm from the Dark Lord, for now. The rubble reveals a passage leading north.", "success");
-          wall.hardiness = 0;
-          wall.is_open = true;
-          wall.name = "destroyed wall of runes";
-        } else {
-          game.history.write("The room shakes for several seconds, but nothing much seems to happen.");
-        }
+    if (artifact && artifact.id === 17) {
+      game.history.write("* * * EARTHQUAKE * * *", "special");
+      if (game.player.room_id === 61) {
+        game.effects.print(17);
+        game.artifacts.get(37).destroy();
+        game.artifacts.get(70).moveToRoom();
+      } else if (game.artifacts.get(23).isHere() || game.artifacts.get(24).isHere()) {
+        game.effects.print(18);
+      } else {
+        game.effects.print(16);
       }
     }
   },
@@ -78,14 +62,34 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 90) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else {
-      for (let m of game.monsters.visible) {
+      for (let m of game.monsters.visible.filter(m => m.reaction === Monster.RX_FRIEND)) {
         game.history.write("All of " + m.name + "'s wounds are healed!");
         m.heal(1000);
       }
+    }
+  },
+
+  "exit": function() {
+    if (game.player.hasArtifact(36)) {
+      game.data.ankh = true;
+      game.artifacts.get(36).destroy();
+      game.player.updateInventory();
+    }
+    return true; // this permits normal exit logic
+  },
+
+  "afterSell": function() {
+    // reward for ankh
+    if (game.data.ankh) {
+      game.after_sell_messages.push(game.effects.get(19).text);
+      game.player.gold += 1000;
+    }
+    let lila = game.monsters.get(4);
+    if (lila.isHere() && lila.reaction !== Monster.RX_HOSTILE) {
+      game.after_sell_messages.push(game.effects.get(20).text);
     }
   },
 

@@ -155,7 +155,7 @@ class Status extends React.Component<any, any> {
         {!inTheDark && (
         <div className="artifacts-list">
           {game.artifacts.visible.map(artifact => (
-            <StatusArtifact key={artifact.id} game={this.props.game} artifact={artifact} />
+            <StatusArtifact key={artifact.id} game={this.props.game} artifact={artifact} article={true} />
           ))}
           {game.artifacts.visible.length === 0 && (
             <span className="artifact none">nothing<br/></span>
@@ -218,10 +218,10 @@ const StatusMonster = (props) => {
 
 const StatusArtifact = (props) => {
   let artifact = props.artifact;
-
+  let artifact_name = props.article ? artifact.getDisplayName() : artifact.name;
   return (
     <div className="artifact">
-      { artifact.article } { artifact.name }&nbsp;
+      { artifact_name }&nbsp;
       <span className="artifact-status">
         {(artifact.type == 4 || artifact.type == 8) && (
           <span className="container-status">
