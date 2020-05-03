@@ -10,7 +10,7 @@ declare var game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     adjustMonsterStats();
 
     game.data = {
@@ -167,7 +167,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 12 && artifact.isHere()) {
       game.data.amulet_used++;
       switch(game.data.amulet_used) {

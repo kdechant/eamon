@@ -8,7 +8,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     game.data['pass guard'] = false;
     // no teleport into mine (26-31, 36) or onto river (12-19, 34)
     game.data.no_teleport_rooms = [12, 13, 14, 15, 16, 17, 18, 19, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36];

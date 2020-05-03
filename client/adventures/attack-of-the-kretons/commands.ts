@@ -1,7 +1,8 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
-import {ModalQuestion} from "../../core/models/modal";
+
+declare var game: Game;
 
 export var custom_commands = [];
 
@@ -11,7 +12,6 @@ custom_commands.push({
   description: "Buys an item from a merchant.",
   examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     let stan = game.monsters.get(8);
     if (arg === 'brandy' && stan.isHere()) {
@@ -65,8 +65,6 @@ custom_commands.push({
   description: "Talks to an NPC to get information.",
   examples: ['TALK TO IRON MIKE'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     if (arg.indexOf('to ') !== -1) {
       arg = arg.slice(3);
     }

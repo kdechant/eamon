@@ -2,10 +2,11 @@ import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "beforeGet": function(arg, artifact) {
-    let game = Game.getInstance();
     // special message when the player tries to pick up the throne
     if (artifact && artifact.id === 1) {
       game.history.write("There's no way you'll ever be able to carry the throne!");
@@ -15,7 +16,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
     // special message when the player finds the treasure
     if (artifact && artifact.id == 3) {
       game.history.write("The magic sword is so shiny you decided to ready it.");
@@ -25,7 +25,6 @@ export var event_handlers = {
   },
 
   "say": function(arg) {
-    let game = Game.getInstance();
     // 'say trollsfire' is the same as running the command 'trollsfire'
     if (arg === 'trollsfire') {
       game.command_parser.run('trollsfire', false);
@@ -33,7 +32,6 @@ export var event_handlers = {
   },
 
   "use": function(artifact) {
-    let game = Game.getInstance();
     switch (artifact.name) {
       case 'bread':
         if (game.monsters.get(1).room_id === game.rooms.current_room.id) {
@@ -48,7 +46,6 @@ export var event_handlers = {
 
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -64,7 +61,6 @@ export var event_handlers = {
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.name === 'black book') {
       if (game.player.hasArtifact(artifact.id)) {
         game.history.write("The book zaps you when you open it!", "danger");
@@ -75,8 +71,6 @@ export var event_handlers = {
   },
 
   "beforeRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
-    let game = Game.getInstance();
-    debugger;
     if (artifact) {
       if (artifact.id === 13) {
         game.history.write("Sucker! The jewels are fake. The thief must have stolen the real ones.");
@@ -91,7 +85,6 @@ export var event_handlers = {
   },
 
   "afterRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     // special message when the player finds the treasure
     if (artifact && artifact.id === 3) {
       game.history.write("That's a fine-looking sword.");
@@ -100,7 +93,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
     // alfred doesn't like the looks of that black book
     if (monster.id === 3 && artifact.id === 11) {
       game.history.write("Alfred says, \"That looks dangerous. Why don't you keep it?\"");
@@ -110,7 +102,6 @@ export var event_handlers = {
   },
 
   "take": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
     // you can't take alfred's lucky sword.
     if (monster.id === 3 && artifact.id === 8) {
       game.history.write("Alfred says, \"That's my lucky sword! My father gave it to me!\"");

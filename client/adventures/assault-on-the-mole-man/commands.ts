@@ -1,6 +1,8 @@
 import Game from "../../core/models/game";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var custom_commands = [];
 
 custom_commands.push({
@@ -9,10 +11,7 @@ custom_commands.push({
   description: "Used for pushing buttons on machinery.",
   examples: ['PUSH BUTTON', 'HIT BUTTON'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     // this command is really just an alias for the "use" command
-
     let artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if ([8,9,14,15].indexOf(artifact.id) !== -1) {
@@ -24,7 +23,6 @@ custom_commands.push({
     } else {
       throw new CommandException("You don't have it and it's not here.");
     }
-
   },
 });
 

@@ -4,11 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     // set up game data
     game.data["open box"] = false;
     game.data["mind has spoken"] = false;
@@ -27,7 +27,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
     // wizard attacks if you take the TV
     let wizard = game.monsters.get(3);
     if (artifact && artifact.id === 4 && wizard.isHere()) {
@@ -37,7 +36,6 @@ export var event_handlers = {
   },
 
   "attackArtifact": function(arg, artifact) {
-    let game = Game.getInstance();
     // smashing the mind's life-support equipment
     if (artifact.id === 27) {
       game.artifacts.get(28).moveToRoom(artifact.room_id);
@@ -50,8 +48,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     if (exit.room_to === -31 || exit.room_to === -32) {
       if (game.data["elevator on"]) {
         switch (exit.room_to) {
@@ -79,7 +75,6 @@ export var event_handlers = {
   },
 
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    let game = Game.getInstance();
     // mind's warning
     if (room_to.id === 28 && !game.data["mind has spoken"]) {
       game.data["mind has spoken"] = true;
@@ -93,7 +88,6 @@ export var event_handlers = {
   },
 
   "afterOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 6 && !game.data["open box"]) {
       // the box
       game.data["open box"] = true;
@@ -103,7 +97,6 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let game = Game.getInstance();
     let artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact && artifact.id === 17) {
       game.command_parser.run("read inscription", false);
@@ -114,7 +107,6 @@ export var event_handlers = {
 
   "beforeRead": function(arg: string, artifact: Artifact) {
     if (artifact && artifact.id === 17) {
-      let game = Game.getInstance();
       game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
       game.history.write("WEAPONS AND LEAVE VIOLENCE BEHIND YOU ", "special2");
       // teleport all weapons to random rooms
@@ -133,7 +125,6 @@ export var event_handlers = {
 
 
   "say": function(arg: string) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     if (arg === 'trilder' && game.data["open box"]) {
       game.command_parser.run('power', false);
@@ -142,7 +133,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       switch (artifact.id) {
         case 7:
@@ -229,7 +219,6 @@ export var event_handlers = {
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -246,7 +235,6 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
     // cyber-bit
     if (game.artifacts.get(5).isHere()) {
       game.after_sell_messages.push(game.effects.get(14).text);
@@ -261,6 +249,3 @@ export var event_handlers = {
   }
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

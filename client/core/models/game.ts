@@ -289,14 +289,6 @@ export default class Game {
   }
 
   /**
-   * Returns the game instance. Does the same thing as just using the global var "game"
-   * @return {Game} the game instance.
-   */
-  public static getInstance(): Game {
-    return game;
-  }
-
-  /**
    * Registers the event handlers and custom commands defined in the adventure's custom code
    * @param {any} event_handlers
    *   The object of event handler functions defined in the adventure
@@ -485,7 +477,7 @@ export default class Game {
    */
   public endTurn(): void {
 
-    if (Game.getInstance().died) return;
+    if (game.died) return;
 
     let light = this.artifacts.isLightSource();
     // show room name and description
@@ -503,7 +495,7 @@ export default class Game {
       }
     } else {
       this.history.write(this.rooms.current_room.name);
-      if (Game.getInstance().data['bort']) {
+      if (game.data['bort']) {
         this.history.append(` (${this.rooms.current_room.id})`);
       }
       if (this.show_exits) {

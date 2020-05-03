@@ -2,6 +2,8 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var custom_commands = [];
 
 custom_commands.push({
@@ -10,8 +12,6 @@ custom_commands.push({
   description: "Kiss someone or something.",
   examples: ['KISS BLARNEY STONE'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     let m: Monster = game.monsters.getLocalByName(arg);
     if (m) {
       game.history.write("SMACK!" + m.name + " blushes slightly.");

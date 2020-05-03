@@ -123,7 +123,7 @@ export class Monster extends GameObject {
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
   public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
-    this.room_id = room_id || Game.getInstance().player.room_id;
+    this.room_id = room_id || game.player.room_id;
     this.container_id = null;
 
     // when the player moves, set the current room reference
@@ -308,7 +308,6 @@ export class Monster extends GameObject {
    * Refreshes the inventory of artifacts carried by the monster
    */
   public updateInventory(): void {
-    let game = Game.getInstance();
     this.inventory = [];
     if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
       this.armor_class = 0;
@@ -339,7 +338,7 @@ export class Monster extends GameObject {
    * @returns boolean
    */
   public isHere(): boolean {
-    return (this.room_id === Game.getInstance().player.room_id);
+    return (this.room_id === game.player.room_id);
   }
 
   /**
@@ -355,7 +354,6 @@ export class Monster extends GameObject {
    * Prints the artifacts the monster is carrying
    */
   public printInventory(style: string = "normal"): void {
-    let game = Game.getInstance();
     if (this.reaction === Monster.RX_FRIEND) {
 
       // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
@@ -544,7 +542,6 @@ export class Monster extends GameObject {
    * Picks up a weapon during combat
    */
   public pickUpWeapon(wpn: Artifact): void {
-    let game = Game.getInstance();
     game.history.write(this.name + " picks up " + wpn.name + ".");
     this.pickUp(wpn);
     this.ready(wpn);
@@ -646,8 +643,6 @@ export class Monster extends GameObject {
    * @param {Monster} target
    */
   public attack(target: Monster): void {
-    let game = Game.getInstance();
-
     // calculate to-hit odds, and let event handler adjust the odds
     let odds = this.getToHitOdds(target);
     let can_critical = true;
@@ -865,7 +860,6 @@ export class Monster extends GameObject {
    * (using weapon stats if using a weapon, and monster stats if natural weapons)
    */
   public rollAttackDamage() {
-    let game = Game.getInstance();
     let w = this.getWeapon();
     if (w) {
       // using a weapon
@@ -884,7 +878,7 @@ export class Monster extends GameObject {
    *   The number that must be rolled for the throw to succeed
    */
   public rollSavingThrow(stat, difficulty) {
-    let roll = Game.getInstance().diceRoll(1, 20);
+    let roll = game.diceRoll(1, 20);
     return roll + Math.floor((this[stat] - 10) / 2) >= difficulty;
   }
 

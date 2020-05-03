@@ -8,7 +8,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     game.data["queen effect"] = game.player.gender === "m" ? 5 : 6;
     game.data["queen artifact"] = game.player.gender === "m" ? 7 : 15;
     game.data["met queen"] = false;

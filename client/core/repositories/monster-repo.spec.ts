@@ -15,7 +15,6 @@ describe("Monster Repo", function() {
   });
 
   it("should read the monster data", function() {
-    let game = Game.getInstance();
     // expect(game.monsters.all.length).toEqual(6, "There should be 6 monsters including the player.");
     // expect(game.artifacts.all.length).toEqual(26, "There should be 26 artifacts (incl. 5 player artifacts) after setting up the player's items.");
 
@@ -29,8 +28,6 @@ describe("Monster Repo", function() {
   });
 
   it("should find a monster by name in the current room", function() {
-    let game = Game.getInstance();
-
     // find a monster in the player's current room
     let alfred = game.monsters.getLocalByName('alfred');
     expect(alfred).not.toBeNull();
@@ -48,8 +45,6 @@ describe("Monster Repo", function() {
     game.player.moveToRoom(3);
     let someone2 = game.monsters.getLocalByName('alfred');
     expect(someone2.id).toBe(2);
-
   });
-
 
 });

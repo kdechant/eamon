@@ -10,7 +10,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     game.data.in_boat = false;
     game.data.water_rooms = [19, 20];
     game.data.shore_rooms = [21, 18];
@@ -134,7 +134,6 @@ export var event_handlers = {
   },
 
   "beforeGet": function(arg, artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 28) {
         // skiff
@@ -186,7 +185,6 @@ export var event_handlers = {
   },
 
   "say": function(arg) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     // for easier matching
     arg = arg.replace(/yog[ '-]?sothoth/, 'yog-sothoth');

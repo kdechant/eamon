@@ -5,6 +5,8 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 
+declare var game: Game;
+
 // some data - export so we can use it in tests
 export var drinks = [
   {"name": "seven-7", "price": 2, "strength": 4},
@@ -32,9 +34,7 @@ export var drunk_messages = [
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     // add your custom game start code here
     game.data['combo'] = [
       (32 + game.diceRoll(1, 10)) + '-' + (20 + game.diceRoll(1, 8)) + '-' + (30 + game.diceRoll(1, 8)),
@@ -78,8 +78,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     let sobering = false;
 
     game.data['sober counter']--;
@@ -141,7 +139,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
     if (game.player.room_id === 42 && game.monsters.get(31).isHere() && !game.data["protection spell text"]) {
       game.effects.print(3);
       game.data["protection spell text"] = true;
@@ -150,7 +147,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // gerschter bar
     if (game.player.room_id === 7) {
       game.effects.print(9);
@@ -173,8 +169,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     if (room.id === 22 && game.data['drinking contest active']) {
       game.history.write("The men in the room won't let you leave.");
       return false;
@@ -216,7 +210,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
     // loose boards
     if (artifact && artifact.id === 35) {
       game.player.moveToRoom(16);
@@ -225,7 +218,6 @@ export var event_handlers = {
   },
 
   "endTurn1": function() {
-    let game = Game.getInstance();
     // drinking contest
     if (game.player.room_id === 22 && game.data['drinking contest active'] === null) {
       game.data["drinking contest active"] = true;
@@ -234,7 +226,6 @@ export var event_handlers = {
   },
 
   "beforeSpell": function(spell_name: string) {
-    let game = Game.getInstance();
     // gerschter bar
     if (game.player.room_id === 7) {
       game.effects.print(10);
@@ -244,8 +235,6 @@ export var event_handlers = {
   },
 
   "drink": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
-
     // drinking contest
     if (game.player.room_id === 22) {
       if (game.data['drinking contest active']) {
@@ -365,8 +354,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
-
     if (recipient.id === 6 && artifact.id === 8) {
       // lamp to piano player
       game.effects.print(37);
@@ -385,7 +372,6 @@ export var event_handlers = {
   },
 
   "light": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 15) {
         if (game.artifacts.get(1).isHere()) {
@@ -403,8 +389,6 @@ export var event_handlers = {
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
-    // TODO: move all this to beforeOpen()
     if (artifact !== null) {
       if (artifact.id === 69) {
         // vault door
@@ -426,7 +410,6 @@ export var event_handlers = {
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.name === 'graffiti') {
       // this artifact's markings contain dynamic text, so effects won't work
       game.history.write("You see some names and measurements:");
@@ -440,7 +423,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase: string) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     if ((phrase === 'gronk' || phrase === 'grunt') && game.monsters.get(6).isHere()) {
       game.effects.print(43);
@@ -452,7 +434,6 @@ export var event_handlers = {
   },
 
   "seeRoom": function() {
-    let game = Game.getInstance();
     // brawl effect shown after room, so it appears before monster desc
     if (game.rooms.current_room.id === 40 && game.monsters.get(25).isHere()) {
       game.effects.print(11);
@@ -460,7 +441,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     switch (artifact.name) {
       case 'peanuts':
         game.effects.print(2);
@@ -530,7 +510,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (game.monsters.get(25).isHere()) {
       game.effects.print(12, "special");
       game.monsters.get(25).room_id = null;
@@ -611,7 +590,6 @@ export var event_handlers = {
 
 // declare any functions used by event handlers and custom commands
 function update_status(status: number) {
-  let game = Game.getInstance();
   if (status === 0 || status === game.data['how drunk']) return;
   game.data['how drunk'] = status;
   let st = drunk_messages[status - 1];

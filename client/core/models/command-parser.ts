@@ -5,6 +5,8 @@ import {CustomCommand} from "../commands/base-command";
 import {core_commands} from "../commands/core-commands";
 import {CommandException} from "../utils/command.exception";
 
+declare var game: Game;
+
 /**
  * Command Parser class. Handles registration of available commands and parsing
  * user input.
@@ -64,8 +66,6 @@ export class CommandParser {
    *   to prevent multiple game clock ticks.
    */
   public run(input: string, tick: boolean = true): void {
-
-    let game = Game.getInstance();
 
     input = input.toLowerCase().trim();
     let space_pos = input.indexOf(" ");

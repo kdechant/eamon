@@ -2,6 +2,8 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var custom_commands = [];
 
 custom_commands.push({
@@ -10,8 +12,6 @@ custom_commands.push({
   description: "Buys things from merchants.",
   examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     arg = arg.toLowerCase();
     if (arg === 'drink' || arg === 'beer') {
       if (game.monsters.get(8).isHere()) {
@@ -32,8 +32,6 @@ custom_commands.push({
   description: "Rents a room at the inn.",
   examples: ['RENT ROOM'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     if (arg.toLowerCase() === 'room') {
       if (game.monsters.get(9).isHere()) {
         game.command_parser.run('give 10 to innkeeper', false);
@@ -53,8 +51,6 @@ custom_commands.push({
   description: "Gives money to a few NPCs who ask for it.",
   examples: ['PAY BARTENDER'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     // this command is just a friendly alias for giving money to a couple of NPCs
     let npc = game.monsters.getLocalByName(arg);
     if (npc) {
@@ -78,8 +74,6 @@ custom_commands.push({
   description: "Pulls on something.",
   examples: ['PULL ROPE'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     // this command is really just a wrapper around the "use" command
 
     let artifact = game.artifacts.getLocalByName(arg);

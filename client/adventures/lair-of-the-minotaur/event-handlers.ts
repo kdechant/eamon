@@ -5,11 +5,11 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "intro": function() {
-    let game = Game.getInstance();
-
     if (game.player.gender === 'f') {
       game.intro_text[0] = game.intro_text[0].replace("Larcenous Lil", "Slippery Sven");
       game.intro_text[0] = game.intro_text[0].replace("Lil", "Sven");
@@ -18,8 +18,6 @@ export var event_handlers = {
   },
 
   "start": function() {
-    let game = Game.getInstance();
-
     // Lil or Sven?
     if (game.player.gender === 'f') {
       game.intro_text[0] = game.intro_text[0].replace("Larcenous Lil", "Slippery Sven");
@@ -35,38 +33,29 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     if (game.player.room_id === 16) {
       game.die(); // cause of death is in room desc
     }
-
     if (game.data['in boat']) {
       game.artifacts.get(3).moveToRoom();
-
       // shore
       if (game.data['in boat'] && game.data['water rooms'].indexOf(game.player.room_id) === -1) {
         game.history.write("You get out of the boat.");
         game.data['in boat'] = false;
       }
-
     }
-
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
     if (game.artifacts.get(26).isHere()) {
       game.history.write(game.monsters.get(9).name + " asks to be freed.");
     }
-
     if (game.data['in boat']) {
       game.history.write("(You are in the boat.)");
     }
   },
 
   "drink": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if ((arg === 'water' || arg === 'river') && near_water()) {
       game.history.write("The water tastes a little muddy, but is otherwise unremarkable.");
       return false;
@@ -75,7 +64,6 @@ export var event_handlers = {
   },
 
   "beforeGet": function(arg, artifact) {
-    let game = Game.getInstance();
     // the boat
     if (artifact && artifact.id === 3) {
       game.history.write("To get into the boat, try going onto the river.");
@@ -89,8 +77,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
-
     if (artifact && artifact.id === 10) {
       game.effects.print(4);
       game.player.injure(game.diceRoll(1, 10), true); // ignore armor
@@ -98,8 +84,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     if (game.data['water rooms'].indexOf(exit.room_to) !== -1) {
       if (game.artifacts.get(3).isHere()) {
         if (!game.data['in boat']) {
@@ -116,7 +100,6 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let game = Game.getInstance();
     if ((arg === 'water' || arg === 'river') && near_water()) {
       game.history.write("The river flows from north to south. It's too swift to navigate without a boat.");
       return false;
@@ -125,7 +108,6 @@ export var event_handlers = {
   },
 
   "say": function(arg) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     if (game.artifacts.get(25).isHere() && arg === 'magic') {
       game.effects.print(5, "special");
@@ -134,7 +116,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 9) {
         // shovel
@@ -158,7 +139,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -176,7 +156,6 @@ export var event_handlers = {
 }; // end event handlers
 
 function near_water(): boolean {
-  let game = Game.getInstance();
   return game.data['water rooms'].indexOf(game.player.room_id) !== -1
     || game.data['shore rooms'].indexOf(game.player.room_id) !== -1;
 }

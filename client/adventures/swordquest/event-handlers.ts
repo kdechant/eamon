@@ -1,14 +1,12 @@
 import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
-import {RoomExit} from "../../core/models/room";
-import {Room} from "../../core/models/room";
+
+declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     // custom attack messages
     game.monsters.get(44).combat_verbs = ["claws at", "breathes fire at", "slashes at"];
 
@@ -20,7 +18,6 @@ export var event_handlers = {
   },
 
   "death": function(monster: Monster) {
-    let game = Game.getInstance();
     // player
     if (monster.id === 0) {
       game.history.write("In your last conscious moments, you think:");
@@ -37,8 +34,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     // merlin
     if (game.player.room_id == 77 && !game.effects.get(11).seen) {
       game.effects.print(11);
@@ -47,8 +42,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
-
     // palace guards
     if (game.artifacts.get(104).isHere()) {
       game.effects.print(5);
@@ -57,7 +50,6 @@ export var event_handlers = {
   },
 
   "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact) {
-    let game = Game.getInstance();
     // Ready excalibur
     if (new_wpn.id === 32) {
       game.effects.print(13);
@@ -71,9 +63,7 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
-
     if (phrase === 'via mithrae') {
       if (game.player.hasArtifact(4) && game.player.hasArtifact(5)) {
         game.effects.print(1);
@@ -97,7 +87,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 90) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else {
@@ -107,7 +96,6 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     if (game.player.hasArtifact(32)) {
       game.effects.print(23);
       game.player.gold += 5000;
@@ -122,6 +110,3 @@ export var event_handlers = {
   }
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

@@ -2,6 +2,8 @@ import {Artifact} from "../models/artifact";
 import Game from "../models/game";
 import {Monster} from "../models/monster";
 
+declare var game: Game;
+
 /**
  * Class ArtifactRepository.
  * Storage class for all artifact data.
@@ -145,7 +147,7 @@ export default class ArtifactRepository {
   updateVisible() {
     let visible: Artifact[] = [];
     let inRoom: Artifact[] = [];
-    for (let a of this.all.filter(a => a.room_id === Game.getInstance().rooms.current_room.id)) {
+    for (let a of this.all.filter(a => a.room_id === game.rooms.current_room.id)) {
       a.updateContents();
       inRoom.push(a);
       if (!a.embedded) {

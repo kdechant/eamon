@@ -1,6 +1,8 @@
 import {Effect} from "../models/effect";
 import Game from "../models/game";
 
+declare var game: Game;
+
 /**
  * Class EffectRepository.
  * Storage class for all effect data.
@@ -69,7 +71,6 @@ export default class EffectRepository {
    * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
   public print(id: number, style: string = null, inline: boolean = false): void {
-    let game = Game.getInstance();
     let ef = this.get(id);
     if (ef) {
       let text = ef.text;
@@ -104,7 +105,6 @@ export default class EffectRepository {
    *   The IDs of the effects to print
    */
   public printSequence(effectIds: number[]): void {
-    let game = Game.getInstance();
     effectIds.forEach(id => game.effects.print(id));
   }
 

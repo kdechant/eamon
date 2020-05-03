@@ -9,7 +9,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     // set custom hardiness of monsters based on player's best weapon
     // (which should be the weapon the player readied at game init)
     let wpn = game.player.getWeapon();
@@ -46,7 +46,6 @@ export var event_handlers = {
   },
 
   "blast": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // necromancer
     if (target.id === 22 && !game.player.isWearing(25)) {
       game.history.write(`${game.player.name} casts a blast spell at ${target.getDisplayName()}`);
@@ -250,7 +249,6 @@ export var event_handlers = {
   },
 
   "wear": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     // helm gives boost to blast spell (in addition to making it do more damage)
     if (artifact.id === 25) {
       game.history.write("You feel the tingle of magic flowing through you!", "success");

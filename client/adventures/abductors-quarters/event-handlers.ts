@@ -8,7 +8,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     game.data['gold stolen'] = 0;
     game.data['laszlo spells'] = 0;
 

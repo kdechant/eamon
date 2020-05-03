@@ -3,13 +3,12 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {ModalQuestion} from "../../core/models/modal";
+
+declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     // the dwarf's question
 
     // prevent user mischief
@@ -36,7 +35,6 @@ export var event_handlers = {
   },
 
   "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
-    let game = Game.getInstance();
     // gelatinous cube
     if (attacker.id === 9) {
       if (game.diceRoll(1,6) > 1) {
@@ -69,8 +67,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     if (exit.room_to === -1) {
       game.history.write("The dwarf has blocked the exit!");
       return false;
@@ -100,7 +96,6 @@ export var event_handlers = {
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 23) {
       // the grain sack
       game.effects.print(3, "danger");
@@ -111,8 +106,6 @@ export var event_handlers = {
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
-
     if (artifact && artifact.id === 23) {  // sack
       // it's a container, so the regular "read a non-readable" logic doesn't work here.
       game.effects.print(6);
@@ -122,7 +115,6 @@ export var event_handlers = {
   },
 
   "say": function(arg: string) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     if (arg === 'pickle' && game.artifacts.get(19).isHere()) {
       game.history.write("  S H A Z A M ! !  ", "special");
@@ -132,7 +124,6 @@ export var event_handlers = {
   },
 
   "use": function(artifact_name, artifact) {
-    let game = Game.getInstance();
     if (artifact.id === 17) {
       // mad scientist's potion
       game.effects.print(5);
@@ -148,7 +139,6 @@ export var event_handlers = {
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -165,7 +155,6 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
     // reward for saving leia
     let leia = game.monsters.get(13);
     if (leia.isHere() && leia.reaction !== Monster.RX_HOSTILE) {
@@ -182,6 +171,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

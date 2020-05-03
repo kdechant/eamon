@@ -4,13 +4,12 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
-import {ModalQuestion} from "../../core/models/modal";
+
+declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data['exit flag'] = false;
     game.data['bell ringing'] = false;
     game.data['amulet used'] = false;
@@ -19,7 +18,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // illusionary army disappears if attacked/blasted
     if (target.id === 6) {
       armyDisappears();
@@ -29,7 +27,6 @@ export var event_handlers = {
   },
 
   "blast": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // illusionary army disappears if attacked/blasted
     if (target.id === 6) {
       armyDisappears();
@@ -39,7 +36,6 @@ export var event_handlers = {
   },
 
   "death": function(monster: Monster) {
-    let game = Game.getInstance();
     // banedon
     if (monster.id === 2) {
       game.effects.print(14);
@@ -49,18 +45,14 @@ export var event_handlers = {
   },
 
   "beforeGet": function(arg, artifact) {
-    let game = Game.getInstance();
-
     if (artifact && artifact.id === 11 && game.data['amulet used']) {
       game.history.write("The amulet is too hot to pick up!", "warning");
       return false;
     }
-
     return true;
   },
 
   "specialGet": function(arg): boolean {
-    let game = Game.getInstance();
     // if you try to get the sword when it's still in the brace
     let sword = game.artifacts.get(12);
     if (sword.match(arg) && sword.container_id === 31) {
@@ -76,7 +68,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
     let esher = game.monsters.get(1);
 
     // player has to pick up some things before leaving first room
@@ -146,7 +137,6 @@ export var event_handlers = {
   },
 
   "beforePut": function(arg: string, item: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     if (item && item.id === 11 && !game.data['amulet used']) {
       game.command_parser.run('use amulet', false);
       return false;
@@ -160,7 +150,6 @@ export var event_handlers = {
   },
 
   "flee": function() {
-    let game = Game.getInstance();
     if (game.monsters.get(5).isHere() || game.monsters.get(12).isHere()) {
       game.history.write("You are surrounded and cannot escape!", "emphasis");
       return false;
@@ -169,8 +158,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
-
     if (recipient.id === 16 && artifact.id === 53 && recipient.hasArtifact(44)) {
       // receipt to leatherworker
       game.history.write("The leatherworker gives you a set of leather armor.");
@@ -180,7 +167,6 @@ export var event_handlers = {
   },
 
   "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
-    let game = Game.getInstance();
     // buy options from Bozworth the gnome
     if ((recipient.id === 8 || recipient.id === 9) && gold_amount !== 10) {
       throw new CommandException("He wants 10 gold pieces, no more, no less!");
@@ -207,7 +193,6 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let game = Game.getInstance();
     let sword = game.artifacts.get(12);
     if (sword.match(arg) && sword.container_id === 31) {
       if (game.player.room_id === 10) {
@@ -222,7 +207,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact.isHere()) {
       switch (artifact.id) {
         case 6:
@@ -298,7 +282,6 @@ export var event_handlers = {
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 23) {
         artifact.reveal();
@@ -313,8 +296,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
-
     if (game.artifacts.get(11).isHere()) {
       game.effects.print(40);
       return;
@@ -340,8 +321,6 @@ export var event_handlers = {
   },
 
   "take": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
-    // you can't take alfred's lucky sword.
     if (monster.id === 1 && artifact.id === 1) {
       game.history.write(monster.name + " will not give up his weapon!");
       return false;
@@ -350,9 +329,7 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     let sword = game.artifacts.get(12);
-    let amulet = game.artifacts.get(11);
 
     // got sword of inari but didn't complete other puzzle tasks
     if (sword.container_id !== 31) {
@@ -402,7 +379,6 @@ export var event_handlers = {
  * The illusionary army handling
  */
 function armyDisappears() {
-  let game = Game.getInstance();
   game.history.write("* * * P O O F * * *", "special2");
   game.history.write("The Illusionary Soldiers vanish!");
   game.monsters.get(6).destroy();
@@ -413,7 +389,6 @@ function armyDisappears() {
  * @returns {boolean}
  */
 function hasSword() {
-  let game = Game.getInstance();
   let esher = game.monsters.get(1);
   let sword = game.artifacts.get(12);
   if (game.player.hasArtifact(12) || (game.player.hasArtifact(13) && sword.container_id === 13)) {
@@ -429,7 +404,6 @@ function hasSword() {
  * Stuff that happens if your quest fails
  */
 function failedQuest() {
-  let game = Game.getInstance();
   game.effects.print(15);
   game.effects.print(24);
   for (let a of game.player.inventory) {

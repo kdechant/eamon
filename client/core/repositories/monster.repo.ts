@@ -78,8 +78,6 @@ export default class MonsterRepository {
    * @param {Object} monster_data
    */
   public add(monster_data): Monster {
-    let game = Game.getInstance();
-
     // autonumber the ID if not provided
     if (monster_data.id === undefined) {
       monster_data.id = this.index + 1;
@@ -127,8 +125,6 @@ export default class MonsterRepository {
    * @param {Object} player_data
    */
   public addPlayer(player_data: any) {
-    let game = Game.getInstance();
-
     // the player JS model expects spell and weapon abilities to be objects, but they are stored
     // as regular fields on the Player Django model. Convert them to objects here.
     player_data.weapon_abilities = {
@@ -231,7 +227,7 @@ export default class MonsterRepository {
    */
   public getRandom(include_player: boolean = false) {
     let mons = this.all.filter(x => x.id !== Monster.PLAYER || include_player);
-    return mons[Game.getInstance().diceRoll(1, mons.length) - 1];
+    return mons[game.diceRoll(1, mons.length) - 1];
   }
 
   /**
@@ -239,7 +235,6 @@ export default class MonsterRepository {
    * @return Monster[]
    */
   public updateVisible() {
-    let game = Game.getInstance();
 
     // handle the virtual group monster pointers (this is a no-op for single monsters)
     this.all.forEach(m => m.updateVirtualMonster());

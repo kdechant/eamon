@@ -8,9 +8,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.effects.print(8);
     game.effects.print(10);
     game.delay(1);
@@ -36,14 +34,13 @@ export var event_handlers = {
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     if (exit.room_to === -1) {
-      Game.getInstance().history.write("Sorry, but I'm afraid to go into the water without my life preserver.");
+      game.history.write("Sorry, but I'm afraid to go into the water without my life preserver.");
       return false;
     }
     return true;
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 3) {
       game.history.write('It says "HEALING POTION"');
       artifact.name = "healing potion";
@@ -53,7 +50,6 @@ export var event_handlers = {
   },
 
   "afterRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 9) {  // book
       if (game.rooms.current_room.id === 26) {
         game.history.write("You fall into the sea and are eaten by a big fish.", "danger");
@@ -67,7 +63,7 @@ export var event_handlers = {
   "dropArtifact": function(monster: Monster, artifact: Artifact): void {
     if (monster.id === 8 && artifact.id === 10) {
       // trollsfire goes out when pirate dies or drops it
-      Game.getInstance().effects.print(3);
+      game.effects.print(3);
       put_out_trollsfire();
     }
   },
@@ -81,7 +77,6 @@ export var event_handlers = {
   },
 
   "flee": function() {
-    let game = Game.getInstance();
     if (game.monsters.get(7).isHere()) {
       game.history.write("You are held fast by the mimic and cannot flee!", "emphasis");
       return false;
@@ -123,7 +118,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     // 'say trollsfire' is the same as running the command 'trollsfire'
     if (phrase === 'trollsfire') {
@@ -140,7 +134,6 @@ export var event_handlers = {
 
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -157,7 +150,6 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
     let cynthia = game.monsters.get(3);
     // Duke Luxom's Reward
     if (cynthia.isHere() && cynthia.reaction !== Monster.RX_HOSTILE) {
@@ -173,7 +165,7 @@ export var event_handlers = {
 // functions used by event handlers and custom commands
 export function light_trollsfire(): void {
   "use strict";
-  let trollsfire = Game.getInstance().artifacts.get(10);
+  let trollsfire = game.artifacts.get(10);
   trollsfire.is_lit = true;
   trollsfire.inventory_message = "glowing";
   trollsfire.sides = 10;
@@ -181,7 +173,7 @@ export function light_trollsfire(): void {
 
 export function put_out_trollsfire(): void {
   "use strict";
-  let trollsfire = Game.getInstance().artifacts.get(10);
+  let trollsfire = game.artifacts.get(10);
   trollsfire.is_lit = false;
   trollsfire.inventory_message = "";
   trollsfire.sides = 6;

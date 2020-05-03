@@ -7,7 +7,7 @@ declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
 
     // witch
     game.monsters.get(9).spells = ['blast', 'heal'];
@@ -205,7 +205,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 65) {  // shovel
         game.history.write("Digging...");

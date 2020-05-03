@@ -4,11 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     // set up game data
     game.data["hermit_saves"] = false;
     game.data["hermit_speaks"] = false;
@@ -56,7 +56,6 @@ export var event_handlers = {
 
   // add your custom event handlers here
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    let game = Game.getInstance();
     if (room_from.id === 11 && room_to.id === 10) {
       // fall into the lava tube (not a death trap)
       game.history.write("You fall down a pit!");
@@ -70,7 +69,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 1) {
         game.history.write("You are a weirdo, aren't you?");
@@ -129,13 +127,11 @@ export var event_handlers = {
   "afterRead": function(arg: string, artifact: Artifact) {
     if (artifact.id === 15) {
       // the book teleports you (and friendly NPCs)
-      Game.getInstance().player.moveToRoom(22);
+      game.player.moveToRoom(22);
     }
   },
 
   "give": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
-
     if (artifact.id === 2) {
       // potion only works for the player
       game.history.write(monster.name + " doesn't want to try that strange potion.");
@@ -145,8 +141,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     // quicksand trap
     if (game.player.room_id === 9 && !game.data["hermit_saves"]) {
       game.data["quicksand_counter"]++;
@@ -161,8 +155,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
-
     // hermit speaks
     let hermit = game.monsters.get(4);
     if (game.player.room_id === 14 && hermit.room_id === 14 && !game.data["hermit_speaks"]) {
@@ -183,8 +175,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     if (exit.room_to < 0 && exit.room_to !== RoomExit.EXIT) {
       // stuck in quicksand
       if (game.data["hermit_saves"]) {
@@ -199,7 +189,6 @@ export var event_handlers = {
   },
 
   "say": function(arg: string) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     if (game.player.room_id === 9 && arg === 'help' && !game.data["hermit_saves"]) {
       game.history.write("An old hermit appears and pulls you out in the nick of time!", "special");
@@ -211,14 +200,12 @@ export var event_handlers = {
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll: number) {
-    let game = Game.getInstance();
     // power is useless in this adventure
     game.history.write("You hear a loud sonic boom which echoes all around you!");
   },
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
     let genz = game.monsters.get(7);
     if (genz.isHere() && genz.reaction !== Monster.RX_HOSTILE) {
       game.after_sell_messages.push(game.effects.get(6).text);
@@ -227,6 +214,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

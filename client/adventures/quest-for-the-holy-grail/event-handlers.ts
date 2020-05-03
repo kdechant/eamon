@@ -5,10 +5,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "start": function () {
-    let game = Game.getInstance();
     game.data['divine_intervention'] = 0; // divine intervention at death
     game.data['black_knight_damage'] = 0; // the Black Knight's special damage
     game.data['collector_last_room'] = 0;
@@ -38,7 +39,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
     manageDeadCollector();
     if ((game.player.room_id == 64) && !game.data['answered_questions']) { // the bridge
       game.data['questions']++;
@@ -47,7 +47,6 @@ export var event_handlers = {
   },
 
   "endTurn1": function () {
-    let game = Game.getInstance();
     if (game.player.room_id == 10) { // the monks
       if (!game.effects.get(1).seen || game.diceRoll(1,100) <= 20) {
         game.effects.print(1);
@@ -80,7 +79,6 @@ export var event_handlers = {
   // For some reason, the test suite won't pass if any of the endTurn event handlers
   // include a isHere() call on a Monster object unless you check for null first.
   "endTurn2": function () {
-    let game = Game.getInstance();
     if (game.artifacts.get(31).isHere()) { // the Black Knight's torso
       printRandomEffect(68,7,33);
     }
@@ -111,7 +109,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
     if (room.id == 25 && exit.room_to !== 22) { // the Knights of Nee
       if (visibleKnightsOfNee().length > 0) {
         game.effects.print(10);
@@ -144,7 +141,6 @@ export var event_handlers = {
   },
 
   "flee": function() {
-    let game = Game.getInstance();
     if (game.monsters.get(9).isHere()) { // the Black Knight
       printRandomEffect(51,4,100);
       return false;
@@ -153,7 +149,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     if (target.special === "Camelot") {     // attacking one of Arthur's band
       game.monsters.all.filter(m => (m.special === "Camelot")).forEach(function(monster){
         monster.reaction = Monster.RX_HOSTILE;
@@ -183,7 +178,6 @@ export var event_handlers = {
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
-    let game = Game.getInstance();
     if (target.id == 31) { // the Black Knight's torso
       game.effects.print(59);
       return false;
@@ -192,7 +186,6 @@ export var event_handlers = {
   },
 
   "attackDamage": function (attacker: Monster, defender: Monster, damage: number) {
-    let game = Game.getInstance();
     if (attacker.id == Monster.PLAYER && defender.id == 9) { // the Black Knight
       return blackKnightDamage();
     }
@@ -201,7 +194,6 @@ export var event_handlers = {
   },
 
   "death": function (monster: Monster): boolean {
-    let game = Game.getInstance();
     if (monster.parent) {
       if (monster.parent.id == 15) { // a Knight of Nee
         let body = getDeadGroupMember(83,5);
@@ -243,7 +235,6 @@ export var event_handlers = {
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if ((artifact.id == 7) && game.in_battle) { // chest
         game.effects.print(26);
@@ -254,12 +245,11 @@ export var event_handlers = {
   },
 
   "beforeGet": function (arg: string, artifact: Artifact): boolean {
-    let game = Game.getInstance();
     if (artifact) {
       if ((artifact.id == 2) || (artifact.id == 7)) { // chest or Grail
         if (game.in_battle) {
           game.effects.print(26);
-          return false; 
+          return false;
         }
       }
       if (artifact.id == 31) { // the Black Knight's torso
@@ -275,7 +265,6 @@ export var event_handlers = {
   },
 
   "afterGet": function (arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       updateArtifactDescription(artifact);
       if (artifact.id == 1) { // Holy Hand Grenade
@@ -289,7 +278,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
     // giving the dead collector a body
     if (recipient.id == 33) {
       if (deadCollectorCollectsABody(recipient, artifact)) { return false; }
@@ -305,7 +293,6 @@ export var event_handlers = {
   },
 
   "seeMonster": function(monster: Monster): void {
-    let game = Game.getInstance();
     if (monster.id == 3) { // Lancelot
       game.effects.printSequence([85,86]);
     }
@@ -360,7 +347,6 @@ export var event_handlers = {
   },
 
   "power": function(roll) {
-    let game = Game.getInstance();
     if ((roll <= 10) && (game.player.spell_abilities['speed'] > 0)) { // speed
       game.effects.print(91);
       game.command_parser.run("speed", false);
@@ -402,14 +388,12 @@ export var event_handlers = {
   },
 
   "armorClass": function(monster: Monster) {
-    let game = Game.getInstance();
     if ((monster.id == Monster.PLAYER) && game.data['power_naked']) {
       monster.armor_class = 0;
     }
   },
 
   "wear": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && (artifact.id == 88)) { // armor
       artifact.destroy();
       game.player.name = game.data['real_name'];
@@ -422,7 +406,6 @@ export var event_handlers = {
   },
 
   "eat": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     let monster = game.monsters.getLocalByName(arg);
     if (monster && (monster.id == 25) && monster.isHere()) { // the Minstrel
       monster.destroy();
@@ -433,7 +416,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase: string) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     if (phrase.indexOf("it") === 0) {
       game.effects.print(128);
@@ -488,7 +470,6 @@ export var event_handlers = {
 }; // end event handlers
 
 export function initCustomCombatMessages(): void {
-  let game = Game.getInstance();
   // the Knights Who Say Nee
   let neeCombatVerbs = [
       'screams "NEE!" at',
@@ -519,7 +500,6 @@ export function initCustomCombatMessages(): void {
 
 
 export function initCustomHealthMessages(): void {
-  let game = Game.getInstance();
   let health_messages = [
     "is spiffing!",
     "is in good shape.",
@@ -536,14 +516,12 @@ export function initCustomHealthMessages(): void {
 }
 
 export function visibleKnightsOfNee(excludeHead: boolean = false): Monster[] {
-  let game = Game.getInstance();
   let knights: Monster[] = game.monsters.get(15).children.filter(m => m.isHere());
   if (!excludeHead && game.monsters.get(14).isHere()) { knights.push(game.monsters.get(14)); }
   return knights;
 }
 
 export function getDeadGroupMember(firstBodyId: number, quantity: number): Artifact {
-  let game = Game.getInstance();
   for (let i = firstBodyId; i < (firstBodyId + quantity); i++) {
     let deadBody = game.artifacts.get(i);
     if (deadBody.room_id == 0) { return deadBody; }
@@ -552,7 +530,6 @@ export function getDeadGroupMember(firstBodyId: number, quantity: number): Artif
 }
 
 export function strikeFear(monster: Monster): void {
-  let game = Game.getInstance();
   monster.courage = monster.courage / 2;
   let strings = [];
   let name = monster.name;
@@ -581,7 +558,6 @@ export function strikeFear(monster: Monster): void {
 }
 
 export function blackKnightDamage(): number {
-  let game = Game.getInstance();
   game.data['black_knight_damage']++;
   switch(game.data['black_knight_damage']) {
     case 1: {
@@ -615,7 +591,6 @@ export function blackKnightDamage(): number {
 }
 
 export function theMinstrelSings(): void {
-  let game = Game.getInstance();
   if (game.diceRoll(1,100) <= 33) {
     game.effects.print(19);
     game.effects.print(10 + game.data['minstrels_song']);
@@ -625,7 +600,6 @@ export function theMinstrelSings(): void {
 }
 
 export function manageDeadCollector(): void {
-  let game = Game.getInstance();
   let collector = game.monsters.get(33);
   if (deadCollectorCollects(collector)) { return; }
   if (deadCollectorIsInterested(collector)) { return; }
@@ -633,7 +607,6 @@ export function manageDeadCollector(): void {
 }
 
 export function deadCollectorCollects(collector: Monster): boolean {
-  let game = Game.getInstance();
   let bodies = game.artifacts.all.filter(a => (a.room_id === collector.room_id)).filter(a => (a.type === 13));
   bodies.forEach(function (body){
     deadCollectorCollectsABody(collector, body);
@@ -643,7 +616,6 @@ export function deadCollectorCollects(collector: Monster): boolean {
 }
 
 export function deadCollectorCollectsABody(collector: Monster, body: Artifact): boolean {
-  let game = Game.getInstance();
   if (body.type != 13) { return false; }
   body.destroy();
   if (collector.room_id == game.player.room_id) {
@@ -655,7 +627,6 @@ export function deadCollectorCollectsABody(collector: Monster, body: Artifact): 
 }
 
 export function deadCollectorIsInterested(collector: Monster): boolean {
-  let game = Game.getInstance();
   if ((collector.room_id == game.player.room_id) && game.in_battle) {
     let interest = game.monsters.visible[game.diceRoll(0,game.monsters.visible.length-1)];
     if ((interest.id == 33) || (game.diceRoll(1,100) <= 50)) { return; } // not himself
@@ -666,14 +637,13 @@ export function deadCollectorIsInterested(collector: Monster): boolean {
 }
 
 export function deadCollectorMoves(collector: Monster): void {
-  let game = Game.getInstance();
   if ((collector.room_id != game.player.room_id) || (game.diceRoll(1,100) <= 20)) {
     let exit = collector.chooseRandomExit();
     let tries = 3;
     while ((exit.room_to == game.data['collector_last_room']) && (tries > 0)) {
       exit = collector.chooseRandomExit();
       tries--;
-    } 
+    }
     game.data['collector_last_room'] = collector.room_id;
     collector.moveToRoom(exit.room_to);
     if (collector.room_id === game.player.room_id) {
@@ -685,28 +655,18 @@ export function deadCollectorMoves(collector: Monster): void {
 }
 
 export function intoTheGorge(): void {
-  let game = Game.getInstance();
   game.effects.printSequence([34,35]);
   game.die();
 }
 
 export function printRandomEffect(first: number, quantity: number, odds: number = 50): void {
-  let game = Game.getInstance();
   let offset = first - 1;
   if ((offset < 0) || (quantity < 1)) { return; } // sanity check
   if (game.diceRoll(1,100) > odds) { return; }
   game.effects.print(offset + game.diceRoll(1,quantity));
 }
 
-// export function printSequence(effectIds: number[]): void {
-//   let game = Game.getInstance();
-//   effectIds.forEach(function(id){
-//     game.effects.print(id);
-//   });
-// }
-
 export function updateArtifactDescription(artifact: Artifact): void {
-  let game = Game.getInstance();
   let offset = 200;
   if (!game.effects.get(artifact.id + offset)) { return; } // no alternative description
   artifact.description = game.effects.get(artifact.id + offset).text;

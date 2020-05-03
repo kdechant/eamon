@@ -4,11 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data = {
       'troll words': [
         "jolicks verploeg", "vanch cur fros", "wilk nedthix", "kentry drathran", "hulmfin radkryne"
@@ -29,7 +29,6 @@ export var event_handlers = {
   },
 
   "armorClass": function (monster: Monster) {
-    let game = Game.getInstance();
     if (monster.id === Monster.PLAYER && monster.spell_counters['qorgaw'] > 0) {
       // qorgaw spell ac bonus
       monster.armor_class += 3;
@@ -37,7 +36,6 @@ export var event_handlers = {
   },
 
   "attackDamage": function (attacker: Monster, defender: Monster, damage: number) {
-    let game = Game.getInstance();
     if (attacker.id === Monster.PLAYER && attacker.spell_counters['trezore'] > 0) {
       // trezore spell damage multiplier
       return damage * 4;
@@ -46,7 +44,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
     if (game.monsters.get(1).isHere()) {
       if (game.data['holfane speaks'] === 0) {
         game.effects.print(14);
@@ -59,8 +56,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
-
     if (artifact.id === 24 && recipient.id > 2) {
       game.history.write(recipient.name + " appears to be afraid to take it, but does.");
     }
@@ -102,7 +97,6 @@ export var event_handlers = {
   },
 
   "afterGive": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
     if (recipient.id === 1) {
       // king
       if (artifact.id === 24) {
@@ -156,7 +150,6 @@ export var event_handlers = {
   },
 
   "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
-    let game = Game.getInstance();
     if (recipient.id === 2) {
       // grommick
       game.history.write("Grommick isn't interested in your gold.");
@@ -165,7 +158,6 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let game = Game.getInstance();
     let artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact) {
       switch (artifact.id) {
@@ -178,6 +170,7 @@ export var event_handlers = {
           break;
         case 31:
           // dead adventurer
+          // TODO: dead bodies can be containers where contents will appear if you look at them. (see mage's items in ngurct). Could simplify this.
           if (game.artifacts.get(32).room_id === 0) {
             game.artifacts.get(32).moveToRoom();
           }
@@ -191,8 +184,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     // king
     let king = game.monsters.get(1);
     if (king.room_id === exit.room_to && game.data['holfane speaks'] === 1) {
@@ -214,7 +205,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     switch (phrase) {
       case 'trezore':
@@ -249,7 +239,6 @@ export var event_handlers = {
   },
 
   'spellExpires': function(spell_name) {
-    let game = Game.getInstance();
     if (spell_name === 'trezore') {
       game.history.write('The Trezore spell expires!');
     }
@@ -263,7 +252,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {

@@ -6,11 +6,11 @@ import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 import {ModalQuestion} from "../../core/models/modal";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     // custom attack messages
     let witch_attacks = [
       "sends flames showering upon",
@@ -95,7 +95,6 @@ export var event_handlers = {
   },
 
   "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
-    let game = Game.getInstance();
     // mr. r
     if (defender.id === 40 && attacker.id === Monster.PLAYER) {
       game.history.write('Mr. Roessler shrugs off your attack and laughs.');
@@ -104,7 +103,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // to battle!
     if (target.id === 16) {
       game.effects.print(106);
@@ -118,7 +116,6 @@ export var event_handlers = {
   },
 
   "blast": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     if (target.reaction !== Monster.RX_HOSTILE) {
       game.history.write("That wouldn't be very nice!");
       return false;
@@ -127,7 +124,6 @@ export var event_handlers = {
   },
 
   "beforeGet": function (arg, artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 45 && !game.data['orb']) {
       game.history.write("Sorry, it's not yours.");
       return false;
@@ -136,7 +132,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
 
     if (exit.room_to === 51 || room.id === 51) {
       game.history.write("You feel as if you are tumbling through space and time...");
@@ -180,7 +175,6 @@ export var event_handlers = {
   },
 
   "death": function(monster: Monster) {
-    let game = Game.getInstance();
     if (monster.id === 3) {
       game.effects.print(108);
       monster.heal(monster.hardiness);
@@ -190,7 +184,6 @@ export var event_handlers = {
   },
 
   "afterDeath": function(monster: Monster) {
-    let game = Game.getInstance();
     switch (monster.id) {
       case 2:
         game.artifacts.get(8).moveToRoom();
@@ -216,7 +209,6 @@ export var event_handlers = {
   },
 
   "eat": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (game.player.room_id === 51 && (arg === "cheesedip" || arg === "cheese" || arg === "dip")) {
       game.history.write("That's some psychedelic cheesedip. Your vision goes all swimmy for a few minutes.");
       return false;
@@ -234,7 +226,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
     if (game.player.room_id === 57) {
       if (game.data['hot room'] > 2) {
         game.effects.print(83, 'danger');
@@ -246,8 +237,6 @@ export var event_handlers = {
   },
 
   "endTurn1": function() {
-    let game = Game.getInstance();
-
     // if you found Groo before talking to the minstrel
     if (game.monsters.get(2).isHere() && game.monsters.get(3).isHere()) {
       game.monsters.get(2).destroy();
@@ -257,7 +246,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
     let room_id = game.player.room_id;
 
     if (game.player.room_id === 57 && game.data['hot room'] > 0) {
@@ -403,7 +391,6 @@ export var event_handlers = {
   },
 
   "flee": function(arg: string, exit: RoomExit) {
-    let game = Game.getInstance();
     if (game.monsters.get(14).isHere()) { // kretons taunt
       if (exit.room_to === -627) {
         // getting back into the city
@@ -442,7 +429,6 @@ export var event_handlers = {
   },
 
   "beforeFree": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 68) {  // old man
       game.history.write("You have freed the old man.");
       game.effects.print(88);
@@ -454,7 +440,6 @@ export var event_handlers = {
   },
 
   "afterFree": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
     if (monster) {
       if (monster.id === 18) {  // dog
         game.effects.print(68);
@@ -471,7 +456,6 @@ export var event_handlers = {
   },
 
   "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
-    let game = Game.getInstance();
     // some monsters can't fumble
     if (attacker.id === 29 || attacker.id === 40) {
       game.history.write("-- fumble recovered!", "no-space");
@@ -481,7 +465,6 @@ export var event_handlers = {
   },
 
   "give": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
     // sage / brandy
     if (recipient.id === 21 && artifact.id === 28) {  // sage / brandy
       if (game.player.room_id !== 3) {
@@ -507,7 +490,6 @@ export var event_handlers = {
   },
 
   "giveGold": function(arg: string, gold_amount: number, recipient: Monster) {
-    let game = Game.getInstance();
     // this adventure doesn't let you hire NPCs as mercenaries
     if (gold_amount >= 5000) {
       game.history.write("Don't go flashing that kind of money around here!");
@@ -535,7 +517,6 @@ export var event_handlers = {
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 9) {  // city gate
         game.history.write("Don't be dumb.");
@@ -549,7 +530,6 @@ export var event_handlers = {
   },
 
   "afterRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 37) {  // codex
         game.data['codex'] = true;
@@ -567,7 +547,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     let room_id = game.player.room_id;
     if (phrase === 'the password' && room_id === 45) {
@@ -590,7 +569,6 @@ export var event_handlers = {
   },
 
   "beforeRequest": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
     if (!monster || !artifact) return true;
     // Some effects can happen even if the monster doesn't have the artifact.
     // So, we check for whether the monster actually has the artifact below.
@@ -639,7 +617,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact.isHere()) {
       switch (artifact.id) {
         case 26:  // wand of frost
@@ -690,7 +667,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 40) {
       game.history.write("Blobs of cheesedip rain from above. They make a big mess but don't do any damage.");
     } else if (roll <= 80) {
@@ -715,7 +691,6 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     // you can exit without killing c.g. but you don't get a prize
     if (game.monsters.get(39).room_id === null
       && game.monsters.get(40).room_id === null) {

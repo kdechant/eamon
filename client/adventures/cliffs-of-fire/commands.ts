@@ -2,6 +2,8 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var custom_commands = [];
 
 custom_commands.push({
@@ -10,10 +12,7 @@ custom_commands.push({
   description: "Waves something in the air.",
   examples: ['WAVE WAND'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     // this command is really just a wrapper around the "use" command
-
     let artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id === 3) {
@@ -25,6 +24,5 @@ custom_commands.push({
     } else {
       throw new CommandException("Nothing happens.");
     }
-
   },
 });

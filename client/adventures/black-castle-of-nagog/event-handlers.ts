@@ -4,22 +4,20 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data['vrock appeared'] = false;
     game.data['balor appeared'] = false;
     game.data['bridge'] = false;
     game.data['wizard spells'] = 3;
     game.data['lammasu spells'] = 3;
     game.data['rovnart'] = false;
-
   },
 
   "death": function(monster: Monster) {
-    let game = Game.getInstance();
     // balor
     if (monster.id === 30) {
       game.history.write("As the demon dies, its body explodes, destroying its weapons and blasting you with a powerful jolt of fire!", "special2");
@@ -36,8 +34,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     // idol and demons - appear in random spot, but always appear before you leave
     if (game.player.hasArtifact(2)) {
       let rn = game.diceRoll(1, 100);
@@ -64,15 +60,12 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
     if (game.data['bridge'] && (game.player.room_id === 64 || game.player.room_id === 65)) {
       game.history.write("A crystal bridge extends across the chasm.", "special");
     }
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     switch (exit.room_to) {
       case -64:
       case -65:
@@ -89,8 +82,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
-
     if (artifact && artifact.id === 2) {
       // idol
       let rnd = game.diceRoll(1, 20) + 5;
@@ -102,7 +93,6 @@ export var event_handlers = {
   },
 
   "attackOdds": function (attacker: Monster, defender: Monster, odds: number) {
-    let game = Game.getInstance();
     // umber hulk's gaze
     if (attacker.id === Monster.PLAYER && defender.id === 21) {
       // TODO: if the IQ stat is ever implemented, turn this into an IQ check instead of HD
@@ -115,8 +105,6 @@ export var event_handlers = {
   },
 
   "monsterAction": function(monster: Monster) {
-    let game = Game.getInstance();
-
     // wizard can cast blast
     if (monster.id === 13 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
       // blast
@@ -144,7 +132,6 @@ export var event_handlers = {
   },
 
   "afterOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 63 && !game.data['rovnart']) {
       // rovnart's tomb
       game.data['rovnart'] = true;
@@ -153,7 +140,6 @@ export var event_handlers = {
   },
 
   "specialPut": function(arg: string, item: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     // rubies / statue
     if (item.id === 14 && container.id === 71) {
       game.history.write("You put the rubies into the statue's scepter and you hear hidden gears grinding. The south wall swings open!");
@@ -164,7 +150,6 @@ export var event_handlers = {
   },
 
   "afterRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     // book
     if (artifact && artifact.id === 10) {
       for (let spell_name of ['blast', 'heal', 'speed', 'power']) {
@@ -178,7 +163,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
 
     if (phrase === 'morgar' && !game.data['bridge'] && game.player.room_id === 64 && game.player.hasArtifact(1)) {
@@ -188,8 +172,6 @@ export var event_handlers = {
   },
 
   "seeMonster": function(monster: Monster): void {
-    let game = Game.getInstance();
-
     // mummy
     if (monster.id === 17) {
       for (let m of game.monsters.visible) {
@@ -213,8 +195,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
-
     if (game.player.room_id == 64 && !game.data['bridge']) {
       game.effects.print(4);
       game.data['bridge'] = true;
@@ -251,7 +231,6 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     if (game.player.hasArtifact(2)) {
       let value = game.player.charisma * 100;
       game.history.write("Because you successfully recovered the gold idol, King Mithidas has knighted you and given you a land grant worth " + value + " gp!", "success");
@@ -269,6 +248,3 @@ export var event_handlers = {
   }
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

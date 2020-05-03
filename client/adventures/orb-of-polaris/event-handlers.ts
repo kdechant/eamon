@@ -4,11 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "start": function (arg: string) {
-    let game = Game.getInstance();
-
     game.data['freezing'] = 0;
     game.data['flamethrower instructions'] = false;
     game.data['shattered orb'] = false;
@@ -29,7 +29,6 @@ export var event_handlers = {
 
   "endTurn1": function () {
     // stuff that happens after room desc is shown, but before monster/artifacts
-    let game = Game.getInstance();
     if (!in_cold_room()) {
       // warm room effects
       if (game.monsters.get(2).isHere()) {
@@ -64,7 +63,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function () {
-    let game = Game.getInstance();
     // special logic for cold rooms
     if (in_cold_room()) {
       // freezing
@@ -111,7 +109,6 @@ export var event_handlers = {
   },
 
   "attackDamage": function (attacker: Monster, defender: Monster, damage: number) {
-    let game = Game.getInstance();
     if (defender.special === 'cold' && attacker.weapon_id === 12) {
       // flamethrower extra damage for cold-based monsters
       return damage * 2;
@@ -120,7 +117,6 @@ export var event_handlers = {
   },
 
   "attackDamageAfter": function (attacker: Monster, defender: Monster, damage_dealt: number) {
-    let game = Game.getInstance();
     // polaris gets hit by flamethrower
     if (defender.id === 1 && attacker.weapon_id === 12) {
       game.effects.print(2, 'special');
@@ -131,7 +127,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function (arg: string, target: Monster) {
-    let game = Game.getInstance();
     // you can slip on the ice and lose your turn
     if (in_cold_room() && game.diceRoll(1, 10) === 1) {
       game.history.write("You slipped on a patch of ice and fell down!", "warning");
@@ -141,7 +136,6 @@ export var event_handlers = {
   },
 
   "beforeGet": function (arg, artifact) {
-    let game = Game.getInstance();
 
     if (arg === 'icicle' || arg === 'icicles') {
       game.history.write("They are too high to reach.");
@@ -162,7 +156,6 @@ export var event_handlers = {
   },
 
   // "afterGet": function (arg, artifact) {
-  //   let game = Game.getInstance();
   //   // warlock
   //   if (artifact && artifact.id == 19 && !game.data['warlock appeared']) {
   //     game.monsters.get(22).moveToRoom(1);
@@ -173,7 +166,6 @@ export var event_handlers = {
   // },
 
   "afterGive": function (arg: string, artifact: Artifact, recipient: Monster) {
-    let game = Game.getInstance();
     if (recipient.id === 22 && artifact.id === 19) {
       // give orb to warlock
       game.effects.print(6);
@@ -181,8 +173,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function (arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     if (exit.room_to === RoomExit.EXIT) {
       if (!game.data['exit open']) {
         game.effects.print(5, "special");
@@ -193,15 +183,12 @@ export var event_handlers = {
   },
 
   "afterRead": function (arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
-
     if (artifact && artifact.id === 13) {
       game.data['flamethrower instructions'] = true;
     }
   },
 
   "ready": function (arg: string, old_wpn: Artifact, new_wpn: Artifact) {
-    let game = Game.getInstance();
     // flamethrower
     if (new_wpn.id === 12 && !game.data['flamethrower instructions']) {
       game.history.write("You can't figure out how to work it.");
@@ -211,7 +198,6 @@ export var event_handlers = {
   },
 
   "say": function (arg) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     let orb = game.artifacts.get(19);
     if ((orb.isHere() || orb.monster_id === 22) && arg === game.data['magic word']) {
@@ -233,7 +219,6 @@ export var event_handlers = {
   },
 
   "seeMonster": function (monster: Monster): void {
-    let game = Game.getInstance();
     // some monsters speak when you first see them.
 
     // polaris
@@ -243,7 +228,6 @@ export var event_handlers = {
   },
 
   "use": function (artifact) {
-    let game = Game.getInstance();
     if (artifact.id === 12) {
       game.history.write("To use the flamethrower, READY it and ATTACK with it.")
     }
@@ -254,8 +238,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function (roll) {
-    let game = Game.getInstance();
-
     // frosty
     if (in_cold_room()
       && game.artifacts.get(14).room_id === game.player.room_id
@@ -297,6 +279,5 @@ export var event_handlers = {
  * Determines if the player is in a cold room
  */
 function in_cold_room() {
-  let game = Game.getInstance();
   return game.player.room_id < 29 || game.player.room_id > 32;
 }

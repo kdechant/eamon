@@ -2,16 +2,15 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var custom_commands = [];
 
 custom_commands.push({
   name: "play",
   verbs: ["play"],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
-
     // this command is really just a wrapper around the "use" command
-
     let artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id === 21) {

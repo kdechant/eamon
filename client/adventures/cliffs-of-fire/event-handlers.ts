@@ -5,16 +5,15 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 
+declare var game: Game;
+
 export var event_handlers = {
 
   "start": function() {
-    let game = Game.getInstance();
     game.exit_prompt = false;
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     // this never runs. MoveCommand checks the presence of a door before it runs this handler. Maybe fix this some day.
     if (exit.door_id === 13 && game.artifacts.get(13).isHere()) {
       // this just shows an effect instead of the normal "x blocks your way!" message
@@ -48,7 +47,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 3) {
       if (game.artifacts.get(13).isHere()) {
         game.effects.print(3);
@@ -63,7 +61,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 80) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 91) {
@@ -83,7 +80,6 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     if (game.player.hasArtifact(16)) {
       game.history.write("The excited priests welcome you on board. The high priest hands you a huge bag containing 2000 gold pieces as a reward for returning the sceptre.", "emphasis");
       game.player.gold += 2000;

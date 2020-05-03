@@ -1,13 +1,10 @@
 import Game from "../../core/models/game";
-import {Artifact} from "../../core/models/artifact";
-import {Monster} from "../../core/models/monster";
-import {RoomExit} from "../../core/models/room";
-import {Room} from "../../core/models/room";
+
+declare var game: Game;
 
 export var event_handlers = {
 
   "start": function() {
-    let game = Game.getInstance();
     game.exit_message = 'You return to the main hall.';
   },
 
@@ -15,7 +12,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {

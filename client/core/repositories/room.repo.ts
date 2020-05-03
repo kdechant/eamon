@@ -1,6 +1,8 @@
 import {Room} from "../models/room";
 import Game from "../models/game";
 
+declare var game: Game;
+
 /**
  * Class RoomRepository.
  * Storage class for all room data.
@@ -50,9 +52,9 @@ export default class RoomRepository {
    * @return Room
    */
   getRandom(exclude: number[] = []) {
-    let roll = Game.getInstance().diceRoll(1, this.rooms.length) - 1;
+    let roll = game.diceRoll(1, this.rooms.length) - 1;
     while (exclude.find(x => x === roll)) {
-      roll = Game.getInstance().diceRoll(1, this.rooms.length) - 1;
+      roll = game.diceRoll(1, this.rooms.length) - 1;
     }
     return this.rooms[roll];
   }

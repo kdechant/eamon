@@ -9,10 +9,6 @@ declare var game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-  },
-
   "seeMonster": function (monster: Monster): void {
     // tweedledee/tweedledum share a description, as do the raths
     if (monster.id === 4 || monster.id === 17) {
@@ -24,7 +20,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -40,6 +35,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands

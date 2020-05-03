@@ -1,6 +1,8 @@
 import {Loadable} from "./loadable";
 import Game from "./game";
 
+declare var game: Game;
+
 export class RoomExit extends Loadable {
 
   static EXIT: number = -999;
@@ -32,7 +34,7 @@ export class RoomExit extends Loadable {
    */
   public isOpen(): boolean {
     if (this.door_id) {
-      let door = Game.getInstance().artifacts.get(this.door_id);
+      let door = game.artifacts.get(this.door_id);
       return door.is_open && !door.hidden;
     } else {
       // no door
@@ -87,7 +89,6 @@ export class Room extends Loadable {
    * Shows the room description and any built-in effects.
    */
   public show_description() {
-    let game = Game.getInstance();
     game.history.write(this.description,"normal", this.is_markdown);
     if (this.effect != null) {
       game.effects.print(this.effect);
@@ -101,7 +102,6 @@ export class Room extends Loadable {
    * Shows the dark version of the room description (used when there isn't a light source).
    */
   public show_dark_description() {
-    let game = Game.getInstance();
     game.history.write(this.dark_description, "normal", this.is_markdown);
   }
 
@@ -111,7 +111,6 @@ export class Room extends Loadable {
    * Excludes zero-connection exits and exits with hidden secret doors.
    */
   public getVisibleExits(): RoomExit[] {
-    let game = Game.getInstance();
     return this.exits.filter(r => r.room_to !== 0 &&
       (!r.door_id || !game.artifacts.get(r.door_id).hidden)
     );
@@ -151,8 +150,6 @@ export class Room extends Loadable {
    * Monster flees out a random exit
    */
   public chooseRandomExit(): RoomExit {
-    let game = Game.getInstance();
-
     // choose a random exit
     let good_exits: RoomExit[] = this.getGoodExits();
     if (good_exits.length === 0) {

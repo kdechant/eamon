@@ -6,21 +6,18 @@ import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data['inner gate open'] = false;
     game.data['clone check'] = false;
     game.data['cannon uses'] = 3;
     game.data['power off'] = false;
-
   },
 
   "beforeMove": function(arg: string, current_room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     switch (exit.room_to) {
       case -4:
       case -9:
@@ -46,7 +43,6 @@ export var event_handlers = {
   },
 
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    let game = Game.getInstance();
     // airships follow
     if (room_from.id === 3 && room_to.id === 4 && game.artifacts.get(4).room_id === 3) {
       game.artifacts.get(4).moveToRoom();
@@ -66,7 +62,6 @@ export var event_handlers = {
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
-    let game = Game.getInstance();
     if (target.id === 34) {
       if (game.in_battle) {
         throw new CommandException("That will take a while. You can't turn your back on the enemy!");
@@ -92,7 +87,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // to battle!
     if (target.id === 5 || target.id === 6) {
       game.effects.print(9);
@@ -108,7 +102,6 @@ export var event_handlers = {
   },
 
   "beforeClose": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact.id === 22 && game.data['inner gate open']) {
       game.history.write("The gears have been smashed. You can't close it.");
       return false;
@@ -117,7 +110,6 @@ export var event_handlers = {
   },
 
   "flee": function(arg: string, exit: RoomExit) {
-    let game = Game.getInstance();
     if (game.monsters.get(20).isHere() && game.player.room_id === 28) {
       // big group of soldiers
       if (arg === 's' || arg === 'south') {
@@ -132,7 +124,6 @@ export var event_handlers = {
   },
 
   "light": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       // dyn-o-mite!
       if (artifact.id === 5) {
@@ -168,7 +159,6 @@ export var event_handlers = {
   },
 
   "seeArtifact": function(artifact: Artifact): void {
-    let game = Game.getInstance();
     if (artifact.id === 45) {
       game.delay();
       game.effects.print(13);
@@ -177,7 +167,6 @@ export var event_handlers = {
   },
 
   "seeMonster": function(monster: Monster): void {
-    let game = Game.getInstance();
     // nasreen's opening remarks
     if (monster.id === 1) {
       game.history.write('Nasreen tells you, "Two of my commandos, Nevil and Norwood, are waiting in the camp to the south. We should join them as soon as you\'re ready."');
@@ -191,7 +180,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact.isHere()) {
       switch (artifact.name) {
         case 'dynamite':
@@ -278,29 +266,19 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
-
     // inner gate
     if (game.artifacts.get(22).isHere() && game.artifacts.get(30).is_worn) {
       game.effects.print(2);
       game.artifacts.get(22).is_open = true;
     }
-
     // inside inner gate
     if (game.monsters.get(12).isHere() && !game.data['clone check']) {
       game.effects.print(4);
       game.data['clone check'] = true;
     }
-
   },
 
-  // add your custom event handlers here
-
-  // every adventure should have a "power" event handler.
-  // 'power' event handler takes a 1d100 dice roll as an argument.
-  // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
@@ -317,7 +295,6 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
     game.after_sell_messages.push("The rebels gave you some sheets of green paper with lots of zeroes on them as a reward. You threw them away as valueless.");
   },
 
@@ -326,8 +303,6 @@ export var event_handlers = {
 
 // declare any functions used by event handlers and custom commands
 function destroy_clonatorium() {
-  let game = Game.getInstance();
-
   game.artifacts.get(34).destroy();
   game.artifacts.get(35).moveToRoom();
   // chaos

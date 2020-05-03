@@ -8,7 +8,7 @@ declare var game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     game.effects.print(17);
     if (game.player.armor_expertise > 25) {
       game.effects.print(18);

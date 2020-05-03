@@ -84,7 +84,7 @@ export class Artifact extends GameObject {
    * Moves the artifact to a specific room.
    */
   public moveToRoom(room_id: number = null): void {
-    this.room_id = room_id || Game.getInstance().player.room_id;
+    this.room_id = room_id || game.player.room_id;
     if (this.type !== Artifact.TYPE_BOUND_MONSTER)
       this.monster_id = null;
     this.container_id = null;
@@ -117,7 +117,7 @@ export class Artifact extends GameObject {
    * @returns boolean
    */
   public isHere(): boolean {
-    return (this.room_id === Game.getInstance().player.room_id || this.monster_id === Monster.PLAYER);
+    return (this.room_id === game.player.room_id || this.monster_id === Monster.PLAYER);
   }
 
   /**
@@ -138,7 +138,6 @@ export class Artifact extends GameObject {
    * @return {boolean}
    */
   public contains(ids: number|number[]) {
-    let game = Game.getInstance();
     if (typeof ids === 'number') ids = [ids];
     for (let id of ids) {
       if (game.artifacts.get(id).container_id !== this.id) {
@@ -152,7 +151,6 @@ export class Artifact extends GameObject {
    * Gets the Monster object for the monster that is carrying the artifact, or the player if the artifact is in the room.
    */
   public getOwner(): Monster {
-    let game = Game.getInstance();
     let owner: Monster;
     if (this.monster_id !== null) {
       owner = game.monsters.get(this.monster_id);
@@ -176,7 +174,6 @@ export class Artifact extends GameObject {
    * or the room where the container is (depending on size of artifact)
    */
   public removeFromContainer(): void {
-    let game = Game.getInstance();
     let container: Artifact = game.artifacts.get(this.container_id);
     if (container) {
       this.container_id = null;
@@ -205,7 +202,6 @@ export class Artifact extends GameObject {
    * Puts an artifact into a container
    */
   public putIntoContainer(container: Artifact): void {
-    let game = Game.getInstance();
     if (container) {
       this.container_id = container.id;
       this.room_id = null;
@@ -225,7 +221,7 @@ export class Artifact extends GameObject {
 
     this.contents = [];
     if (this.type === Artifact.TYPE_CONTAINER || override) {
-      let artifacts_repo: ArtifactRepository = Game.getInstance().artifacts;
+      let artifacts_repo: ArtifactRepository = game.artifacts;
       for (let i in artifacts_repo.all) {
         if (artifacts_repo.all[i].container_id === this.id) {
           this.contents.push(artifacts_repo.all[i]);
@@ -239,7 +235,6 @@ export class Artifact extends GameObject {
    * Prints the artifacts inside a container
    */
   public printContents(style: string = "normal"): void {
-    let game = Game.getInstance();
     game.history.write("It contains:");
 
     // find monsters inside the container
@@ -264,7 +259,6 @@ export class Artifact extends GameObject {
    * Calculates the remaining capacity of the container
    */
   public getRemainingCapacity(): number {
-    let game = Game.getInstance();
     if (this.quantity === null) {
       return 1000000; // arbitrarily high number
     }
@@ -290,8 +284,6 @@ export class Artifact extends GameObject {
    * Use an item, eat food, drink a potion, etc.
    */
   public use(): void {
-    let game = Game.getInstance();
-
     // logic for simple healing potions, healing by eating food, etc.
     if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice !== 0) {
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
@@ -330,7 +322,6 @@ export class Artifact extends GameObject {
    * (in future, could also be used for reading READABLE type artifacts.)
    */
   public printEffects(style: string = "normal"): void {
-    let game = Game.getInstance();
     if (this.effect_id) {
       for (let i = this.effect_id; i < this.effect_id + this.num_effects; i++) {
         game.effects.print(i, style);
@@ -346,7 +337,7 @@ export class Artifact extends GameObject {
 
     // some doors have two sides, represented as two artifacts in different rooms. open the "other side" too
     if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
-      let linked_door = Game.getInstance().artifacts.get(this.linked_door_id);
+      let linked_door = game.artifacts.get(this.linked_door_id);
       if (linked_door) {
         linked_door.reveal(); // for 2-sided secret doors
         linked_door.is_open = true;
@@ -362,7 +353,7 @@ export class Artifact extends GameObject {
 
     // some doors have two sides, represented as two artifacts in different rooms. close the "other side" too
     if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
-      let linked_door = Game.getInstance().artifacts.get(this.linked_door_id);
+      let linked_door = game.artifacts.get(this.linked_door_id);
       if (linked_door) {
         linked_door.is_open = false;
       }
@@ -374,7 +365,6 @@ export class Artifact extends GameObject {
    * Reveals an embedded artifact
    */
   public reveal(): void {
-    let game = Game.getInstance();
     if (this.hidden) {
       game.statistics['secret doors found']++;
     }
@@ -408,7 +398,6 @@ export class Artifact extends GameObject {
    * Reveals a disguised monster
    */
   public revealDisguisedMonster(): void {
-    let game = Game.getInstance();
     this.printEffects("special");
     let monster = game.monsters.get(this.monster_id);
     monster.room_id = game.rooms.current_room.id;
@@ -424,7 +413,6 @@ export class Artifact extends GameObject {
    * Frees a bound monster. If called on an artifact that is not of the "bound monster" type, this does nothing.
    */
   public freeBoundMonster(): void {
-    let game = Game.getInstance();
     if (this.type === Artifact.TYPE_BOUND_MONSTER) {
       // put the freed monster into the room
       let monster = game.monsters.get(this.monster_id);
@@ -441,7 +429,6 @@ export class Artifact extends GameObject {
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, source: string = "attack"): number {
-    let game = Game.getInstance();
 
     if (this.type === Artifact.TYPE_DEAD_BODY) {
       // if it's a dead body, hack it to bits
@@ -492,7 +479,6 @@ export class Artifact extends GameObject {
    * Removes an artifact from the game
    */
   public destroy(): void {
-    let game = Game.getInstance();
     let monster_id = this.monster_id;
     this.monster_id = null;
     this.room_id = null;

@@ -4,11 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data['oak door shut'] = false;
 
     game.data['wandering monsters'] = [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
@@ -44,7 +44,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     if (game.player.weapon_id === 33) {
       fireball();
       return false;
@@ -53,8 +52,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
-
     if (artifact && artifact.id === 41) {
       // scimitar
       game.history.write("Alignment conflict! The evil runes on the scimitar burn with a cold fire against your hand!", "special2");
@@ -63,8 +60,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     // traps! (artifact type 14)
     for (let a of game.artifacts.inRoom.filter(x => x.embedded && x.type === 14)) {
       game.effects.print(a.effect_id);
@@ -94,7 +89,6 @@ export var event_handlers = {
   },
 
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    let game = Game.getInstance();
     // oak door
     if (room_from.id === 33 && room_to.id === 18 && !game.data['oak door shut']) {
       game.history.write("After you pass through the oak door, you find that it shuts and locks behind you!");
@@ -104,8 +98,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     // wandering monsters (not in room 1 because it causes test failures)
     if (game.data['wandering monsters'].length > 0 && game.player.room_id > 1 && !game.skip_battle_actions) {
       if (game.diceRoll(1, 100) <= 9) {
@@ -134,8 +126,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function(): void {
-    let game = Game.getInstance();
-
     // fell into the latrine (yuck!)
     if (game.player.room_id === 60) {
       game.die();
@@ -144,7 +134,6 @@ export var event_handlers = {
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 18) {
         game.effects.print(5);
@@ -162,7 +151,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     if (phrase === 'annal natthrac') {
       if (!game.player.hasArtifact(37)) {
@@ -180,13 +168,12 @@ export var event_handlers = {
 
   "eat": function(arg: string, artifact: Artifact) {
     if (artifact && artifact.id === 67) {
-      Game.getInstance().history.write("You think you know what kind of animal the carcass came from, and you'd rather not eat it.");
+      game.history.write("You think you know what kind of animal the carcass came from, and you'd rather not eat it.");
       return false;
     }
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 33) {
         fireball();
@@ -210,7 +197,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll < 20 || game.player.room_id === 58) {
       // teleport to random room
       game.history.write("You are being teleported...");
@@ -258,7 +244,6 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     // have to do some artifact checks before the selling happens
     if (game.player.hasArtifact(37)) {
       game.data['returned medallion'] = true;
@@ -269,7 +254,6 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
     let thera = game.monsters.get(33);
     if (thera.isHere() && thera.reaction !== Monster.RX_HOSTILE) {
       let reward = 500 + (thera.hardiness - thera.damage) * 25;
@@ -294,7 +278,6 @@ export var event_handlers = {
  * Logic to make a wandering monster enter the room
  */
 function summon_wandering_monster() {
-  let game = Game.getInstance();
   if (!game.data['wandering monsters'].length) {
     return;
   }
@@ -311,7 +294,6 @@ function summon_wandering_monster() {
  * The fireball wand logic
  */
 function fireball() {
-  let game = Game.getInstance();
   let wand = game.artifacts.get(33);
 
   game.modal.show("What is the trigger word?", function (value) {
@@ -346,5 +328,4 @@ function fireball() {
       game.history.write("Wrong! Nothing happens.");
     }
   });
-
 }

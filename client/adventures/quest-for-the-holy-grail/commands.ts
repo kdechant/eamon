@@ -2,6 +2,8 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
+declare var game: Game;
+
 export var custom_commands = [];
 
 custom_commands.push({
@@ -10,7 +12,6 @@ custom_commands.push({
   description: "Throws something.",
   examples: ['THROW HOLY HAND GRENADE'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
     let artifact = game.artifacts.getLocalByName(arg);
     // the Holy Hand Grenade
     if (artifact && artifact.id === 1 && game.player.hasArtifact(1)) {
@@ -33,7 +34,6 @@ custom_commands.push({
   description: "Try to go into a building.",
   examples: ['ENTER CASTLE'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
     if (arg === 'castle') {
       switch (game.player.room_id) {
         case 18:
@@ -60,7 +60,6 @@ custom_commands.push({
   description: "Buys an item from a merchant.",
   examples: ['BUY CHEESE'],
   run: function(verb: string, arg: string): void {
-    let game = Game.getInstance();
     let artifact = game.artifacts.getByName(arg);
     if (artifact && (artifact.id == 3) && game.monsters.get(13).isHere()) {
       if (artifact.monster_id === Monster.PLAYER) {

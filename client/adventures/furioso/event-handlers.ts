@@ -4,11 +4,11 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data["water level"] = 0;
     game.data["water dropped"] = 0;
     game.data["chest open"] = false;
@@ -52,8 +52,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
-
     switch (exit.room_to) {
       case -7:
 
@@ -90,7 +88,6 @@ export var event_handlers = {
   },
 
   "flee": function() {
-    let game = Game.getInstance();
     if (game.monsters.get(14).isHere()) {
       game.history.write("One tentacle has you by the leg!", "emphasis");
       return false;
@@ -103,7 +100,6 @@ export var event_handlers = {
   },
 
   "beforeGet": function(arg, artifact) {
-    let game = Game.getInstance();
     // the guardian of the bowl
     if (artifact && artifact.id === 8 && game.monsters.get(16).reaction === Monster.RX_UNKNOWN) {
       game.history.write("A strange force prevents you from lifting the bowl...");
@@ -117,8 +113,6 @@ export var event_handlers = {
   },
 
   "afterGet": function(arg, artifact) {
-    let game = Game.getInstance();
-
     if (artifact) {
       switch (artifact.id) {
         case 11:
@@ -138,7 +132,6 @@ export var event_handlers = {
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
-    let game = Game.getInstance();
     // oarmen
     if (target.id === 69) {
       game.history.write("They have enough problems already!");
@@ -148,7 +141,6 @@ export var event_handlers = {
   },
 
   "beforeRead": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact && artifact.id === 11) {
       game.effects.print(10);
       return false;
@@ -157,7 +149,6 @@ export var event_handlers = {
   },
 
   "revealArtifact": function(artifact: Artifact) {
-    let game = Game.getInstance();
     // two secret doors with the same alias
     if (artifact.id === 55) {
       game.artifacts.get(56).reveal();
@@ -165,7 +156,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact) {
       if (artifact.id === 19) {
         let roll = game.diceRoll(1, 4);
@@ -215,8 +205,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     // show water message even in dark rooms
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && game.player.room_id < 15) {
       game.effects.print(18);
@@ -260,7 +248,6 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
     let ball = game.artifacts.get(70);
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && !ball.isHere()) {
       ball.moveToRoom();
@@ -288,8 +275,6 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let game = Game.getInstance();
-
     if (game.data["ship"] === "passenger") {
       let taken = Math.floor(game.player.profit / 2);
       game.after_sell_messages.push("The captain of the passenger ship takes " + taken + " gold pieces for your fare.");
@@ -303,8 +288,6 @@ export var event_handlers = {
 
 // declare any functions used by event handlers and custom commands
 function place_water() {
-  let game = Game.getInstance();
-
   if (game.data["water level"] > 60) {
     game.history.write("The ship just sank, taking you with it!", "emphasis");
     game.die();

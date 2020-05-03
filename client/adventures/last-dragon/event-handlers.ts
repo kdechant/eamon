@@ -5,11 +5,11 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
+  "start": function() {
     game.data['tancred crazy'] = false;    // d%(1)
     game.data['mylinth teleport'] = false; // d%(2)
     game.data['mouse tiger'] = false;    // d%(3)
@@ -29,7 +29,6 @@ export var event_handlers = {
   },
 
   "death": function(monster: Monster) {
-    let game = Game.getInstance();
     // some monsters have effects that appear when they die
     if (monster.id >= 5 && monster.id <= 13) {
       game.effects.print(monster.id);
@@ -49,8 +48,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
-
     // Tancred goes nuts/harpy becomes griffin
     if (game.artifacts.get(97).isHere()) {
       if (game.monsters.get(11).isHere() && !game.data['tancred crazy']) {
@@ -144,8 +141,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
-
     // ship
     if (game.player.room_id === 2 && !game.data['captain asked']) {
       game.data['captain asked'] = true;
@@ -212,7 +207,6 @@ export var event_handlers = {
   },
 
   "ready": function(arg: string, old_wpn: Artifact, new_wpn: Artifact) {
-    let game = Game.getInstance();
     // Ready Invictus w/o Vincingotrix in room
     if (new_wpn.id === 32 && !game.monsters.get(26).isHere()) {
       game.effects.print(43);
@@ -224,7 +218,6 @@ export var event_handlers = {
   },
 
   "say": function(arg) {
-    let game = Game.getInstance();
     arg = arg.toLowerCase();
     if (arg === 'orowe' && game.player.room_id === 75) {
       if (game.data['befriended dragons'] && !game.data['ossoric dead'] && !game.monsters.get(27).isHere()) {
@@ -309,15 +302,12 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let game = Game.getInstance();
-
     // another chance to use invictus
     if (game.data['ready invictus'] === 1) {
       game.effects.print(44);
       game.artifacts.get(32).moveToRoom();
       game.data['ready invictus'] = 2;
     } else {
-
       if (roll <= 50) {
         game.history.write("You hear a loud sonic boom which echoes all around you!");
       } else {
@@ -333,7 +323,6 @@ export var event_handlers = {
 
 // declare any functions used by event handlers and custom commands
 function sex_change() {
-  let game = Game.getInstance();
   game.player.gender = game.player.gender === 'm' ? 'f' : 'm';
   game.history.write(game.player.name + " is transformed into a " +
     (game.player.gender === 'm' ? 'male' : 'female') + "!", "special");

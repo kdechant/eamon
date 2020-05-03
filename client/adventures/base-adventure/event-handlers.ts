@@ -5,11 +5,11 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare var game: Game;
 
 export var event_handlers = {
 
-  "start": function(arg: string) {
+  "start": function() {
     // add your custom game start code here
   },
 

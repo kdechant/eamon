@@ -4,23 +4,20 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
+declare var game: Game;
+
 export var event_handlers = {
 
-  "start": function(arg: string) {
-    let game = Game.getInstance();
-
-    // game.data["open coffin"] = false;
+  "start": function() {
     game.data["guardian protects box"] = true;
     game.data["hb safe"] = false;
     game.data['wizard spells'] = 5;
 
     // make the Hellsblade the ready weapon
     game.player.ready(game.artifacts.get(25));
-
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
-    let game = Game.getInstance();
     if (target.id === 55) {
       game.history.write("The Guardian pushes you away!");
       return false;
@@ -36,7 +33,6 @@ export var event_handlers = {
   },
 
   "attackMonster": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // guardian
     if (target.id === 31) {
       game.history.write("The Guardian pushes you away!");
@@ -46,7 +42,6 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let game = Game.getInstance();
     let hb = game.artifacts.get(25);
     let scabbard = game.artifacts.get(56);
     let box = game.artifacts.get(55);
@@ -66,7 +61,6 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let game = Game.getInstance();
     if (game.player.weapon_id === 25 && !game.player.isWearing(57) && game.monsters.visible.length > 0 && game.player.room_id !== 64) {
       game.delay(1);
       game.history.write("The Hellsblade whirls in your hand! You can't stop swinging!", "special2");
@@ -86,7 +80,6 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let game = Game.getInstance();
     if (exit.room_to === -1) {
       game.effects.print(17);
       return false;
@@ -103,7 +96,6 @@ export var event_handlers = {
   },
 
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    let game = Game.getInstance();
     // soggy torch
     let torch = game.artifacts.get(27);
     if ((room_to.id === 50 || room_to.id == 71) && torch.isHere() && torch.is_lit) {
@@ -116,14 +108,13 @@ export var event_handlers = {
 
   "drop": function(arg: string, artifact: Artifact): boolean {
     if (artifact.id === 25) {
-      Game.getInstance().history.write("You can't drop the Hellsblade!");
+      game.history.write("You can't drop the Hellsblade!");
       return false;
     }
     return true;
   },
 
   "give": function(arg: string, artifact: Artifact, monster: Monster) {
-    let game = Game.getInstance();
     // cursed sword
     if (artifact.id === 25) {
       game.history.write("You can't pry the Hellsblade from your hand!");
@@ -136,21 +127,17 @@ export var event_handlers = {
     return true;
   },
 
-    "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
-      let game = Game.getInstance();
-      // prevent accidental dropping of the hellsblade
-      // also, prevent "weapon hurts user" which would kill you instantly :O
-      if (attacker.id === 0 && attacker.weapon.id === 25) {
-        game.history.write("-- fumble recovered!", "no-space");
-        return false;
-      }
-      return true;  // otherwise, use regular fumble logic
-    },
-
+  "fumble": function(attacker: Monster, defender: Monster, fumble_roll: number) {
+    // prevent accidental dropping of the hellsblade
+    // also, prevent "weapon hurts user" which would kill you instantly :O
+    if (attacker.id === 0 && attacker.weapon.id === 25) {
+      game.history.write("-- fumble recovered!", "no-space");
+      return false;
+    }
+    return true;  // otherwise, use regular fumble logic
+  },
 
   "monsterAction": function(monster: Monster) {
-    let game = Game.getInstance();
-
     // wizard can cast spells
     if (monster.id === 16 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
       if (monster.damage > monster.hardiness * 0.4) {
@@ -176,7 +163,6 @@ export var event_handlers = {
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     if (artifact !== null) {
       if (artifact.id === 55 && game.data["guardian protects box"]) {
         game.history.write("The Guardian pushes you away!");
@@ -187,7 +173,6 @@ export var event_handlers = {
   },
 
   "beforePut": function(arg: string, item: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     // some items are containers because they have things inside, but you can't put anything into them
     if (container.id === 17 || container.id === 30) {
       game.history.write("You can't put anything into that.");
@@ -207,7 +192,6 @@ export var event_handlers = {
   },
 
   "afterPut": function(arg: string, item: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     if (item.id === 25 && container.id === 56) {
       game.history.write("The Hellsblade is contained, for now...", "special2");
       container.inventory_message = "with Hellsblade inside";
@@ -215,7 +199,6 @@ export var event_handlers = {
   },
 
   "specialPut": function(arg: string, item: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     if (item.id === 47 && container.id === 69) {
       container.quantity = -1;
       game.history.write("You fill the lantern, it will now LIGHT.");
@@ -225,7 +208,6 @@ export var event_handlers = {
   },
 
   "afterRemoveFromContainer": function(arg: string, artifact: Artifact, container: Artifact) {
-    let game = Game.getInstance();
     // hb from scabbard
     if (container && container.id == 56 && artifact.id === 25) {
       game.effects.print(19);
@@ -244,7 +226,6 @@ export var event_handlers = {
   },
 
   "afterRemoveWearable": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     // take off gauntlets
     if (artifact && artifact.id === 57 && game.player.hasArtifact(25)) {
       game.history.write("The Hellsblade twitches eagerly!", "special2");
@@ -253,7 +234,6 @@ export var event_handlers = {
   },
 
   "say": function(phrase) {
-    let game = Game.getInstance();
     phrase = phrase.toLowerCase();
     if (phrase === 'elizabeth' && game.monsters.get(31).isHere()) {
       game.history.write("The guardian stands aside!", "success");
@@ -262,7 +242,6 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let game = Game.getInstance();
     let slab = game.artifacts.get(63);
     if (artifact && artifact.id === 4 && slab.isHere()) {
       destroySlab();
@@ -270,7 +249,6 @@ export var event_handlers = {
   },
 
   "wear": function(arg: string, target: Artifact) {
-    let game = Game.getInstance();
     if (target && target.id === 57 && game.artifacts.get(25).isHere()) {
       game.history.write("The Hellsblade whines...", "special2");
     }
@@ -278,7 +256,6 @@ export var event_handlers = {
   },
 
   "blast": function(arg: string, target: Monster) {
-    let game = Game.getInstance();
     // guardian
     if (target.id === 31) {
       game.history.write("The Guardian pushes you away!");
@@ -289,7 +266,6 @@ export var event_handlers = {
 
   // 'power' event handler takes a 1d100 dice roll as an argument
   "power": function(roll) {
-    let game = Game.getInstance();
     if (roll <= 90) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else {
@@ -299,7 +275,6 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let game = Game.getInstance();
     if (!game.data['hb safe']) {
       if (game.player.hasArtifact(25)) {
         game.effects.print(6, "special2");
@@ -317,7 +292,6 @@ export var event_handlers = {
 }; // end event handlers
 
 function destroySlab() {
-  let game = Game.getInstance();
   game.history.write("You chop at the slab with the pick. After a few minutes, it shatters!", "success");
   game.artifacts.get(63).destroy();
 }
