@@ -499,7 +499,9 @@ export default class Game {
         this.history.append(` (${this.rooms.current_room.id})`);
       }
       if (this.show_exits) {
-        const visible_exits = this.rooms.current_room.getVisibleExits().map(x => x.direction).join('/').toUpperCase();
+        const possible_exits = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw', 'u', 'd'];
+        const available_exits = this.rooms.current_room.getVisibleExits().map(x => x.direction);
+        const visible_exits = possible_exits.filter(x => available_exits.indexOf(x) !== -1).join('/').toUpperCase();
         this.history.append(` (${visible_exits})`);
       }
       if (!this.rooms.current_room.seen) {
