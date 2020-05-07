@@ -155,3 +155,22 @@ def deploy_js(context):
     c.run('{} {}/manage.py collectstatic --no-input'.format(server_python, server_root))
     print('-- restarting server...')
     c.run('sudo apachectl graceful')
+    print('-- Done!')
+
+
+@task
+def build_sqlite_db(context):
+    """Creates the committable SQLite DB from the MySQL DB"""
+    print('-- Exporting data from the master DB...')
+    local("python manage.py dumpdata --indent 2 --database default --exclude=contenttypes --exclude=auth --exclude=admin --exclude=sessions --output db/dumpdata.json")
+    print('-- Running Migrations on SQLite DB...')
+    local("python manage.py migrate --database sqlite")
+    print('-- Importing data...')
+    local("python manage.py loaddata --database sqlite db/dumpdata.json")
+    print('-- Creating distributable copy...')
+    # FIXME: Linux vs. Windows commands
+    local("del db/eamon.sqlite3.dist.old")
+    # local("rm db/eamon.sqlite3.dist.old")  # linux
+    local("mv db/eamon.sqlite3.dist db/eamon/sqlite3.dist.old")
+    local("cp db/eamon.sqlite3 db/eamon.sqlite3.dist")
+    print('-- Done!')
