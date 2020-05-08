@@ -4,7 +4,7 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {Artifact} from "../../core/models/artifact";
-import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttack, movePlayer} from "../../core/utils/testing";
+import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttackMock, movePlayer} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 

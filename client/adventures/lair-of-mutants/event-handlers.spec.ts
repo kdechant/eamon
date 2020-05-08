@@ -4,7 +4,7 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {Artifact} from "../../core/models/artifact";
-import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttack, movePlayer} from "../../core/utils/testing";
+import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttackMock, movePlayer} from "../../core/utils/testing";
 import {event_handlers, adjustMonsterStats} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -33,11 +33,11 @@ test("monster stat boost", () => {
   // if the player has an HD > 25, so we need to change the HD and
   // run the calculation again. (It's not currently possible to
   // change game data before the "start" event handler in tests.)
-  expect(game.monsters.get(2).hardiness).toBe(40);
+  expect(game.monsters.get(2).hardiness).toBe(50);
   expect(game.monsters.get(7).hardiness).toBe(38);
   game.player.hardiness = 30;
   adjustMonsterStats();
-  expect(game.monsters.get(2).hardiness).toBe(44);
+  expect(game.monsters.get(2).hardiness).toBe(54);
   expect(game.monsters.get(7).hardiness).toBe(42);
 });
 

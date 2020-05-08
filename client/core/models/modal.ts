@@ -96,6 +96,12 @@ export class Modal {
       } else {
         this.current_question = this.questions[this.counter];
         this.setupHotKeys();
+        if (this.mock_answers.length > 0) {
+          let answer = this.mock_answers.shift();
+          console.log("mock answer: ", answer);
+          this.mock_answer_used = true;
+          this.submit(answer);
+        }
       }
     } else {
       this.close();

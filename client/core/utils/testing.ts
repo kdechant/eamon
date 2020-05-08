@@ -3,6 +3,7 @@
  */
 import axios from "axios";
 import Game from "../../core/models/game";
+import {Monster} from "../models/monster";
 
 declare var game: Game;
 
@@ -75,22 +76,21 @@ export function expectEffectNotSeen(id) {
   expect(game.effects.get(id).seen).toBeFalsy();
 }
 
-/**
- * Has one monster attack another (with the necessary mock dice rolls)
- * @param Monster attacker  Who is attacking
- * @param Monster defender  What to attack
- * @param boolean hit  Whether or not the player should hit the target
- * @param Number damage  The amount of damage the attack should do (before armor)
- * @param Number[] special  Results of any dice rolls in the attackDamageAfter event handler
- */
-// export function monsterAttack(attacker, defender, hit, damage, special) {
-//   game.mock_random_numbers = [
-//     hit ? 5 : 96,
-//     damage,
-//     ...special
-//   ];
-//   attacker.attack(defender);
-// }
+export function expectArtifactIsHere(id) {
+  expect(game.artifacts.get(id).isHere()).toBeTruthy();
+}
+
+export function expectArtifactIsNotHere(id) {
+  expect(game.artifacts.get(id).isHere()).toBeFalsy();
+}
+
+export function expectMonsterIsHere(id) {
+  expect(game.monsters.get(id).isHere()).toBeTruthy();
+}
+
+export function expectMonsterIsNotHere(id) {
+  expect(game.monsters.get(id).isHere()).toBeFalsy();
+}
 
 /**
  * Creates mock random numbers for the player attacking. The target is
@@ -99,7 +99,7 @@ export function expectEffectNotSeen(id) {
  * @param Number damage  The amount of damage the attack should do (before armor)
  * @param special  Results of any dice rolls in the attackDamageAfter event handler
  */
-export function playerAttack(hit: boolean, damage: number, special: number[] = []) {
+export function playerAttackMock(hit: boolean, damage: number, special: number[] = []) {
   return [
     hit ? 6 : 96,  // 6 = non-critical hit, 96 = non-fumble miss
     damage,
@@ -107,30 +107,41 @@ export function playerAttack(hit: boolean, damage: number, special: number[] = [
   ]
 }
 
+/**
+ * Player attacks a monster with automatic hit
+ * @param string|Monster  The name or object for the target
+ * @param Number damage  The amount of damage the attack should do (before armor)
+ * @param special  Results of any dice rolls in the attackDamageAfter event handler, or NPC actions
+ */
+export function playerHit(target: string|Monster, damage: number, special: number[] = []) {
+  game.mock_random_numbers = [
+    6,  // 6 = non-critical hit
+    damage,
+    0,  // skip wpn ability increase
+    0,  // skip ae increase
+    ...special
+  ];
+  if (target instanceof Monster) {
+    target = target.name;
+  }
+  game.command_parser.run(`attack ${target}`);
+}
+
+/**
+ * Moves the player to another room, as if they had just teleported there.
+ * @param room_id
+ */
 export function movePlayer(room_id) {
   game.skip_battle_actions = true;
   game.player.moveToRoom(room_id);
+  game.history.push(`movePlayer: jump to room ${room_id}`);
   game.tick();
 }
 
+/**
+ * Shortcut for running a command
+ * @param command
+ */
 export function runCommand(command) {
   game.command_parser.run(command);
 }
-
-// /**
-//  * Creates mock random numbers for an NPC attack
-//  * @param boolean flee  Whether or not the NPC should flee
-//  * @param Number target  The ID of the monster to attack
-//  * @param boolean hit  Whether or not the NPC should hit
-//  * @param Number damage  The amount of damage the attack should do (before armor)
-//  * @param special  Results of any dice rolls in the attackDamageAfter event handler
-//  */
-// export function monsterAttack(flee, target, hit, damage, special) {
-//   // Note: to mock non-player fighting, use the following mock numbers:
-//   // [flee chance, target, hit roll, damage roll]
-//   // For player attack, you only need:
-//   // [hit roll, damage roll]
-//   // If there is an attackDamageAfter e.h., add any numbers for it to the
-//   // end of the array.
-//
-// }

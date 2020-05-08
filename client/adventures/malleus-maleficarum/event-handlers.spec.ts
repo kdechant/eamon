@@ -3,7 +3,7 @@
  */
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
-import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttack} from "../../core/utils/testing";
+import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttackMock} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -57,7 +57,7 @@ test("virrat city", () => {
 test('save old man', () => {
   game.player.moveToRoom(15); game.tick();
   game.command_parser.run('e');
-  game.mock_random_numbers = playerAttack(true, 12);
+  game.mock_random_numbers = playerAttackMock(true, 12);
   game.command_parser.run('attack thug');
   expectEffectSeen(50);
   expect(game.monsters.get(15).room_id).toBeNull();

@@ -11,10 +11,9 @@ export var event_handlers = {
 
   "start": function() {
     game.data['tancred crazy'] = false;    // d%(1)
-    game.data['mylinth teleport'] = false; // d%(2)
+    game.data['mylinth teleports'] = false; // d%(2)
     game.data['mouse tiger'] = false;    // d%(3)
-    game.data['change gender'] = false;    // d%(4)
-    game.data['change back'] = false;    // d%(5)
+    game.data['undo sex change'] = false;    // d%(5)
     game.data['vc dead'] = false;    // d%(6)
     game.data['ossoric dead'] = false;    // d%(7)
     game.data['ossogotrix dead'] = false;    // d%(8)
@@ -25,7 +24,6 @@ export var event_handlers = {
     game.data['ready invictus'] = 0;    // d%(13)
     game.data['kjelthor'] = false;    // d%(14)
     game.data['qd dragon'] = false;    // d%(15)
-
   },
 
   "death": function(monster: Monster) {
@@ -33,9 +31,9 @@ export var event_handlers = {
     if (monster.id >= 5 && monster.id <= 13) {
       game.effects.print(monster.id);
     }
-    if (monster.id === 18 && !game.data['change back']) {
+    if (monster.id === 18 && !game.data['undo sex change']) {
       game.effects.print(14);
-      game.data['change back'] = true;
+      game.data['undo sex change'] = true;
       sex_change();
     }
     if (monster.id === 27) {
@@ -101,43 +99,15 @@ export var event_handlers = {
       game.monsters.get(27).moveToRoom();
       game.monsters.get(28).moveToRoom();
     }
+  },
 
-    // mylinth teleports you
-    if (game.monsters.get(22).isHere() && !game.data['mylinth teleport']) {
-      game.data['mylinth teleport'] = true;
-      game.effects.print(18);
-      game.player.moveToRoom(80);
-    }
-
-    // Erik changes your gender
-    if (game.monsters.get(18).isHere() && !game.data['change gender']) {
-      game.effects.print(14);
-      game.data['change gender'] = true;
-      sex_change();
-      game.effects.print(16);
-    }
-
-    // Erik is dead, your gender changes back
-    if (game.monsters.get(18).room_id === null && game.data['change back']) {
-      game.effects.print(15);
-      game.data['change back'] = true;
-      sex_change();
-    }
-
-    // Mouse becomes tiger
-    if (game.monsters.get(22).isHere() && !game.data['mouse tiger']) {
-      game.data['mouse tiger'] = true;
-      game.effects.print(19);
-      game.monsters.get(23).moveToRoom();
-    }
-
+  "endTurn1": function() {
     // Lisolet turns against you
     let lis = game.monsters.get(29);
     if (lis.isHere() && game.player.room_id > 65 && lis.reaction === Monster.RX_FRIEND) {
       lis.reaction = Monster.RX_HOSTILE;
       game.history.write(lis.name + " looks up at the tower in awe. Then she begins to laugh wildly and draws her lance!", "special");
     }
-
   },
 
   "endTurn2": function() {
@@ -160,7 +130,7 @@ export var event_handlers = {
             game.effects.print(41);
             game.player.moveToRoom(3);
           }
-        } else if (answer === 'no') {
+        } else if (answer === 'No') {
           game.effects.print(53);
         } else {
           return true;  // ask the next question
@@ -184,23 +154,34 @@ export var event_handlers = {
     }
 
     if (game.player.room_id === 33 || game.player.room_id === 39 || game.player.room_id === 86 || game.player.room_id === 95) {
-      let rl = game.diceRoll(1, 20);
-      if (rl === 20) {
+      let rl = game.diceRoll(1, 10);
+      if (rl === 10) {
         game.effects.print(55);
-        game.die(false);
+        game.player.injure(game.diceRoll(1, 4), true);
       }
+    }
+
+    // Mylinth turns mouse into tiger
+    if (game.monsters.get(22).isHere() && game.data['mylinth teleports'] && !game.data['mouse tiger']) {
+      game.data['mouse tiger'] = true;
+      game.effects.print(19);
+      game.monsters.get(23).moveToRoom();
+      game.monsters.get(23).showDescription();
+      game.monsters.get(23).seen = true;
+      game.monsters.updateVisible();
     }
 
     // Gwynnith makes Ossoric and Ossogotrix dissapear
     if (game.monsters.get(13).isHere() && !game.data['met gwynnith']) {
       game.data['met gwynnith'] = true;
-      game.effects.print(21);
-      let dragons = [game.monsters.get(27), game.monsters.get(28)];
-      for (let d of dragons) {
-        if (d.isHere()) {
+      let dragons = [game.monsters.get(27), game.monsters.get(28)].filter(m => m.isHere());
+      if (dragons.length) {
+        game.effects.print(21, 'special2');
+        dragons.forEach(d => {
           game.history.write(d.name + " instantly vanishes!", "special2");
           d.destroy();
-        }
+        });
+        game.monsters.updateVisible();
       }
     }
 
@@ -219,14 +200,18 @@ export var event_handlers = {
 
   "say": function(arg) {
     arg = arg.toLowerCase();
-    if (arg === 'orowe' && game.player.room_id === 75) {
-      if (game.data['befriended dragons'] && !game.data['ossoric dead'] && !game.monsters.get(27).isHere()) {
+
+    let ossoric = game.monsters.get(27);
+    let ossogotrix = game.monsters.get(28);
+
+    if (arg === 'orowe' && game.player.room_id === 75 && game.data['befriended dragons']) {
+      if (!game.data['ossoric dead'] && !ossoric.isHere()) {
         game.effects.print(51);
-        game.monsters.get(27).moveToRoom();
+        ossoric.moveToRoom();
       }
-      if (game.data['befriended dragons'] && !game.data['ossogotrix dead'] && !game.monsters.get(28).isHere()) {
+      if (!game.data['ossogotrix dead'] && !ossogotrix.isHere()) {
         game.effects.print(52);
-        game.monsters.get(28).moveToRoom();
+        ossogotrix.moveToRoom();
       }
     }
 
@@ -237,8 +222,10 @@ export var event_handlers = {
       game.player.moveToRoom(47);
     }
 
-    if (arg === 'quaal dracis' && game.player.hasArtifact(30) && game.artifacts.get(30).is_worn) {
+    if (arg === 'quaal dracis' && game.player.isWearing(30)) {
       // ragnar/woglinde
+      console.log(game.data, ossoric.isHere(), ossogotrix.isHere());
+
       let slab = game.artifacts.get(42);
       if (slab.isHere()) {
         slab.destroy();
@@ -249,7 +236,7 @@ export var event_handlers = {
           game.monsters.get(9).moveToRoom();
         }
       } else if ([35, 44, 88, 98].indexOf(game.player.room_id) !== -1) {
-        // go to dragons
+        // teleport to dragons
         game.skip_battle_actions = true;
         game.effects.print(34);
         game.player.moveToRoom(45);
@@ -266,7 +253,7 @@ export var event_handlers = {
         } else {
           game.player.moveToRoom(89);
         }
-      } else if (game.monsters.get(27).isHere() || game.monsters.get(28).isHere() && !game.data['qd dragon']) {
+      } else if ((ossoric.isHere() || ossogotrix.isHere()) && !game.data['qd dragon']) {
         // befriend some dragons
         if (!game.data['vc dead']) {
           game.effects.print(35);
@@ -275,8 +262,8 @@ export var event_handlers = {
           if (game.data['ossoric dead'] || game.data['ossogotrix dead']) {
             game.effects.print(36);
           } else {
-            game.monsters.get(27).reaction = Monster.RX_FRIEND;
-            game.monsters.get(28).reaction = Monster.RX_FRIEND;
+            ossoric.reaction = Monster.RX_FRIEND;
+            ossogotrix.reaction = Monster.RX_FRIEND;
             game.effects.print(38);
             game.data['befriended dragons'] = true;
             let s = game.player.gender === 'm' ? ", wise and gallant warrior," : ", brave and beautiful warrior,";
@@ -295,6 +282,25 @@ export var event_handlers = {
         game.effects.print(56);
       }
 
+    }
+
+  },
+
+  "seeMonster": function(monster: Monster): void {
+    // Erik changes your gender
+    if (monster.id === 18) {
+      game.effects.print(14);
+      sex_change();
+      game.effects.print(16);
+    }
+
+    // mylinth teleports you
+    else if (monster.id === 22) {
+      game.effects.print(18);
+      game.data['mylinth teleports'] = true;
+      game.skip_battle_actions = true;
+      game.player.moveToRoom(80, false);
+      game.tick();
     }
 
   },
