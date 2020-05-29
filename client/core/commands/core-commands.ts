@@ -1396,7 +1396,7 @@ export class PowerCommand implements BaseCommand {
     "POWER",
   ];
   run(verb, arg) {
-    if (game.player.spellCast(verb)) {
+    if (game.player.spellCast('power')) {
       //  this spell has no effect except what is defined in the adventure
       let roll = game.diceRoll(1, 100);
       game.triggerEvent("power", roll);
@@ -1431,7 +1431,7 @@ export class HealCommand implements BaseCommand {
         target = game.player;
       }
 
-      if (game.player.spellCast(verb)) {
+      if (game.player.spellCast('heal')) {
 
         let heal_amount = game.diceRoll(2, 6);
         if (target.id == game.player.id) {
@@ -1457,7 +1457,7 @@ export class BlastCommand implements BaseCommand {
     "BLAST WOODEN CHEST - Casts a magic attack at an artifact, trying to smash it open",
   ];
   run(verb, arg) {
-    if (game.player.spellCast(verb)) {
+    if (game.player.spellCast('blast')) {
 
       let [monster_target, artifact_target] = findTarget(arg);
       let damage = game.diceRoll(2, 5);
@@ -1501,7 +1501,7 @@ export class SpeedCommand implements BaseCommand {
     "SPEED",
   ];
   run(verb, arg) {
-    if (game.player.spellCast(verb)) {
+    if (game.player.spellCast('speed')) {
       game.triggerEvent("speed", arg);
       // double player's agility
       game.history.write("You can feel the new agility flowing through you!", "success");
