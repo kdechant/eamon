@@ -28,13 +28,21 @@ class Status extends React.Component<any, any> {
 
     let statusClass = this.props.open ? '' : 'd-none';
 
+    let hp_class = '';
+    if (game.player.damage > game.player.hardiness * 0.6) {
+      hp_class = 'warning';
+    }
+    if (game.player.damage > game.player.hardiness * 0.8) {
+      hp_class = 'danger';
+    }
+
     return (
       <div className={`status ${statusClass} d-md-block col-md-5`}>
       <div className="status-widget player-stats">
         <div className="container">
           <div className="row">
             <h3 className="heading col-8">{game.player.name}</h3>
-            <div className="hp col-4 text-right">HP: { game.player.hardiness - game.player.damage }/{ game.player.hardiness }</div>
+            <div className="hp col-4 text-right">HP: <span className={hp_class}>{ game.player.hardiness - game.player.damage }</span>/{ game.player.hardiness }</div>
           </div>
 
           <div className="stats row no-gutters">
