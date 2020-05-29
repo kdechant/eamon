@@ -183,6 +183,13 @@ export class Room extends Loadable {
   }
 
   /**
+   * Removes the exit in a given direction
+   */
+  public removeExit(direction: string): void {
+    this.exits = this.exits.filter(x => x.direction !== direction);
+  }
+
+  /**
    * Determines whether a given word is in the room name or description
    */
   public textMatch(str: string): boolean {

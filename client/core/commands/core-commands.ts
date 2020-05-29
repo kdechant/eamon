@@ -61,6 +61,9 @@ export class MoveCommand implements BaseCommand {
     let room_from = game.rooms.current_room;
     let exit = game.rooms.current_room.getExit(verb);
     let msg: string;
+
+    if (!game.triggerEvent('specialMove', arg, exit)) return;
+
     if (exit === null) {
       throw new CommandException("You can't go that way!");
     }
@@ -271,7 +274,9 @@ export class SayCommand implements BaseCommand {
   run(verb, arg) {
 
     if (arg !== "") {
-      game.history.write("Ok... \"" + arg + "\"");
+      if (game.triggerEvent("beforeSay", arg)) {
+        game.history.write("Ok... \"" + arg + "\"");
+      }
 
       // debugging mode
       if (arg === "bort") {
@@ -747,6 +752,7 @@ export class FleeCommand implements BaseCommand {
       }
       game.player.moveToRoom(exit.room_to);
       game.skip_battle_actions = true;
+      game.triggerEvent("afterFlee", arg, exit);
     }
 
   }
@@ -1002,7 +1008,7 @@ export class ReadCommand implements BaseCommand {
             a.showDescription();
           }
         } else {
-          game.history.write(a.name + " has no markings to read!!!");
+          game.history.write(a.name + " has no markings to read!");
         }
         game.triggerEvent("afterRead", arg, a);
       } else {
@@ -1721,8 +1727,10 @@ export class GotoCommand implements BaseCommand {
     if (!room_to) {
       throw new CommandException("There is no room " + arg);
     }
+    let room_from = game.rooms.current_room;
     game.skip_battle_actions = true;
     game.player.moveToRoom(room_to.id);
+    game.triggerEvent("afterMove", arg, room_from, room_to);
   }
 }
 core_commands.push(new GotoCommand());

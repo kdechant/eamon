@@ -552,6 +552,10 @@ export class Monster extends GameObject {
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
   public doBattleActions(): void {
+    // testing helper
+    if (game.mock_random_numbers.length) {
+      console.log(this.name, 'battle actions', game.mock_random_numbers);
+    }
 
     // if something happened, where an event handler stopped combat, the monster should do nothing
     if (game.skip_battle_actions) {
@@ -644,6 +648,11 @@ export class Monster extends GameObject {
    * @param {Monster} target
    */
   public attack(target: Monster): void {
+    // testing helper
+    if (game.mock_random_numbers.length) {
+      console.log(this.name, 'attacking', target.name, game.mock_random_numbers);
+    }
+
     // calculate to-hit odds, and let event handler adjust the odds
     let odds = this.getToHitOdds(target);
     let can_critical = true;
@@ -661,7 +670,7 @@ export class Monster extends GameObject {
     if (this.combat_code === 1) {
       // generic "attacks" message for unusual creatures like blob monsters, etc.
       game.history.write(this.name + " attacks " + target.getDisplayName());
-    } else if (this.combat_verbs.length) {
+    } else if (this.combat_verbs && this.combat_verbs.length) {
       // custom combat messages for this monster. assign these in the game start event handler.
       let attack_verb = this.combat_verbs[Math.floor(Math.random() * this.combat_verbs.length)];
       game.history.write(this.name + " " + attack_verb + " " + target.getDisplayName());
@@ -908,6 +917,7 @@ export class Monster extends GameObject {
       }
     }
     this.moveToRoom(exit.room_to);
+    game.monsters.updateVisible();
   }
 
   /**
@@ -1226,6 +1236,13 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Is it a group monster?
+   */
+  public isGroup() {
+    return false;
+  }
+
+  /**
    * Spawns a new child member for the group
    */
   public spawnChild() {
@@ -1300,6 +1317,13 @@ export class GroupMonster extends Monster {
       const living_child = this.children.find(c => c.status === Monster.STATUS_ALIVE);
       this.room_id = living_child ? living_child.room_id : null;
     }
+  }
+
+  /**
+   * Is it a group monster?
+   */
+  public isGroup() {
+    return true;
   }
 
   /**

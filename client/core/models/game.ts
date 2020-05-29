@@ -583,6 +583,7 @@ export default class Game {
     // for unit testing, it's possible to set mock random numbers
     if (this.mock_random_numbers.length) {
       let num = this.mock_random_numbers.shift();
+      console.debug("Used mock random number: " + num);
       return num;
     }
 
@@ -612,7 +613,10 @@ export default class Game {
       return array[0];
     }
     let index = this.diceRoll(1, array.length) - 1;
-    if (typeof(array[index]) === 'undefined') { console.log('oops: getRandomElement rolled index: ', index, array); }
+    if (typeof(array[index]) === 'undefined') {
+      console.log('oops: getRandomElement rolled index: ', index, array);
+      console.trace();
+    }
     return array[index];
   }
 
