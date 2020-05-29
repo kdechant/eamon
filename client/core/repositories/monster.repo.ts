@@ -94,6 +94,10 @@ export default class MonsterRepository {
     if (monster_data.synonyms) {
       monster_data.aliases = monster_data.synonyms.split(",");
     }
+    if (monster_data.combat_verbs) {
+      monster_data.combat_verbs = monster_data.combat_verbs.split(",").map(v => v.trim());
+      console.log('setting combat verbs', monster_data.name, monster_data.combat_verbs);
+    }
     m.init(monster_data);
 
     this.all.push(m);

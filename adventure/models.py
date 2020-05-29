@@ -331,7 +331,7 @@ class Monster(models.Model):
         ('male', 'Male'),
         ('female', 'Female'),
         ('none', 'None'),
-    ))
+    ), null=True, blank=True)
     weapon_id = models.IntegerField(
         null=True, blank=True,
         help_text="Enter an artifact ID, or zero for natural weapons. Leave blank for no weapon.")
@@ -349,6 +349,10 @@ class Monster(models.Model):
     )
     armor_class = models.IntegerField(default=0)
     special = models.CharField(max_length=255, null=True, blank=True)
+    combat_verbs = models.CharField(
+        max_length=255, null=True, blank=True,
+        help_text="Custom combat verbs for this monster, e.g., 'stings' or 'breathes fire at'. "
+                  "Leave blank to use the standard verbs.")
 
     def __str__(self):
         return self.name
