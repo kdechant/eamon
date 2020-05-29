@@ -197,7 +197,7 @@ export default class Game {
    * e.g., ["constant", 3] recharges each spell ability by 3 points every turn
    * e.g., ["percentage", 10] recharges each spell ability by 10% of the current value every turn
    */
-  spell_recharge_rate: [string, number] = ["constant", 1];
+  spell_recharge_rate: [string, number] = ["constant", 2];
 
   // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
 
