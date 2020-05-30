@@ -1,5 +1,6 @@
 import * as pluralize from 'pluralize';
 import Game from "./game";
+import { parseJSON } from '../utils/index'
 
 declare var game: Game;
 
@@ -28,6 +29,7 @@ export class GameObject {
    * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
+    source.data = parseJSON(source.data);
     for (let prop in source) {
       this[prop] = source[prop];
     }

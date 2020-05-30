@@ -96,7 +96,6 @@ export default class MonsterRepository {
     }
     if (monster_data.combat_verbs) {
       monster_data.combat_verbs = monster_data.combat_verbs.split(",").map(v => v.trim());
-      console.log('setting combat verbs', monster_data.name, monster_data.combat_verbs);
     }
     m.init(monster_data);
 

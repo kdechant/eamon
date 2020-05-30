@@ -67,6 +67,11 @@ export class Room extends Loadable {
   public effect_inline: number;
 
   /**
+   * A container for custom data used by specific adventures
+   */
+  public data: { [key: string]: any; } = {};
+
+  /**
    * Loads data from JSON source into the object properties.
    * Override of parent method to handle RoomExit objects.
    * @param {Object} source an object, e.g., from JSON.
