@@ -126,6 +126,12 @@ class Room(models.Model):
         null=True, blank=True, max_length=1000,
         help_text="The description shown if the room is dark and the player doesn't"
                   " have a light. Leave blank to use the standard 'it's too dark to see' message.")
+    data = models.TextField(
+        max_length=1000, null=True, blank=True,
+        help_text="Adventure-specific data for this room, e.g., room type or environment "
+                  "(road, cave, snow, etc.). Data can be used in custom code. Enter as a "
+                  "JSON object."
+    )
 
     def __str__(self):
         return self.name
@@ -243,6 +249,11 @@ class Artifact(models.Model):
         null=True, blank=True,
         help_text="Number of effects for Readable artifacts"
     )
+    data = models.TextField(
+        max_length=1000, null=True, blank=True,
+        help_text="Adventure-specific data for this artifact, e.g., elemental weapon, etc."
+                  "Enter as a JSON object."
+    )
 
     def __str__(self):
         return self.name
@@ -349,6 +360,12 @@ class Monster(models.Model):
     )
     armor_class = models.IntegerField(default=0)
     special = models.CharField(max_length=255, null=True, blank=True)
+    data = models.TextField(
+        max_length=1000, null=True, blank=True,
+        help_text="Adventure-specific data for this monster, e.g., type of monster like "
+                  "vampire, undead, soldier, frost, etc. Data can be used in custom code. "
+                  "Enter as a JSON object."
+    )
     combat_verbs = models.CharField(
         max_length=255, null=True, blank=True,
         help_text="Custom combat verbs for this monster, e.g., 'stings' or 'breathes fire at'. "

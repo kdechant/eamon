@@ -51,3 +51,23 @@ export function formatList(list: string[]) {
   const last = list.pop();
   return list.join(', ') + " and " + last;
 }
+
+/**
+ * Parses JSON received from the database
+ * @param data
+ * @return object
+ */
+export function parseJSON(data) {
+  if (typeof data === 'object') {
+    return data;
+  } else if (typeof data === 'string') {
+    try {
+      return JSON.parse(data);
+    } catch (SyntaxError) {
+      console.error("Invalid JSON data", data);
+      return {};
+    }
+  } else {
+    return {};
+  }
+}
