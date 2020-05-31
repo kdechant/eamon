@@ -113,8 +113,8 @@ export var event_handlers = {
     }
     if (game.countdown('drunk')) {
       game.effects.print(28);
-      game.player.hardiness = game.data['original hd'];
-      game.player.agility = game.data['original ag'];
+      game.player.hardiness = game.player.stats_original.hardiness;
+      game.player.agility = game.player.stats_original.agility;
       game.player.status_message = '';
     }
   },
@@ -294,10 +294,8 @@ export var event_handlers = {
     } else if (roll <= 50 && game.counters['drunk'] === 0) {
       // drunk
       game.effects.print(21);
-      game.data['original hd'] = game.player.hardiness;
-      game.data['original ag'] = game.player.agility;
       game.player.hardiness += 2;
-      game.player.agility -= 3;
+      game.player.agility -= 3;  // Note: temporary only
       game.counters['drunk'] = 20;
       game.player.status_message = 'drunk';
     } else if (roll <= 65) {

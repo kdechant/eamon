@@ -292,6 +292,7 @@ export var event_handlers = {
           game.player.weapon_abilities[4] -= game.diceRoll(3, 5);
           game.player.weapon_abilities[5] -= game.diceRoll(3, 5);
           game.player.charisma -= 2;
+          game.player.stats_original.charisma -= 2;
         }
         game.effects.print(30);
         game.exit();

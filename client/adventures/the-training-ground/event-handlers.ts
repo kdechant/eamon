@@ -222,6 +222,7 @@ export var event_handlers = {
       game.data["charisma_boost"] = true;
       let word = game.player.gender === "m" ? "handsome" : "beautiful";
       game.player.charisma += 2;
+      game.player.stats_original.charisma += 2;
       return;
     }
     // 5% Chance of being hit by lightning!

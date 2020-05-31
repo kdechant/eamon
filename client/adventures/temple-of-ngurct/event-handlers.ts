@@ -31,7 +31,6 @@ export var event_handlers = {
 
     game.data['regeneration counter'] = 0;
     game.data['alkanda summoned'] = false;
-    game.data["original ag"] = game.player.agility;
     game.data["sober counter"] = 0;
     // wand charges
     game.artifacts.get(33).quantity = game.diceRoll(1, 4) + 2;
@@ -115,7 +114,7 @@ export var event_handlers = {
     }
 
     // sobering up
-    if (game.player.agility < game.data["original ag"]) {
+    if (game.player.agility < game.player.stats_original.agility) {
       game.data['sober counter']++;
       if (game.data['sober counter'] % 8 === 0) {
         game.player.agility++;
@@ -186,7 +185,7 @@ export var event_handlers = {
         // black potion
         game.history.write("A strange sensation comes over you. Your movements seem to quicken, just a little.");
         game.player.agility++;
-        game.data["original ag"]++;
+        game.player.stats_original.agility++;
       } else if (artifact.id === 69) {
         game.history.write("You knew the wine was strong, but you drank it anyway. Now, you're roaring drunk and in no shape for combat.", "special");
         game.player.agility = Math.floor(game.player.agility / 2);

@@ -12,6 +12,7 @@ export var event_handlers = {
     game.data['vrock appeared'] = false;
     game.data['balor appeared'] = false;
     game.data['bridge'] = false;
+    // TODO: convert to core spell logic
     game.data['wizard spells'] = 3;
     game.data['lammasu spells'] = 3;
     game.data['rovnart'] = false;
@@ -84,6 +85,7 @@ export var event_handlers = {
   "afterGet": function(arg, artifact) {
     if (artifact && artifact.id === 2) {
       // idol
+      // TODO: convert to new style saving throw
       let rnd = game.diceRoll(1, 20) + 5;
       if (rnd > game.player.agility) {
         game.history.write("When you touched the idol, a bolt of lightning from the ceiling hits you.", "special");
@@ -136,6 +138,7 @@ export var event_handlers = {
       // rovnart's tomb
       game.data['rovnart'] = true;
       game.player.charisma -= 2;
+      game.player.stats_original.charisma -= 2;
     }
   },
 
