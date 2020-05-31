@@ -20,23 +20,35 @@ export var event_handlers = {
       .forEach(m => m.hardiness = dmg * Math.abs(m.hardiness));
 
     game.data = {
+      ...game.data,
       got_quest: false,
       exited_hall: false,
       hunger: 0,
       thirst: 0,
       fatigue: 0,
-      ...game.data
+      original_ag: game.player.agility,
+      weather_change: false,
+      raulos_zorag: false,
     }
   },
 
+  "beforeMove": function(arg: string, room_from: Room, exit: RoomExit): boolean {
+    // lost in swamp
+    if ((room_from.id === 181 && exit.room_to === 180) || (room_from.id === 171 && exit.room_to === 172)) {
+      if (game.player.hasArtifact(21)) {
+        game.effects.print(137);
+      } else {
+        // lost; end up back further in the marsh
+        game.effects.print(136);
+        game.skip_battle_actions = true;
+        game.player.moveToRoom(160 + game.diceRoll(1, 10));
+        return false;
+      }
+    }
+    return true;
+  },
+
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    // king bestows quest
-    if (room_to.id === 75 && !game.data.got_quest) {
-      game.data.got_quest = true;
-    }
-    if (room_to.id === 58 && game.data.got_quest) {
-      game.data.exited_hall = true;
-    }
     // TODO: can't take booze out of bar
 
     // hunger/thirst/fatigue counters
@@ -44,6 +56,10 @@ export var event_handlers = {
     game.data.hunger += local_terrain.move_time;
     game.data.thirst += local_terrain.move_time;
     game.data.fatigue += local_terrain.move_time;
+
+    // some effects (e.g., weather report) only happen on the turn when the
+    // player first enters a room (see endTurn2)
+    game.data.just_entered_room = true;
   },
 
   "endTurn2": function() {
@@ -72,14 +88,37 @@ export var event_handlers = {
       zorag.damage = 0;
     }
 
-    // weather
-    let weather_effect = 0;
-    const local_terrain = terrain_data[game.rooms.current_room.data.env];
-    if (local_terrain.weather_effect) {
-      game.effects.print(game.getRandomElement(local_terrain.weather_effect));
+    // effects that happen when the player just entered a room
+    if (game.data.just_entered_room) {
+      game.data.just_entered_room = false;
+      // weather
+      let weather_effect = 0;
+      const local_terrain = terrain_data[game.rooms.current_room.data.env];
+      if (local_terrain.weather_effects && game.diceRoll(1,2) === 2) {
+        game.effects.print(game.getRandomElement(local_terrain.weather_effects));
+      }
+      // king raulos
+      if (game.monsters.get(3).isHere()) {
+        if (game.monsters.get(34).isHere() && !game.data.raulos_zorag) {
+          // zorag here
+          game.effects.print(92);
+          game.monsters.get(3).reaction = Monster.RX_HOSTILE;
+          game.data.raulos_zorag = true;
+          [35,36,37].forEach(id => game.monsters.get(id).moveToRoom());  // golems
+        } else if (game.monsters.get(34).status === Monster.STATUS_DEAD && !game.data.raulos_zorag) {
+          game.effects.print(89);
+          game.die();
+        } else if (!game.data.got_quest) {
+          game.effects.print(10);
+          game.data.got_quest = true;
+        } else {
+          game.effects.print(87);
+        }
+      }
     }
 
-    // hunger/thirst/fatigue effects
+    // region hunger/thirst/fatigue
+    let status_messages = [];
     if (game.data.hunger > 100) {
       const food_sources = game.player.inventory.filter(a => isFoodSource(a))
       if (food_sources.length) {
@@ -98,6 +137,7 @@ export var event_handlers = {
         if (game.data.hunger > 150) {
           game.history.write("You are wracked with hunger! You must eat soon or starve to death!", 'warning');
           game.player.injure(game.diceRoll(1, 4), true);
+          status_messages.push('starving');
         } else {
           game.history.write("You are getting hungry, and you are out of food!");
         }
@@ -120,6 +160,7 @@ export var event_handlers = {
         if (game.data.thirst > 100) {
           game.history.write("You are dehydrated! You must find water soon!", 'warning');
           game.player.injure(game.diceRoll(1, 4), true);
+          status_messages.push('dehydrated');
         } else {
           game.history.write("You are getting thirsty, and your canteens are all empty!");
         }
@@ -127,11 +168,31 @@ export var event_handlers = {
     }
 
     if (game.data.fatigue > 300) {
-      game.history.write("You are exhausted! Your weapon abilities are impaired until you rest.");
+      game.history.write("You are exhausted! Your agility is impaired until you rest.");
+      status_messages.push('tired');
+      game.player.agility -= 1;  // Note: temporary only
     } else if (game.data.fatigue > 270) {
       game.history.write("You are getting tired. You must make camp soon.");
     }
 
+    game.player.status_message = status_messages.join(', ');
+    // endregion
+  },
+
+  "eat": function(arg: string, artifact: Artifact) {
+    if (artifact) {
+      if (artifact.data.role === 'food') {
+        game.data.hunger = 0;
+      }
+    }
+  },
+
+  "drink": function(arg: string, artifact: Artifact) {
+    if (artifact) {
+      if (artifact.data.role === 'water') {
+        game.data.thirst = 0;
+      }
+    }
   },
 
   // region combat
