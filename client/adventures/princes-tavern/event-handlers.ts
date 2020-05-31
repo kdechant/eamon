@@ -53,7 +53,6 @@ export var event_handlers = {
     game.data["drinks"] = 0;
     game.data["how drunk"] = 0;
     game.data["sober counter"] = 0;
-    game.data["original ag"] = game.player.agility;
     game.data['barrel air'] = 4;
 
     // drinkers
@@ -91,16 +90,16 @@ export var event_handlers = {
 
     // drunk yet?
     if (game.data['drinks'] > game.player.hardiness) {
-      game.player.agility = Math.round(game.data['original ag'] - (game.data['drinks'] - game.player.hardiness));
+      game.player.agility = Math.round(game.player.stats_original.agility - (game.data['drinks'] - game.player.hardiness));
       if (!sobering) {
-        let condition = game.player.agility / game.data['original ag'];
+        let condition = game.player.agility / game.player.stats_original.agility;
         if (condition <= 0) {
           game.history.write("You passed out!", "danger");
           if (game.player.room_id === 22) {
             // scatter player's artifacts
             game.data['drinks'] = 0;
             game.data['drinking contest active'] = 0;
-            game.player.agility = game.data['original ag'];
+            game.player.agility = game.player.stats_original.agility;
             game.history.write("You wake up several hours later. All your possessions are gone! They must have been stolen while you were passed out.", "emphasis");
             for (let i of game.player.inventory) {
               let dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 54, 57, 61]);
@@ -194,7 +193,7 @@ export var event_handlers = {
           return false;
         }
       }
-      game.player.agility = game.data['original ag']; // sober up
+      game.player.agility = game.player.stats_original.agility; // sober up
     } else if (room.id === 36 && game.data["bar tab"] > 0) {
       if (game.data['bartender patience']) {
         game.history.write("The bartender is asking you politely to pay up or incur bodily damage from the bouncer.");
@@ -467,15 +466,17 @@ export var event_handlers = {
           case 1:
             game.effects.print(28);
             game.player.charisma -= 3;
+            game.player.stats_original.charisma -= 3;
             break;
           case 2:
             game.effects.print(29);
             game.player.charisma += 3;
+            game.player.stats_original.charisma += 3;
             break;
           case 3:
             game.effects.print(30);
             game.player.agility = Math.max(game.player.agility - 3, 1);
-            game.data['original ag'] -= 3;
+            game.player.stats_original.agility = Math.max(game.player.agility - 3, 1);
             break;
           case 4:
             game.effects.print(31);
@@ -552,16 +553,15 @@ export var event_handlers = {
     } else if (roll <= 53) {
       game.effects.print(20, "special");
       game.player.hardiness += 4;
+      game.player.stats_original.hardiness += 4;
     } else if (roll <= 61) {
       game.effects.print(21, "special");
       game.player.injure(3);
     } else if (roll <= 69) {
       game.effects.print(22, "special");
-      if (game.player.charisma < 15) {
-        game.player.charisma += 15;
-      } else {
-        game.player.charisma += 5;
-      }
+      let inc = game.player.charisma < 15 ? 15 : 5;
+      game.player.charisma += 5;
+      game.player.stats_original.charisma += 5;
     } else if (roll <= 77) {
       // horse
       game.effects.print(23, "special");

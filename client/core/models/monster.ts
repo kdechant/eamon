@@ -83,8 +83,9 @@ export class Monster extends GameObject {
 
   // data properties for player only
   charisma: number;
-  spell_abilities: any;
-  spell_abilities_original: any;
+  spell_abilities: { [key: string]: number; };
+  spell_abilities_original: { [key: string]: number; };
+  stats_original: { [key: string]: number; };
   weapon_abilities: { [key: number]: number; };
   armor_expertise: number;
   saved_games: Object[] = [];

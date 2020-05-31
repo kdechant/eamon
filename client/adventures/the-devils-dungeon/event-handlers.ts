@@ -132,6 +132,7 @@ export var event_handlers = {
         roll = -1;
       }
       game.player.hardiness += roll;
+      game.player.stats_original.hardiness += roll;
       game.history.write("It tastes awful!", "emphasis");
     }
   },

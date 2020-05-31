@@ -15,9 +15,23 @@ class Status extends React.Component<any, any> {
     }
 
     const inTheDark = game.rooms.current_room.is_dark && !game.artifacts.isLightSource();
-    let agilityClass = "agility col-4";
 
-    if (game.player.speed_multiplier > 1) { agilityClass += " success" }
+    let hdClass = "hardiness col-4";
+    if (game.player.hardiness < game.player.stats_original.hardiness) {
+      hdClass += " danger";
+    }
+
+    let agClass = "agility col-4";
+    if (game.player.speed_multiplier > 1) {
+      agClass += " success";
+    } else if (game.player.agility < game.player.stats_original.agility) {
+      agClass += " danger";
+    }
+
+    let chClass = "charisma col-4";
+    if (game.player.charisma < game.player.stats_original.charisma) {
+      chClass += " danger";
+    }
 
     // visible exits (normal exits and ones with non-hidden doors)
     const visible_exits = game.rooms.current_room.getVisibleExits();
@@ -46,9 +60,9 @@ class Status extends React.Component<any, any> {
           </div>
 
           <div className="stats row no-gutters">
-            <div className="hardiness col-4">HD: { game.player.hardiness }</div>
-            <div className={agilityClass}>AG: <span>{ game.player.agility * game.player.speed_multiplier}</span></div>
-            <div className="charisma col-4">CH: { game.player.charisma }</div>
+            <div className={hdClass}>HD: { game.player.hardiness }</div>
+            <div className={agClass}>AG: <span>{ game.player.agility * game.player.speed_multiplier}</span></div>
+            <div className={chClass}>CH: { game.player.charisma }</div>
             {game.player.status_message ?
               <div className="status-text col-12">({game.player.status_message})</div> : ''}
           </div>

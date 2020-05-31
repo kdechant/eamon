@@ -627,6 +627,7 @@ export var event_handlers = {
       case 48: // strange potion
         game.history.write("A strange sensation comes over you. Your movements seem to quicken.");
         game.player.agility += 2;
+        game.player.stats_original.agility += 2;
         break;
       case 50: // detector
         game.effects.print(53);

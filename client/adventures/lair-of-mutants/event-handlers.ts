@@ -182,6 +182,7 @@ export var event_handlers = {
           }
           game.effects.print(31);
           game.player.hardiness += 1;
+          game.player.stats_original.hardiness += 1;
           game.history.write("The amulet suddenly vanishes!", "special2");
           artifact.destroy();
           break;

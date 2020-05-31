@@ -369,6 +369,7 @@ export var event_handlers = {
     } else if (roll <= 60) { // hardiness decreased
       game.effects.print(94);
       game.player.hardiness -= 1;
+      game.player.stats_original.hardiness -= 1;
       return;
     } else if (roll <= 75) { // armor disappeared
       game.effects.print(95);
@@ -380,6 +381,7 @@ export var event_handlers = {
     } else if (roll <= 90) { // hardiness increased
       game.effects.print(96);
       game.player.hardiness += 2;
+      game.player.stats_original.hardiness += 2;
       return;
     } else { // player healed
       game.effects.print(97);
