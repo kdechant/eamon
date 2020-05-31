@@ -58,7 +58,9 @@ export function formatList(list: string[]) {
  * @return object
  */
 export function parseJSON(data) {
-  if (typeof data === 'object') {
+  if (data === null || data === undefined) {
+    return {};
+  } else if (typeof data === 'object') {
     return data;
   } else if (typeof data === 'string') {
     try {
