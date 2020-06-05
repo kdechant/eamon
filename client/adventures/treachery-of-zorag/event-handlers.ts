@@ -5,6 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {terrain_data, talk_data} from "./custom-data";
 import {CommandException} from "../../core/utils/command.exception";
+import {BuyCommand} from "../../core/commands/optional-commands";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game: Game;
@@ -12,6 +13,10 @@ declare var game: Game;
 export var event_handlers = {
 
   "start": function() {
+
+    // Use the optional "buy" command
+    game.command_parser.register(new BuyCommand());
+
     // set custom hardiness of monsters based on player's best weapon
     // (which should be the weapon the player readied at game init)
     let wpn = game.player.getWeapon();
@@ -177,6 +182,37 @@ export var event_handlers = {
 
     game.player.status_message = status_messages.join(', ');
     // endregion
+
+    // display items for sale
+    // TODO: move this to core
+    let for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
+    if (for_sale.length) {
+      game.history.write("Items for sale here: " + for_sale.map(a => a.name).join(', '));
+    }
+
+  },
+
+  "afterBuy": function(artifact: Artifact, seller: Monster) {
+    // lamp oil, rations: there are two copies of these artifacts, one that the
+    // player carries ("primary") and one that always stays in the shopkeeper's
+    // inventory ("refill"), allowing the player to buy more.
+    const refill_map = {
+      4: 22,
+      6: 7
+    };
+    for (let [refill_id, primary_id] of Object.entries(refill_map)) {
+      if (artifact.id === parseInt(refill_id)) {
+        if (!game.player.hasArtifact(primary_id)) {
+          game.artifacts.get(primary_id).moveToInventory();
+          game.artifacts.get(primary_id).seen = true;
+        }
+        game.artifacts.get(primary_id).quantity += artifact.quantity;
+        artifact.moveToInventory(1);
+        artifact.data.for_sale = true;
+        game.player.updateInventory();
+        seller.updateInventory();
+      }
+    }
   },
 
   "eat": function(arg: string, artifact: Artifact) {

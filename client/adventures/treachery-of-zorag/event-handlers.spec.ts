@@ -207,3 +207,51 @@ test('lost in swamp', () => {
   expectEffectSeen(137);
   expect(game.player.room_id).toBe(172);
 });
+
+test('buy stuff', () => {
+  movePlayer(74);
+  let original_gold = game.player.gold;
+
+  // 1: single items
+  original_gold = game.player.gold;
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy lantern');
+  let lantern = game.artifacts.get(1);
+  expect(game.player.hasArtifact(lantern.id)).toBeTruthy();
+  expect(game.monsters.get(1).hasArtifact(lantern.id)).toBeFalsy();
+  expect(game.player.gold).toBe(original_gold - lantern.data.price);
+  runCommand('buy lantern');
+  expect(game.history.getOutput().text).toContain("outta stock");
+  expect(game.player.gold).toBe(original_gold - lantern.data.price);
+
+  // 2: refillable items
+  original_gold = game.player.gold;
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy lamp oil');
+  const oil_primary = game.artifacts.get(7);
+  const oil_refill = game.artifacts.get(6);
+  expect(game.player.hasArtifact(7)).toBeTruthy();
+  expect(game.player.hasArtifact(6)).toBeFalsy();
+  expect(game.monsters.get(1).hasArtifact(6)).toBeTruthy();
+  expect(oil_primary.quantity).toBe(oil_refill.quantity);
+  expect(game.player.gold).toBe(original_gold - oil_refill.data.price);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy lamp oil');
+  expect(oil_primary.quantity).toBe(oil_refill.quantity * 2);
+  expect(game.player.gold).toBe(original_gold - oil_refill.data.price * 2);
+
+  original_gold = game.player.gold;
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy rations');
+  const rations_primary = game.artifacts.get(22);
+  const rations_refill = game.artifacts.get(4);
+  expect(game.player.hasArtifact(rations_primary.id)).toBeTruthy();
+  expect(game.player.hasArtifact(rations_refill.id)).toBeFalsy();
+  expect(game.monsters.get(1).hasArtifact(rations_refill.id)).toBeTruthy();
+  expect(rations_primary.quantity).toBe(rations_refill.quantity);
+  expect(game.player.gold).toBe(original_gold - rations_refill.data.price);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy rations');
+  expect(rations_primary.quantity).toBe(rations_refill.quantity * 2);
+  expect(game.player.gold).toBe(original_gold - rations_refill.data.price * 2);
+});
