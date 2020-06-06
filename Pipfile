@@ -22,7 +22,7 @@ regex = "~=2019.12.9"
 requests-oauthlib = "~=1.2.0"
 six = "==1.13.0"
 sqlparse = "~=0.2"
-Django = "~=3.0.5"
+Django = "~=3.0.7"
 PyYAML = "~=5.1.2"
 fabric = "*"
 
