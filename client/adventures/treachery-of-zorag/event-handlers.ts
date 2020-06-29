@@ -122,6 +122,12 @@ export var event_handlers = {
       }
     }
 
+    // cold weather
+    if (game.player.room_id >= 41 && game.player.room_id <= 43 && !game.player.isWearing(9)) {
+      game.effects.print(47);
+      game.player.injure(10, true);
+    }
+
     // region hunger/thirst/fatigue
     let status_messages = [];
     if (game.data.hunger > 100) {
@@ -229,6 +235,43 @@ export var event_handlers = {
         game.data.thirst = 0;
       }
     }
+  },
+
+  "look": function(arg: string) {
+    let artifact = game.artifacts.getLocalByName(arg, false);
+    if (artifact && artifact.type === Artifact.TYPE_DEAD_BODY) {
+      // console.log(artifact, artifact.data)
+      if (artifact.data.hidden_artifact) {
+        game.artifacts.get(artifact.data.hidden_artifact).moveToRoom();
+        delete artifact.data.hidden_artifact;
+        if (artifact.data.reveal_effect) {
+          game.effects.print(artifact.data.reveal_effect);
+        } else {
+          game.history.write('You found something!');
+        }
+      } else {
+        game.history.write("Creepy! You don't find anything special.");
+      }
+      return false;
+    }
+    return true;
+  },
+
+  "afterOpen": function(arg: string, artifact: Artifact) {
+    if (artifact && artifact.id === 32 && !game.effects.get(62).seen) {
+      // vampire
+      game.effects.print(62);
+      game.monsters.get(8).moveToRoom();
+    }
+  },
+
+  "specialPut": function(arg: string, item: Artifact, container: Artifact) {
+    if (item.id === 7 && container.id === 1) {
+      // 'put lamp oil into lantern' == 'fill lantern'
+      game.command_parser.run('fill lantern', false);
+      return false;   // skips the rest of the "put" logic
+    }
+    return true;
   },
 
   // region combat

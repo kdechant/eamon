@@ -10,7 +10,7 @@ import {
   expectEffectNotSeen,
   playerAttackMock,
   movePlayer,
-  runCommand, expectMonsterIsHere
+  runCommand, expectMonsterIsHere, playerHit, expectArtifactIsHere
 } from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -55,6 +55,21 @@ test("weather", () => {
   movePlayer(162);
   runCommand('e');
   expectEffectSeen(72);
+});
+
+test("cold mountain pass", () => {
+  game.player.hardiness = 30;
+  movePlayer(22);
+  expect(game.player.damage).toBe(0);  // not cold here
+  movePlayer(41);
+  expectEffectSeen(47);
+  expect(game.player.damage).toBe(10);  // brr
+  runCommand('u');
+  expect(game.player.damage).toBe(20);
+  game.artifacts.get(9).moveToInventory();
+  game.player.wear(game.artifacts.get(9));
+  runCommand('d');
+  expect(game.player.damage).toBe(20); // no change
 });
 
 test("hunger/thirst/fatigue", () => {
@@ -255,3 +270,69 @@ test('buy stuff', () => {
   expect(rations_primary.quantity).toBe(rations_refill.quantity * 2);
   expect(game.player.gold).toBe(original_gold - rations_refill.data.price * 2);
 });
+
+test("fill water containers", () => {
+  let canteen = game.artifacts.get(89);
+  let waterskin = game.artifacts.get(5);
+  canteen.moveToInventory();
+  waterskin.moveToInventory();
+  canteen.quantity = 0;
+  waterskin.quantity = 0;
+  runCommand('fill canteen');
+  expect(game.history.getOutput().text).toBe('There is no water source here to fill the canteen from!');
+  movePlayer(20);
+  runCommand('fill canteen');
+  expect(game.history.getOutput().text).toBe('You fill the canteen from the spring.');
+  expect(canteen.quantity).toBe(canteen.data.capacity);
+  movePlayer(56);
+  runCommand('fill waterskin');
+  expect(game.history.getOutput().text).toBe('You fill the waterskin from the well.');
+  expect(waterskin.quantity).toBe(waterskin.data.capacity);
+});
+
+test("fill lantern", () => {
+  let lantern = game.artifacts.get(1);
+  let fuel = game.artifacts.get(7);
+  fuel.quantity = 100;
+  lantern.moveToInventory();
+  fuel.moveToInventory();
+  lantern.quantity = 10;
+  runCommand('fill lantern');
+  expect(game.history.getOutput().text).toBe('You fill the lantern with the lamp oil.');
+  expect(lantern.quantity).toBe(lantern.data.capacity);
+  expect(fuel.quantity).toBe(50);
+  lantern.quantity = 0;
+  runCommand('put lamp oil into lantern');
+  expect(game.history.getOutput().text).toBe('You fill the lantern with the lamp oil.');
+  expect(game.history.getOutput(1).text).toBe('Your lamp oil is now empty!');
+  expect(lantern.quantity).toBe(50); // not quite full; we only had 50 fuel left
+  expect(fuel.quantity).toBe(0);
+  runCommand('fill lantern');
+  expect(game.history.getOutput().text).toBe('There is no more lamp oil left!');
+  expect(lantern.quantity).toBe(50);
+});
+
+test("vampire / search bodies", () => {
+  getLamp();
+  // vampire
+  movePlayer(123);
+  runCommand('open coffin');
+  expectMonsterIsHere(8);
+  expectEffectSeen(62);
+  playerHit(game.monsters.get(8), 999);
+  expectArtifactIsHere(108);
+  runCommand('ex vampire');
+  expectArtifactIsHere(21);
+  expectEffectSeen(51);
+  // prisoner
+  movePlayer(281);
+  runCommand('ex prisoner');
+  expectEffectSeen(109);
+  expectArtifactIsHere(48);
+});
+
+function getLamp() {
+  game.artifacts.get(1).moveToInventory();
+  game.artifacts.get(1).quantity = 99999;
+  runCommand('light lantern');
+}
