@@ -3,7 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {terrain_data, talk_data} from "./custom-data";
+import {terrain_data, talk_data, triggered_events} from "./custom-data";
 import {CommandException} from "../../core/utils/command.exception";
 import {BuyCommand} from "../../core/commands/optional-commands";
 
@@ -32,8 +32,10 @@ export var event_handlers = {
       thirst: 0,
       fatigue: 0,
       original_ag: game.player.agility,
+      summoned_tealand: false,
       weather_change: false,
       raulos_zorag: false,
+      triggered_events: triggered_events,  // includes them in the saved game
     }
   },
 
@@ -65,6 +67,25 @@ export var event_handlers = {
     // some effects (e.g., weather report) only happen on the turn when the
     // player first enters a room (see endTurn2)
     game.data.just_entered_room = true;
+
+    // triggered events
+    let enter_events = game.data.triggered_events.filter(
+      e => e.room === room_from.id && e.type === 3 && e.triggered !== 1 &&
+      game.monsters.get(e.monster).isHere());
+    for (let e of enter_events) {
+      game.effects.print(e.effect);
+      // The 'enter room' triggered event can optionally have a door to open
+      // or an artifact that is given to the player.
+      if (e.hasOwnProperty('door')) {
+        game.artifacts.get(e.door).open();
+      }
+      if (e.hasOwnProperty('received_artifact')) {
+        game.artifacts.get(e.received_artifact).moveToInventory();
+      }
+      if (e.triggered === 0) {
+        e.triggered = 1;
+      }
+    }
   },
 
   "endTurn2": function() {
@@ -119,6 +140,32 @@ export var event_handlers = {
         } else {
           game.effects.print(87);
         }
+      }
+    }
+
+    // triggered events on entering room
+    let enter_events = game.data.triggered_events.filter(e => e.room === game.player.room_id &&
+      e.type === 0 && e.triggered !== 1 &&
+      (e.monster === 0 || game.monsters.get(e.monster).isHere()));
+    for (let e of enter_events) {
+      game.effects.print(e.effect);
+      // The 'enter room' triggered event can optionally have a door to open
+      // or an artifact that is given to the player.
+      if (e.hasOwnProperty('door')) {
+        game.artifacts.get(e.door).open();
+      }
+      if (e.hasOwnProperty('received_artifact')) {
+        game.artifacts.get(e.received_artifact).moveToInventory();
+      }
+      if (e.triggered === 0) {
+        e.triggered = 1;
+      }
+    }
+    let not_wearing_effects = game.data.triggered_events.filter(e => e.room === game.player.room_id && e.type === 0 && e.triggered !== 1 && !game.player.isWearing(e.artifact));
+    for (let e of not_wearing_effects) {
+      game.effects.print(e.effect);
+      if (e.triggered === 0) {
+        e.triggered = 1;
       }
     }
 
@@ -272,6 +319,17 @@ export var event_handlers = {
       return false;   // skips the rest of the "put" logic
     }
     return true;
+  },
+
+  "say": function (arg) {
+    arg = arg.toLowerCase();
+    let orb = game.artifacts.get(19);
+    if (arg === 'tealand' && game.player.room_id === 32 && !game.data.summoned_tealand) {
+      game.effects.print(44);
+      game.monsters.get(7).moveToRoom();
+      game.data.summoned_tealand = true;
+    }
+    // TODO: 'say hello', accept boris quest
   },
 
   // region combat

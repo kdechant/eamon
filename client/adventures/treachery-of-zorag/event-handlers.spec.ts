@@ -10,7 +10,7 @@ import {
   expectEffectNotSeen,
   playerAttackMock,
   movePlayer,
-  runCommand, expectMonsterIsHere, playerHit, expectArtifactIsHere
+  runCommand, expectMonsterIsHere, playerHit, expectArtifactIsHere, expectMonsterIsNotHere
 } from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -34,6 +34,8 @@ beforeEach(() => {
 afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
+
+// region environment / item management
 
 test("weather", () => {
   game.mock_random_numbers = [2,1,2,2,2,3,2,4];
@@ -116,111 +118,45 @@ test("hunger/thirst/fatigue", () => {
   expect(game.player.agility).toBe(game.player.stats_original.agility);
 });
 
-test("die if didn't accept quest", () => {
-  movePlayer(18);
-  game.command_parser.run('w');
-  expectEffectSeen(33);
-  expect(game.died).toBeTruthy();
+test("fill water containers", () => {
+  let canteen = game.artifacts.get(89);
+  let waterskin = game.artifacts.get(5);
+  canteen.moveToInventory();
+  waterskin.moveToInventory();
+  canteen.quantity = 0;
+  waterskin.quantity = 0;
+  runCommand('fill canteen');
+  expect(game.history.getOutput().text).toBe('There is no water source here to fill the canteen from!');
+  movePlayer(20);
+  runCommand('fill canteen');
+  expect(game.history.getOutput().text).toBe('You fill the canteen from the spring.');
+  expect(canteen.quantity).toBe(canteen.data.capacity);
+  movePlayer(56);
+  runCommand('fill waterskin');
+  expect(game.history.getOutput().text).toBe('You fill the waterskin from the well.');
+  expect(waterskin.quantity).toBe(waterskin.data.capacity);
 });
 
-test("don't die if did accept quest", () => {
-  movePlayer(58);
-  game.command_parser.run('n');
-  expect(game.data.got_quest).toBeTruthy();
-  game.command_parser.run('s');
-  movePlayer(18);
-  game.command_parser.run('w');
-  expectEffectNotSeen(33);
-  expect(game.died).toBeFalsy();
-});
-
-test('npc healing', () => {
-  let tealand = game.monsters.get(7);
-  let zorag = game.monsters.get(34);
-  tealand.moveToRoom();
-  zorag.moveToRoom()
-  tealand.damage = 25;
-  zorag.damage = 75;
-  game.mock_random_numbers = [20];
-  game.tick();
-  expect(tealand.damage).toBe(5);
-  expect(zorag.damage).toBe(0);
-  expectEffectSeen(101);
-  expect(game.history.getLastOutput(4).text).toBe("Tealand takes a sip of his green healing potion.");
-  expect(game.history.getLastOutput(1).text).toBe(game.effects.get(101).text);
-});
-
-test('attack friendly npcs', () => {
-  const npcs = [7,11,12,13,34].map(id => game.monsters.get(id));
-  const msg = "It is not wise to attack a member of your Fellowship!";
-  npcs.forEach(m => {
-      m.moveToRoom();
-      m.reaction = Monster.RX_FRIEND;
-      runCommand(`attack ${m.name}`);
-      expect(game.history.getOutput().text).toBe(msg);
-      expect(m.reaction).toBe(Monster.RX_FRIEND);
-    });
-});
-
-test('raulos / quest', () => {
-  movePlayer(58);
-  runCommand('n');
-  expectEffectSeen(10);
-  expect(game.data.got_quest).toBeTruthy();
-  runCommand('s');
-  runCommand('n');
-  expectEffectSeen(87);
-});
-
-test('raulos / zorag dead', () => {
-  game.monsters.get(34).status = Monster.STATUS_DEAD;
-  movePlayer(58);
-  runCommand('n');
-  expectEffectSeen(89);
-  expect(game.died).toBeTruthy();
-});
-
-test('raulos / zorag battle', () => {
-  movePlayer(58);
-  game.monsters.get(34).moveToRoom();
-  game.monsters.get(34).reaction = Monster.RX_FRIEND;
-  game.tick();
-  runCommand('n');
-  expectEffectSeen(92);
-  expect(game.monsters.get(3).reaction).toBe(Monster.RX_HOSTILE);
-  expect(game.data.raulos_zorag).toBeTruthy();
-  // golems
-  expectMonsterIsHere(35);
-  expectMonsterIsHere(36);
-  expectMonsterIsHere(37);
-  // TODO: more battle stuff
-});
-
-test('lost in swamp', () => {
-  game.monsters.get(21).destroy();  // snake in rm 180
-  game.mock_random_numbers = [1, 2];
-  movePlayer(181);
-  runCommand('n');
-  expectEffectSeen(136);
-  expect(game.player.room_id).toBe(161);
-  game.effects.get(136).seen = false;
-  movePlayer(171);
-  runCommand('n');
-  expectEffectSeen(136);
-  expect(game.player.room_id).toBe(162);
-
-  // now with compass
-  game.effects.get(136).seen = false;
-  game.artifacts.get(21).moveToInventory();
-  movePlayer(181);
-  runCommand('n');
-  expectEffectSeen(137);
-  expect(game.player.room_id).toBe(180);
-  game.effects.get(137).seen = false;
-  movePlayer(171);
-  runCommand('n');
-  expectEffectSeen(137);
-  expect(game.player.room_id).toBe(172);
+test("fill lantern", () => {
+  let lantern = game.artifacts.get(1);
+  let fuel = game.artifacts.get(7);
+  fuel.quantity = 100;
+  lantern.moveToInventory();
+  fuel.moveToInventory();
+  lantern.quantity = 10;
+  runCommand('fill lantern');
+  expect(game.history.getOutput().text).toBe('You fill the lantern with the lamp oil.');
+  expect(lantern.quantity).toBe(lantern.data.capacity);
+  expect(fuel.quantity).toBe(50);
+  lantern.quantity = 0;
+  runCommand('put lamp oil into lantern');
+  expect(game.history.getOutput().text).toBe('You fill the lantern with the lamp oil.');
+  expect(game.history.getOutput(1).text).toBe('Your lamp oil is now empty!');
+  expect(lantern.quantity).toBe(50); // not quite full; we only had 50 fuel left
+  expect(fuel.quantity).toBe(0);
+  runCommand('fill lantern');
+  expect(game.history.getOutput().text).toBe('There is no more lamp oil left!');
+  expect(lantern.quantity).toBe(50);
 });
 
 test('buy stuff', () => {
@@ -271,45 +207,92 @@ test('buy stuff', () => {
   expect(game.player.gold).toBe(original_gold - rations_refill.data.price * 2);
 });
 
-test("fill water containers", () => {
-  let canteen = game.artifacts.get(89);
-  let waterskin = game.artifacts.get(5);
-  canteen.moveToInventory();
-  waterskin.moveToInventory();
-  canteen.quantity = 0;
-  waterskin.quantity = 0;
-  runCommand('fill canteen');
-  expect(game.history.getOutput().text).toBe('There is no water source here to fill the canteen from!');
-  movePlayer(20);
-  runCommand('fill canteen');
-  expect(game.history.getOutput().text).toBe('You fill the canteen from the spring.');
-  expect(canteen.quantity).toBe(canteen.data.capacity);
-  movePlayer(56);
-  runCommand('fill waterskin');
-  expect(game.history.getOutput().text).toBe('You fill the waterskin from the well.');
-  expect(waterskin.quantity).toBe(waterskin.data.capacity);
+// endregion
+
+// region quest start
+
+test("die if didn't accept quest", () => {
+  movePlayer(18);
+  game.command_parser.run('w');
+  expectEffectSeen(33);
+  expect(game.died).toBeTruthy();
 });
 
-test("fill lantern", () => {
-  let lantern = game.artifacts.get(1);
-  let fuel = game.artifacts.get(7);
-  fuel.quantity = 100;
-  lantern.moveToInventory();
-  fuel.moveToInventory();
-  lantern.quantity = 10;
-  runCommand('fill lantern');
-  expect(game.history.getOutput().text).toBe('You fill the lantern with the lamp oil.');
-  expect(lantern.quantity).toBe(lantern.data.capacity);
-  expect(fuel.quantity).toBe(50);
-  lantern.quantity = 0;
-  runCommand('put lamp oil into lantern');
-  expect(game.history.getOutput().text).toBe('You fill the lantern with the lamp oil.');
-  expect(game.history.getOutput(1).text).toBe('Your lamp oil is now empty!');
-  expect(lantern.quantity).toBe(50); // not quite full; we only had 50 fuel left
-  expect(fuel.quantity).toBe(0);
-  runCommand('fill lantern');
-  expect(game.history.getOutput().text).toBe('There is no more lamp oil left!');
-  expect(lantern.quantity).toBe(50);
+test("don't die if did accept quest", () => {
+  movePlayer(58);
+  game.command_parser.run('n');
+  expect(game.data.got_quest).toBeTruthy();
+  game.command_parser.run('s');
+  movePlayer(18);
+  game.command_parser.run('w');
+  expectEffectNotSeen(33);
+  expect(game.died).toBeFalsy();
+});
+
+test('raulos / quest', () => {
+  movePlayer(58);
+  runCommand('n');
+  expectEffectSeen(10);
+  expect(game.data.got_quest).toBeTruthy();
+  runCommand('s');
+  runCommand('n');
+  expectEffectSeen(87);
+});
+
+// endregion
+
+// region npcs
+
+test('npc healing', () => {
+  let tealand = game.monsters.get(7);
+  let zorag = game.monsters.get(34);
+  tealand.moveToRoom();
+  zorag.moveToRoom()
+  tealand.damage = 25;
+  zorag.damage = 75;
+  game.mock_random_numbers = [20];
+  game.tick();
+  expect(tealand.damage).toBe(5);
+  expect(zorag.damage).toBe(0);
+  expectEffectSeen(101);
+  expect(game.history.getLastOutput(4).text).toBe("Tealand takes a sip of his green healing potion.");
+  expect(game.history.getLastOutput(1).text).toBe(game.effects.get(101).text);
+});
+
+test('attack friendly npcs', () => {
+  const npcs = [7,11,12,13,34].map(id => game.monsters.get(id));
+  const msg = "It is not wise to attack a member of your Fellowship!";
+  npcs.forEach(m => {
+      m.moveToRoom();
+      m.reaction = Monster.RX_FRIEND;
+      runCommand(`attack ${m.name}`);
+      expect(game.history.getOutput().text).toBe(msg);
+      expect(m.reaction).toBe(Monster.RX_FRIEND);
+    });
+});
+
+// endregion
+
+// region general plot points
+
+test('tealand', () => {
+  game.artifacts.get(9).moveToInventory();
+  runCommand('wear coat');
+  let tealand = game.monsters.get(7);
+  movePlayer(32);
+  runCommand('say thor');
+  expectEffectNotSeen(44);
+  expectMonsterIsNotHere(7);
+  runCommand('say tealand');
+  expectEffectSeen(44);
+  expectMonsterIsHere(7);
+  runCommand('w');
+  expectEffectSeen(45);
+  movePlayer(42);
+  expect(game.artifacts.get(20).is_open).toBeFalsy();
+  runCommand('u');
+  expect(game.artifacts.get(20).is_open).toBeTruthy();
+  expectEffectSeen(49);
 });
 
 test("vampire / search bodies", () => {
@@ -330,6 +313,63 @@ test("vampire / search bodies", () => {
   expectEffectSeen(109);
   expectArtifactIsHere(48);
 });
+
+test('lost in swamp', () => {
+  game.monsters.get(21).destroy();  // snake in rm 180
+  game.mock_random_numbers = [1, 2];
+  movePlayer(181);
+  runCommand('n');
+  expectEffectSeen(136);
+  expect(game.player.room_id).toBe(161);
+  game.effects.get(136).seen = false;
+  movePlayer(171);
+  runCommand('n');
+  expectEffectSeen(136);
+  expect(game.player.room_id).toBe(162);
+
+  // now with compass
+  game.effects.get(136).seen = false;
+  game.artifacts.get(21).moveToInventory();
+  movePlayer(181);
+  runCommand('n');
+  expectEffectSeen(137);
+  expect(game.player.room_id).toBe(180);
+  game.effects.get(137).seen = false;
+  movePlayer(171);
+  runCommand('n');
+  expectEffectSeen(137);
+  expect(game.player.room_id).toBe(172);
+});
+
+// endregion
+
+// region endgame
+
+test('raulos / zorag dead', () => {
+  game.monsters.get(34).status = Monster.STATUS_DEAD;
+  movePlayer(58);
+  runCommand('n');
+  expectEffectSeen(89);
+  expect(game.died).toBeTruthy();
+});
+
+test('raulos / zorag battle', () => {
+  movePlayer(58);
+  game.monsters.get(34).moveToRoom();
+  game.monsters.get(34).reaction = Monster.RX_FRIEND;
+  game.tick();
+  runCommand('n');
+  expectEffectSeen(92);
+  expect(game.monsters.get(3).reaction).toBe(Monster.RX_HOSTILE);
+  expect(game.data.raulos_zorag).toBeTruthy();
+  // golems
+  expectMonsterIsHere(35);
+  expectMonsterIsHere(36);
+  expectMonsterIsHere(37);
+  // TODO: more battle stuff
+});
+
+// endregion
 
 function getLamp() {
   game.artifacts.get(1).moveToInventory();
