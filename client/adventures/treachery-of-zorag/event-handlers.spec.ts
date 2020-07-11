@@ -275,6 +275,28 @@ test('attack friendly npcs', () => {
 
 // region general plot points
 
+test('boris', () => {
+  let boris = game.monsters.get(4);
+  movePlayer(76);
+  expect(boris.isHere()).toBeTruthy();
+  expect(boris.reaction).toBe(Monster.RX_NEUTRAL);
+  runCommand('say hello to boris');
+  expectEffectSeen(20);
+  expect(boris.data.talk[0].said).toBeTruthy();
+  game.modal.mock_answers = ['No'];
+  runCommand('talk to boris about treasure');
+  expectEffectSeen(14);
+  expect(boris.reaction).toBe(Monster.RX_NEUTRAL);
+  expectEffectNotSeen(17);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('talk to boris about treasure');
+  expect(boris.reaction).toBe(Monster.RX_FRIEND);
+  expectEffectSeen(17);
+  // TODO: test some more effects when he follows you
+  // TODO: test opening door
+  // TODO: kill chimera
+});
+
 test('tealand', () => {
   game.artifacts.get(9).moveToInventory();
   runCommand('wear coat');

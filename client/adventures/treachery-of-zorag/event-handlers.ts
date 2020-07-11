@@ -6,6 +6,7 @@ import {Room} from "../../core/models/room";
 import {terrain_data, talk_data, triggered_events} from "./custom-data";
 import {CommandException} from "../../core/utils/command.exception";
 import {BuyCommand} from "../../core/commands/optional-commands";
+import {talkTo} from "./functions";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game: Game;
@@ -37,6 +38,15 @@ export var event_handlers = {
       raulos_zorag: false,
       triggered_events: triggered_events,  // includes them in the saved game
     }
+
+    // unpack monster talk data into monster
+    game.monsters.all.forEach(monster => {
+      let words = talk_data.filter(d => d.monster === monster.id);
+      if (words.length) {
+        monster.data.talk = words;
+        monster.data.talk.forEach(t => t.said = false);
+      }
+    });
   },
 
   "beforeMove": function(arg: string, room_from: Room, exit: RoomExit): boolean {
@@ -321,15 +331,34 @@ export var event_handlers = {
     return true;
   },
 
-  "say": function (arg) {
+  "beforeSay": function (arg) {
     arg = arg.toLowerCase();
     let orb = game.artifacts.get(19);
     if (arg === 'tealand' && game.player.room_id === 32 && !game.data.summoned_tealand) {
       game.effects.print(44);
       game.monsters.get(7).moveToRoom();
       game.data.summoned_tealand = true;
+      return false;
     }
-    // TODO: 'say hello', accept boris quest
+    // talking to a specific monster (e.g., 'say hello to boris')
+    let target = '';
+    if (arg.indexOf(' to ') !== -1) {
+      [arg, target] = arg.split(' to ');
+      game.command_parser.run(`talk to ${target} about ${arg}`, false);
+      return false;
+    }
+    return true;
+  },
+
+  "afterTalk": function(monster: Monster, subject: string, word: any) {
+    if (monster.id === 4 && subject === 'adventure') {
+      game.modal.confirm('Do you join Boris to search for the treasure?', answer => {
+        if (answer.toLowerCase() === 'yes') {
+          game.effects.print(17);
+          game.monsters.get(4).reaction = Monster.RX_FRIEND;
+        }
+      });
+    }
   },
 
   // region combat

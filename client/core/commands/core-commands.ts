@@ -271,7 +271,9 @@ export class SayCommand implements BaseCommand {
   run(verb, arg) {
 
     if (arg !== "") {
-      game.history.write("Ok... \"" + arg + "\"");
+      if (game.triggerEvent("beforeSay", arg)) {
+        game.history.write("Ok... \"" + arg + "\"");
+      }
 
       // debugging mode
       if (arg === "bort") {

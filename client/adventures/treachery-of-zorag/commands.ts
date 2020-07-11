@@ -1,17 +1,12 @@
 import Game from "../../core/models/game";
-import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 import {Artifact} from "../../core/models/artifact";
-// import {BuyCommand} from "../../core/commands/optional-commands";
+import {talkTo} from "./functions";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game: Game;
 
 export var custom_commands = [];
-
-// Use the optional "buy" command
-// game.command_parser.register(new BuyCommand());
-// game.optional_commands.push('buy');
 
 custom_commands.push({
   name: "talk",
@@ -22,7 +17,6 @@ custom_commands.push({
     if (arg.indexOf('to ') !== -1) {
       arg = arg.slice(3);
     }
-    // TODO: handle additional keywords ("talk to boris about treasure")
     let subject = '';
     if (arg.indexOf('about') !== -1) {
       [arg, subject] = arg.split(' about ');
@@ -30,14 +24,7 @@ custom_commands.push({
 
     let monster = game.monsters.getLocalByName(arg);
     if (monster) {
-      // generic talk logic
-      if (monster.data.talk) {
-        game.effects.print(monster.data.talk);
-      } else if (monster.parent && monster.parent.data.talk) {
-        game.effects.print(monster.parent.data.talk);
-      } else {
-        game.history.write(`${monster.name} has nothing to say.`)
-      }
+      talkTo(monster, subject);
       return;
     }
 

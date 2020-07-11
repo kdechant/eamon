@@ -1,4 +1,6 @@
 // r%(X, 7) - Terrain type indicator (0 - Dungeon, 1 - Wilderness, 2 - Exterior, 3 - Mountains, 4 - Swamp)
+import {Monster} from "../../core/models/monster";
+
 export const terrain_data = {
   'dungeon': {
     'weather_effects': null,
@@ -22,9 +24,249 @@ export const terrain_data = {
   }
 };
 
-export const talk_data = {
-  // TODO: extract talk stuff from EDX data file and put it here
-};
+export const talk_data = [
+  {
+    monster: 1,
+    word: '*',
+    ignore: 0,
+    effect: 3,
+    repeat_effect: 4,
+  },
+  {
+    monster: 2,
+    word: '*',
+    ignore: 0,
+    effect: 6,
+    repeat_effect: 8,
+  },
+  // boris
+  {
+    monster: 4,
+    word: 'hello',
+    ignore: 0,
+    effect: 20,
+  },
+  {
+    monster: 4,
+    word: 'treasure',
+    ignore: 0,
+    effect: 14,
+  },
+  {
+    monster: 4,
+    word: 'guard',
+    ignore: 0,
+    effect: 15,
+  },
+  {
+    monster: 4,
+    word: 'adventure',
+    ignore: 0,
+    effect: 16,
+  },
+  {
+    monster: 4,
+    word: 'cliff',
+    ignore: 0,
+    effect: 18,
+  },
+  {
+    monster: 4,
+    word: 'where',
+    ignore: 0,
+    effect: 19,
+  },
+  {
+    monster: 4,
+    word: 'cave',
+    ignore: 0,
+    effect: 21,
+  },
+  // tealand
+  {
+    monster: 7,
+    word: 'raulos',
+    ignore: 0,
+    effect: 36,
+  },
+  {
+    monster: 7,
+    word: ['druid', 'order'],
+    ignore: 0,
+    effect: 37,
+  },
+  {
+    monster: 7,
+    word: 'golem',
+    ignore: 0,
+    effect: 38,
+  },
+  {
+    monster: 7,
+    word: 'zorag',
+    ignore: 0,
+    effect: 39,
+  },
+  {
+    monster: 7,
+    word: ['fellspawn', 'cavern'],
+    ignore: 0,
+    effect: 40,
+  },
+  {
+    monster: 7,
+    word: 'prison',
+    ignore: 0,
+    effect: 41,
+  },
+  {
+    monster: 7,
+    word: 'hello',
+    ignore: 0,
+    effect: 42,
+  },
+  // witch seer
+  {
+    monster: 9,
+    word: 'hello',
+    ignore: 0,
+    effect: 56,
+  },
+  {
+    monster: 9,
+    word: 'raulos',
+    ignore: 100,
+    effect: 76,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: 'zorag',
+    ignore: 100,
+    effect: 77,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: 'druid',
+    ignore: 100,
+    effect: 78,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: 'golem',
+    ignore: 100,
+    effect: 79,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: 'prison',
+    ignore: 100,
+    effect: 80,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: ['grimhold', 'tower'],
+    ignore: 100,
+    effect: 81,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: ['marsh', 'foulwater'],
+    ignore: 100,
+    effect: 82,
+    withhold_effect: 86,
+  },
+  {
+    monster: 9,
+    word: ['cauldron', 'devil'],
+    ignore: 0,
+    effect: 83,
+  },
+  {
+    monster: 9,
+    word: 'guard',
+    ignore: 0,
+    effect: 84,
+  },
+  {
+    monster: 9,
+    word: ['save', 'world'],
+    ignore: 100,
+    effect: 85,
+    withhold_effect: 86,
+  },
+  // companions
+  {
+    monster: 11,
+    word: 'hello',
+    ignore: 0,
+    effect: 104,
+  },
+  {
+    monster: 12,
+    word: 'hello',
+    ignore: 0,
+    effect: 102,
+  },
+  {
+    monster: 13,
+    word: 'hello',
+    ignore: 0,
+    effect: 103,
+  },
+  // bartenders
+  {
+    monster: 39,
+    word: 'hello',
+    ignore: 0,
+    effect: 120,
+  },
+  {
+    monster: 39,
+    word: ['adventurer', 'folk', 'druid', 'looney'],
+    ignore: 100,
+    effect: 125,
+    repeat_effect: 127,
+    withhold_effect: 124,
+  },
+  {
+    monster: 40,
+    word: 'hello',
+    ignore: 0,
+    effect: 123,
+  },
+  {
+    monster: 40,
+    word: 'boris',
+    ignore: 0,
+    effect: 128,
+  },
+  // zorag
+  {
+    monster: 34,
+    word: 'hello',
+    ignore: 0,
+    effect: 134,
+  },
+  {
+    monster: 34,
+    word: 'druid',
+    ignore: 0,
+    effect: 133,
+  },
+  {
+    monster: 34,
+    word: 'raulos',
+    ignore: 0,
+    effect: 132,
+    reaction_change: Monster.RX_FRIEND,
+  },
+];
 
 const event_triggers = {
   ENTER_ROOM: 0,
