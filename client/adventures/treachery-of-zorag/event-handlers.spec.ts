@@ -292,9 +292,21 @@ test('boris', () => {
   runCommand('talk to boris about treasure');
   expect(boris.reaction).toBe(Monster.RX_FRIEND);
   expectEffectSeen(17);
-  // TODO: test some more effects when he follows you
-  // TODO: test opening door
-  // TODO: kill chimera
+  runCommand('s');
+  expectEffectSeen(22);
+  runCommand('e');
+  expectEffectSeen(23);
+  // opens door
+  getLamp();
+  movePlayer(48);
+  expectEffectSeen(26);
+  expect(game.artifacts.get(13).is_open).toBeTruthy();
+  // chimera
+  runCommand('s');
+  runCommand('s');
+  playerHit('chimera', 999);
+  expectEffectSeen(27);
+  expectMonsterIsNotHere(4);
 });
 
 test('tealand', () => {

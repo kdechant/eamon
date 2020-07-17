@@ -268,7 +268,7 @@ export const talk_data = [
   },
 ];
 
-const event_triggers = {
+export const event_triggers = {
   ENTER_ROOM: 0,
   MONSTER_DIES: 1,
   // ENTER_ROOM_OPENS_DOOR: 2,

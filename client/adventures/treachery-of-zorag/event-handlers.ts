@@ -3,10 +3,9 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
-import {terrain_data, talk_data, triggered_events} from "./custom-data";
+import {terrain_data, talk_data, event_triggers, triggered_events} from "./custom-data";
 import {CommandException} from "../../core/utils/command.exception";
 import {BuyCommand} from "../../core/commands/optional-commands";
-import {talkTo} from "./functions";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game: Game;
@@ -78,20 +77,12 @@ export var event_handlers = {
     // player first enters a room (see endTurn2)
     game.data.just_entered_room = true;
 
-    // triggered events
+    // triggered events when monster follows player
     let enter_events = game.data.triggered_events.filter(
       e => e.room === room_from.id && e.type === 3 && e.triggered !== 1 &&
       game.monsters.get(e.monster).isHere());
     for (let e of enter_events) {
       game.effects.print(e.effect);
-      // The 'enter room' triggered event can optionally have a door to open
-      // or an artifact that is given to the player.
-      if (e.hasOwnProperty('door')) {
-        game.artifacts.get(e.door).open();
-      }
-      if (e.hasOwnProperty('received_artifact')) {
-        game.artifacts.get(e.received_artifact).moveToInventory();
-      }
       if (e.triggered === 0) {
         e.triggered = 1;
       }
@@ -351,7 +342,7 @@ export var event_handlers = {
   },
 
   "afterTalk": function(monster: Monster, subject: string, word: any) {
-    if (monster.id === 4 && subject === 'adventure') {
+    if (monster.id === 4 && (subject === 'adventure' || subject === 'treasure')) {
       game.modal.confirm('Do you join Boris to search for the treasure?', answer => {
         if (answer.toLowerCase() === 'yes') {
           game.effects.print(17);
@@ -367,6 +358,28 @@ export var event_handlers = {
     if ([7,11,12,13,34].indexOf(target.id) !== -1 && target.reaction === Monster.RX_FRIEND) {
       throw new CommandException("It is not wise to attack a member of your Fellowship!");
     }
+    return true;
+  },
+
+  "death": function(monster: Monster) {
+    // triggered effects on monster death
+    let effects = triggered_events.filter(e =>
+      e.monster === monster.id && e.type === event_triggers.MONSTER_DIES);
+    effects.forEach(e => {
+      if (e.other_monster) {
+        // Effect when an "other" monster sees this monster die
+        if (game.monsters.get(e.other_monster).isHere()) {
+          game.effects.print(e.effect);
+          // This currently also removes the "other" monster from the game.
+          // (This is a specific use case for the Boris sub-quest)
+          game.monsters.get(e.other_monster).destroy();
+        }
+      } else {
+        // No "other" monster means the game ends
+        game.effects.print(e.effect);
+        game.exit();
+      }
+    })
     return true;
   },
 
