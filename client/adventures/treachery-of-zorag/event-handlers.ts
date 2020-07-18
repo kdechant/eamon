@@ -358,6 +358,20 @@ export var event_handlers = {
     if ([7,11,12,13,34].indexOf(target.id) !== -1 && target.reaction === Monster.RX_FRIEND) {
       throw new CommandException("It is not wise to attack a member of your Fellowship!");
     }
+    // tree spirit
+    if (target.id === 6) {
+      game.effects.print(29);
+      return false;
+    }
+    return true;
+  },
+
+  "blast": function(arg: string, target: Monster) {
+    // tree spirit
+    if (target.id === 6) {
+      game.effects.print(30);
+      return false;
+    }
     return true;
   },
 
@@ -383,7 +397,42 @@ export var event_handlers = {
     return true;
   },
 
+  "flee": function(arg: string, exit: RoomExit) {
+    if (game.monsters.get(6).isHere()) { // max
+      if (arg === 'e' || arg === 'east') {
+        game.history.write("The tree spirit blocks your way!");
+        return false;
+      }
+      if (!arg) {
+        game.player.moveToRoom(29);  // always flee west
+        game.skip_battle_actions = true;
+        return false;
+      }
+    }
+    return true;
+  },
+
   // endregion
+
+  "use": function(arg: string, artifact: Artifact) {
+    if (artifact.isHere()) {
+      switch (artifact.id) {
+        case 14:  // wand of warding
+          game.modal.show('Point at whom?', answer => {
+            let target = game.monsters.getLocalByName(answer);
+            if (!target) {
+              game.history.write('Nobody here by that name!');
+            } else if (target.id === 6) {
+              game.effects.print(31);
+              target.destroy();
+            } else {
+              game.effects.print(32);
+            }
+          });
+          break;
+      }
+    }
+  },
 
   "power": function(roll) {
     if (roll <= 50) {

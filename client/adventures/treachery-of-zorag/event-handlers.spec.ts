@@ -309,6 +309,45 @@ test('boris', () => {
   expectMonsterIsNotHere(4);
 });
 
+test('evil tree', () => {
+  game.artifacts.get(14).moveToInventory();  // wand
+  // test wand without spirit
+  movePlayer(74);
+  game.modal.mock_answers = ['sasquatch'];
+  runCommand('use wand');
+  expect(game.history.getOutput().text).toBe('Nobody here by that name!');
+  expectEffectNotSeen(31);
+  expectEffectNotSeen(32);
+  game.modal.mock_answers = ['shopkeep'];
+  runCommand('use wand');
+  expectEffectSeen(32);
+  expectMonsterIsHere(1);
+  // try to fight the spirit
+  movePlayer(30);
+  let spirit = game.monsters.get(6);
+  spirit.weapon_sides = 0;  // make it do no damage
+  playerHit(spirit, 10);
+  expect(spirit.damage).toBe(0);
+  expectEffectSeen(29);
+  game.mock_random_numbers = [1];  // spell always works
+  game.command_parser.run('blast tree spirit');
+  expectEffectSeen(30);
+  expect(spirit.damage).toBe(0);
+  runCommand('flee e');
+  expect(game.player.room_id).toBe(30);  // didn't move
+  expect(game.history.getOutput().text).toBe('The tree spirit blocks your way!');
+  runCommand('flee w');
+  expect(game.player.room_id).toBe(29);  // did move
+  runCommand('e');
+  // use wand the right way
+  game.modal.mock_answers = ['spirit'];
+  runCommand('use wand');
+  expectEffectSeen(31);
+  expectMonsterIsNotHere(spirit.id);
+  runCommand('e');
+  expect(game.player.room_id).toBe(31);  // no longer blocked
+});
+
 test('tealand', () => {
   game.artifacts.get(9).moveToInventory();
   runCommand('wear coat');
