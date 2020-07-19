@@ -65,7 +65,13 @@ export var event_handlers = {
   },
 
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    // TODO: can't take booze out of bar
+    // can't take booze out of bar
+    if (room_from.id === 77) {
+      game.artifacts.all.filter(
+        a => a.id >= 66 && a.id <= 69).forEach(a => a.moveToInventory(39));
+    } else if (room_from.id === 76) {
+      game.artifacts.get(65).moveToInventory(40);
+    }
 
     // hunger/thirst/fatigue counters
     const local_terrain = terrain_data[game.rooms.current_room.data.env];

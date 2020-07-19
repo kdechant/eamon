@@ -207,6 +207,24 @@ test('buy stuff', () => {
   expect(game.player.gold).toBe(original_gold - rations_refill.data.price * 2);
 });
 
+test('booze / bar', () => {
+  movePlayer(76);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy beer');
+  expectArtifactIsHere(65);
+  runCommand('s');
+  expect(game.artifacts.get(65).room_id).toBeNull();
+  expect(game.artifacts.get(65).monster_id).toBe(40);
+  movePlayer(77);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('buy witch spit');
+  expectArtifactIsHere(68);
+  runCommand('get witch spit');
+  runCommand('w');
+  expect(game.artifacts.get(68).room_id).toBeNull();
+  expect(game.artifacts.get(68).monster_id).toBe(39);
+});
+
 // endregion
 
 // region quest start
