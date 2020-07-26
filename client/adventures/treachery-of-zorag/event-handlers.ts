@@ -235,7 +235,7 @@ export var event_handlers = {
     if (game.data.fatigue > 300) {
       game.history.write("You are exhausted! Your agility is impaired until you rest.");
       status_messages.push('tired');
-      game.player.agility -= 1;  // Note: temporary only
+      game.player.agility = Math.max(1, game.player.agility - 1);  // Note: temporary only
     } else if (game.data.fatigue > 270) {
       game.history.write("You are getting tired. You must make camp soon.");
     }

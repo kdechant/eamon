@@ -74,7 +74,7 @@ test("cold mountain pass", () => {
   expect(game.player.damage).toBe(20); // no change
 });
 
-test("hunger/thirst/fatigue", () => {
+test("hunger/thirst", () => {
   runCommand('open care');
   runCommand('get canteen');
   runCommand('get jerky');
@@ -100,8 +100,13 @@ test("hunger/thirst/fatigue", () => {
   expect(game.history.getLastOutput(2).text).toBe("You are getting thirsty from traveling. You drink from the canteen.");
   expect(game.data.hunger).toBe(0);
   expect(game.data.thirst).toBe(0);
+});
 
-  // fatigue / camp
+test("camp", () => {
+  runCommand('open care');
+  runCommand('get canteen');
+  runCommand('get jerky');
+
   game.data.fatigue = 281;
   movePlayer(1);
   runCommand('e');
@@ -112,10 +117,51 @@ test("hunger/thirst/fatigue", () => {
   runCommand('e');
   expect(game.history.getLastOutput().text).toBe("You are exhausted! Your agility is impaired until you rest.");
   expect(game.player.agility).toBe(game.player.stats_original.agility - 2);
+
+  // camp 1: player alone
+  game.data.hunger = 50;
+  game.data.thirst = 50;
+  game.mock_random_numbers = [99];  // no monsters
   runCommand('camp');
   expect(game.data.fatigue).toBe(0);
-  // TODO: test output
+  // player is alone, so no watch output
+  expect(game.history.getOutput().text).toBe('You make camp for the night...');
+  expect(game.history.getOutput(1).text).toBe("You eat the Moleman's Jerky.");
+  expect(game.history.getOutput(2).text).toBe('You drink the canteen.');
   expect(game.player.agility).toBe(game.player.stats_original.agility);
+  expect(game.data.hunger).toBe(0);
+  expect(game.data.thirst).toBe(0);
+
+  // camp 2: with companion
+  game.monsters.get(11).moveToRoom();
+  game.monsters.get(12).moveToRoom();
+  game.monsters.updateVisible();
+  game.mock_random_numbers = [99];  // no monsters
+  runCommand('camp');
+  expect(game.data.fatigue).toBe(0);
+  // player is alone, so no watch output
+  expect(game.history.getOutput().text).toBe('You make camp for the night...');
+  expect(game.history.getOutput(1).text).toBe('Sorsha takes the first watch...');
+  expect(game.history.getOutput(2).text).toBe('Elric takes the next watch...');
+  expect(game.history.getOutput(3).text).toBe('You take the last watch...');
+
+  // camp 3: monsters appear
+  game.data.fatigue = 281;
+  game.mock_random_numbers = [1, 1, 1, 6];  // monsters appear, second watcher, mn #14, 6 of them
+  runCommand('camp');
+  expect(game.history.getOutput().text).toBe('You make camp for the night...');
+  expect(game.history.getOutput(1).text).toBe('Sorsha takes the first watch...');
+  expect(game.history.getOutput(2).text).toBe("Your rest is interrupted!");
+  expect(game.monsters.get(14).isHere()).toBeTruthy();
+  expect(game.monsters.get(14).children.length).toBe(6);
+  expect(game.data.fatigue).toBe(0);
+
+  // camp 4: in battle
+  game.data.fatigue = 99;
+  runCommand('camp');
+  expect(game.history.getOutput().text).toBe('It is not wise to camp with enemies about!');
+  expect(game.data.fatigue).toBe(99);
+
 });
 
 test("fill water containers", () => {

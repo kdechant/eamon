@@ -661,7 +661,7 @@ export class Monster extends GameObject {
     if (this.combat_code === 1) {
       // generic "attacks" message for unusual creatures like blob monsters, etc.
       game.history.write(this.name + " attacks " + target.getDisplayName());
-    } else if (this.combat_verbs.length) {
+    } else if (this.combat_verbs && this.combat_verbs.length) {
       // custom combat messages for this monster. assign these in the game start event handler.
       let attack_verb = this.combat_verbs[Math.floor(Math.random() * this.combat_verbs.length)];
       game.history.write(this.name + " " + attack_verb + " " + target.getDisplayName());
@@ -1226,6 +1226,13 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Is it a group monster?
+   */
+  public isGroup() {
+    return false;
+  }
+
+  /**
    * Spawns a new child member for the group
    */
   public spawnChild() {
@@ -1300,6 +1307,13 @@ export class GroupMonster extends Monster {
       const living_child = this.children.find(c => c.status === Monster.STATUS_ALIVE);
       this.room_id = living_child ? living_child.room_id : null;
     }
+  }
+
+  /**
+   * Is it a group monster?
+   */
+  public isGroup() {
+    return true;
   }
 
   /**
