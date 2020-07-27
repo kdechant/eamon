@@ -8,8 +8,8 @@ This system made sense at the time, but required each adventure to keep its own 
 core logic. With over 250 adventures, it becomes difficult to keep each one up to date with bug fixes and new features
 of the core engine.
 
-In the web-based Eamon, all adentures share the core game logic, which provides basic features like moving, getting
- items, combat, etc. A system of event handlers is used to allow adventure designers the capability to insert their
+In the web-based Eamon, all adventures share the core game logic, which provides basic features like moving, getting
+ items, combat, etc. A system of event handlers is used to allow adventure designers to insert their
  own special effects at important points in the game.
  
 ## How do I use event handlers?
@@ -51,7 +51,7 @@ Another example:
       },
   
 What happened here?
-- The "beforeMove" handler takes three parameters, the direction the player typed in, the Room object for the room the
+- The "beforeMove" handler takes three parameters, the direction the player typed, the Room object for the room the
  player is *currently* in, and the RoomExit object representing the exit the player is trying to take.
 - The adventure designer has used a special exit code of -1 to indicate a connection that requires special handling
 - We use `game.effects.print()` to print a specific event text from the `effects` table in the database
@@ -1683,3 +1683,19 @@ Example:
 The modal handles the logic for collecting the user's input and pausing the game clock until the player answers the question. The text the user entered will be available in the `value` parameter of the callback function.
 
 The modal is designed to work in early-turn event handlers like "beforeMove", "open", and "use". Due to the animation of Eamon's results display, it should not be used in "endTurn" event handlers, as it may behave unpredictably.
+
+# Miscellaneous
+
+Eamon Remastered contians additional core logic to handle certain common specials without code. These include the following:
+
+## Guarded artifacts
+
+Treasures and bound monsters can have a "guard" which is a monster that prevents the player from getting the treasure or freeing the bound monster. To use this feature, set the "Guard ID" field to the ID of the monster that should guard the item. The monster can only guard the item if the monster and item are in the same room. If the monster dies or flees, the item is considered unguarded.
+
+## Monsters in containers
+
+As a surprise, you can place a monster inside a container. (e.g, the black pudding in the Black Castle of Nagog.) You can do this by setting an artifact ID in the "Container ID" field on the monster. Unlike artifacys in containers, monsters in containers will jump out into the room as soon as the container is opened.
+ 
+There is no way for the player to place a monster into a container. This feature is only intended to allow the designer to create surprises.
+
+Don't confuse this feature with the "disguised monster" artifact type (type 12) which is used to create mimics and other surprise monsters. In that case, the artifact disappears when the monster is revealed. 
