@@ -199,7 +199,7 @@ export default class Game {
    */
   spell_recharge_rate: [string, number] = ["constant", 2];
 
-  // Status flags - the Angular templates can't seem to read class constants, so these are boolean flags for now.
+  // Status flags
 
   /**
    * Flag to indicate that the turn has completed and the player may enter another command.

@@ -183,7 +183,8 @@ class Artifact(models.Model):
     )
     guard_id = models.IntegerField(
         null=True, blank=True,
-        help_text="If a bound monster, the ID of a monster that prevents the player from freeing it"
+        help_text="If a bound monster, the ID of a monster that prevents the player from freeing it. For other "
+                  "artifact types, the ID of a monster that prevents the player from picking it up."
     )
     weight = models.IntegerField(
         default=0,

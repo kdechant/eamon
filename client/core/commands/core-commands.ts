@@ -329,6 +329,18 @@ export class GetCommand implements BaseCommand {
               a.reveal();
             }
 
+            // a monster is guarding it
+            if (a.guard_id !== null && a.guard_id !== 0) {
+              let guard = game.monsters.get(a.guard_id);
+              if (guard.isHere()) {
+                if (arg === 'all') {
+                  continue;
+                } else {
+                  throw new CommandException(guard.getDisplayName() + " won't let you!");
+                }
+              }
+            }
+
             // weights of >900 and -999 indicate items that can't be gotten.
             if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
               continue;
@@ -417,8 +429,6 @@ export class RemoveCommand implements BaseCommand {
   ];
   run(verb: string, arg: string) {
 
-    let match = false;
-
     // check if we're removing something from a container
     let regex_result = /(.+) from (.*)/.exec(arg);
     if (regex_result !== null) {
@@ -433,11 +443,19 @@ export class RemoveCommand implements BaseCommand {
             let item: Artifact = container.getContainedArtifact(item_name);
             if (item) {
               if (game.triggerEvent("beforeRemoveFromContainer", arg, item, container)) {
-                match = true;
                 if (!item.seen) {
                   game.history.write(item.description);
                   item.seen = true;
                 }
+
+                // a monster is guarding it
+                if (item.guard_id !== null && item.guard_id !== 0) {
+                  let guard = game.monsters.get(item.guard_id);
+                  if (guard.isHere()) {
+                    throw new CommandException(guard.getDisplayName() + " won't let you!");
+                  }
+                }
+
                 if (item.type === Artifact.TYPE_GOLD) {
                   game.history.write(`You add the ${item.name} to your coin pouch.`);
                   game.player.gold += item.value;
@@ -1352,7 +1370,7 @@ export class FreeCommand implements BaseCommand {
         if (a.guard_id !== null && a.guard_id !== 0) {
           let guard = game.monsters.get(a.guard_id);
           if (guard.isHere()) {
-            throw new CommandException(guard.name + " won't let you!");
+            throw new CommandException(guard.getDisplayName() + " won't let you!");
           }
         }
         if (a.key_id) {
