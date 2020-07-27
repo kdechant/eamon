@@ -271,6 +271,22 @@ test('booze / bar', () => {
   expect(game.artifacts.get(68).monster_id).toBe(39);
 });
 
+test('barkeep / talk', () => {
+  movePlayer(77);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('talk to barkeep about druid');
+  expectEffectSeen(124);
+  expectEffectNotSeen(125);
+  expectEffectNotSeen(127);
+  runCommand('buy ale');
+  runCommand('talk to barkeep about druid');
+  expectEffectSeen(125);
+  expectEffectNotSeen(127);
+  // repeat effect
+  runCommand('talk to barkeep about druid');
+  expectEffectSeen(127);
+});
+
 // endregion
 
 // region quest start
@@ -371,6 +387,30 @@ test('boris', () => {
   playerHit('chimera', 999);
   expectEffectSeen(27);
   expectMonsterIsNotHere(4);
+});
+
+test('guarded artifacts', () => {
+  // note: tests core logic about guarded treasure
+  getLamp();
+  let chimera = game.monsters.get(5);
+  chimera.reaction = Monster.RX_NEUTRAL;
+  movePlayer(50);
+  runCommand("get wand");
+  expect(game.history.getOutput().text).toBe("Chimera won't let you!");
+  expect(game.player.hasArtifact(14)).toBeFalsy();
+  chimera.destroy();
+  runCommand("get wand");
+  expect(game.player.hasArtifact(14)).toBeTruthy();
+
+  let garg = game.monsters.get(10);
+  garg.reaction = Monster.RX_NEUTRAL;
+  movePlayer(150);
+  runCommand('open hidden');
+  runCommand("remove cauldron from hidden");
+  expect(game.history.getOutput(1).text).toBe("Gargoyle won't let you!");
+  garg.destroy(); game.monsters.updateVisible();
+  runCommand("remove cauldron from hidden");
+  expect(game.player.hasArtifact(28)).toBeTruthy();
 });
 
 test('evil tree', () => {
@@ -476,6 +516,23 @@ test('lost in swamp', () => {
   runCommand('n');
   expectEffectSeen(137);
   expect(game.player.room_id).toBe(172);
+});
+
+test('drown in swamp', () => {
+  movePlayer(168);
+  runCommand('s');
+  expect(game.player.room_id).toBe(169);  // verify normal move
+  game.mock_random_numbers = [20];
+  runCommand('s');  // off the path
+  expectEffectSeen(52);
+  expectEffectSeen(53);
+  expect(game.died).toBeFalsy();
+  game.mock_random_numbers = [1];
+  runCommand('s');
+  expectEffectSeen(54);
+  expect(game.died).toBeTruthy();
+  runCommand('n');
+  expect(game.died).toBeTruthy();
 });
 
 // endregion

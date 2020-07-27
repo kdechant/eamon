@@ -1,33 +1,44 @@
+import {Monster} from "../../core/models/monster";
 import Game from "../../core/models/game";
 
-// The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game: Game;
 
-export function talkTo(monster, subject) {
-  let keyword = monster.data.talk.find(t =>
-    t.word === subject || t.word.indexOf(subject) !== -1);
-  if (!keyword) {
-    keyword = monster.data.talk.find(t => t.word === '*');
-  }
-  if (keyword) {
-    if (keyword.ignore) {
-      // not implementing percentage here; it's on home PC
-      game.effects.print(keyword.withhold_effect);
+/**
+ * Talks to a monster
+ * @param monster
+ * @param subject
+ */
+export function talkTo(monster: Monster, subject: string) {
+  // See if this monster has anything to say at all.
+  if (!monster.data.talk) {
+    if (monster.parent && monster.parent.data.talk) {
+      // Group monster - for this case we talk to the 'parent' monster
+      talkTo(monster.parent, subject);
     } else {
-      if (keyword.seen && keyword.repeat_effect) {
-        game.effects.print(keyword.repeat_effect);
-      } else {
-        game.effects.print(keyword.effect);
-      }
-      if (keyword.said !== -1) {
-        keyword.said = true;
-      }
-      if (keyword.hasOwnProperty('reaction_change')) {
-        monster.reaction = keyword.reaction_change;
-      }
-      game.triggerEvent('afterTalk', monster, subject, keyword);
+      game.history.write(`${monster.name} has nothing to say.`);
     }
+    return;
+  }
+
+  let word = monster.data.talk.find(t => t.word === subject || t.word.indexOf(subject) !== -1);
+  if (!word) {
+    // No exact match. Look for a wildcard.
+    word = monster.data.talk.find(t => t.word === '*');
+  }
+  if (word) {
+    // withholding info?
+    if (word.ignore !== 100 && (word.ignore === 0 || game.diceRoll(1, 100) > word.ignore - game.player.charisma)) {
+      if (word.said && word.hasOwnProperty('repeat_effect')) {
+        game.effects.print(word.repeat_effect);
+      } else {
+        game.effects.print(word.effect);
+      }
+      word.said = true;
+    } else {
+      game.effects.print(word.withhold_effect);
+    }
+    game.triggerEvent('afterTalk', monster, subject, word);
   } else {
-    game.history.write(`${monster.name} doesn't know anything about that.`);
+    game.history.write(`${monster.name} shrugs at you.`)
   }
 }

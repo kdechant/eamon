@@ -48,6 +48,22 @@ export var event_handlers = {
     });
   },
 
+  "specialMove": function(arg, exit) {
+    // stray off path in swamp
+    if (!exit && game.player.room_id >= 161 && game.player.room_id <= 189) {
+      game.effects.print(52);
+      game.delay(3);
+      if (game.player.rollSavingThrow('agility', 8)) {
+        game.effects.print(53);
+      } else {
+        game.effects.print(54);
+        game.die(false);
+      }
+      return false;
+    }
+    return true;
+  },
+
   "beforeMove": function(arg: string, room_from: Room, exit: RoomExit): boolean {
     // lost in swamp
     if ((room_from.id === 181 && exit.room_to === 180) || (room_from.id === 171 && exit.room_to === 172)) {
@@ -273,6 +289,12 @@ export var event_handlers = {
         seller.updateInventory();
       }
     }
+
+    // Buy a drink and barkeep will now talk about Tealand the Druid
+    if (artifact.id >= 66 && artifact.id <= 69) {
+      seller.data.talk.forEach(t => t.ignore = 0);
+    }
+
   },
 
   "eat": function(arg: string, artifact: Artifact) {
@@ -404,7 +426,7 @@ export var event_handlers = {
   },
 
   "flee": function(arg: string, exit: RoomExit) {
-    if (game.monsters.get(6).isHere()) { // max
+    if (game.monsters.get(6).isHere()) {  // tree spirit
       if (arg === 'e' || arg === 'east') {
         game.history.write("The tree spirit blocks your way!");
         return false;

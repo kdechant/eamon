@@ -61,6 +61,9 @@ export class MoveCommand implements BaseCommand {
     let room_from = game.rooms.current_room;
     let exit = game.rooms.current_room.getExit(verb);
     let msg: string;
+
+    if (!game.triggerEvent('specialMove', arg, exit)) return;
+
     if (exit === null) {
       throw new CommandException("You can't go that way!");
     }
@@ -749,6 +752,7 @@ export class FleeCommand implements BaseCommand {
       }
       game.player.moveToRoom(exit.room_to);
       game.skip_battle_actions = true;
+      game.triggerEvent("afterFlee", arg, exit);
     }
 
   }
