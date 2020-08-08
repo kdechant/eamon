@@ -613,7 +613,10 @@ export default class Game {
       return array[0];
     }
     let index = this.diceRoll(1, array.length) - 1;
-    if (typeof(array[index]) === 'undefined') { console.log('oops: getRandomElement rolled index: ', index, array); }
+    if (typeof(array[index]) === 'undefined') {
+      console.log('oops: getRandomElement rolled index: ', index, array);
+      console.trace();
+    }
     return array[index];
   }
 

@@ -186,13 +186,15 @@ export class HistoryManager {
     this.display();
     if (this.history.length > 0) {
       let res = this.history[this.history.length - 1]["results"];
-      if (res.length >= index + 1) {
+      if (index < 0) {
+        return res[res.length + index];
+      } else if (res.length >= index + 1) {
         return res[index];
       } else {
-        return null;
+        return undefined;
       }
     } else {
-      return null;
+      return undefined;
     }
   }
 

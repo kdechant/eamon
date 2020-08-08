@@ -10,7 +10,7 @@ import {
   expectEffectNotSeen,
   playerAttackMock,
   movePlayer,
-  runCommand, expectMonsterIsHere, playerHit, expectArtifactIsHere, expectMonsterIsNotHere
+  runCommand, expectMonsterIsHere, playerHit, expectArtifactIsHere, expectMonsterIsNotHere, expectArtifactIsNotHere
 } from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -99,6 +99,12 @@ test("hunger/thirst", () => {
   expect(game.history.getLastOutput(4).text).toBe("You are getting hungry from traveling. You eat some of the Moleman's Jerky.");
   expect(game.history.getLastOutput(2).text).toBe("You are getting thirsty from traveling. You drink from the canteen.");
   expect(game.data.hunger).toBe(0);
+  expect(game.data.thirst).toBe(0);
+
+  // booze is also refreshing.
+  game.data.thirst = 20;
+  game.artifacts.get(65).moveToInventory();
+  runCommand('drink beer');
   expect(game.data.thirst).toBe(0);
 });
 
@@ -273,6 +279,9 @@ test('booze / bar', () => {
 
 test('barkeep / talk', () => {
   movePlayer(77);
+  // revert changes to data that happened in the test above.
+  // (because the custom data objects exist outside the game object, they don't get reset between tests.)
+  game.monsters.get(39).data.talk.forEach(t => t.ignore = 100);
   game.modal.mock_answers = ['Yes'];
   runCommand('talk to barkeep about druid');
   expectEffectSeen(124);
@@ -491,6 +500,43 @@ test("vampire / search bodies", () => {
   expectArtifactIsHere(48);
 });
 
+test('rope', () => {
+  getLamp();
+  game.artifacts.get(2).moveToInventory();
+  runCommand('use rope');
+  expect(game.history.getOutput().text).toBe('Not much use for a rope here.');
+  movePlayer(141);
+  runCommand('d');
+  expect(game.player.room_id).toBe(141);  // nope
+  runCommand('use rope');
+  expect(game.artifacts.get(2).room_id).toBe(141);
+  runCommand('d');
+  expect(game.player.room_id).toBe(143);  // works now
+  runCommand('u');
+  expect(game.player.room_id).toBe(141);  // climb back up
+  runCommand('get rope');
+  runCommand('d');
+  expect(game.player.room_id).toBe(141);  // nope
+});
+
+test('seer / cauldron', () => {
+  getLamp();
+  movePlayer(142);
+  runCommand('talk to witch about raulos');
+  expectEffectSeen(86);
+  movePlayer(150);
+  playerHit('gargoyle', 999);
+  runCommand('open hidden compartment');
+  runCommand('get cauldron');
+  expect(game.player.hasArtifact(28)).toBeTruthy();
+  movePlayer(142);
+  runCommand('give cauldron to witch');
+  expectEffectSeen(60);
+  expect(game.player.hasArtifact(28)).toBeFalsy();
+  runCommand('talk to witch about raulos');
+  expectEffectSeen(76);
+});
+
 test('lost in swamp', () => {
   game.monsters.get(21).destroy();  // snake in rm 180
   game.mock_random_numbers = [1, 2];
@@ -537,6 +583,68 @@ test('drown in swamp', () => {
 
 // endregion
 
+// region tower
+
+test('scroll / portcullis', () => {
+  let portcullis = game.artifacts.get(51);
+  movePlayer(270);
+  runCommand('s');
+  expect(game.history.getOutput().text).toBe('The magical portcullis blocks your way!');
+  expect(game.player.room_id).toBe(270);
+  runCommand('open portcullis');
+  expect(portcullis.is_open).toBeFalsy();
+  game.artifacts.get(52).moveToInventory();
+  game.monsters.get(13).moveToRoom();
+  runCommand('give scroll to sandeer');
+  expectEffectSeen(116);
+  expect(game.monsters.get(13).hasArtifact(52)).toBeTruthy();
+
+  // move through portcullis
+  runCommand('s');
+  expectEffectSeen(117);
+  expect(portcullis.is_open).toBeTruthy();
+  expect(game.player.room_id).toBe(281);
+
+  // open portcullis
+  movePlayer(270);
+  portcullis.close();
+  game.effects.get(117).seen = false;
+  runCommand('open portcullis');
+  expectEffectSeen(117);
+  expect(portcullis.is_open).toBeTruthy();
+});
+
+test('free zorag', () => {
+  movePlayer(343);
+  runCommand('free man');
+  expectEffectSeen(112);
+  expectArtifactIsHere(50);
+  expectMonsterIsNotHere(34);
+  game.monsters.get(38).reaction = Monster.RX_HOSTILE;  // playerHit() only works well with hostile monsters
+  playerHit('guardian', 999);
+  runCommand('free man');
+  expectEffectSeen(110);
+  game.artifacts.get(49).moveToInventory();
+  runCommand('free man');
+  expectEffectSeen(129);
+  expectEffectNotSeen(130);
+  game.monsters.get(13).moveToRoom();
+  runCommand('free man');
+  expectEffectSeen(130);
+  game.triggerEvent('power', 99);
+  let stone = game.artifacts.get(49);
+  expect(stone.data.active).toBeTruthy();
+  expect(stone.inventory_message).toBe('glowing');
+  runCommand('free man');
+  expectEffectSeen(113);
+  expectArtifactIsNotHere(50);
+  expectMonsterIsHere(34);
+});
+
+// TODO: talk to zorag / make him friendly
+
+// endregion
+
 // region endgame
 
 test('raulos / zorag dead', () => {
@@ -548,10 +656,18 @@ test('raulos / zorag dead', () => {
 });
 
 test('raulos / zorag battle', () => {
+  // setup (get quest, etc.)
+  movePlayer(75);
+  game.monsters.get(11).destroy();  // move some NPCs out of the way
+  game.monsters.get(12).destroy();
+  game.monsters.get(13).destroy();
+  let zorag = game.monsters.get(34);
   movePlayer(58);
-  game.monsters.get(34).moveToRoom();
-  game.monsters.get(34).reaction = Monster.RX_FRIEND;
+  zorag.moveToRoom();
+  zorag.reaction = Monster.RX_FRIEND;
   game.tick();
+
+  // Zorag meets Raulos
   runCommand('n');
   expectEffectSeen(92);
   expect(game.monsters.get(3).reaction).toBe(Monster.RX_HOSTILE);
@@ -560,7 +676,80 @@ test('raulos / zorag battle', () => {
   expectMonsterIsHere(35);
   expectMonsterIsHere(36);
   expectMonsterIsHere(37);
-  // TODO: more battle stuff
+  [35, 36, 37].forEach(id => game.monsters.get(id).combat_code = Monster.COMBAT_CODE_NEVER_FIGHT);
+
+  // Attack 1: Zorag's warning / can't hit Raulos
+  game.mock_random_numbers = [
+    6, // you *should* hit (were it not for the event handler)
+    1, // miss verb
+    0, // raulos won't flee
+    1, // raulos target
+    96, // raulos will miss
+    1, // miss verb
+    0, // z won't flee
+    1, // z target
+    96, // z miss
+    1, // miss verb
+  ];
+  runCommand('attack raulos');
+  expectEffectSeen(97);
+  expect(game.history.getOutput(2).text).toBe('-- dodged!');
+
+  // Attack 2: Raulos summons golem
+  game.monsters.get(35).destroy();
+  game.monsters.get(36).destroy();
+  game.mock_random_numbers = [
+    96, // you miss
+    1, // miss verb
+    // no flee check for raulos here, due to event handler bypass
+    9, // raulos will summon
+    1, // raulos monster to summon
+    0, // z won't flee
+    1, // z target
+    96, // z miss
+    1, // miss verb
+  ];
+  runCommand('attack clay golem');
+  expectMonsterIsHere(35);  // summoned again
+  expect(game.won).toBeFalsy();
+
+  // Attack 3: Zorag kills Raulos
+  game.mock_random_numbers = [
+    96, // you miss
+    1, // miss verb
+    1, // raulos won't summon
+    0, // raulos won't flee
+    1, // raulos target
+    96, // raulos will miss
+    1, // miss verb
+    0, // z won't flee
+    1, // z target
+    6, // z hits
+    999, // z damage
+  ];
+  runCommand('attack iron golem');
+  expect(game.history.getOutput(7).text).toBe(game.effects.get(138).text);
+  expectEffectSeen(138);
+  expectEffectSeen(139);
+  expectMonsterIsNotHere(35);
+  expectMonsterIsNotHere(36);
+  expectMonsterIsNotHere(37);
+  expectEffectSeen(93);
+  game.modal.mock_answers = ['Yes'];
+  runCommand('s');
+  expect(game.won).toBeTruthy();
+});
+
+test('exit', () => {
+  // exit
+  game.player.moveToRoom(1);
+  game.modal.mock_answers = ['No'];
+  game.command_parser.run('s');
+  expect(game.history.getOutput(0).text).toBe("You turn around and stay here.")
+  expect(game.won).toBeFalsy();
+  game.modal.mock_answers = ['Yes'];
+  game.command_parser.run('s');
+  expect(game.won).toBeTruthy();
 });
 
 // endregion

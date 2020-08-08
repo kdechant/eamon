@@ -124,7 +124,7 @@ custom_commands.push({
     if (artifact.data.role === 'water') {
       let water_source = game.artifacts.visible.find(a => a.data.role === 'water source');
       if (water_source) {
-        game.history.write(`You fill the ${artifact.name} from the ${water_source.name}`);
+        game.history.write(`You fill the ${artifact.name} from the ${water_source.name}.`);
         artifact.quantity = artifact.data.capacity;
       } else {
         throw new CommandException(`There is no water source here to fill the ${artifact.name} from!`);
@@ -138,7 +138,7 @@ custom_commands.push({
         if (fuel_source.quantity <= 0) {
           throw new CommandException(`There is no more ${fuel_source.name} left!`);
         }
-        game.history.write(`You fill the ${artifact.name} from the ${fuel_source.name}.`);
+        game.history.write(`You fill the ${artifact.name} with the ${fuel_source.name}.`);
         let amount = Math.min(artifact.data.capacity - artifact.quantity, fuel_source.quantity);
         artifact.quantity += amount;
         fuel_source.quantity -= amount;

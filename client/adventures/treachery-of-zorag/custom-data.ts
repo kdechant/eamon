@@ -300,6 +300,14 @@ export const triggered_events = [
     type: event_triggers.ENTER_ROOM,
   },
   {
+    monster: 3,
+    room: 75,
+    effect: 138,
+    triggered: 0,
+    type: event_triggers.MONSTER_DIES,
+    other_monster: null,  // this triggers game end
+  },
+  {
     monster: 4,
     room: 76,
     effect: 20,

@@ -13,6 +13,8 @@ declare var game: Game;
 export var event_handlers = {
 
   "start": function() {
+    // uses custom exit prompt
+    game.exit_prompt = false;
 
     // Use the optional "buy" command
     game.command_parser.register(new BuyCommand());
@@ -33,7 +35,6 @@ export var event_handlers = {
       fatigue: 0,
       original_ag: game.player.agility,
       summoned_tealand: false,
-      weather_change: false,
       raulos_zorag: false,
       triggered_events: triggered_events,  // includes them in the saved game
     }
@@ -61,6 +62,12 @@ export var event_handlers = {
       }
       return false;
     }
+    // sandeer / scroll logic - before checking whether the door blocks the way
+    let sandeer = game.monsters.get(13);
+    if (exit && exit.door_id === 51 && sandeer.isHere() && sandeer.hasArtifact(52)) {
+      game.effects.print(117);
+      game.artifacts.get(51).open();
+    }
     return true;
   },
 
@@ -76,6 +83,20 @@ export var event_handlers = {
         game.player.moveToRoom(160 + game.diceRoll(1, 10));
         return false;
       }
+    }
+    // custom exit prompt
+    if (exit.room_to === RoomExit.EXIT) {
+      let text = game.monsters.get(3).isAlive() ?
+        'You have not succeeded in your quest! Do you still want to leave this adventure?' :
+        'You have succeeded in your quest! Leave this adventure?';
+      game.modal.confirm(text, answer => {
+        if (answer === 'Yes') {
+          game.exit();
+        } else {
+          game.history.write('You turn around and stay here.');
+        }
+      });
+      return false;
     }
     return true;
   },
@@ -140,12 +161,7 @@ export var event_handlers = {
     // effects that happen when the player just entered a room
     if (game.data.just_entered_room) {
       game.data.just_entered_room = false;
-      // weather
-      let weather_effect = 0;
-      const local_terrain = terrain_data[game.rooms.current_room.data.env];
-      if (local_terrain.weather_effects && game.diceRoll(1,2) === 2) {
-        game.effects.print(game.getRandomElement(local_terrain.weather_effects));
-      }
+      weatherReport();
       // king raulos
       if (game.monsters.get(3).isHere()) {
         if (game.monsters.get(34).isHere() && !game.data.raulos_zorag) {
@@ -310,13 +326,57 @@ export var event_handlers = {
       if (artifact.data.role === 'water') {
         game.data.thirst = 0;
       }
+      if (artifact.id >= 65 && artifact.id <= 69) {
+        game.history.write('Gulp! This stuff is real rotgut but better than the swill served at the Guild.')
+        game.data.thirst = 0;
+      }
     }
+  },
+
+  "beforeFree": function(arg: string, artifact: Artifact) {
+    if (artifact && artifact.id === 50) {
+      if (game.monsters.get(38).isHere()) {
+        game.effects.print(112);
+        return false;
+      } else if (!game.player.hasArtifact(49)) {
+        game.effects.print(110);
+        return false;
+      } else if (!game.artifacts.get(49).data.active) {
+        game.effects.print(129);
+        if (game.monsters.get(13).isHere()) {
+          game.effects.print(130);
+        }
+        return false;
+      } else {
+        game.effects.print(113);  // works
+      }
+    }
+    return true;
+  },
+
+  "afterGet": function(arg, artifact) {
+    if (artifact && artifact.id === 2 && game.player.room_id === 141) {
+      game.rooms.get(141).removeExit('d');
+      game.rooms.get(143).removeExit('u');
+    }
+  },
+
+  "give": function(arg: string, artifact: Artifact, recipient: Monster) {
+    // seer / cauldron
+    if (recipient.id === 9 && artifact.id === 28) {
+      game.effects.print(60);
+      recipient.data.talk.forEach(t => t.ignore = 0);
+    }
+    // sandeer / scroll
+    if (recipient.id === 13 && artifact.id === 52) {
+      game.effects.print(116);
+    }
+    return true;
   },
 
   "look": function(arg: string) {
     let artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact && artifact.type === Artifact.TYPE_DEAD_BODY) {
-      // console.log(artifact, artifact.data)
       if (artifact.data.hidden_artifact) {
         game.artifacts.get(artifact.data.hidden_artifact).moveToRoom();
         delete artifact.data.hidden_artifact;
@@ -329,6 +389,18 @@ export var event_handlers = {
         game.history.write("Creepy! You don't find anything special.");
       }
       return false;
+    }
+    return true;
+  },
+
+  "beforeOpen": function(arg: string, artifact: Artifact) {
+    if (artifact && artifact.id === 51 && !artifact.is_open) {
+      let sandeer = game.monsters.get(13);
+      if (artifact.id === 51 && sandeer.isHere() && sandeer.hasArtifact(52)) {
+        game.effects.print(117);
+        game.artifacts.get(51).open();
+        return false;  // bypass normal door logic
+      }
     }
     return true;
   },
@@ -391,6 +463,19 @@ export var event_handlers = {
       game.effects.print(29);
       return false;
     }
+    // zorag tells you not to attack raulos
+    if (target.id === 3 && game.monsters.get(34).isHere()) {
+      game.effects.print(97);
+      // don't return false here; player will just miss
+    }
+    return true;
+  },
+
+  "attackOdds": function (attacker: Monster, defender: Monster, odds: number) {
+    // no one but zorag can hit raulos
+    if (attacker.id !== 34 && defender.id === 3) {
+      return 0;
+    }
     return true;
   },
 
@@ -416,12 +501,22 @@ export var event_handlers = {
           // (This is a specific use case for the Boris sub-quest)
           game.monsters.get(e.other_monster).destroy();
         }
-      } else {
-        // No "other" monster means the game ends
-        game.effects.print(e.effect);
-        game.exit();
       }
-    })
+    });
+    // Raulos
+    if (monster.id === 3) {
+      game.effects.print(138);
+      if ([35, 36, 37].some(id => game.monsters.get(id).isHere())) {
+        [35, 36, 37].forEach(id => game.monsters.get(id).destroy());
+        game.effects.print(139);
+      }
+      game.effects.print(93);
+      [7, 11, 12, 13].forEach(id => game.monsters.get(id).destroy());
+      // The player can exit by following any normal exit from the current room.
+      // This allows the player to pick up items before leaving.
+      game.rooms.current_room.exits.forEach(x => x.room_to = RoomExit.EXIT);
+      console.log(game.rooms.current_room);
+    }
     return true;
   },
 
@@ -440,11 +535,47 @@ export var event_handlers = {
     return true;
   },
 
+  "monsterAction": function(monster: Monster) {
+    // Raulos has 30% chance to summon golems.
+    if (monster.id === 3) {
+      // monsters he can summon (excluding ones already in the room)
+      const summonables = [35, 36, 37].map(id => game.monsters.get(id)).filter(m => !m.isHere());
+      if (summonables.length && game.diceRoll(1, 10) >= 8) {
+        let monster = game.getRandomElement(summonables);
+        monster.moveToRoom();
+        game.effects.print(monster.id + 70);
+        return false;  // skip normal moves
+      }
+    }
+    return true;
+  },
+
+  "chooseTarget": function (attacker, defender): Monster {
+    // zorag always attacks raulos if they're together
+    if (attacker.id === 34 && game.monsters.get(3).isHere()) {
+      return game.monsters.get(3);
+    }
+    return defender;
+  },
+
   // endregion
 
   "use": function(arg: string, artifact: Artifact) {
     if (artifact.isHere()) {
       switch (artifact.id) {
+        case 2:  // rope
+          if (game.player.room_id === 141) {
+            if (game.rooms.current_room.getExit('d')) {
+              throw new CommandException("The rope is already in place.");
+            }
+            game.effects.print(9);
+            artifact.moveToRoom();
+            game.rooms.current_room.createExit('d', 143);
+            game.rooms.get(143).createExit('u', 141);
+          } else {
+            throw new CommandException('Not much use for a rope here.');
+          }
+          break;
         case 14:  // wand of warding
           game.modal.show('Point at whom?', answer => {
             let target = game.monsters.getLocalByName(answer);
@@ -463,17 +594,19 @@ export var event_handlers = {
   },
 
   "power": function(roll) {
-    if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+    // Activate stone
+    let stone = game.artifacts.get(49);
+    if (stone.isHere() && !stone.data.active && game.artifacts.get(50).isHere()) {
+      stone.data.active = true;
+      stone.inventory_message = "glowing";
+      game.effects.print(131);
+    }
+    if (terrain_data[game.rooms.current_room.data.env].weather_effects) {
+      weatherReport();
+    } else if (game.rooms.current_room.data.env === 'dungeon') {
+      game.history.write('Strange lights flicker through the hallways and disappear.');
     } else {
-      game.history.write("All your wounds are healed!");
-      game.player.heal(1000);
+      game.history.write('You hear a loud sonic boom which echoes all around you!');
     }
   },
 
@@ -492,4 +625,15 @@ export function isWaterSource(artifact: Artifact) {
     return false;
   }
   return artifact.data.role === 'water';
+}
+
+/**
+ * Prints the weather report (used in outdoor areas)
+ */
+function weatherReport() {
+  let weather_effect = 0;
+  const local_terrain = terrain_data[game.rooms.current_room.data.env];
+  if (local_terrain.weather_effects && game.diceRoll(1,2) === 2) {
+    game.effects.print(game.getRandomElement(local_terrain.weather_effects));
+  }
 }

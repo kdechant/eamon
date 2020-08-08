@@ -552,6 +552,10 @@ export class Monster extends GameObject {
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
   public doBattleActions(): void {
+    // testing helper
+    if (game.mock_random_numbers.length) {
+      console.log(this.name, 'battle actions', game.mock_random_numbers);
+    }
 
     // if something happened, where an event handler stopped combat, the monster should do nothing
     if (game.skip_battle_actions) {
@@ -644,6 +648,11 @@ export class Monster extends GameObject {
    * @param {Monster} target
    */
   public attack(target: Monster): void {
+    // testing helper
+    if (game.mock_random_numbers.length) {
+      console.log(this.name, 'attacking', target.name, game.mock_random_numbers);
+    }
+
     // calculate to-hit odds, and let event handler adjust the odds
     let odds = this.getToHitOdds(target);
     let can_critical = true;
