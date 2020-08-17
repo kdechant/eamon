@@ -37,6 +37,12 @@ export class HistoryManager {
         } else {
           let no_space = line.type.indexOf('no-space') !== -1;
           this.counter += no_space ? 1 : 2;
+          if (line.text.length > 150) {
+            this.counter++;
+          }
+          if (line.text.length > 225) {
+            this.counter++;
+          }
           setTimeout(() => { this.display(); }, no_space ? this.delay : this.delay / 2);
         }
       } else {
