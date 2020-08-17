@@ -247,6 +247,8 @@ export class Artifact extends GameObject {
     for (let m of monsters) {
       game.history.write(" - " + m.getDisplayName(), "no-space");
       m.moveToRoom();
+      m.showDescription();
+      m.seen = true;
       game.skip_battle_actions = true;  // technically not necessary, but it's confusing to see fighting before the monster desc
     }
     // artifacts stay in the container and just get listed
