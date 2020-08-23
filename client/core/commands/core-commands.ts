@@ -785,11 +785,17 @@ export class DrinkCommand implements BaseCommand {
       } else {
         // trying to drink something that's not here
         let item = game.artifacts.getByName(arg);
-        if (item.isInLocalContainer()) {
+        if (item && item.isInLocalContainer()) {
           const container = game.artifacts.get(item.container_id);
           throw new CommandException(`Try removing it from the ${container.name} first.`);
         } else {
-          throw new CommandException("I don't know what you mean.");
+          // There's no artifact, or it's not here. Gracefully handle stuff in the room description.
+          let common_stuff = ["water", "river", "stream", "lake", "ocean"];
+          if (common_stuff.indexOf(arg) !== -1 && game.rooms.current_room.textMatch(arg)) {
+            game.history.write("Nothing happens.");
+          } else {
+            throw new CommandException("I don't know what you mean.");
+          }
         }
       }
     }
@@ -823,7 +829,7 @@ export class EatCommand implements BaseCommand {
       } else {
         // trying to eat something that's not here
         let item = game.artifacts.getByName(arg);
-        if (item.isInLocalContainer()) {
+        if (item && item.isInLocalContainer()) {
           const container = game.artifacts.get(item.container_id);
           throw new CommandException(`Try removing it from the ${container.name} first.`);
         } else {
