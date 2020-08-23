@@ -8,20 +8,30 @@ class CommandPrompt extends React.Component<any, any> {
     restore: false,
   };
 
+  public componentDidMount() {
+    // Key press handler for the screen pause. When the "hit any key"
+    // button is visible, this will resume output.
+    const game = this.props.game;
+    document.addEventListener("keydown", (ev) => {
+      if (game.history.paused) {
+        ev.preventDefault();
+        game.history.display();
+      }
+    }, false);
+  }
+
   public handleChange = (event) => {
     const change = {};
     change[event.target.name] = event.target.value;
     this.setState(change);
   };
 
+  /**
+   * Handles key presses inside the command prompt input field.
+   * @param event
+   */
   public handleKeyPress = (event) => {
     const game = this.props.game;
-
-    // when the screen pause is active, don't type into the text box
-    if (game.history.paused) {
-      event.preventDefault();
-      return;
-    }
 
     switch (event.key) {
       case 'Enter':
@@ -93,8 +103,20 @@ class CommandPrompt extends React.Component<any, any> {
     this.setState({restore: false});
   };
 
+  public continue = () => {
+    const game = this.props.game;
+    game.history.display();
+    // Note: input will autofocus again as soon as it reappears.
+  };
+
   public render() {
     const game = this.props.game;
+
+    if (game.history.paused) {
+      return <button className="btn btn-info paused" onClick={this.continue}>
+          Hit any key to continue...
+        </button>;
+    }
 
     if (game.active) {
       return (
@@ -115,10 +137,6 @@ class CommandPrompt extends React.Component<any, any> {
           </div>
         </div>
       )
-    }
-
-    if (game.history.paused) {
-      return <div />;
     }
 
     if (game.won) {
@@ -154,7 +172,7 @@ class CommandPrompt extends React.Component<any, any> {
 
     return (
       <div id="command-prompt">
-        Something went wrong...
+        Loading...
       </div>
     );
   }

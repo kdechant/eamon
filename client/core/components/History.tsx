@@ -11,14 +11,6 @@ class History extends React.Component<any, any> {
 
   public componentDidMount() {
     this.scrollToBottom();
-
-    // key press handler for screen pause
-    document.addEventListener("keyup", (ev) => {
-      if (game.history.paused) {
-        ev.preventDefault();
-        game.history.display();
-      }
-    }, false);
   }
 
   public componentDidUpdate() {
@@ -37,10 +29,6 @@ class History extends React.Component<any, any> {
       this.historyDiv.scrollTop = this.historyDiv.scrollHeight;
     }
   }
-
-  public continue = () => {
-    game.history.display();
-  };
 
   public render() {
     const game = this.props.game;
@@ -64,9 +52,6 @@ class History extends React.Component<any, any> {
             )}
           </div>
         ))}
-        {game.history.paused ? <button className="btn btn-info paused" onClick={this.continue}>
-          Hit any key to continue...
-        </button> : ""}
       </div>
     );
   }
