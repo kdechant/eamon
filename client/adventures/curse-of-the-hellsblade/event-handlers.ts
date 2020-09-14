@@ -15,6 +15,11 @@ export var event_handlers = {
 
     // make the Hellsblade the ready weapon
     game.player.ready(game.artifacts.get(25));
+
+    // NPC spell setup
+    game.monsters.get(16).spells = ['blast', 'heal'];  // wizard
+    game.monsters.get(16).spell_points = 5;
+    game.monsters.get(16).spell_frequency = 33;
   },
 
   "attackArtifact": function(arg: string, target: Artifact) {
@@ -135,31 +140,6 @@ export var event_handlers = {
       return false;
     }
     return true;  // otherwise, use regular fumble logic
-  },
-
-  "monsterAction": function(monster: Monster) {
-    // wizard can cast spells
-    if (monster.id === 16 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
-      if (monster.damage > monster.hardiness * 0.4) {
-        // heal
-        game.history.write(monster.name + " casts a heal spell!");
-        let heal_amount = game.diceRoll(2, 6);
-        monster.heal(heal_amount);
-      } else {
-        // blast
-        let monster_target = monster.chooseTarget();
-        if (monster_target) {
-          let damage = game.diceRoll(2, 5);
-          game.history.write(monster.name + " casts a blast spell at " + monster_target.name + "!");
-          game.history.write("--a direct hit!", "success");
-          monster_target.injure(damage, true);
-        }
-      }
-      game.data['wizard spells']--;
-      return false; // skip the default combat actions
-    }
-
-    return true;
   },
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
