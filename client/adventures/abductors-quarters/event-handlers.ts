@@ -10,7 +10,6 @@ export var event_handlers = {
 
   "start": function() {
     game.data['gold stolen'] = 0;
-    game.data['laszlo spells'] = 0;
 
     // custom attack messages
     game.monsters.get(5).combat_verbs = ["bites at", "leaps at"];
