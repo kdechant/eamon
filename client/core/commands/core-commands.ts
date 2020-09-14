@@ -335,7 +335,7 @@ export class GetCommand implements BaseCommand {
             }
 
             // a monster is guarding it
-            if (a.guard_id !== null && a.guard_id !== 0) {
+            if (!!a.guard_id) {
               let guard = game.monsters.get(a.guard_id);
               if (guard.isHere()) {
                 if (arg === 'all') {
