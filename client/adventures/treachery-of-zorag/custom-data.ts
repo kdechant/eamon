@@ -60,7 +60,7 @@ export const talk_data = [
   },
   {
     monster: 4,
-    word: 'adventure',
+    word: ['adventure', 'yes'],  // 'yes' = historical 'say yes to boris' from EDX
     ignore: 0,
     effect: 16,
   },
@@ -91,13 +91,13 @@ export const talk_data = [
   },
   {
     monster: 7,
-    word: ['druid', 'order'],
+    word: ['druid', 'druids', 'order'],
     ignore: 0,
     effect: 37,
   },
   {
     monster: 7,
-    word: 'golem',
+    word: ['golem', 'golems'],
     ignore: 0,
     effect: 38,
   },
@@ -109,7 +109,7 @@ export const talk_data = [
   },
   {
     monster: 7,
-    word: ['fellspawn', 'cavern'],
+    word: ['fellspawn', 'cavern', 'caverns'],
     ignore: 0,
     effect: 40,
   },
@@ -155,7 +155,7 @@ export const talk_data = [
   },
   {
     monster: 9,
-    word: 'golem',
+    word: ['golem', 'golems'],
     ignore: 100,
     effect: 79,
     withhold_effect: 86,
@@ -183,7 +183,7 @@ export const talk_data = [
   },
   {
     monster: 9,
-    word: ['cauldron', 'devil'],
+    word: ['cauldron', 'devil', "devil's cauldron"],
     ignore: 0,
     effect: 83,
   },

@@ -31,6 +31,7 @@ export var event_handlers = {
     game.data = {
       ...game.data,
       auto_exit: false,
+      auto_lantern: false,
       got_quest: false,
       exited_hall: false,
       hunger: 0,
@@ -126,6 +127,18 @@ export var event_handlers = {
     game.data.hunger += local_terrain.move_time;
     game.data.thirst += local_terrain.move_time;
     game.data.fatigue += local_terrain.move_time;
+
+    // lantern management
+    let lantern = game.artifacts.get(1);
+    if (room_to.is_dark && !lantern.is_lit && game.data.auto_lantern) {
+      game.history.write("You light the lantern before proceeding into the dark.")
+      lantern.is_lit = true;
+    }
+    if (!room_to.is_dark && lantern.is_lit) {
+      game.history.write("You leave the darkness and emerge into the natural light. You put out the lantern to save fuel.")
+      game.data.auto_lantern = true;
+      lantern.is_lit = true;
+    }
 
     // some effects (e.g., weather report) only happen on the turn when the
     // player first enters a room (see endTurn2)
@@ -478,7 +491,7 @@ export var event_handlers = {
   },
 
   "afterTalk": function(monster: Monster, subject: string, word: any) {
-    if (monster.id === 4 && (subject === 'adventure' || subject === 'treasure')) {
+    if (monster.id === 4 && (word.effect === 14 || word.effect === 16)) {
       game.history.flush();
       game.modal.confirm('Do you join Boris to search for the treasure?', answer => {
         if (answer.toLowerCase() === 'yes') {

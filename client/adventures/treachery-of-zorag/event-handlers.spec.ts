@@ -104,7 +104,7 @@ test("hunger/thirst", () => {
   // booze is also refreshing.
   game.data.thirst = 20;
   game.artifacts.get(65).moveToInventory();
-  runCommand('drink beer');
+  runCommand('drink ale');
   expect(game.data.thirst).toBe(0);
 });
 
@@ -132,8 +132,9 @@ test("camp", () => {
   expect(game.data.fatigue).toBe(0);
   // player is alone, so no watch output
   expect(game.history.getOutput().text).toBe('You make camp for the night...');
-  expect(game.history.getOutput(1).text).toBe("You eat the Moleman's Jerky.");
-  expect(game.history.getOutput(2).text).toBe('You drink the canteen.');
+  expect(game.history.getOutput(1).text).toBe("You awaken refreshed.");
+  expect(game.history.getOutput(2).text).toBe("You eat the Moleman's Jerky.");
+  expect(game.history.getOutput(3).text).toBe('You drink the canteen.');
   expect(game.player.agility).toBe(game.player.stats_original.agility);
   expect(game.data.hunger).toBe(0);
   expect(game.data.thirst).toBe(0);
