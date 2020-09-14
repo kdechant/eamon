@@ -9,13 +9,20 @@ declare var game: Game;
 export var event_handlers = {
 
   "start": function() {
+    game.show_exits = true;
+
     game.data['vrock appeared'] = false;
     game.data['balor appeared'] = false;
     game.data['bridge'] = false;
-    // TODO: convert to core spell logic
-    game.data['wizard spells'] = 3;
-    game.data['lammasu spells'] = 3;
     game.data['rovnart'] = false;
+
+    // spell setup
+    game.monsters.get(13).spells = ['blast'];  // wizard
+    game.monsters.get(13).spell_points = 3;
+    game.monsters.get(13).spell_frequency = 33;
+    game.monsters.get(15).spells = ['heal'];  // lammasu
+    game.monsters.get(15).spell_points = 3;
+    game.monsters.get(15).spell_frequency = 33;
   },
 
   "death": function(monster: Monster) {
@@ -101,33 +108,6 @@ export var event_handlers = {
       if (game.diceRoll(1, 34) > game.player.hardiness) {
         game.history.write("Your vision seems to swim, making it hard to concentrate on fighting.", "special no-space");
         return odds - 10;
-      }
-    }
-    return true;
-  },
-
-  "monsterAction": function(monster: Monster) {
-    // wizard can cast blast
-    if (monster.id === 13 && game.data['wizard spells'] > 0 && game.diceRoll(1,3) === 3) {
-      // blast
-      let monster_target = monster.chooseTarget();
-      if (monster_target) {
-        let damage = game.diceRoll(2, 5);
-        game.history.write(monster.name + " casts a blast spell at " + monster_target.name + "!");
-        game.history.write("--a direct hit!", "success");
-        monster_target.injure(damage, true);
-        game.data['wizard spells']--;
-        return false; // skip the default combat actions
-      }
-    }
-    // lammasu can cast heal
-    if (monster.id === 15 && game.data['lammasu spells'] > 0 && game.diceRoll(1,3) === 3) {
-      if (monster.damage > monster.hardiness * 0.4) {
-        game.history.write(monster.name + " casts a heal spell!");
-        let heal_amount = game.diceRoll(2, 6);
-        monster.heal(heal_amount);
-        game.data['lammasu spells']--;
-        return false; // skip the default combat actions
       }
     }
     return true;

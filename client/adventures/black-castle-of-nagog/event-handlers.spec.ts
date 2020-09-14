@@ -2,7 +2,7 @@
  * Unit tests for The Black Castle of Nagog
  */
 import Game from "../../core/models/game";
-import {initLiveGame} from "../../core/utils/testing";
+import {expectMonsterIsHere, initLiveGame, movePlayer, runCommand} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -26,73 +26,76 @@ beforeEach(() => {
 
 // TESTS
 
-it("should have working event handlers", () => {
-
+test("two-sided secret door", () => {
   // two-sided secret door
   game.monsters.get(28).destroy(); // get rats out of the way
-  game.player.moveToRoom(28);
+  movePlayer(28);
   game.endTurn();
-  game.command_parser.run("look brick wall");
+  runCommand("look brick wall");
   expect(game.artifacts.get(69).hidden).toBeFalsy();
   expect(game.artifacts.get(70).hidden).toBeFalsy();
   // also test regular open/close
-  game.command_parser.run("close brick wall");
+  runCommand("close brick wall");
   expect(game.artifacts.get(69).is_open).toBeFalsy();
   expect(game.artifacts.get(70).is_open).toBeFalsy();
-  game.command_parser.run("open brick wall");
+  runCommand("open brick wall");
   expect(game.artifacts.get(69).is_open).toBeTruthy();
   expect(game.artifacts.get(70).is_open).toBeTruthy();
+});
 
-  // mummy in tomb
-  game.player.moveToRoom(43);
-  game.command_parser.run("open tomb");
+test("mummy in tomb", () => {
+  movePlayer(43);
+  runCommand("open tomb");
   expect(game.monsters.get(17).room_id).toBe(43);
-  game.monsters.get(17).destroy(); // get mummy out of the way
+});
 
-  // ghoul in coffin
-  game.player.moveToRoom(47);
-  game.command_parser.run("open coffin");
+test("ghoul in coffin", () => {
+  movePlayer(47);
+  runCommand("open coffin");
   expect(game.monsters.get(6).room_id).toBe(47);
   expect(game.artifacts.get(12).room_id).toBeNull();
   expect(game.artifacts.get(12).container_id).toBe(60);
   expect(game.artifacts.get(60).contents.length).toBe(1);
-  game.monsters.get(6).destroy(); // get ghoul out of the way
+});
 
-  // pudding in kettle
-  game.player.moveToRoom(20);
-  game.command_parser.run("look kettle"); // already open; monster should appear when revealed
+test("pudding in kettle", () => {
+  movePlayer(20);
+  runCommand("look kettle"); // already open; monster should appear when revealed
   expect(game.monsters.get(4).room_id).toBe(20);
-  game.monsters.get(4).destroy(); // get pudding out of the way
+});
 
+test("bridge", () => {
   // bridge
   game.monsters.get(10).destroy(); // get harpy out of the way
-  game.player.moveToRoom(64);
+  movePlayer(64);
   game.artifacts.get(1).moveToInventory();
   game.player.updateInventory();
-  game.command_parser.run('say morgar');
+  runCommand('say morgar');
   expect(game.data['bridge']).toBeTruthy();
+});
 
-  // rubies
+test("rubies", () => {
   game.monsters.get(5).destroy(); // get gargoyle out of the way
   game.artifacts.get(14).moveToInventory();
-  game.player.moveToRoom(65);
+  movePlayer(65);
   game.artifacts.get(71).reveal();
-  game.command_parser.run("put rubies into sculpture");
+  runCommand("put rubies into sculpture");
   expect(game.artifacts.get(71).is_open).toBeTruthy();
+});
 
-  // fun with demons
-  // note: these will fail if monsters were in the room - need to destroy other monsters from tests above
+test("let's summon demons", () => {
   game.artifacts.get(2).moveToInventory();
   game.player.updateInventory();
-  game.player.moveToRoom(28); // vrock won't appear in room 64+; balor won't appear in room 29+
+  // clear the room of monsters, so their combat routines don't use up our mock random numbers
+  game.monsters.all.filter(m => m.room_id == 28).forEach(m => m.destroy());
+  movePlayer(28); // vrock won't appear in room 64+; balor won't appear in room 29+
   game.mock_random_numbers = [1];
   game.tick();
   expect(game.data['vrock appeared']).toBeTruthy();
-  expect(game.monsters.get(29).isHere()).toBeTruthy();
+  expectMonsterIsHere(29);
   game.monsters.get(29).destroy(); // get vrock out of the way
   game.mock_random_numbers = [1];
   game.tick();
   expect(game.data['balor appeared']).toBeTruthy();
-  expect(game.monsters.get(30).isHere()).toBeTruthy();
-
+  expectMonsterIsHere(30);
 });
