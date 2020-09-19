@@ -794,8 +794,13 @@ export default class Game {
   public restore(slot) {
     this.logger.log('restore game from slot ' + slot);
     const axios = getAxios();
-    const save_id = this.saved_games[slot].id;
-    axios.get("/saves/" + save_id + ".json?uuid=" + window.localStorage.getItem('eamon_uuid'))
+    const save = this.saved_games[slot];
+    if (!save) {
+      this.history.write("Error restoring saved game!");
+      this.logger.log(`failed to restore save ${slot}. saved game might have been deleted.`);
+      return;
+    }
+    axios.get("/saves/" + save.id + ".json?uuid=" + window.localStorage.getItem('eamon_uuid'))
       .then(
       res => {
         let data = JSON.parse(decompressFromBase64(res.data.data));
@@ -829,7 +834,10 @@ export default class Game {
         // this forces the React component to re-render
         this.refresh();
       }
-    );
+    ).catch(error => {
+      this.history.write("Error restoring saved game! Not found.");
+      console.error(error);
+    });
   }
 
 }
