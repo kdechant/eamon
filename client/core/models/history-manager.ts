@@ -92,6 +92,9 @@ export class HistoryManager {
   write(text: string, type: string = "normal", markdown: boolean = false) {
     if (!this.suppressNextMessage) {
       text = text.charAt(0).toUpperCase() + text.slice(1);
+      if (!this.current_entry) {
+        this.push("");
+      }
       this.current_entry.push(text, type, markdown);
     }
     this.suppressNextMessage = false;
