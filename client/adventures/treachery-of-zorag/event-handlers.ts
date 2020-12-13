@@ -130,14 +130,14 @@ export var event_handlers = {
 
     // lantern management
     let lantern = game.artifacts.get(1);
-    if (room_to.is_dark && !lantern.is_lit && game.data.auto_lantern) {
+    if (room_to.is_dark && !lantern.is_lit && lantern.quantity > 0 && game.data.auto_lantern) {
       game.history.write("You light the lantern before proceeding into the dark.")
       lantern.is_lit = true;
     }
     if (!room_to.is_dark && lantern.is_lit) {
       game.history.write("You leave the darkness and emerge into the natural light. You put out the lantern to save fuel.")
       game.data.auto_lantern = true;
-      lantern.is_lit = true;
+      lantern.is_lit = false;
     }
 
     // some effects (e.g., weather report) only happen on the turn when the

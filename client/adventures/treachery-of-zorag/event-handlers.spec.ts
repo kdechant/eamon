@@ -212,6 +212,22 @@ test("fill lantern", () => {
   expect(lantern.quantity).toBe(50);
 });
 
+test('automatic lantern management', () => {
+  getLamp();
+  let lamp = game.artifacts.get(1);
+  movePlayer(48);
+  game.command_parser.run('n');
+  expect(lamp.is_lit).toBeFalsy();
+  game.command_parser.run('s');
+  expect(lamp.is_lit).toBeTruthy();
+  game.command_parser.run('n');
+  expect(lamp.is_lit).toBeFalsy();
+  lamp.quantity = 0;
+  // if no fuel left, should not be lit
+  game.command_parser.run('s');
+  expect(lamp.is_lit).toBeFalsy();
+});
+
 test('buy stuff', () => {
   movePlayer(74);
   let original_gold = game.player.gold;
