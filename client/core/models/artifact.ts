@@ -201,17 +201,21 @@ export class Artifact extends GameObject {
   /**
    * Puts an artifact into a container
    */
-  public putIntoContainer(container: Artifact): void {
-    if (container) {
-      this.container_id = container.id;
-      this.room_id = null;
-      this.monster_id = null;
-      this.is_worn = false;
-      game.player.updateInventory();
-      game.artifacts.updateVisible();
-    } else {
+  public putIntoContainer(container: Artifact|number): void {
+    if (this.type === Artifact.TYPE_BOUND_MONSTER) {
+      throw new CommandException("putIntoContainer() can't be used on bound monster artifacts.")
+    }
+    let c = typeof container === "number" ? game.artifacts.get(container) : container;
+    if (!c) {
       throw new CommandException("I couldn't find that container!");
     }
+    this.container_id = c.id;
+    this.room_id = null;
+    this.monster_id = null;
+    this.is_worn = false;
+    game.player.updateInventory();
+    game.artifacts.updateVisible();
+    c.updateContents();
   }
 
   /**
@@ -305,6 +309,8 @@ export class Artifact extends GameObject {
     }
 
     // for items other than standard potions and food, the logic is done in an event handler defined in the adventure.
+    // FIXME: if the event handler doesn't do anything (or doesn't exist) and you try to use something that's not
+    //  edible/drinkable, you get no message at all.
     game.triggerEvent("use", this.name, this);
 
     // reduce quantity/number of charges remaining

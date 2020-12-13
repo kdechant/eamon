@@ -781,6 +781,11 @@ a {
   text-shadow: 0 0 8px #000;
 }
 
+// BS4 doesn't have a margin on blockquote for some reason
+blockquote {
+  margin: 1rem 2rem;
+}
+
 // Bootstrap modal
 .modal-dialog {
   background-color: $status-bg;
