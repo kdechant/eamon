@@ -12,7 +12,7 @@ import {
   movePlayer,
   runCommand,
   expectArtifactIsNotHere,
-  expectArtifactIsHere
+  expectArtifactIsHere, expectMonsterIsHere
 } from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -67,10 +67,6 @@ test("negative connections", () => {
   runCommand('n');
   expect(game.history.getOutput().text).toBe('The cave-in blocks your path!');
   expect(game.player.room_id).toBe(33);
-  movePlayer(73);
-  runCommand('e');
-  expectEffectSeen(13);
-  expect(game.player.room_id).toBe(73);
 });
 
 test('pure lembas', () => {
@@ -124,4 +120,77 @@ test('keys and elevator', () => {
   expect(game.player.room_id).toBe(79);
   runCommand('use lever');
   expect(game.player.room_id).toBe(89);
+});
+
+test('put', () => {
+  // put gold key == use gold key
+  game.artifacts.get(21).moveToInventory();
+  movePlayer(89);
+  runCommand('put gold key into keyhole');
+  expectArtifactIsHere(36);
+
+  // arkenstone
+  game.artifacts.get(24).moveToInventory();
+  movePlayer(14);
+  runCommand('put stone into pillar');
+  expectArtifactIsHere(40);
+});
+
+test('letter', () => {
+  game.artifacts.get(19).moveToInventory();
+  movePlayer(game.monsters.get(1).room_id);
+  runCommand('give letter to galadriel');
+  expectEffectSeen(3);
+  expect(game.won).toBeTruthy();
+});
+
+test('trading', () => {
+  game.artifacts.get(1).moveToInventory();
+  game.artifacts.get(2).moveToInventory();
+  game.artifacts.get(23).moveToInventory();
+  movePlayer(game.monsters.get(49).room_id);
+  game.command_parser.run('give scimitar to elf');
+  expectEffectSeen(11);
+  expectArtifactIsHere(35);
+  game.command_parser.run('give gems to elf');
+  expectEffectSeen(2);
+  expectArtifactIsHere(29);
+  game.command_parser.run('give bow to elf');
+  expect(game.history.getOutput(0).text).toBe("He doesn't feel like trading any more.");
+  expect(game.player.hasArtifact(2));
+});
+
+test('magic words', () => {
+  runCommand('say my friend');
+  expect(game.player.room_id).toBe(1);
+  movePlayer(3);
+  runCommand('say my friend');
+  expect(game.player.room_id).toBe(86);
+
+  movePlayer(14);
+  expect(game.rooms.current_room.getExit('w')).toBeNull();
+  runCommand('say now');
+  expectEffectSeen(18);
+  expectArtifactIsNotHere(44);
+  expectMonsterIsHere(28);
+  expect(game.rooms.current_room.getExit('w')).not.toBeNull();
+  expect(game.rooms.current_room.name).toBe('You are in a secret western room. (E/W)');
+  runCommand('w');
+  expect(game.player.room_id).toBe(15);
+});
+
+test("forest gate", () => {
+  movePlayer(73);
+  runCommand('e');
+  let gate = game.artifacts.get(43);
+  expectEffectSeen(13);
+  expect(game.player.room_id).toBe(73);
+  game.effects.get(13).seen = false;
+  runCommand('open gate');
+  expectEffectSeen(13);
+  expect(gate.is_open).toBeFalsy();
+  runCommand('say elbereth');
+  expectEffectSeen(17);
+  expect(game.artifacts.get(43).is_open).toBeTruthy();
+  expect(game.rooms.current_room.getExit('e').room_to).toBe(74);
 });

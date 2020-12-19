@@ -3,6 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
+import {isCobaltFront} from "../malleus-maleficarum/event-handlers";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare var game: Game;
@@ -48,6 +49,72 @@ export var event_handlers = {
       return false;
     }
     return true;
+  },
+
+  "give": function(arg: string, artifact: Artifact, recipient: Monster) {
+    if (recipient.id === 49) {
+      // elf captain
+      if (artifact.id === 23 && recipient.hasArtifact(29)) {
+        game.artifacts.get(29).moveToRoom();
+        game.effects.print(2);
+      } else if (recipient.hasArtifact(35)) {
+        game.artifacts.get(35).moveToRoom();
+        game.effects.print(11);
+      } else {
+        game.history.write("He doesn't feel like trading any more.");
+        return false;
+      }
+    }
+    return true;
+  },
+
+  "afterGive": function(arg: string, artifact: Artifact, recipient: Monster) {
+    if (artifact.id === 19 && recipient.id === 1) {
+      game.effects.print(3);
+      game.exit();
+    }
+  },
+
+  "beforeOpen": function(arg: string, artifact: Artifact) {
+    if (artifact !== null && artifact.id === 43) {  // forest gate
+      game.effects.print(13);
+      return false;
+    }
+    return true;
+  },
+
+  "specialPut": function(arg: string, item: Artifact, container: Artifact) {
+    if (item.id === 21 && container.id === 37) {
+      // this is just an alias
+      game.command_parser.run('use gold key', false);
+    } else if (item.id === 24 && container.id === 34) {
+      // arkenstone
+      item.putIntoContainer(container);
+      game.artifacts.get(40).moveToRoom();
+      game.artifacts.get(40).showDescription();
+      return false;   // skips the rest of the "put" logic
+    }
+    return true;
+  },
+
+  "say": function(phrase: string) {
+    phrase = phrase.toLowerCase();
+    if (phrase === 'my friend' && game.player.room_id === 3) {
+      game.player.moveToRoom(86);
+    } else if (phrase === 'now' && game.player.room_id === 14 && !game.data.statue) {
+      game.data.statue = true;
+      game.effects.print(18);
+      game.artifacts.get(44).destroy();
+      game.monsters.get(28).moveToRoom();
+      game.rooms.current_room.createExit('w', 15);
+      game.rooms.current_room.name = game.rooms.current_room.name.replace('(E)', '(E/W)');
+    } else if (phrase === 'elbereth' && game.artifacts.get(43).isHere() && !game.artifacts.get(43).is_open) {
+      game.effects.print(17);
+      game.artifacts.get(43).open();
+      // the gate artifact is actually a fake, with a negative room connection used
+      // to show special effects.
+      game.rooms.get(73).getExit('e').room_to = 74;
+    }
   },
 
   "use": function(arg: string, artifact: Artifact) {
@@ -110,6 +177,3 @@ export var event_handlers = {
   },
 
 }; // end event handlers
-
-
-// declare any functions used by event handlers and custom commands
