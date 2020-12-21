@@ -23,7 +23,9 @@ export default class RoomRepository {
   constructor(room_data) {
     for (let i of room_data) {
       let r = new Room();
-      i.data = parseJSON(i.data);
+      if (i.data) {
+        i.data = parseJSON(i.data);
+      }
       r.init(i);
       this.rooms.push(r);
     }
