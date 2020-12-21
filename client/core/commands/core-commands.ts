@@ -750,11 +750,21 @@ export class FleeCommand implements BaseCommand {
       if (!exit) {
         throw new CommandException("There is nowhere to flee to!");
       }
-      game.player.moveToRoom(exit.room_to);
-      game.skip_battle_actions = true;
-      game.triggerEvent("afterFlee", arg, exit);
+      // 50% chance to flee. Adjusted(+) by player's agility. Adjusted(-) by monsters' agility.
+      // (Taken from EDX version of Treachery of Zorag)
+      let odds = 50 + game.player.agility * 2;
+      let pursuers = game.monsters.visible.filter(m => m.reaction === Monster.RX_HOSTILE && m.pursues);
+      pursuers.forEach(m => odds -= m.agility * 2);
+      let roll = game.diceRoll(1, 100);
+      if (pursuers.length && roll > odds) {
+        game.history.write("You fail to get away!");
+      } else {
+        game.history.write("You have successfully fled the battle. (Coward!)");
+        game.player.moveToRoom(exit.room_to);
+        game.skip_battle_actions = true;
+        game.triggerEvent("afterFlee", arg, exit);
+      }
     }
-
   }
 }
 core_commands.push(new FleeCommand());

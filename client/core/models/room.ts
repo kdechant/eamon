@@ -49,6 +49,13 @@ export class RoomExit extends Loadable {
     return this.direction;
   }
 
+  public getMovementDirection(): string {
+    if (this.direction == 'u' || this.direction == 'd') {
+      return `${this.getFriendlyDirection()}ward.`;
+    }
+    return `to the ${this.getFriendlyDirection()}.`;
+  }
+
 }
 
 export class Room extends Loadable {

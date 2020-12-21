@@ -910,11 +910,7 @@ export class Monster extends GameObject {
     let exit = game.rooms.getRoomById(this.room_id).chooseRandomExit();
 
     if (show_message) {
-      if (exit.direction == 'u' || exit.direction == 'd') {
-        game.history.write(`${this.name} ${game.flee_verbs.singular} ${exit.getFriendlyDirection()}ward.`, "warning");
-      } else {
-        game.history.write(`${this.name} ${game.flee_verbs.singular} to the ${exit.getFriendlyDirection()}.`, "warning");
-      }
+      game.history.write(`${this.name} ${game.flee_verbs.singular} ${exit.getMovementDirection()}.`, "warning");
     }
     this.moveToRoom(exit.room_to);
     game.monsters.updateVisible();
