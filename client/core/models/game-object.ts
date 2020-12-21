@@ -29,7 +29,11 @@ export class GameObject {
    * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
-    source.data = parseJSON(source.data);
+    if (source.data) {
+      source.data = parseJSON(source.data);
+    } else {
+      source.data = {};
+    }
     for (let prop in source) {
       this[prop] = source[prop];
     }
