@@ -12,7 +12,9 @@ import {
   movePlayer,
   runCommand,
   expectArtifactIsNotHere,
-  expectArtifactIsHere, expectMonsterIsHere
+  expectArtifactIsHere,
+  expectMonsterIsHere,
+  expectMonsterIsNotHere
 } from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -107,6 +109,7 @@ test('mining', () => {
 });
 
 test('keys and elevator', () => {
+  getLight();
   game.artifacts.get(13).moveToInventory();
   game.artifacts.get(21).moveToInventory();
   movePlayer(89);
@@ -117,8 +120,10 @@ test('keys and elevator', () => {
   runCommand('use gold key');
   expectArtifactIsHere(36);
   runCommand('use lever');
+  expectEffectSeen(6);
   expect(game.player.room_id).toBe(79);
   runCommand('use lever');
+  expectEffectSeen(7);
   expect(game.player.room_id).toBe(89);
 });
 
@@ -161,6 +166,7 @@ test('trading', () => {
 });
 
 test('magic words', () => {
+  getLight();
   runCommand('say my friend');
   expect(game.player.room_id).toBe(1);
   movePlayer(3);
@@ -170,6 +176,7 @@ test('magic words', () => {
   movePlayer(14);
   expect(game.rooms.current_room.getExit('w')).toBeNull();
   runCommand('say now');
+  expectEffectSeen(16);
   expectEffectSeen(18);
   expectArtifactIsNotHere(44);
   expectMonsterIsHere(28);
@@ -194,3 +201,42 @@ test("forest gate", () => {
   expect(game.artifacts.get(43).is_open).toBeTruthy();
   expect(game.rooms.current_room.getExit('e').room_to).toBe(74);
 });
+
+test('power', () => {
+  getLight();
+  game.mock_random_numbers = [
+    1,  // spell succeeds
+    0,  // no increase
+    40  // effect roll
+  ];
+  runCommand('power');
+  expectEffectSeen(9);
+  game.mock_random_numbers = [1, 0, 80];
+  runCommand('power');
+  expect(game.history.getOutput(0).text).toBe("It starts to rain.");
+  movePlayer(7);
+  game.mock_random_numbers = [1, 0, 80];
+  runCommand('power');
+  expectEffectSeen(20);
+  expectMonsterIsHere(50);
+  game.monsters.get(50).destroy();
+  movePlayer(68);
+  game.mock_random_numbers = [1];
+  runCommand('power');
+  expectEffectSeen(12);
+  expectMonsterIsNotHere(48);
+});
+
+test('you shall not pass', () => {
+  getLight();
+  movePlayer(68);
+  game.mock_random_numbers = [1];
+  runCommand('blast balrog');
+  expectEffectSeen(12);
+  expectMonsterIsNotHere(48);
+});
+
+function getLight() {
+  game.artifacts.get(12).moveToInventory();
+  runCommand('light staff');
+}

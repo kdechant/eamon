@@ -15,19 +15,20 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room_from: Room, exit: RoomExit): boolean {
-    if (exit.room_to === -74) {
-      game.effects.print(13);
-      return false;
-    } else if (exit.room_to === -90) {
-      game.history.write('The cave-in blocks your path!');
-      return false;
+    if (exit) {
+      if (exit.room_to === -74) {
+        game.effects.print(13);
+        return false;
+      } else if (exit.room_to === -90) {
+        game.history.write('The cave-in blocks your path!');
+        return false;
+      }
     }
     return true;
   },
 
-  "afterMove": function(arg: string, room_from: Room, room_to: Room) {
-    if ([39, 67, 80, 85].indexOf(room_to.id) !== -1) {
-      game.history.write('You are dead!');
+  "endTurn1": function() {
+    if ([39, 67, 80, 85].indexOf(game.player.room_id) !== -1) {
       game.die();
     }
   },
@@ -92,6 +93,7 @@ export var event_handlers = {
       item.putIntoContainer(container);
       game.artifacts.get(40).moveToRoom();
       game.artifacts.get(40).showDescription();
+      game.artifacts.get(40).seen = true;
       return false;   // skips the rest of the "put" logic
     }
     return true;
@@ -103,6 +105,7 @@ export var event_handlers = {
       game.player.moveToRoom(86);
     } else if (phrase === 'now' && game.player.room_id === 14 && !game.data.statue) {
       game.data.statue = true;
+      game.effects.print(16);
       game.effects.print(18);
       game.artifacts.get(44).destroy();
       game.monsters.get(28).moveToRoom();
@@ -152,8 +155,17 @@ export var event_handlers = {
         game.effects.print(6);
         game.player.moveToRoom(79);
       } else if (artifact.id === 41) {  // lever (elevator up)
+        game.effects.print(7);
         game.player.moveToRoom(89);
       }
+    }
+    return true;
+  },
+
+  "blast": function(arg: string, target: Monster) {
+    if (target.id === 48) {
+      youShallNotPass();
+      return false;
     }
     return true;
   },
@@ -162,14 +174,34 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
+    if (game.player.room_id === 68 && game.monsters.get(48).isHere()) {  // balrog
+      youShallNotPass();
+      return;
+    }
+    if (game.monsters.get(17).isHere()) {  // army ants
+      let children = game.monsters.get(17).children.length;
+      if (children > 5) {
+        game.effects.print(14);
+        game.monsters.get(17).removeChildren(children - 5);
+        return;
+      }
+    }
     if (roll <= 50) {
-      game.history.write("You hear a loud sonic boom which echoes all around you!");
-    } else if (roll <= 75) {
-      // teleport to random room
-      game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
-      game.player.moveToRoom(room.id);
-      game.skip_battle_actions = true;
+      game.effects.print(9);
+    } else if (roll <= 90) {
+      if (game.rooms.current_room.data.env === 'outdoor') {
+        game.history.write("It starts to rain.");
+      } else {
+        game.effects.print(20);
+        let orcs = game.monsters.get(50);
+        if (!orcs.isHere()) {
+          while (orcs.children.length < 4) {
+            orcs.spawnChild();
+          }
+          orcs.moveToRoom();
+          game.skip_battle_actions = true;
+        }
+      }
     } else {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
@@ -177,3 +209,9 @@ export var event_handlers = {
   },
 
 }; // end event handlers
+
+function youShallNotPass() {
+  // balrog / chasm
+  game.effects.print(12);
+  game.monsters.get(48).destroy();
+}
