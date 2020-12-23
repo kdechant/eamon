@@ -1385,19 +1385,19 @@ export class FreeCommand implements BaseCommand {
             throw new CommandException(guard.getDisplayName() + " won't let you!");
           }
         }
+        let monster = game.monsters.get(a.monster_id);
         if (a.key_id) {
           if (game.player.hasArtifact(a.key_id)) {
             let key = game.artifacts.get(a.key_id);
-            message = "You free it using the " + key.name + ".";
+            message = `You free ${monster.name} using the ${key.name}.`;
           } else {
-            throw new CommandException("It's locked and you don't have the key!");
+            throw new CommandException("You don't have the key!");
           }
         } else {
-          message = "Freed.";
+          message = `You free ${monster.name}.`;
         }
         if (game.triggerEvent("free", arg, a)) {
           game.history.write(message);
-          let monster = game.monsters.get(a.monster_id);
           a.freeBoundMonster();
           game.triggerEvent("afterFree", arg, a, monster);
         }
