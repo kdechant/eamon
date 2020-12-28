@@ -1,3 +1,6 @@
+import os
+import platform
+
 from datetime import datetime
 from fabric import Connection
 from fabric import task
@@ -8,13 +11,17 @@ from invoke import run as local
 # (until I figure out how the context variable works...)
 # TODO: look into adding host info to .ssh/config - that seems to be the official way to handle this
 
-# this connection requires SSH key to be loaded into pageant
+connect_kwargs = {}
+if platform.system() == 'Windows':
+    # this requires SSH key to be loaded into pageant
+    connect_kwargs = {
+        "key_filename": "c:/users/keith/.ssh/id_rsa",
+    },
+
 c = Connection(
     host='kdechant.com',
     user='ubuntu',
-    connect_kwargs={
-        "key_filename": "c:/users/keith/.ssh/id_rsa",
-    },
+    connect_kwargs=connect_kwargs
 )
 server_python = '/var/www/vhosts/eamon/.venv/bin/python'
 server_root = '/var/www/vhosts/eamon'
@@ -24,6 +31,11 @@ server_root = '/var/www/vhosts/eamon'
 
 def _get_db_pw():
     raw = c.run("awk '/PASSWORD/ {{print $2}}' {}/eamon/local_settings.py".format(server_root), hide='out')
+    return raw.stdout[1:-3]
+
+
+def _get_local_db_pw():
+    raw = local("awk '/PASSWORD/ {{print $2}}' {}/eamon/local_settings.py".format(os.getcwd()), hide='out')
     return raw.stdout[1:-3]
 
 
@@ -37,9 +49,15 @@ def _db_pull(tables=None):
     print('downloading DB...')
     c.get("{}.gz".format(fn))
     print('importing DB locally...')
-    # windows only
-    local('7z.exe e ./{}.gz -y'.format(fn), hide='out')
-    local('mysql -u root eamon -e "source {}"'.format(fn))
+    if platform.system() == 'Windows':
+        local('7z.exe e ./{}.gz -y'.format(fn), hide='out')
+    else:
+        local('gunzip {}'.format(fn))
+    local_pw = _get_local_db_pw()
+    if local_pw != "":
+        local('mysql -u root -p{} eamon -e "source {}"'.format(local_pw, fn))
+    else:
+        local('mysql -u root eamon -e "source {}"'.format(fn))
 
 
 def _db_push(prefix="eamon", tables=None):
@@ -48,8 +66,15 @@ def _db_push(prefix="eamon", tables=None):
     t = datetime.now()
     fn = '{0}-{1.year}-{1.month:0>2}-{1.day:0>2}-{1.hour:0>2}-{1.minute:0>2}-{1.second:0>2}.sql'.format(prefix, t)
     print('exporting DB locally...')
-    local('mysqldump eamon -u root -r {} {}'.format(fn, tables))
-    local('7z.exe a {0}.gz {0} -y'.format(fn), hide='out')  # windows only
+    local_pw = _get_local_db_pw()
+    if local_pw != "":
+        local('mysqldump eamon -u root -p{} -r {} {}'.format(local_pw, fn, tables))
+    else:
+        local('mysqldump eamon -u root -r {} {}'.format(fn, tables))
+    if platform.system() == 'Windows':
+        local('7z.exe a {0}.gz {0} -y'.format(fn), hide='out')
+    else:
+        local('gzip {}'.format(fn))
     print('uploading DB...')
     c.put("{}.gz".format(fn))
     _db_backup()
@@ -129,6 +154,12 @@ def build_js(context):
 def deploy(context):
     """full deployment - python and js/css"""
     build_js(context)
+    deploy_python(context)
+    deploy_js(context)
+
+
+@task
+def deploy_python(context):
     _db_backup()
     print('-- pulling new code...')
     # with cd() is not in fabric 2 yet
@@ -136,7 +167,6 @@ def deploy(context):
     print('-- installing python packages...')
     c.run('cd {} && pipenv install'.format(server_root))
     _db_migrate()
-    deploy_js(context)
 
 
 @task
