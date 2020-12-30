@@ -15,6 +15,7 @@ import EventHandler from "../commands/event-handler";
 import {ILoggerService, DummyLoggerService} from "../utils/logger.interface";
 import {getAxios} from "../../main-hall/utils/api";
 import * as React from "react";
+import {OperationsQueue} from "./operations-queue";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare let game;
@@ -120,6 +121,11 @@ export default class Game {
    * The game timer. Keeps track of the number of game clock ticks.
    */
   timer = 0;
+
+  /**
+   * Operations Queue
+   */
+  queue: OperationsQueue;
 
   /**
    * Command history and results
@@ -334,6 +340,7 @@ export default class Game {
     this.artifacts.deduplicate();
 
     this.history = new HistoryManager;
+    this.queue = new OperationsQueue;
 
     // for unit tests, the logger won't usually be initialized, so create a dummy logger
     if (!this.logger) {
@@ -450,15 +457,34 @@ export default class Game {
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
 
+    this.queue.callback = () => this.monsterActions();
+    this.queue.run();
+  }
+
+  monsterActions() {
     // non-player monster actions
+    // FIXME: anything output by history.write() during a monster's actions
+    //  or during an EH will get output after all the monsters have gone.
+    //  Need to implement a "has attacked" flag on monsters which gets reset
+    //  every turn. Then call this function once per monster until they've all gone,
+    //  after which the 'aftermonsteractions()' should be called.
     if (this.in_battle && !this.skip_battle_actions) {
       for (const m of this.monsters.all) {
-        if (m.id !== Monster.PLAYER && m.isHere() && this.player.status === Monster.STATUS_ALIVE && !m.parent) {
-          m.doBattleActions();
+        if (m.id !== Monster.PLAYER && m.isHere() && !m.parent) {
+          this.queue.push(() => {
+            if (m.isHere() && m.status === Monster.STATUS_ALIVE && this.player.status === Monster.STATUS_ALIVE) {
+              this.queue.push('delay:3');
+              m.doBattleActions();
+            }
+          });
         }
       }
     }
+    this.queue.callback = () => this.afterMonsterActions();
+    this.queue.run();
+  }
 
+  afterMonsterActions() {
     // the first end turn event triggers here, so we can see any artifacts or monsters that have appeared,
     // but any monsters that have just entered the room won't be able to attack.
     this.triggerEvent("endTurn");
@@ -468,7 +494,8 @@ export default class Game {
     // clear the "skip battle" flag if it was set
     this.skip_battle_actions = false;
 
-    this.endTurn();
+    this.queue.callback = () => this.endTurn();
+    this.queue.run();
   }
 
   /**
@@ -494,16 +521,17 @@ export default class Game {
         game.history.write("It's too dark to see anything.");
       }
     } else {
-      this.history.write(this.rooms.current_room.name);
+      let room_name = this.rooms.current_room.name
       if (game.data['bort']) {
-        this.history.append(` (${this.rooms.current_room.id})`);
+        room_name += ` (${this.rooms.current_room.id})`;
       }
       if (this.show_exits) {
         const possible_exits = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw', 'u', 'd'];
         const available_exits = this.rooms.current_room.getVisibleExits().map(x => x.direction);
         const visible_exits = possible_exits.filter(x => available_exits.indexOf(x) !== -1).join('/').toUpperCase();
-        this.history.append(` (${visible_exits})`);
+        room_name += ` (${visible_exits})`;
       }
+      this.history.write(room_name);
       if (!this.rooms.current_room.seen) {
         this.rooms.current_room.show_description();
         this.rooms.current_room.seen = true;
@@ -561,7 +589,8 @@ export default class Game {
     // and monster descriptions (e.g., some monsters may speak when you see them)
     this.triggerEvent("endTurn2");
 
-    this.history.display();
+    this.queue.callback = () => this.setReady();
+    this.queue.run();
   }
 
   /**

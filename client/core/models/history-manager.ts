@@ -10,7 +10,7 @@ export class HistoryManager {
   history: HistoryEntry[];
   current_entry: HistoryEntry;
   index: number;  // used for the history recall
-  delay = 100;
+  delay = 0;  // should be off; not needed with the operations queue
   page_size = 20;
   paused = false;
   counter = 0;  // used for display pagination
@@ -22,6 +22,7 @@ export class HistoryManager {
   }
 
   public display() {
+    // TODO: figure out how much of this I can rip out in favor of the queue
     if (this.paused) this.counter = 0;
     this.paused = false;
     const line = this.current_entry.results.shift();
@@ -51,7 +52,7 @@ export class HistoryManager {
       }
     } else {
       // we've displayed everything, so reactivate the command prompt
-      game.setReady();
+      // game.setReady();
     }
     game.refresh();
   }
@@ -89,7 +90,12 @@ export class HistoryManager {
    * @param {boolean} markdown
    *   Whether to use the Markdown formatter (true) or the plain text formatter (false)
    */
-  write(text: string, type = "normal", markdown = false) {
+  write(text: string, type: string = "normal", markdown = false) {
+    game.queue.push(() => this._print(text, type, markdown));
+  }
+
+  _print(text: string, type: string = "normal", markdown = false) {
+    // TODO: currying
     if (!this.suppressNextMessage) {
       text = text.charAt(0).toUpperCase() + text.slice(1);
       if (!this.current_entry) {
@@ -108,7 +114,10 @@ export class HistoryManager {
    * game.history.append(" all one line");
    */
   append(text: string) {
-    this.current_entry.append(text);
+    // TODO: test this with the operations queue
+    game.queue.push(() => {
+      this.current_entry.append(text);
+    });
   }
 
   /**

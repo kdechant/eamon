@@ -80,6 +80,7 @@ export default class EffectRepository {
       }
       if (inline) {
         // print on the same line as the last effect
+        // FIXME: This won't work with the new operations queue.
         game.history.append(" " + text);
       } else {
         // print as a new paragraph
