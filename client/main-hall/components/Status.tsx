@@ -10,9 +10,9 @@ const Status = (props: any) => {
   }
 
   // sort artifacts by type - weapons first, then armor
-  let artifacts = props.player.inventory.sort((a, b) => {
-    let typeA = a.type === 2 || a.type === 3 ? 2 : a.type;
-    let typeB = b.type === 2 || b.type === 3 ? 2 : b.type;
+  const artifacts = props.player.inventory.sort((a, b) => {
+    const typeA = a.type === 2 || a.type === 3 ? 2 : a.type;
+    const typeB = b.type === 2 || b.type === 3 ? 2 : b.type;
     return typeA - typeB;
   });
 

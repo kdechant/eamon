@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -94,7 +94,7 @@ test("summon the king in yellow (also nasty)", () => {
 test("drop weapon and run away", () => {
   game.monsters.get(8).destroy();  // star vampire
   game.player.moveToRoom(2); game.tick();
-  let weapon = game.player.weapon;
+  const weapon = game.player.weapon;
   game.mock_random_numbers = [2, 1];  // run north
   game.command_parser.run('say ' + game.data.phrases.companion);
   expectEffectSeen(1);
@@ -118,7 +118,7 @@ test("enter well", () => {
 });
 
 test("elder sign", () => {
-  let spell_ability_pre = game.player.spell_abilities.blast;
+  const spell_ability_pre = game.player.spell_abilities.blast;
   game.monsters.get(8).destroy();  // star vampire
   game.artifacts.get(4).moveToInventory();
   game.command_parser.run('use elder sign');
@@ -138,7 +138,7 @@ test("elder sign", () => {
 });
 
 test("statuette", () => {
-  let statuette = game.artifacts.get(1);
+  const statuette = game.artifacts.get(1);
   statuette.moveToInventory();
   game.monsters.get(8).destroy();  // star vampire
   game.mock_random_numbers = [1];  // don't flee; we test that above
@@ -153,7 +153,7 @@ test("statuette", () => {
 });
 
 test("statuette again", () => {
-  let statuette = game.artifacts.get(1);
+  const statuette = game.artifacts.get(1);
   statuette.moveToInventory();
   game.monsters.get(8).destroy();  // star vampire
   game.player.moveToRoom(2); game.tick();
@@ -192,9 +192,9 @@ test("amulet 2", () => {
   game.monsters.get(1).moveToRoom(2);
   game.skip_battle_actions = true;
   game.tick();
-  let previous_blast = game.player.spell_abilities_original['blast'];
-  let previous_axe = game.player.weapon_abilities[1];
-  let previous_ch = game.player.charisma;
+  const previous_blast = game.player.spell_abilities_original['blast'];
+  const previous_axe = game.player.weapon_abilities[1];
+  const previous_ch = game.player.charisma;
   game.command_parser.run('use amulet');
   expectEffectSeen(28);
   expectEffectSeen(29);

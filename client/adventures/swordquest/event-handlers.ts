@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -21,7 +21,7 @@ export var event_handlers = {
     // player
     if (monster.id === 0) {
       game.history.write("In your last conscious moments, you think:");
-      let rl = game.diceRoll(1, 7);
+      const rl = game.diceRoll(1, 7);
       game.effects.print(rl + 15);
     }
     // morgan/excalibur
@@ -55,7 +55,7 @@ export var event_handlers = {
       game.effects.print(13);
       new_wpn.destroy();
       game.effects.print(1);
-      let r2 = game.diceRoll(1, 75);
+      const r2 = game.diceRoll(1, 75);
       game.player.moveToRoom(r2);
       return false;
     }
@@ -67,7 +67,7 @@ export var event_handlers = {
     if (phrase === 'via mithrae') {
       if (game.player.hasArtifact(4) && game.player.hasArtifact(5)) {
         game.effects.print(1);
-        let r2 = game.diceRoll(1, 95);
+        const r2 = game.diceRoll(1, 95);
         game.player.moveToRoom(r2);
       }
     } else if (phrase === 'pax mithrae') {
@@ -102,7 +102,7 @@ export var event_handlers = {
     } else {
       game.effects.print(14);
       game.player.gold = 0;
-      for (let a of game.player.inventory) {
+      for (const a of game.player.inventory) {
         a.destroy();
       }
     }

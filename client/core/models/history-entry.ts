@@ -11,12 +11,12 @@ export class HistoryEntry {
     this.command = command;
   }
 
-  public push(text: string, type: string, markdown: boolean = false) {
+  public push(text: string, type: string, markdown = false) {
     if (text === null) {
       text = "";
     }
-    let split_text = text.split(/\n/g);
-    for (let i in split_text) {
+    const split_text = text.split(/\n/g);
+    for (const i in split_text) {
       this.results.push({ text: split_text[i], type, markdown });
     }
   }

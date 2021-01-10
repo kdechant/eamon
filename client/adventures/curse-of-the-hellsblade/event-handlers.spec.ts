@@ -9,7 +9,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -36,7 +36,7 @@ test("setup", () => {
 
 test("hellsblade", () => {
   // ready weapon
-  let hb = game.artifacts.get(25);
+  const hb = game.artifacts.get(25);
   expect(game.player.weapon_id).toBe(25);
   runCommand("ready firebrand");
   expect(game.player.weapon_id).toBe(73);

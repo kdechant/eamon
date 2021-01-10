@@ -26,7 +26,7 @@ export default class GameObject {
    */
   public init(source): void {
     this.uuid = uuidv4();
-    for (let prop in source) {
+    for (const prop in source) {
       this[prop] = source[prop];
     }
   }

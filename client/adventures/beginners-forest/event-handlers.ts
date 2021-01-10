@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -145,7 +145,7 @@ export var event_handlers = {
 
   "spellExpires": function(spell_name) {
     // if wearing the agility ring, it disappears
-    let ring = game.artifacts.get(2);
+    const ring = game.artifacts.get(2);
     if (spell_name === 'speed' && ring.monster_id === 0 && ring.is_worn) {
       game.effects.print(17, 'success');
       ring.destroy();
@@ -154,7 +154,7 @@ export var event_handlers = {
 
   "endTurn": function() {
     // ghosts
-    let ghosts = game.monsters.get(9);
+    const ghosts = game.monsters.get(9);
     if (game.player.room_id > 1 && game.player.room_id <= 5) {
       // 1 in 3 chance a ghost appears in those rooms; limit of 4 in the room
       if (game.diceRoll(1, 3) == 1 && ghosts.children.filter(m => m.isHere()).length < 4) {
@@ -168,14 +168,14 @@ export var event_handlers = {
     }
 
     // fairy queen
-    let queen = game.monsters.get(8);
+    const queen = game.monsters.get(8);
     if (queen.room_id === game.player.room_id && !game.data["met queen"]) {
       game.data["met queen"] = true;
       game.effects.print(game.data["queen effect"]);
       game.artifacts.get(game.data["queen artifact"]).moveToRoom();
 
       // grass blade turns into Greenblade
-      let blade = game.artifacts.get(6);
+      const blade = game.artifacts.get(6);
       if (blade.isHere()) {
         blade.destroy();
         game.artifacts.get(8).moveToRoom();
@@ -201,7 +201,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {

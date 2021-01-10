@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -37,7 +37,7 @@ it("should have working event handlers", () => {
   game.command_parser.run('get all');
 
   // spells
-  let original_ac = game.player.armor_class;
+  const original_ac = game.player.armor_class;
   game.command_parser.run('say qorgaw');
   expect(game.player.spell_counters['qorgaw']).toBeGreaterThan(0);
   expect(game.player.armor_class).toBe(original_ac + 3);
@@ -61,7 +61,7 @@ it("should have working event handlers", () => {
   expect(game.data['holfane speaks']).toBe(4);
 
   // wenda
-  let wenda = game.monsters.get(3);
+  const wenda = game.monsters.get(3);
   wenda.reaction = Monster.RX_NEUTRAL;  // she has random friendliness, but needs to be neutral for the test
   game.player.moveToRoom(16);
   game.tick();
@@ -89,7 +89,7 @@ it("should have working event handlers", () => {
   expect(game.player.room_id).toBe(25);
 
   // ulik
-  let ulik = game.monsters.get(8);
+  const ulik = game.monsters.get(8);
   game.tick();
   game.player.moveToRoom(53);
   game.artifacts.get(32).moveToInventory();

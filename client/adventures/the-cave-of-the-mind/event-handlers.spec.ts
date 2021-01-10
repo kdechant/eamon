@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -62,7 +62,7 @@ it("should have working event handlers", () => {
   expect(game.player.room_id).toBe(16);
 
   // use the potion
-  let p = game.artifacts.get(16);
+  const p = game.artifacts.get(16);
   game.triggerEvent("use", "potion", p);
   expect(game.effects.get(10).seen).toBeTruthy();
   expect(game.won).toBeTruthy();

@@ -10,7 +10,7 @@ class ArtifactTile extends React.Component<any, any> {
     this.setState({message: "Bought!"});
     setTimeout(() => {
       this.setState({message: ""});
-      let player = this.props.player;
+      const player = this.props.player;
       player.inventory.push(this.props.artifact);
       player.gold -= this.props.artifact.value;
       this.props.setPlayerState(player);
@@ -21,8 +21,8 @@ class ArtifactTile extends React.Component<any, any> {
   public sell = () => {
     this.setState({message: "Sold!"});
     setTimeout(() => {
-      let player = this.props.player;
-      let index = player.inventory.indexOf(this.props.artifact);
+      const player = this.props.player;
+      const index = player.inventory.indexOf(this.props.artifact);
       if (index > -1) {
         player.inventory.splice(index, 1);
       }
@@ -51,7 +51,7 @@ class ArtifactTile extends React.Component<any, any> {
       );
     }
 
-    let value = this.props.action === "buy" ? this.props.artifact.value : Math.floor(this.props.artifact.value / 2);
+    const value = this.props.action === "buy" ? this.props.artifact.value : Math.floor(this.props.artifact.value / 2);
 
     let button = <button className="btn disabled">Not enough gold</button>;
     if (this.props.action === "buy" && this.props.player.gold >= this.props.artifact.value) {

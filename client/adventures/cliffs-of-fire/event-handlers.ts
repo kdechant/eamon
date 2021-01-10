@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -24,7 +24,7 @@ export var event_handlers = {
     if (exit.room_to === RoomExit.EXIT) {
       if (!game.player.hasArtifact(16)) {
         game.pause();
-        let q1 = new ModalQuestion;
+        const q1 = new ModalQuestion;
         q1.type = 'multiple_choice';
         q1.question = "Seeing that you are not carrying the sceptre, the priests look at you with disapproval. One says, 'Do you really wish to return to the Main Hall?'";
         q1.choices = ['Yes', 'No'];
@@ -71,7 +71,7 @@ export var event_handlers = {
       // heal everyone in the room
       game.history.write(game.player.name + " is healed!");
       game.player.heal(100);
-      for (let m of game.monsters.visible) {
+      for (const m of game.monsters.visible) {
         game.history.write(m.name + " is healed!");
         m.heal(100);
       }

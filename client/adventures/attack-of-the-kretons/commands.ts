@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -13,7 +13,7 @@ custom_commands.push({
   examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
     arg = arg.toLowerCase();
-    let stan = game.monsters.get(8);
+    const stan = game.monsters.get(8);
     if (arg === 'brandy' && stan.isHere()) {
       if (stan.hasArtifact(28)) {
         if (game.player.gold < 75) {
@@ -69,7 +69,7 @@ custom_commands.push({
       arg = arg.slice(3);
     }
 
-    let monster = game.monsters.getLocalByName(arg);
+    const monster = game.monsters.getLocalByName(arg);
     if (monster) {
       if (monster.id === 2) {
         // minstrel
@@ -121,7 +121,7 @@ custom_commands.push({
     }
 
     // if you try to talk to an artifact
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       game.history.write('No response.');
       return;

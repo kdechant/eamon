@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -28,7 +28,7 @@ export var event_handlers = {
 
   "afterGet": function(arg, artifact) {
     // wizard attacks if you take the TV
-    let wizard = game.monsters.get(3);
+    const wizard = game.monsters.get(3);
     if (artifact && artifact.id === 4 && wizard.isHere()) {
       game.effects.print(13, "warning");
       wizard.reaction = Monster.RX_HOSTILE;
@@ -97,7 +97,7 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let artifact = game.artifacts.getLocalByName(arg, false);
+    const artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact && artifact.id === 17) {
       game.command_parser.run("read inscription", false);
       return false;
@@ -110,10 +110,10 @@ export var event_handlers = {
       game.history.write(" PEACE BEGETS PEACE. PUT DOWN YOUR", "special2");
       game.history.write("WEAPONS AND LEAVE VIOLENCE BEHIND YOU ", "special2");
       // teleport all weapons to random rooms
-      for (let i in game.player.inventory) {
-        let item = game.player.inventory[i];
+      for (const i in game.player.inventory) {
+        const item = game.player.inventory[i];
         if (item.is_weapon) {
-          let dest = game.rooms.getRandom();
+          const dest = game.rooms.getRandom();
           item.moveToRoom(dest.id);
         }
       }
@@ -149,7 +149,7 @@ export var event_handlers = {
             artifact.is_worn = true;
           }
           game.modal.show("Use helmet on whom?", function(value) {
-            let monster = game.monsters.getLocalByName(value);
+            const monster = game.monsters.getLocalByName(value);
             if (!monster) {
               game.history.write("Nobody here by that name!");
             } else {
@@ -171,8 +171,8 @@ export var event_handlers = {
                   game.data["heat ray destroyed"] = true;
                   game.skip_battle_actions = true;
                 } else {
-                  let reactions = ["does a little dance for your amusement.", "picks its metal nose.", "stands on its head.", "tells a dirty joke."];
-                  let action_no = Math.floor(Math.random() * reactions.length);
+                  const reactions = ["does a little dance for your amusement.", "picks its metal nose.", "stands on its head.", "tells a dirty joke."];
+                  const action_no = Math.floor(Math.random() * reactions.length);
                   game.history.write("The Cylon " + reactions[action_no]);
                 }
               } else {
@@ -190,7 +190,7 @@ export var event_handlers = {
           break;
         case 21:
           // harmonica
-          let bridge = game.artifacts.get(24);
+          const bridge = game.artifacts.get(24);
           if (game.player.room_id === 21 && !bridge.room_id) {
             bridge.room_id = 21;
             // effect message is in the artifact description
@@ -224,7 +224,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {

@@ -11,7 +11,7 @@ import player from "../../main-hall/models/player";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -102,8 +102,8 @@ it("should have working event handlers", () => {
   expect(game.player.weapon_id).toBe(12);
 
   // polaris
-  let polaris = game.monsters.get(1);
-  let orb = game.artifacts.get(19);
+  const polaris = game.monsters.get(1);
+  const orb = game.artifacts.get(19);
   game.player.moveToRoom(polaris.room_id);
   game.command_parser.run("look");
   game.player.weapon_abilities[2] = 100;
@@ -123,7 +123,7 @@ it("should have working event handlers", () => {
   expect(game.data['shattered orb']).toBeTruthy();
 
   // orb + warlock
-  let warlock = game.monsters.get(22);
+  const warlock = game.monsters.get(22);
   orb.moveToInventory();
   game.artifacts.get(20).destroy();
   game.data['shattered orb'] = false;

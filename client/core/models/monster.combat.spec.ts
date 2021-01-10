@@ -3,7 +3,7 @@ import {initMockGame} from "../utils/testing";
 import {Artifact} from "../models/artifact";
 import {Monster} from "../models/monster";
 
-var game = new Game();
+const game = new Game();
 
 describe("Monster Combat", function() {
 
@@ -17,8 +17,8 @@ describe("Monster Combat", function() {
   });
 
   it("should know if it's able to attack (single monster)", function () {
-    let guard = game.monsters.get(1);
-    let spear = game.artifacts.get(4);
+    const guard = game.monsters.get(1);
+    const spear = game.artifacts.get(4);
     // expect(guard.weapon_id).toBe(4, "monster data is dirty - test fails");
     // expect(game.artifacts.get(4).monster_id).toBe(1, "artifact data is dirty - test fails");
 
@@ -65,8 +65,8 @@ describe("Monster Combat", function() {
   });
 
   it("should swing and miss", function () {
-    let alfred = game.monsters.get(3);  // has a weapon
-    let thief = game.monsters.get(4);   // no weapon
+    const alfred = game.monsters.get(3);  // has a weapon
+    const thief = game.monsters.get(4);   // no weapon
 
     game.mock_random_numbers = [96, 1];
     alfred.attack(thief);
@@ -79,9 +79,9 @@ describe("Monster Combat", function() {
   });
 
   it("should fumble", function () {
-    let alfred = game.monsters.get(3);  // has a weapon
-    let sword = game.artifacts.get(8);  // alfred's weapon
-    let thief = game.monsters.get(4);   // no weapon
+    const alfred = game.monsters.get(3);  // has a weapon
+    const sword = game.artifacts.get(8);  // alfred's weapon
+    const thief = game.monsters.get(4);   // no weapon
 
     // fumble recovered
     game.mock_random_numbers = [98, 1];

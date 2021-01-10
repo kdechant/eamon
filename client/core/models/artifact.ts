@@ -4,7 +4,7 @@ import {Monster} from "./monster";
 import {CommandException} from "../utils/command.exception";
 import ArtifactRepository from "../repositories/artifact.repo";
 
-declare var game;
+declare let game;
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -12,28 +12,28 @@ declare var game;
 export class Artifact extends GameObject {
 
   // constants
-  static TYPE_GOLD: number = 0;
-  static TYPE_TREASURE: number = 1;
-  static TYPE_WEAPON: number = 2;
-  static TYPE_MAGIC_WEAPON: number = 3;
-  static TYPE_CONTAINER: number = 4;
-  static TYPE_LIGHT_SOURCE: number = 5;
-  static TYPE_DRINKABLE: number = 6;
-  static TYPE_READABLE: number = 7;
-  static TYPE_DOOR: number = 8;
-  static TYPE_EDIBLE: number = 9;
-  static TYPE_BOUND_MONSTER: number = 10;
-  static TYPE_WEARABLE: number = 11;
-  static TYPE_DISGUISED_MONSTER: number = 12;
-  static TYPE_DEAD_BODY: number = 13;
-  static TYPE_USER_1: number = 14;
-  static TYPE_USER_2: number = 15;
-  static TYPE_USER_3: number = 16;
-  static ARMOR_TYPE_ARMOR: number = 0;
-  static ARMOR_TYPE_SHIELD: number = 1;
-  static ARMOR_TYPE_HELMET: number = 2;
-  static ARMOR_TYPE_GLOVES: number = 3;
-  static ARMOR_TYPE_RING: number = 4;
+  static TYPE_GOLD = 0;
+  static TYPE_TREASURE = 1;
+  static TYPE_WEAPON = 2;
+  static TYPE_MAGIC_WEAPON = 3;
+  static TYPE_CONTAINER = 4;
+  static TYPE_LIGHT_SOURCE = 5;
+  static TYPE_DRINKABLE = 6;
+  static TYPE_READABLE = 7;
+  static TYPE_DOOR = 8;
+  static TYPE_EDIBLE = 9;
+  static TYPE_BOUND_MONSTER = 10;
+  static TYPE_WEARABLE = 11;
+  static TYPE_DISGUISED_MONSTER = 12;
+  static TYPE_DEAD_BODY = 13;
+  static TYPE_USER_1 = 14;
+  static TYPE_USER_2 = 15;
+  static TYPE_USER_3 = 16;
+  static ARMOR_TYPE_ARMOR = 0;
+  static ARMOR_TYPE_SHIELD = 1;
+  static ARMOR_TYPE_HELMET = 2;
+  static ARMOR_TYPE_GLOVES = 3;
+  static ARMOR_TYPE_RING = 4;
 
   // data properties
   room_id: number; // if on the ground, which room
@@ -68,17 +68,17 @@ export class Artifact extends GameObject {
 
   // game-state properties
   contents: Artifact[] = [];  // the Artifact objects for the things inside a container
-  is_lit: boolean = false;
-  inventory_message: string = "";  // replaces the "lit" or "wearing" message if set
-  markings_index: number = 0; // counter used to keep track of the next marking to read
-  is_worn: boolean = false; // if the monster is wearing it
-  is_broken: boolean = false;  // for a doors/containers that has been smashed open
-  player_brought: boolean = false; // flag to indicate which items the player brought with them
+  is_lit = false;
+  inventory_message = "";  // replaces the "lit" or "wearing" message if set
+  markings_index = 0; // counter used to keep track of the next marking to read
+  is_worn = false; // if the monster is wearing it
+  is_broken = false;  // for a doors/containers that has been smashed open
+  player_brought = false; // flag to indicate which items the player brought with them
 
   // used in Marcos' shop in Main Hall
-  message: string = "";
-  messageState: string = "hidden";
-  salePending: boolean = false;
+  message = "";
+  messageState = "hidden";
+  salePending = false;
 
   /**
    * Moves the artifact to a specific room.
@@ -124,7 +124,7 @@ export class Artifact extends GameObject {
    * Gets the Artifact object for an artifact inside the container
    */
   public getContainedArtifact(name: string): Artifact {
-    for (let i in this.contents) {
+    for (const i in this.contents) {
       if (this.contents[i].match(name)) {
         return this.contents[i];
       }
@@ -139,7 +139,7 @@ export class Artifact extends GameObject {
    */
   public contains(ids: number|number[]) {
     if (typeof ids === 'number') ids = [ids];
-    for (let id of ids) {
+    for (const id of ids) {
       if (game.artifacts.get(id).container_id !== this.id) {
         return false;
       }
@@ -174,7 +174,7 @@ export class Artifact extends GameObject {
    * or the room where the container is (depending on size of artifact)
    */
   public removeFromContainer(): void {
-    let container: Artifact = game.artifacts.get(this.container_id);
+    const container: Artifact = game.artifacts.get(this.container_id);
     if (container) {
       this.container_id = null;
       if (container.room_id !== null) {
@@ -205,7 +205,7 @@ export class Artifact extends GameObject {
     if (this.type === Artifact.TYPE_BOUND_MONSTER) {
       throw new CommandException("putIntoContainer() can't be used on bound monster artifacts.")
     }
-    let c = typeof container === "number" ? game.artifacts.get(container) : container;
+    const c = typeof container === "number" ? game.artifacts.get(container) : container;
     if (!c) {
       throw new CommandException("I couldn't find that container!");
     }
@@ -221,12 +221,12 @@ export class Artifact extends GameObject {
   /**
    * If the artifact is a container, build the list of contents
    */
-  public updateContents(override: boolean = false): void {
+  public updateContents(override = false): void {
 
     this.contents = [];
     if (this.type === Artifact.TYPE_CONTAINER || override) {
-      let artifacts_repo: ArtifactRepository = game.artifacts;
-      for (let i in artifacts_repo.all) {
+      const artifacts_repo: ArtifactRepository = game.artifacts;
+      for (const i in artifacts_repo.all) {
         if (artifacts_repo.all[i].container_id === this.id) {
           this.contents.push(artifacts_repo.all[i]);
         }
@@ -238,17 +238,17 @@ export class Artifact extends GameObject {
   /**
    * Prints the artifacts inside a container
    */
-  public printContents(style: string = "normal"): void {
+  public printContents(style = "normal"): void {
     game.history.write("It contains:");
 
     // find monsters inside the container
-    let monsters = game.monsters.all.filter(x => x.container_id === this.id);
+    const monsters = game.monsters.all.filter(x => x.container_id === this.id);
     if (this.contents.length === 0 && monsters.length === 0) {
       game.history.write(" - (nothing)", "no-space");
     }
     // monsters get moved into the room automatically
     // (the monster-in-container ability is only meant for surprises, e.g., the vampire who awakens when you open his coffin)
-    for (let m of monsters) {
+    for (const m of monsters) {
       game.history.write(" - " + m.getDisplayName(), "no-space");
       m.moveToRoom();
       m.showDescription();
@@ -256,7 +256,7 @@ export class Artifact extends GameObject {
       game.skip_battle_actions = true;  // technically not necessary, but it's confusing to see fighting before the monster desc
     }
     // artifacts stay in the container and just get listed
-    for (let a of this.contents) {
+    for (const a of this.contents) {
       game.history.write(" - " + a.getDisplayName(), "no-space");
     }
   }
@@ -269,7 +269,7 @@ export class Artifact extends GameObject {
       return 1000000; // arbitrarily high number
     }
     let capacity = this.quantity;
-    for (let c of this.contents) {
+    for (const c of this.contents) {
       capacity -= c.weight;
     }
     return capacity;
@@ -293,16 +293,16 @@ export class Artifact extends GameObject {
     // logic for simple healing potions, healing by eating food, etc.
     if ((this.type === Artifact.TYPE_EDIBLE || this.type === Artifact.TYPE_DRINKABLE) && this.dice !== 0) {
       // Healing items affect the monster that's carrying the item. If it's in the room, it affects the player.
-      let owner = this.getOwner();
+      const owner = this.getOwner();
       if (owner) {
         if (this.dice > 0) {
-          let heal_amount = game.diceRoll(this.dice, this.sides);
+          const heal_amount = game.diceRoll(this.dice, this.sides);
           game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
           owner.heal(heal_amount);
         } else if (this.dice < 0) {
           // poison - negative dice was a common way to make poison in EDX adventures
           game.history.write("Yuck! It was poison!", "warning");
-          let damage = game.diceRoll(Math.abs(this.dice), this.sides);
+          const damage = game.diceRoll(Math.abs(this.dice), this.sides);
           owner.injure(damage, true);
         }
       }
@@ -329,7 +329,7 @@ export class Artifact extends GameObject {
    * Prints the effects associated with the artifact. Used e.g., when revealing a disguised monster
    * (in future, could also be used for reading READABLE type artifacts.)
    */
-  public printEffects(style: string = "normal"): void {
+  public printEffects(style = "normal"): void {
     if (this.effect_id) {
       for (let i = this.effect_id; i < this.effect_id + this.num_effects; i++) {
         game.effects.print(i, style);
@@ -345,7 +345,7 @@ export class Artifact extends GameObject {
 
     // some doors have two sides, represented as two artifacts in different rooms. open the "other side" too
     if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
-      let linked_door = game.artifacts.get(this.linked_door_id);
+      const linked_door = game.artifacts.get(this.linked_door_id);
       if (linked_door) {
         linked_door.reveal(); // for 2-sided secret doors
         linked_door.is_open = true;
@@ -361,7 +361,7 @@ export class Artifact extends GameObject {
 
     // some doors have two sides, represented as two artifacts in different rooms. close the "other side" too
     if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
-      let linked_door = game.artifacts.get(this.linked_door_id);
+      const linked_door = game.artifacts.get(this.linked_door_id);
       if (linked_door) {
         linked_door.is_open = false;
       }
@@ -387,7 +387,7 @@ export class Artifact extends GameObject {
 
     // some doors have two sides, represented as two artifacts in different rooms. break open the "other side" too
     if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
-      let linked_door = game.artifacts.get(this.linked_door_id);
+      const linked_door = game.artifacts.get(this.linked_door_id);
       if (linked_door) {
         // don't call reveal() here or it will cause an infinite loop
         linked_door.embedded = false;
@@ -407,7 +407,7 @@ export class Artifact extends GameObject {
    */
   public revealDisguisedMonster(): void {
     this.printEffects("special");
-    let monster = game.monsters.get(this.monster_id);
+    const monster = game.monsters.get(this.monster_id);
     monster.room_id = game.rooms.current_room.id;
     monster.checkReaction();
 
@@ -423,7 +423,7 @@ export class Artifact extends GameObject {
   public freeBoundMonster(): void {
     if (this.type === Artifact.TYPE_BOUND_MONSTER) {
       // put the freed monster into the room
-      let monster = game.monsters.get(this.monster_id);
+      const monster = game.monsters.get(this.monster_id);
       monster.moveToRoom(this.room_id);
       // remove the "bound monster" artifact
       this.destroy();
@@ -436,7 +436,7 @@ export class Artifact extends GameObject {
    * @param {string} source - Whether a physical ("attack") or magical ("blast") source of damage
    * @returns number The amount of actual damage done
    */
-  public injure(damage: number, source: string = "attack"): number {
+  public injure(damage: number, source = "attack"): number {
 
     if (this.type === Artifact.TYPE_DEAD_BODY) {
       // if it's a dead body, hack it to bits
@@ -446,7 +446,7 @@ export class Artifact extends GameObject {
     } else if (this.type === Artifact.TYPE_CONTAINER || this.type === Artifact.TYPE_DOOR) {
       // if it's a door or container, try to break it open.
       if (this.hardiness !== null) {
-        let damage = game.player.rollAttackDamage();
+        const damage = game.player.rollAttackDamage();
         if (source === "attack")
           game.history.write("Wham! You hit the " + this.name + "!");
         else
@@ -457,14 +457,14 @@ export class Artifact extends GameObject {
           this.is_open = true;
           game.history.write("The " + this.name + " breaks open!");
           if (this.type === Artifact.TYPE_CONTAINER) {
-            for (let item of this.contents) {
+            for (const item of this.contents) {
               item.moveToRoom();
             }
           } else {
             // Some doors have two sides, represented as two artifacts in
             // different rooms. Break open the "other side" too.
             if (this.type === Artifact.TYPE_DOOR && this.linked_door_id) {
-              let linked_door = game.artifacts.get(this.linked_door_id);
+              const linked_door = game.artifacts.get(this.linked_door_id);
               if (linked_door) {
                 linked_door.reveal();
                 linked_door.is_open = true;
@@ -487,7 +487,7 @@ export class Artifact extends GameObject {
    * Removes an artifact from the game
    */
   public destroy(): void {
-    let monster_id = this.monster_id;
+    const monster_id = this.monster_id;
     this.monster_id = null;
     this.room_id = null;
     this.container_id = null;
@@ -541,7 +541,7 @@ export class Artifact extends GameObject {
     switch (this.type) {
       case Artifact.TYPE_WEAPON:
       case Artifact.TYPE_MAGIC_WEAPON:
-        let t: string = "";
+        let t = "";
         switch (this.weapon_type) {
           case 3:
             t = "hammer";

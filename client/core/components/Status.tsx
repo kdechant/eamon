@@ -36,11 +36,11 @@ class Status extends React.Component<any, any> {
     // visible exits (normal exits and ones with non-hidden doors)
     const visible_exits = game.rooms.current_room.getVisibleExits();
 
-    let armor = game.player.inventory.filter(a => a.is_worn && a.isArmor()).sort((a, b) => {
+    const armor = game.player.inventory.filter(a => a.is_worn && a.isArmor()).sort((a, b) => {
       return a.armor_type - b.armor_type;
     });
 
-    let statusClass = this.props.open ? '' : 'd-none';
+    const statusClass = this.props.open ? '' : 'd-none';
 
     let hp_class = '';
     if (game.player.damage > game.player.hardiness * 0.6) {
@@ -218,13 +218,13 @@ export default Status;
 
 // some helper components
 const StatusMonster = (props) => {
-  let monster = props.monster;
+  const monster = props.monster;
   let className = "monster ";
   if (monster.reaction === Monster.RX_FRIEND) { className += "friendly" }
   if (monster.reaction === Monster.RX_HOSTILE) { className += "hostile" }
 
-  let visible_children = monster.children.filter(m => m.isHere());
-  let singular = monster.count === 1 || visible_children.length === 1;
+  const visible_children = monster.children.filter(m => m.isHere());
+  const singular = monster.count === 1 || visible_children.length === 1;
 
   return (
     <div className={className}>
@@ -239,8 +239,8 @@ const StatusMonster = (props) => {
 }
 
 const StatusArtifact = (props) => {
-  let artifact = props.artifact;
-  let artifact_name = props.article ? artifact.getDisplayName() : artifact.name;
+  const artifact = props.artifact;
+  const artifact_name = props.article ? artifact.getDisplayName() : artifact.name;
   return (
     <div className="artifact">
       { artifact_name }&nbsp;

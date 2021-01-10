@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
 import Game from "../models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 class History extends React.Component<any, any> {
 

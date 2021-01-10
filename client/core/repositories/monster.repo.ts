@@ -1,7 +1,7 @@
 import { Monster, GroupMonster } from "../models/monster";
 import Game from "../models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Class MonsterRepository.
@@ -22,11 +22,11 @@ export default class MonsterRepository {
   /**
    * The highest ID in the system
    */
-  index: number = 0;
+  index = 0;
 
-  constructor(monster_data: Array<Object>, restoring_save: boolean = false) {
+  constructor(monster_data: Array<Object>, restoring_save = false) {
     monster_data.forEach((m: any) => {
-      let monster = this.add(m);
+      const monster = this.add(m);
 
       // unpack group monsters
       // TODO: move this to the GroupMonster class?
@@ -41,7 +41,7 @@ export default class MonsterRepository {
           }
           // There is one Monster object for each child monster, with an ID that's based on the group's id.
           // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
-          let child = this.add({
+          const child = this.add({
             ...m,
             id: monster.id + 0.0001 * i,   // this can handle groups up to 9999 members
             parent: monster,
@@ -89,7 +89,7 @@ export default class MonsterRepository {
       throw new Error("Tried to create a monster #" + monster_data.id + " but that ID is already taken.");
     }
 
-    let m = monster_data.count > 1 ? new GroupMonster() : new Monster();
+    const m = monster_data.count > 1 ? new GroupMonster() : new Monster();
     // "synonyms" in the back end are called "aliases" here
     if (monster_data.synonyms) {
       monster_data.aliases = monster_data.synonyms.split(",");
@@ -177,10 +177,10 @@ export default class MonsterRepository {
     this.all.push(game.player);
 
     // create new artifact objects for the weapons and armor the player brought
-    for (let a of player_data.inventory) {
+    for (const a of player_data.inventory) {
       a.seen = true;
       a.player_brought = true;
-      let art = game.artifacts.add(a);
+      const art = game.artifacts.add(a);
       game.player.pickUp(art);
     }
 
@@ -197,7 +197,7 @@ export default class MonsterRepository {
    * @return Monster|GroupMonster
    */
   public get(id) {
-    let m = this.all.find(x => x.id === id);
+    const m = this.all.find(x => x.id === id);
     return m || null;
   }
 
@@ -207,7 +207,7 @@ export default class MonsterRepository {
    * @return Monster
    */
   public getByName(name: string) {
-    let m = this.all.find(x => x.match(name));
+    const m = this.all.find(x => x.match(name));
     return m || null;
   }
 
@@ -217,7 +217,7 @@ export default class MonsterRepository {
    * @return Monster
    */
   getLocalByName(name: string) {
-    let mon = this.all.find(m => m.isHere() && !m.parent && m.match(name));
+    const mon = this.all.find(m => m.isHere() && !m.parent && m.match(name));
     return mon || null;
   }
 
@@ -236,8 +236,8 @@ export default class MonsterRepository {
    *   Whether or not to include the player in the random selection (default false)
    * @return Monster
    */
-  public getRandom(include_player: boolean = false) {
-    let mons = this.all.filter(x => x.id !== Monster.PLAYER || include_player);
+  public getRandom(include_player = false) {
+    const mons = this.all.filter(x => x.id !== Monster.PLAYER || include_player);
     return mons[game.diceRoll(1, mons.length) - 1];
   }
 
@@ -250,9 +250,9 @@ export default class MonsterRepository {
     // handle the virtual group monster pointers (this is a no-op for single monsters)
     this.all.forEach(m => m.updateVirtualMonster());
 
-    let monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id && !x.parent);
+    const monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id && !x.parent);
     game.in_battle = false;
-    for (let m of monsters) {
+    for (const m of monsters) {
       // check monster reactions
       if (m.reaction === Monster.RX_UNKNOWN) {
         m.checkReaction();

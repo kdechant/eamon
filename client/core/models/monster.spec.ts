@@ -2,7 +2,7 @@ import Game from "../models/game";
 import {initMockGame} from "../utils/testing";
 import {Monster} from "../models/monster";
 
-var game = new Game();
+const game = new Game();
 
 describe("Monster", function() {
 
@@ -31,7 +31,7 @@ describe("Monster", function() {
     expect(game.monsters.get(4).match('bad guy')).toBeTruthy(); // alias
 
     // monster with no aliases
-    let king = game.monsters.get(2);
+    const king = game.monsters.get(2);
     expect(king.match('king')).toBeTruthy();
     expect(king.match('grand duke')).toBeFalsy();
   });
@@ -39,10 +39,10 @@ describe("Monster", function() {
   it("should know if it is in the same room as the player", () => {
     // expect(game.player.room_id).toEqual(1, "FAILURE TO SETUP FOR TEST: player should be in room 1 at test start");
 
-    let guard = game.monsters.get(1);
+    const guard = game.monsters.get(1);
     expect(guard.isHere()).toBeTruthy();
 
-    let king = game.monsters.get(2);
+    const king = game.monsters.get(2);
     expect(king.isHere()).toBeFalsy();
     king.moveToRoom(1);
     expect(king.isHere()).toBeTruthy();
@@ -51,7 +51,7 @@ describe("Monster", function() {
   });
 
   it("should decide if it wants to pick up a weapon", () => {
-    let m = new Monster();
+    const m = new Monster();
 
     // "special" combat code
     m.combat_code = Monster.COMBAT_CODE_SPECIAL;
@@ -90,7 +90,7 @@ describe("Monster", function() {
   });
 
   it("should know how to pick up and ready a weapon", () => {
-    let m = game.monsters.get(1);
+    const m = game.monsters.get(1);
     m.pickUpWeapon(game.artifacts.get(3));
     expect(m.hasArtifact(3)).toBe(true);
     expect(m.weapon_id).toBe(3);
@@ -98,7 +98,7 @@ describe("Monster", function() {
   });
 
   it("should know how to ready its best weapon", () => {
-    let m = game.monsters.get(1);
+    const m = game.monsters.get(1);
     m.weapon = null;
     m.weapon_id = null;
     m.readyBestWeapon();
@@ -115,7 +115,7 @@ describe("Monster", function() {
 
 
   it("should get its current weapon (single monster)", () => {
-    let guard = game.monsters.get(1);
+    const guard = game.monsters.get(1);
     let w = guard.getWeapon();
     expect(w.id).toBe(4);
 
@@ -152,8 +152,8 @@ describe("Monster", function() {
   });
 
   it("should know its attack odds", function() {
-    let guard = game.monsters.get(1);
-    let thief = game.monsters.get(4);
+    const guard = game.monsters.get(1);
+    const thief = game.monsters.get(4);
 
     // this value is getting changed somehow from the fixture data. set it back to 10
     game.artifacts.get(4).weapon_odds = 10;
@@ -181,8 +181,8 @@ describe("Monster", function() {
   });
 
   it("should move", function() {
-    let alfred = game.monsters.get(3);
-    let guard = game.monsters.get(1);
+    const alfred = game.monsters.get(3);
+    const guard = game.monsters.get(1);
     expect(alfred.room_id).toBe(1);
     game.player.moveToRoom(2);
     expect(alfred.room_id).toBe(2);
@@ -192,7 +192,7 @@ describe("Monster", function() {
   });
 
   it("should show its health status", function() {
-    let alfred = game.monsters.get(3);
+    const alfred = game.monsters.get(3);
     alfred.damage = 5;
     alfred.showHealth();
     expect(game.history.getLastOutput().text).toBe("Alfred is hurting.");
@@ -208,7 +208,7 @@ describe("Monster", function() {
   });
 
   it("should handle its dead body artifact", function() {
-    let thief = game.monsters.get(4);
+    const thief = game.monsters.get(4);
 
     // without dead body id
     thief.injure(100);

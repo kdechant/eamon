@@ -6,7 +6,7 @@ import {Room} from "../../core/models/room";
 import {isCobaltFront} from "../malleus-maleficarum/event-handlers";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -184,7 +184,7 @@ export var event_handlers = {
       return;
     }
     if (game.monsters.get(17).isHere()) {  // army ants
-      let children = game.monsters.get(17).children.length;
+      const children = game.monsters.get(17).children.length;
       if (children > 5) {
         game.effects.print(14);
         game.monsters.get(17).removeChildren(children - 5);
@@ -198,7 +198,7 @@ export var event_handlers = {
         game.history.write("It starts to rain.");
       } else {
         game.effects.print(20);
-        let orcs = game.monsters.get(50);
+        const orcs = game.monsters.get(50);
         if (!orcs.isHere()) {
           while (orcs.children.length < 4) {
             orcs.spawnChild();

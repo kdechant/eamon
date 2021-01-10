@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {Room} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -32,7 +32,7 @@ export var event_handlers = {
   "endTurn": function() {
     // bandit
     if (!game.in_battle && game.player.gold > 0 && game.monsters.get(13).room_id !== null && game.data['gold stolen'] === 0) {
-      let roll = game.diceRoll(1, 10);
+      const roll = game.diceRoll(1, 10);
       if (roll === 10) {
         game.effects.print(2);
         game.data['gold stolen'] = game.player.gold;
@@ -96,8 +96,8 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let throne = game.artifacts.get(26);
-    let door = game.artifacts.get(36);
+    const throne = game.artifacts.get(26);
+    const door = game.artifacts.get(36);
     if (arg !== "" && throne.match(arg) && throne.isHere() && door.embedded) {
       game.effects.print(3);
       door.reveal();
@@ -142,7 +142,7 @@ export var event_handlers = {
     }
     if (arg === 'eamon' && game.player.room_id === 52) {
       game.history.write("You hear a rumbling noise, and find yourself teleported...", "special");
-      let rm = game.diceRoll(1, 7) + 10;
+      const rm = game.diceRoll(1, 7) + 10;
       game.player.moveToRoom(rm);
     }
   },
@@ -165,8 +165,8 @@ export var event_handlers = {
   "power": function(roll) {
     if (roll <= 25) {
       game.history.write("You hear a rush of wind.");
-      let lights = game.artifacts.all.filter(a => Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.isHere());
-      for (let l of lights) {
+      const lights = game.artifacts.all.filter(a => Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.isHere());
+      for (const l of lights) {
         game.history.write("It blew out your " + l.name);
         l.is_lit = false;
       }
@@ -184,7 +184,7 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let kathryn = game.monsters.get(6);
+    const kathryn = game.monsters.get(6);
     if (kathryn.isHere() && kathryn.reaction !== Monster.RX_HOSTILE) {
       game.after_sell_messages.push("Kathryn thanks you for rescuing her and immediately heads off to find a new adventure.");
     }

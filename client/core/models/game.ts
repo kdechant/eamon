@@ -17,7 +17,7 @@ import {getAxios} from "../../main-hall/utils/api";
 import * as React from "react";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare let game;
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
@@ -25,10 +25,10 @@ declare var game;
 export default class Game {
 
   // constants
-  static STATUS_ACTIVE: number = 0;
-  static STATUS_WON: number = 1;
-  static STATUS_DIED: number = 2;
-  static STATUS_SELLING: number = 3;
+  static STATUS_ACTIVE = 0;
+  static STATUS_WON = 1;
+  static STATUS_DIED = 2;
+  static STATUS_SELLING = 3;
 
   /**
    * @var {number} The current adventure's id in the database
@@ -119,7 +119,7 @@ export default class Game {
   /**
    * The game timer. Keeps track of the number of game clock ticks.
    */
-  timer: number = 0;
+  timer = 0;
 
   /**
    * Command history and results
@@ -139,13 +139,13 @@ export default class Game {
   /**
    * In Battle flag
    */
-  in_battle: boolean = false;
+  in_battle = false;
 
   /**
    * "skip battle actions" flag. Set this to true to not have battle actions
    * happen this turn (e.g., when first moving into a room)
    */
-  skip_battle_actions: boolean = false;
+  skip_battle_actions = false;
 
   /**
    * Verbs that are displayed when monsters flee
@@ -158,7 +158,7 @@ export default class Game {
   /**
    * Messages that are displayed during the exit phase, after the sale of treasure
    */
-  exit_message: string = "You successfully ride off into the sunset.";
+  exit_message = "You successfully ride off into the sunset.";
 
   /**
    * Whether to prompt the player when they try to exit the adventure
@@ -168,23 +168,23 @@ export default class Game {
   /**
    * Name of the person who tells you you have too many weapons when you leave
    */
-  lwm_name: string = 'Lord William Missilefire';
+  lwm_name = 'Lord William Missilefire';
 
   /**
    * Name of the person who buys treasure at the end
    */
-  ss_name: string = 'Sam Slicker';
+  ss_name = 'Sam Slicker';
 
   /**
    * Name of the money in this adventure
    */
-  money_name: string = 'gold piece';
+  money_name = 'gold piece';
 
   /**
    * Whether to automatically show room exits next to the description in the
    * history window. (Opt-in by setting this in start event handler)
    */
-  show_exits: boolean = false;
+  show_exits = false;
 
   /**
    * Messages that are displayed during the exit phase, after the sale of treasure
@@ -204,33 +204,33 @@ export default class Game {
   /**
    * Flag to indicate that the turn has completed and the player may enter another command.
    */
-  ready: boolean = true;
+  ready = true;
 
   /**
    * Flag to indicate that the game is active (i.e., the player can still enter commands)
    * The game object is created in an inactive fashion and is activated during the startup prompt.
    */
-  active: boolean = false;
+  active = false;
 
   /**
    * Flag to indicate whether the game has started.
    */
-  started: boolean = false;
+  started = false;
 
   /**
    * Flag to indicate that the player exited the adventure successfully
    */
-  won: boolean = false;
+  won = false;
 
   /**
    * Flag to indicate that the player died
    */
-  died: boolean = false;
+  died = false;
 
   /**
    * Flag to indicate that the selling items phase is running
    */
-  selling: boolean = false;
+  selling = false;
 
   /**
    * A container for the modal object
@@ -240,7 +240,7 @@ export default class Game {
   /**
    * Flag for whether we're in demo mode
    */
-  demo: boolean = false;
+  demo = false;
 
   /**
    * Statistics for the game (damage taken, secret doors found, etc.)
@@ -296,8 +296,8 @@ export default class Game {
    *   The array of custom commands defined in the adventure
    */
   public registerAdventureLogic(event_handlers, commands): void {
-    for (let i in event_handlers) {
-      let e = new EventHandler();
+    for (const i in event_handlers) {
+      const e = new EventHandler();
       e.name = i;
       e.run = event_handlers[i];
       this.event_handlers.push(e);
@@ -348,11 +348,11 @@ export default class Game {
       this.fresh_start();
     } else {
       // real player. check if loading a saved game, otherwise init normally
-      for (let sv of saved_games) {
+      for (const sv of saved_games) {
         this.saved_games[sv.slot] = sv;
       }
       // determine if resuming a saved game
-      let saved_game_slot = window.localStorage.getItem('saved_game_slot');
+      const saved_game_slot = window.localStorage.getItem('saved_game_slot');
       if (saved_game_slot) {
 
         // loading a saved game
@@ -416,7 +416,7 @@ export default class Game {
     this.player.rechargeSpellAbilities();
 
     // if speed spell (or other timed spell) is active, decrease its time remaining
-    for (let spell_name in this.player.spell_counters) {
+    for (const spell_name in this.player.spell_counters) {
       if (this.player.spell_counters[spell_name] > 0) {
         this.player.spell_counters[spell_name]--;
         if (this.player.spell_counters[spell_name] === 0) {
@@ -432,8 +432,8 @@ export default class Game {
     }
 
     // check if there is a light source; decrement its fuel count
-    let light = this.artifacts.isLightSource();
-    for (let a of this.artifacts.all) {
+    const light = this.artifacts.isLightSource();
+    for (const a of this.artifacts.all) {
       if (a.type === Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.quantity !== -1) {
         a.quantity--;
         if (a.quantity === 0) {
@@ -452,7 +452,7 @@ export default class Game {
 
     // non-player monster actions
     if (this.in_battle && !this.skip_battle_actions) {
-      for (let m of this.monsters.all) {
+      for (const m of this.monsters.all) {
         if (m.id !== Monster.PLAYER && m.isHere() && this.player.status === Monster.STATUS_ALIVE && !m.parent) {
           m.doBattleActions();
         }
@@ -479,13 +479,13 @@ export default class Game {
 
     if (game.died) return;
 
-    let light = this.artifacts.isLightSource();
+    const light = this.artifacts.isLightSource();
     // show room name and description
     if (this.rooms.current_room.is_dark && !light) {
-      if (!!this.rooms.current_room.dark_name) {
+      if (this.rooms.current_room.dark_name) {
         this.history.write(this.rooms.current_room.dark_name);
       }
-      if (!!this.rooms.current_room.dark_description) {
+      if (this.rooms.current_room.dark_description) {
         if (!this.rooms.current_room.visited_in_dark) {
           this.rooms.current_room.show_dark_description();
           this.rooms.current_room.visited_in_dark = true;
@@ -518,7 +518,7 @@ export default class Game {
     if (light || !this.rooms.current_room.is_dark) {
       this.history.write(""); // blank line for white space
       let space = false;
-      for (let m of this.monsters.visible) {
+      for (const m of this.monsters.visible) {
         if (!m.seen) {
           m.showDescription();
           m.seen = true;
@@ -528,7 +528,7 @@ export default class Game {
           if (!m.children.length) {
             this.history.write(`${m.getDisplayName()} is here.`, space ? "" : "no-space");
           } else {
-            let count_here = m.children.filter(m => m.isHere()).length;
+            const count_here = m.children.filter(m => m.isHere()).length;
             if (count_here > 1) {
               this.history.write(`${count_here} ${m.name_plural} are here.`, space ? "" : "no-space");
             } else {
@@ -540,7 +540,7 @@ export default class Game {
       }
 
       space = false;
-      for (let a of this.artifacts.visible) {
+      for (const a of this.artifacts.visible) {
         if (!a.seen) {
           a.showDescription();
           space = true;  // padding between desc and next monster
@@ -582,7 +582,7 @@ export default class Game {
 
     // for unit testing, it's possible to set mock random numbers
     if (this.mock_random_numbers.length) {
-      let num = this.mock_random_numbers.shift();
+      const num = this.mock_random_numbers.shift();
       console.debug("Used mock random number: " + num);
       return num;
     }
@@ -612,7 +612,7 @@ export default class Game {
     if (array.length === 1) {
       return array[0];
     }
-    let index = this.diceRoll(1, array.length) - 1;
+    const index = this.diceRoll(1, array.length) - 1;
     if (typeof(array[index]) === 'undefined') {
       console.log('oops: getRandomElement rolled index: ', index, array);
       console.trace();
@@ -648,7 +648,7 @@ export default class Game {
    *   Another argument to the event.
    */
   public triggerEvent(event_name, arg1?: any, arg2?: any, arg3?: any): any {
-    for (let e of this.event_handlers) {
+    for (const e of this.event_handlers) {
       if (e.name === event_name) {
         return e.run(arg1, arg2, arg3);
       }
@@ -676,7 +676,7 @@ export default class Game {
    * @param {number} time
    *   The amount of time to delay, in seconds
    */
-  public delay(time: number = 3) {
+  public delay(time = 3) {
     // TODO: rework this (currently no-op, removed in favor of automatic screen pauses)
     // if (this.history.delay > 0) {
     //   this.history.total_delay += time * 1000;
@@ -693,14 +693,14 @@ export default class Game {
       this.history.display();
 
       this.logger.log('exit adventure', this.timer);
-      for (let s in this.statistics) {
+      for (const s in this.statistics) {
         this.logger.log(s, this.statistics[s]);
       }
 
       // delete the saved games
       const axios = getAxios();
       for (let slot=1; slot <= 10; slot++) {
-        let saved_game = this.saved_games[slot];
+        const saved_game = this.saved_games[slot];
         if (saved_game) {
           axios.delete("/saves/" + saved_game.id + '.json?uuid=' + window.localStorage.getItem('eamon_uuid'))
             .then(res => {
@@ -739,7 +739,7 @@ export default class Game {
 
       this.logger.log('died on move', this.timer);
       this.logger.log('died in room', this.player.room_id);
-      for (let s in this.statistics) {
+      for (const s in this.statistics) {
         if (s.indexOf('damage') !== -1) {
           this.logger.log(s, this.statistics[s]);
         }
@@ -756,7 +756,7 @@ export default class Game {
    */
   public save(slot, description) {
     this.logger.log('save game to slot ' + slot + ': ' + description);
-    let sv = {
+    const sv = {
       player_id: window.localStorage.getItem('player_id'),
       uuid: window.localStorage.getItem('eamon_uuid'),
       adventure_id: this.id,
@@ -803,7 +803,7 @@ export default class Game {
     axios.get("/saves/" + save.id + ".json?uuid=" + window.localStorage.getItem('eamon_uuid'))
       .then(
       res => {
-        let data = JSON.parse(decompressFromBase64(res.data.data));
+        const data = JSON.parse(decompressFromBase64(res.data.data));
         // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
         this.rooms = new RoomRepository(data.rooms);
         this.artifacts = new ArtifactRepository(data.artifacts);

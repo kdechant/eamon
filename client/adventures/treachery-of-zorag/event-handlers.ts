@@ -8,7 +8,7 @@ import {CommandException} from "../../core/utils/command.exception";
 import {BuyCommand} from "../../core/commands/optional-commands";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -23,8 +23,8 @@ export var event_handlers = {
 
     // set custom hardiness of monsters based on player's best weapon
     // (which should be the weapon the player readied at game init)
-    let wpn = game.player.getWeapon();
-    let dmg = wpn ? wpn.maxDamage() / 2 : 8;
+    const wpn = game.player.getWeapon();
+    const dmg = wpn ? wpn.maxDamage() / 2 : 8;
     game.monsters.all.filter(m => m.hardiness < 0)
       .forEach(m => m.hardiness = dmg * Math.abs(m.hardiness));
 
@@ -45,7 +45,7 @@ export var event_handlers = {
 
     // unpack monster talk data into monster
     game.monsters.all.forEach(monster => {
-      let words = talk_data.filter(d => d.monster === monster.id);
+      const words = talk_data.filter(d => d.monster === monster.id);
       if (words.length) {
         monster.data.talk = words;
         monster.data.talk.forEach(t => t.said = false);
@@ -67,7 +67,7 @@ export var event_handlers = {
       return false;
     }
     // sandeer / scroll logic - before checking whether the door blocks the way
-    let sandeer = game.monsters.get(13);
+    const sandeer = game.monsters.get(13);
     if (exit && exit.door_id === 51 && !game.artifacts.get(51).is_open && sandeer.isHere() && sandeer.hasArtifact(52)) {
       game.effects.print(117);
       game.artifacts.get(51).open();
@@ -90,7 +90,7 @@ export var event_handlers = {
     }
     // custom exit prompt
     if (exit.room_to === RoomExit.EXIT || game.data.auto_exit) {
-      let text = game.monsters.get(3).isAlive() ?
+      const text = game.monsters.get(3).isAlive() ?
         'You have not succeeded in your quest! Do you still want to leave this adventure?' :
         'You have succeeded in your quest! Leave this adventure?';
       game.modal.confirm(text, answer => {
@@ -129,7 +129,7 @@ export var event_handlers = {
     game.data.fatigue += local_terrain.move_time;
 
     // lantern management
-    let lantern = game.artifacts.get(1);
+    const lantern = game.artifacts.get(1);
     if (room_to.is_dark && !lantern.is_lit && lantern.quantity > 0 && game.data.auto_lantern) {
       game.history.write("You light the lantern before proceeding into the dark.")
       lantern.is_lit = true;
@@ -145,10 +145,10 @@ export var event_handlers = {
     game.data.just_entered_room = true;
 
     // triggered events when monster follows player
-    let enter_events = game.data.triggered_events.filter(
+    const enter_events = game.data.triggered_events.filter(
       e => e.room === room_from.id && e.type === 3 && e.triggered !== 1 &&
       game.monsters.get(e.monster).isHere());
-    for (let e of enter_events) {
+    for (const e of enter_events) {
       game.effects.print(e.effect);
       if (e.triggered === 0) {
         e.triggered = 1;
@@ -166,7 +166,7 @@ export var event_handlers = {
     // NPC healing potions
     game.monsters.visible.forEach(m => {
       if (m.damage > m.hardiness / 2) {
-        let potions = m.inventory.filter(a => a.type === Artifact.TYPE_DRINKABLE && a.quantity > 0);
+        const potions = m.inventory.filter(a => a.type === Artifact.TYPE_DRINKABLE && a.quantity > 0);
         if (potions.length) {
           const p = potions[0];
           const pronoun = m.gender === 'male' ? 'his' : 'her';
@@ -176,7 +176,7 @@ export var event_handlers = {
       }
     });
     // Zorag heal spell
-    let zorag = game.monsters.get(34);
+    const zorag = game.monsters.get(34);
     if (zorag.damage > zorag.hardiness / 2) {
       game.effects.print(101);
       zorag.damage = 0;
@@ -214,10 +214,10 @@ export var event_handlers = {
     // triggered events on entering room
     const inTheDark = game.rooms.current_room.is_dark && !game.artifacts.isLightSource();
     if (!inTheDark) {
-      let enter_events = game.data.triggered_events.filter(e => e.room === game.player.room_id &&
+      const enter_events = game.data.triggered_events.filter(e => e.room === game.player.room_id &&
         e.type === 0 && e.triggered !== 1 &&
         (e.monster === 0 || game.monsters.get(e.monster).isHere()));
-      for (let e of enter_events) {
+      for (const e of enter_events) {
         game.effects.print(e.effect);
         // The 'enter room' triggered event can optionally have a door to open
         // or an artifact that is given to the player.
@@ -233,9 +233,9 @@ export var event_handlers = {
       }
     }
 
-    let not_wearing_effects = game.data.triggered_events.filter(e => e.room === game.player.room_id && e.type === 4 && e.triggered !== 1 && !game.player.isWearing(e.artifact));
+    const not_wearing_effects = game.data.triggered_events.filter(e => e.room === game.player.room_id && e.type === 4 && e.triggered !== 1 && !game.player.isWearing(e.artifact));
     if (not_wearing_effects.length) console.trace();
-    for (let e of not_wearing_effects) {
+    for (const e of not_wearing_effects) {
       game.effects.print(e.effect);
       if (e.triggered === 0) {
         e.triggered = 1;
@@ -250,7 +250,7 @@ export var event_handlers = {
     }
 
     // region hunger/thirst/fatigue
-    let status_messages = [];
+    const status_messages = [];
     if (game.data.hunger > 100) {
       const food_sources = game.player.inventory.filter(a => isFoodSource(a))
       if (food_sources.length) {
@@ -312,7 +312,7 @@ export var event_handlers = {
 
     // display items for sale
     // TODO: move this to core
-    let for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
+    const for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
     if (for_sale.length) {
       game.history.write("Items for sale here: " + for_sale.map(a => a.name).join(', '));
     }
@@ -327,7 +327,7 @@ export var event_handlers = {
       4: 22,
       6: 7
     };
-    for (let [refill_id, primary_id] of Object.entries(refill_map)) {
+    for (const [refill_id, primary_id] of Object.entries(refill_map)) {
       if (artifact.id === parseInt(refill_id)) {
         if (!game.player.hasArtifact(primary_id)) {
           game.artifacts.get(primary_id).moveToInventory();
@@ -423,7 +423,7 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let artifact = game.artifacts.getLocalByName(arg, false);
+    const artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact && artifact.type === Artifact.TYPE_DEAD_BODY) {
       if (artifact.data.hidden_artifact) {
         game.artifacts.get(artifact.data.hidden_artifact).moveToRoom();
@@ -443,7 +443,7 @@ export var event_handlers = {
 
   "beforeOpen": function(arg: string, artifact: Artifact) {
     if (artifact && artifact.id === 51 && !artifact.is_open) {
-      let sandeer = game.monsters.get(13);
+      const sandeer = game.monsters.get(13);
       if (artifact.id === 51 && sandeer.isHere() && sandeer.hasArtifact(52)) {
         game.effects.print(117);
         game.artifacts.get(51).open();
@@ -473,7 +473,7 @@ export var event_handlers = {
 
   "beforeSay": function (arg) {
     arg = arg.toLowerCase();
-    let orb = game.artifacts.get(19);
+    const orb = game.artifacts.get(19);
     if (arg === 'tealand' && game.player.room_id === 32 && !game.data.summoned_tealand) {
       game.effects.print(44);
       game.monsters.get(7).moveToRoom();
@@ -544,7 +544,7 @@ export var event_handlers = {
 
   "death": function(monster: Monster) {
     // triggered effects on monster death
-    let effects = triggered_events.filter(e =>
+    const effects = triggered_events.filter(e =>
       e.monster === monster.id && e.type === event_triggers.MONSTER_DIES);
     effects.forEach(e => {
       if (e.other_monster) {
@@ -607,7 +607,7 @@ export var event_handlers = {
       // monsters he can summon (excluding ones already in the room)
       const summonables = [35, 36, 37].map(id => game.monsters.get(id)).filter(m => !m.isHere());
       if (summonables.length && game.diceRoll(1, 10) >= 8) {
-        let monster = game.getRandomElement(summonables);
+        const monster = game.getRandomElement(summonables);
         monster.moveToRoom();
         game.effects.print(monster.id + 70);
         return false;  // skip normal moves
@@ -644,7 +644,7 @@ export var event_handlers = {
           break;
         case 14:  // wand of warding
           game.modal.show('Point at whom?', answer => {
-            let target = game.monsters.getLocalByName(answer);
+            const target = game.monsters.getLocalByName(answer);
             if (!target) {
               game.history.write('Nobody here by that name!');
             } else if (target.id === 6) {
@@ -661,7 +661,7 @@ export var event_handlers = {
 
   "power": function(roll) {
     // Activate stone
-    let stone = game.artifacts.get(49);
+    const stone = game.artifacts.get(49);
     if (stone.isHere() && !stone.data.active && game.artifacts.get(50).isHere()) {
       stone.data.active = true;
       stone.inventory_message = "glowing";
@@ -697,7 +697,7 @@ export function isWaterSource(artifact: Artifact) {
  * Prints the weather report (used in outdoor areas)
  */
 function weatherReport() {
-  let weather_effect = 0;
+  const weather_effect = 0;
   const local_terrain = terrain_data[game.rooms.current_room.data.env];
   if (local_terrain.weather_effects && game.diceRoll(1,2) === 2) {
     game.effects.print(game.getRandomElement(local_terrain.weather_effects));

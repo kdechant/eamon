@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -122,7 +122,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom(game.data.no_teleport_rooms);
+      const room = game.rooms.getRandom(game.data.no_teleport_rooms);
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {

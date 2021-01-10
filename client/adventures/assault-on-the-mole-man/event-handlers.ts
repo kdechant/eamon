@@ -1,7 +1,7 @@
 import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -9,7 +9,7 @@ export var event_handlers = {
     if (artifact) {
       if ([8, 9, 14, 15].indexOf(artifact.id) !== -1) {
         // these buttons free monsters
-        let a = game.artifacts.all.find(x => x.type === Artifact.TYPE_BOUND_MONSTER && x.isHere());
+        const a = game.artifacts.all.find(x => x.type === Artifact.TYPE_BOUND_MONSTER && x.isHere());
         if (typeof a !== 'undefined') {
           game.history.write("There is a clanking sound and the prisoner is freed!", "success");
           a.freeBoundMonster();
@@ -49,7 +49,7 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let army = game.monsters.get(29);
+    const army = game.monsters.get(29);
     if (army.isHere()) {
       game.history.write("* * P O O F * *", "special2");
       game.history.write("The army of mindless slaves vanishes!", "emphasis");
@@ -73,8 +73,8 @@ export var event_handlers = {
 
 
 // declare any functions used by event handlers and custom commands
-function toggle_gate(artifact_id: Number) {
-  let artifact = game.artifacts.get(artifact_id);
+function toggle_gate(artifact_id: number) {
+  const artifact = game.artifacts.get(artifact_id);
   if (artifact.is_open) {
     game.history.write("The gate swings closed!", "special");
     artifact.close();

@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -52,7 +52,7 @@ custom_commands.push({
   examples: ['PAY BARTENDER'],
   run: function(verb: string, arg: string): void {
     // this command is just a friendly alias for giving money to a couple of NPCs
-    let npc = game.monsters.getLocalByName(arg);
+    const npc = game.monsters.getLocalByName(arg);
     if (npc) {
       if (npc.id === 8) {
         game.command_parser.run('give 10 to bartender', false);
@@ -76,7 +76,7 @@ custom_commands.push({
   run: function(verb: string, arg: string): void {
     // this command is really just a wrapper around the "use" command
 
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id === 9) {
         // bell rope. "pull x" is just a synonym for "use x"

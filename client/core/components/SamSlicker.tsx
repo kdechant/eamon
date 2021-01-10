@@ -4,7 +4,7 @@ import axios from "axios";
 import {getHeaders, getAxios} from "../../main-hall/utils/api";
 import Game from "../models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 class SamSlicker extends React.Component<any, any> {
 
@@ -40,7 +40,7 @@ class SamSlicker extends React.Component<any, any> {
 
   private sell = (artifact) => {
     const game = this.props.game;
-    let i = game.player.inventory.indexOf(artifact);
+    const i = game.player.inventory.indexOf(artifact);
     game.player.inventory.splice(i, 1);
     game.player.profit += artifact.value;
     artifact.destroy();
@@ -50,9 +50,9 @@ class SamSlicker extends React.Component<any, any> {
   private savePlayer = () => {
     const game = this.props.game;
     game.player.gold += game.player.profit;
-    let axios = getAxios();
+    const axios = getAxios();
 
-    let rating_data = {
+    const rating_data = {
       ...this.state.rating,
       uuid: this.state.uuid,
       player_id: this.state.player_id,
@@ -79,7 +79,7 @@ class SamSlicker extends React.Component<any, any> {
 
   private updateRating = (type, value) => {
     const axios = getAxios();
-    let rating = { ...this.state.rating };
+    const rating = { ...this.state.rating };
     rating[type] = value;
     this.setState({rating});
   };
@@ -131,7 +131,7 @@ class SamSlicker extends React.Component<any, any> {
     // query api for ratings for this player
 
     // build the rating buttons
-    let ratingButtons = (
+    const ratingButtons = (
       <div className="container sell-items">
         <div className="row">
           <div className="ratings col-md-6 offset-md-3 p-2">
@@ -188,8 +188,8 @@ class SamSlicker extends React.Component<any, any> {
       )
     }
 
-    let profit = game.player.profit.toLocaleString();
-    let money_name = pluralize(game.money_name, game.player.profit);
+    const profit = game.player.profit.toLocaleString();
+    const money_name = pluralize(game.money_name, game.player.profit);
     return (
       <div>
         <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>

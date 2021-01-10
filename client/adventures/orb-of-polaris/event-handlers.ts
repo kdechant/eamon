@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -17,7 +17,7 @@ export var event_handlers = {
     game.data['exit open'] = false;
 
     // random word of power to shatter the orb
-    let power_words = ["pokaris", "freonis", "chinara", "requess", "planoris"];
+    const power_words = ["pokaris", "freonis", "chinara", "requess", "planoris"];
     game.data['magic word'] = power_words[game.diceRoll(1, power_words.length) - 1];
 
     game.data['power counter'] = 0;
@@ -199,7 +199,7 @@ export var event_handlers = {
 
   "say": function (arg) {
     arg = arg.toLowerCase();
-    let orb = game.artifacts.get(19);
+    const orb = game.artifacts.get(19);
     if ((orb.isHere() || orb.monster_id === 22) && arg === game.data['magic word']) {
       game.history.write("Cracks appear in the orb. They grow rapidly, spreading across the surface.", "emphasis");
       game.history.write("The orb shatters with a great crash!", "special2");

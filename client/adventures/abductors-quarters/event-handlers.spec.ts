@@ -8,7 +8,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -35,7 +35,7 @@ test("cave in", () => {
 
 test('golden sword', () => {
   // golden sword
-  let sword = game.artifacts.get(20);
+  const sword = game.artifacts.get(20);
   game.player.moveToRoom(sword.room_id);
   game.artifacts.updateVisible();
   game.command_parser.run("get golden sword");
@@ -52,12 +52,12 @@ test('golden sword', () => {
 });
 
 test('saying magic words', () => {
-  let sword = game.artifacts.get(20);
+  const sword = game.artifacts.get(20);
   sword.moveToInventory();
   game.command_parser.run("say gilgamesh");
   expect(sword.monster_id).toBeNull();
   expect(game.monsters.get(15).room_id).toBe(game.player.room_id);
-  let anderhauf = game.artifacts.get(17);
+  const anderhauf = game.artifacts.get(17);
   anderhauf.moveToRoom();
   game.player.pickUp(anderhauf);
   game.command_parser.run("say anderhauf");
@@ -65,10 +65,10 @@ test('saying magic words', () => {
 });
 
 test('bottle', () => {
-  let flint = game.artifacts.get(8);
-  let bottle = game.artifacts.get(10);
-  let doorway = game.artifacts.get(11);
-  let doorway2 = game.artifacts.get(12);
+  const flint = game.artifacts.get(8);
+  const bottle = game.artifacts.get(10);
+  const doorway = game.artifacts.get(11);
+  const doorway2 = game.artifacts.get(12);
   game.player.moveToRoom(37);
   bottle.moveToRoom();
   flint.moveToRoom();

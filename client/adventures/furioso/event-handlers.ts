@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -29,8 +29,8 @@ export var event_handlers = {
     }
 
     // take away player's weapons and gold
-    let storage_rooms: number[] = [15, 17, 30, 29, 34];
-    for (let item of game.player.inventory) {
+    const storage_rooms: number[] = [15, 17, 30, 29, 34];
+    for (const item of game.player.inventory) {
       if (item.is_weapon) {
         item.monster_id = null;
         item.moveToRoom(storage_rooms[Math.floor(Math.random() * storage_rooms.length)]);
@@ -158,12 +158,12 @@ export var event_handlers = {
   "use": function(arg: string, artifact: Artifact) {
     if (artifact) {
       if (artifact.id === 19) {
-        let roll = game.diceRoll(1, 4);
+        const roll = game.diceRoll(1, 4);
         switch (roll) {
           case 1:
             let a: Artifact = null;
             for (let i = 51; i <= 59; i++) {
-              let art = game.artifacts.get(i);
+              const art = game.artifacts.get(i);
               if (art.isHere() && art.embedded) {
                 a = art;
               }
@@ -176,7 +176,7 @@ export var event_handlers = {
             break;
           case 2:
             let f = 0;
-            for (let a of game.player.inventory) {
+            for (const a of game.player.inventory) {
               if (a.value > 0 && game.data["artifacts increased"].indexOf(a.id) == -1) {
                 a.value += 10;
                 game.data["artifacts increased"].push(a.id);
@@ -217,13 +217,13 @@ export var event_handlers = {
     }
 
     // malagur
-    let malagur = game.monsters.get(6);
+    const malagur = game.monsters.get(6);
     if (malagur.isHere() && malagur.reaction === Monster.RX_FRIEND) {
-      let roll = game.diceRoll(1, 10);
+      const roll = game.diceRoll(1, 10);
       if (roll >= 7) {
         let favorite_item = null;
-        for (let i in game.player.inventory) {
-          let item = game.player.inventory[i];
+        for (const i in game.player.inventory) {
+          const item = game.player.inventory[i];
           if (!item.is_worn && item.id !== game.player.weapon_id && !item.is_lit && item.value > 10
             && (favorite_item === null || item.value > favorite_item.value)) {
             favorite_item = item;
@@ -248,14 +248,14 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let ball = game.artifacts.get(70);
+    const ball = game.artifacts.get(70);
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource() && !ball.isHere()) {
       ball.moveToRoom();
       ball.is_lit = true;
       ball.showDescription();
       ball.seen = true;
     } else {
-      let roll = game.diceRoll(1, 3);
+      const roll = game.diceRoll(1, 3);
       if (roll === 1 && game.player.damage > 0) {
         game.history.write("All your wounds are healed!");
         game.player.damage = 0;
@@ -276,7 +276,7 @@ export var event_handlers = {
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
     if (game.data["ship"] === "passenger") {
-      let taken = Math.floor(game.player.profit / 2);
+      const taken = Math.floor(game.player.profit / 2);
       game.after_sell_messages.push("The captain of the passenger ship takes " + taken + " gold pieces for your fare.");
       game.player.gold -= taken;
     }

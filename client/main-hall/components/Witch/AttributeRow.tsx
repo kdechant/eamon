@@ -52,7 +52,7 @@ class AttributeRow extends React.Component<any, any> {
   };
 
   public getPrice = () => {
-    let base = this.props.player[this.props.attribute.name];
+    const base = this.props.player[this.props.attribute.name];
     return Math.round(Math.pow(base, 3) / 100) * 100;
   };
 

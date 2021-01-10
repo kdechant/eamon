@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -60,17 +60,17 @@ export var event_handlers = {
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     // traps! (artifact type 14)
-    for (let a of game.artifacts.inRoom.filter(x => x.embedded && x.type === 14)) {
+    for (const a of game.artifacts.inRoom.filter(x => x.embedded && x.type === 14)) {
       game.effects.print(a.effect_id);
       // weapon_odds field is used to store the chance of hitting, as an integer (not a percentage).
       // to make the saving throw, the player rolls 1 d (agility) and has to be above that number.
 
       // choose targets and deal damage
-      let monster_ids = game.monsters.visible.map(x => x.id);
+      const monster_ids = game.monsters.visible.map(x => x.id);
       monster_ids.push(0);
       for (let i = 0; i < a.quantity; i++) {
-        let monster_index = game.diceRoll(1, monster_ids.length) - 1;
-        let victim = game.monsters.get(monster_ids[monster_index]);
+        const monster_index = game.diceRoll(1, monster_ids.length) - 1;
+        const victim = game.monsters.get(monster_ids[monster_index]);
         if (victim.rollSavingThrow('agility', a.weapon_odds)) {
           game.history.write(victim.name + " narrowly avoids the trap!");
         } else {
@@ -199,7 +199,7 @@ export var event_handlers = {
     if (roll < 20 || game.player.room_id === 58) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom([29,30,31,32,45,46,49,50,51,52,53,55,58]);
+      const room = game.rooms.getRandom([29,30,31,32,45,46,49,50,51,52,53,55,58]);
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else if (roll <= 40) {
@@ -215,7 +215,7 @@ export var event_handlers = {
         }
       } else {
         // affects a random monster
-        let victim = game.getRandomElement(game.monsters.visible);
+        const victim = game.getRandomElement(game.monsters.visible);
         game.history.write(victim.name + ' falls into the crack!', "warning");
         victim.destroy();
       }
@@ -224,7 +224,7 @@ export var event_handlers = {
       game.history.write('You hear a thunderous voice commanding: "Mortal! Bother me no more!"', "special2");
     } else if (roll <= 75) {
       // hero
-      let hero = game.monsters.get(57);
+      const hero = game.monsters.get(57);
       if (hero.isHere()) {
         game.history.write("The hero vanishes! (The gods giveth...)", "special");
         hero.destroy();
@@ -253,7 +253,7 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let thera = game.monsters.get(33);
+    const thera = game.monsters.get(33);
     if (thera.isHere() && thera.reaction !== Monster.RX_HOSTILE) {
       let reward = 500 + (thera.hardiness - thera.damage) * 25;
       game.after_sell_messages.push("Additionally, you receive " + reward + " gold pieces as a reward for the return of Princess Thera.");
@@ -280,8 +280,8 @@ function summon_wandering_monster() {
   if (!game.data['wandering monsters'].length) {
     return;
   }
-  let index = Math.floor(game.diceRoll(1, game.data["wandering monsters"].length) - 1);
-  let monster = game.monsters.get(game.data['wandering monsters'][index]);
+  const index = Math.floor(game.diceRoll(1, game.data["wandering monsters"].length) - 1);
+  const monster = game.monsters.get(game.data['wandering monsters'][index]);
   if (monster.room_id === null) {
     game.history.write(monster.name + " walks into the room!", "warning");
     monster.moveToRoom();
@@ -293,19 +293,19 @@ function summon_wandering_monster() {
  * The fireball wand logic
  */
 function fireball() {
-  let wand = game.artifacts.get(33);
+  const wand = game.artifacts.get(33);
 
   game.modal.show("What is the trigger word?", function (value) {
     if (value === 'fire') {
-      let targets: Monster[] = [];
-      for (let m of game.monsters.visible.filter(x => x.reaction === Monster.RX_HOSTILE)) {
+      const targets: Monster[] = [];
+      for (const m of game.monsters.visible.filter(x => x.reaction === Monster.RX_HOSTILE)) {
         if (targets.length < 10) {
           targets.push(m);
         }
       }
       if (targets.length) {
         game.history.write("The room is filled with an incandescent fireball!", "special2");
-        for (let target of targets) {
+        for (const target of targets) {
           let damage = game.diceRoll(6, 6);
           // saving throw
           if (target.rollSavingThrow('hardiness', 14)) {

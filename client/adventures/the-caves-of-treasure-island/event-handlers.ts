@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -13,7 +13,7 @@ export var event_handlers = {
     game.data["hermit_saves"] = false;
     game.data["hermit_speaks"] = false;
     game.data["quicksand_counter"] = 0;
-    let terry: Monster = game.monsters.get(16);
+    const terry: Monster = game.monsters.get(16);
     game.data["terry_actions"] = [
       terry.name + ' says, "Ya-d\'er-eh, what\'s this all aboot?"',
       terry.name + ' says, "Too tight!"',
@@ -75,7 +75,7 @@ export var event_handlers = {
         return;
       } else if (artifact.id === 2) {
         // potion can either hurt or heal
-        let roll = game.diceRoll(1, 10);
+        const roll = game.diceRoll(1, 10);
         if (roll > 8) {
           game.history.write("Argh! It burns!", "special");
           game.player.injure(5);
@@ -103,7 +103,7 @@ export var event_handlers = {
         // magic harp - heals all friendly monsters in the room
         game.history.write("You play the harp.");
         let m: Monster;
-        for (let i in game.monsters.all) {
+        for (const i in game.monsters.all) {
           m = game.monsters.all[i];
           if (m.isHere() && m.reaction === Monster.RX_FRIEND) {
             m.heal(m.damage);
@@ -156,18 +156,18 @@ export var event_handlers = {
 
   "endTurn2": function() {
     // hermit speaks
-    let hermit = game.monsters.get(4);
+    const hermit = game.monsters.get(4);
     if (game.player.room_id === 14 && hermit.room_id === 14 && !game.data["hermit_speaks"]) {
       game.effects.print(2);
       game.data["hermit_speaks"] = true;
     }
 
     // terry's ramblings
-    let terry = game.monsters.get(16);
+    const terry = game.monsters.get(16);
     if (game.player.room_id > 1 && !game.in_battle && terry.isHere()) {
-      let roll = game.diceRoll(1, 100);
+      const roll = game.diceRoll(1, 100);
       if (terry.reaction === Monster.RX_FRIEND && game.data["terry_actions"].length && roll <= 75) {
-        let action_no = Math.floor(Math.random() * game.data["terry_actions"].length);
+        const action_no = Math.floor(Math.random() * game.data["terry_actions"].length);
         game.history.write(game.data["terry_actions"][action_no]);
         game.data["terry_actions"].splice(action_no, 1);
       }
@@ -206,7 +206,7 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let genz = game.monsters.get(7);
+    const genz = game.monsters.get(7);
     if (genz.isHere() && genz.reaction !== Monster.RX_HOSTILE) {
       game.after_sell_messages.push(game.effects.get(6).text);
       game.player.profit += 1000;

@@ -3,7 +3,7 @@ import * as ReactMarkdown from 'react-markdown';
 import Game from "../models/game";
 import {gamevars} from "../utils";
 
-declare var game: Game;
+declare let game: Game;
 
 class IntroText extends React.Component<any, any> {
   public state = {

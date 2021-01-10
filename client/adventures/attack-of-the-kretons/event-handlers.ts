@@ -6,13 +6,13 @@ import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 import {ModalQuestion} from "../../core/models/modal";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
   "start": function() {
     // custom attack messages
-    let witch_attacks = [
+    const witch_attacks = [
       "sends flames showering upon",
       "sends a phantom fist hammering at",
       "shoots a beam of light at",
@@ -246,7 +246,7 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
-    let room_id = game.player.room_id;
+    const room_id = game.player.room_id;
 
     if (game.player.room_id === 57 && game.data['hot room'] > 0) {
       game.history.write("The flames rise higher! Hurry up, or you're toast!", "warning");
@@ -258,7 +258,7 @@ export var event_handlers = {
     }
 
     // groo's reactions to things
-    let groo = game.monsters.get(3);
+    const groo = game.monsters.get(3);
     if (groo.isHere()) {
       // thrown out of court
       if (room_id === 5
@@ -295,9 +295,9 @@ export var event_handlers = {
     }
 
     // chichester's reactions to things
-    let chi = game.monsters.get(16);
-    let zombies = game.monsters.get(36);
-    let chakaal = game.monsters.get(34);
+    const chi = game.monsters.get(16);
+    const zombies = game.monsters.get(36);
+    const chakaal = game.monsters.get(34);
     if (chi.isHere()) {
       // zombie horde
       if (zombies.isHere()) {
@@ -324,12 +324,12 @@ export var event_handlers = {
     // monster actions and taunts
     game.monsters.visible.forEach(m => {
       if (m.data['actions'] && game.diceRoll(1,2) === 2) {
-        let action = game.getRandomElement(m.data['actions']);
+        const action = game.getRandomElement(m.data['actions']);
         game.history.write(`${m.name} ${action}`);
       }
       if (game.in_battle && m.data['battle taunts']
         && game.player.room_id !== 59 && game.diceRoll(1,2) === 2) {
-        let taunt = game.getRandomElement(m.data['battle taunts']);
+        const taunt = game.getRandomElement(m.data['battle taunts']);
         game.history.write(`${m.name} shouts with bloodlust, "${taunt}"`);
       }
     });
@@ -350,7 +350,7 @@ export var event_handlers = {
     }
 
     // cheesedip god
-    let cg = game.monsters.get(39);
+    const cg = game.monsters.get(39);
     if (cg.isHere()) {
       game.effects.print(85);
       if (groo.isHere()) {
@@ -548,7 +548,7 @@ export var event_handlers = {
 
   "say": function(phrase) {
     phrase = phrase.toLowerCase();
-    let room_id = game.player.room_id;
+    const room_id = game.player.room_id;
     if (phrase === 'the password' && room_id === 45) {
       game.history.write('The eagles say, "OK, go on in."');
       game.data['eagles'] = true;

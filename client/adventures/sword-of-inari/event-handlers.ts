@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -54,7 +54,7 @@ export var event_handlers = {
 
   "specialGet": function(arg): boolean {
     // if you try to get the sword when it's still in the brace
-    let sword = game.artifacts.get(12);
+    const sword = game.artifacts.get(12);
     if (sword.match(arg) && sword.container_id === 31) {
       if (game.player.room_id === 10) {
         game.history.write("You can't reach it from here!");
@@ -68,7 +68,7 @@ export var event_handlers = {
   },
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
-    let esher = game.monsters.get(1);
+    const esher = game.monsters.get(1);
 
     // player has to pick up some things before leaving first room
     if (room.id === 1 && exit.room_to === 2 && (!game.player.hasArtifact(13) || !game.player.hasArtifact(14) || !game.player.hasArtifact(11))) {
@@ -193,7 +193,7 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let sword = game.artifacts.get(12);
+    const sword = game.artifacts.get(12);
     if (sword.match(arg) && sword.container_id === 31) {
       if (game.player.room_id === 10) {
         game.history.write("The sword is too high to see clearly!");
@@ -313,7 +313,7 @@ export var event_handlers = {
     } else if (roll <= 91) {
       game.effects.print(44);
     } else {
-      for (let m of game.monsters.visible) {
+      for (const m of game.monsters.visible) {
         game.history.write("All of " + m.name + "'s wounds are healed!");
         m.heal(m.damage);
       }
@@ -329,7 +329,7 @@ export var event_handlers = {
   },
 
   "exit": function() {
-    let sword = game.artifacts.get(12);
+    const sword = game.artifacts.get(12);
 
     // got sword of inari but didn't complete other puzzle tasks
     if (sword.container_id !== 31) {
@@ -389,8 +389,8 @@ function armyDisappears() {
  * @returns {boolean}
  */
 function hasSword() {
-  let esher = game.monsters.get(1);
-  let sword = game.artifacts.get(12);
+  const esher = game.monsters.get(1);
+  const sword = game.artifacts.get(12);
   if (game.player.hasArtifact(12) || (game.player.hasArtifact(13) && sword.container_id === 13)) {
     return true;
   }
@@ -406,7 +406,7 @@ function hasSword() {
 function failedQuest() {
   game.effects.print(15);
   game.effects.print(24);
-  for (let a of game.player.inventory) {
+  for (const a of game.player.inventory) {
     a.destroy();
   }
   game.player.gold = 0;

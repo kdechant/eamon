@@ -21,7 +21,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -73,7 +73,7 @@ test("negative connections", () => {
 
 test('pure lembas', () => {
   game.artifacts.get(29).moveToInventory();
-  let hd = game.player.hardiness;
+  const hd = game.player.hardiness;
   runCommand('eat lembas');
   expect(game.player.hardiness).toBe(hd + 1);
 });
@@ -190,7 +190,7 @@ test('magic words', () => {
 test("forest gate", () => {
   movePlayer(73);
   runCommand('e');
-  let gate = game.artifacts.get(43);
+  const gate = game.artifacts.get(43);
   expectEffectSeen(13);
   expect(game.player.room_id).toBe(73);
   game.effects.get(13).seen = false;

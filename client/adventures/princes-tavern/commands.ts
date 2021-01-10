@@ -1,7 +1,7 @@
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -16,27 +16,27 @@ custom_commands.push({
 
       game.history.write("Your mind reaches beyond your body...", "special");
 
-      let m = game.monsters.getByName(arg);
+      const m = game.monsters.getByName(arg);
       if (m) {
         if (m.room_id !== null) {
-          let r = game.rooms.getRoomById(m.room_id);
+          const r = game.rooms.getRoomById(m.room_id);
           game.history.write(m.name + " is " + fix_room_name(r.name));
           return;
         }
       }
 
       // only look for artifacts
-      let a = game.artifacts.getByName(arg);
+      const a = game.artifacts.getByName(arg);
       if (a) {
         if (a.monster_id === 0) {
           game.history.write(a.name + " is in your possession!");
           return;
         } else if (a.monster_id) {
-          let m2 = game.monsters.get(a.monster_id);
+          const m2 = game.monsters.get(a.monster_id);
           game.history.write(a.name + " is being carried by " + m2.name + ".");
           return;
         } else if (a.room_id !== null) {
-          let r = game.rooms.getRoomById(a.room_id);
+          const r = game.rooms.getRoomById(a.room_id);
           game.history.write(a.name + " is " + fix_room_name(r.name));
           return;
         }
@@ -77,7 +77,7 @@ custom_commands.push({
 });
 
 function fix_room_name(name) {
-  let n = name.replace("You are ", "");
+  const n = name.replace("You are ", "");
   if (n.charAt(n.length - 1) === ".") {
     return n;
   } else {

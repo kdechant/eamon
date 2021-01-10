@@ -1,7 +1,7 @@
 import {Monster} from "../../core/models/monster";
 import Game from "../../core/models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Talks to a monster

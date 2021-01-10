@@ -11,7 +11,7 @@ import {drunk_messages} from "./event-handlers";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });

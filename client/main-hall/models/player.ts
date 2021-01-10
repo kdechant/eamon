@@ -34,7 +34,7 @@ export default class Player extends GameObject {
   best_weapon: Artifact | null;
   best_armor: Artifact | null;
   best_shield: Artifact | null;
-  icon: string = 'helmet2';
+  icon = 'helmet2';
   armor_class: number;
   armor_penalty: number;
   armor_factor: number;  // total armor penalty - armor expertise
@@ -47,10 +47,10 @@ export default class Player extends GameObject {
    * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
-    for (let prop in source) {
+    for (const prop in source) {
       if (prop === 'inventory') {
-        for (let i in source[prop]) {
-          let a = new Artifact();
+        for (const i in source[prop]) {
+          const a = new Artifact();
           a.init(source[prop][i]);
           this.inventory.push(a);
         }
@@ -125,7 +125,7 @@ export default class Player extends GameObject {
     this.best_armor = null;
     this.best_shield = null;
 
-    for (let a in this.inventory) {
+    for (const a in this.inventory) {
       if (this.inventory[a].type === 2 || this.inventory[a].type === 3) {
         if (this.best_weapon === null || this.inventory[a].maxDamage() > this.best_weapon.maxDamage()) {
           this.best_weapon = this.inventory[a];

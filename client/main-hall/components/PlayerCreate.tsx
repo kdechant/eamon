@@ -58,7 +58,7 @@ class PlayerCreate extends React.Component {
     event.preventDefault();
 
     // save new player to the API
-    let {id, error, ...player} = this.state;
+    const {id, error, ...player} = this.state;
     player.uuid = window.localStorage.getItem('eamon_uuid');
     axios.post("/api/players", player, {headers: getHeaders()})
       .then((res) => {

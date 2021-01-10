@@ -20,8 +20,8 @@ class PlayerList extends React.Component {
 
   public componentDidMount() {
     let eamon_uuid = window.localStorage.getItem('eamon_uuid');
-    let socialLoginId = window.localStorage.getItem('social_id');
-    let socialPlatform = window.localStorage.getItem('social_platform');
+    const socialLoginId = window.localStorage.getItem('social_id');
+    const socialPlatform = window.localStorage.getItem('social_platform');
 
     // set the UUID if it's not already in local storage
     if (!eamon_uuid) {
@@ -36,7 +36,7 @@ class PlayerList extends React.Component {
     axios.get('/api/players.json?uuid=' + uuid)
       .then(res => {
         const players = res.data.map(pl => {
-          let p = new Player();
+          const p = new Player();
           p.init(pl);
           p.update();
           return p;
@@ -51,14 +51,14 @@ class PlayerList extends React.Component {
    *   The login ID from the user's social media account
    */
   public linkLocalChars = () => {
-    let body = {
+    const body = {
       'social_id': this.state.socialLoginId,
       'uuid': window.localStorage.getItem('eamon_uuid')
     };
     const axios = getAxios();
     axios.post("/profiles", body)
       .then(res => {
-        let uuid = String(res.data['uuid']);
+        const uuid = String(res.data['uuid']);
         window.localStorage.setItem('eamon_uuid', res.data['uuid']);
         this.setState({ eamon_uuid: res.data['uuid'] }, this.loadPlayers);
       })

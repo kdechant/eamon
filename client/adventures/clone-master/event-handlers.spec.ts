@@ -9,7 +9,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -46,8 +46,8 @@ function getDynamite() {
 
 test('west wall', () => {
   getDynamite();
-  let dynamite = game.artifacts.get(5);
-  let crack = game.artifacts.get(6);
+  const dynamite = game.artifacts.get(5);
+  const crack = game.artifacts.get(6);
   game.player.moveToRoom(6);
   game.command_parser.run('e');
   expect(game.player.room_id).toBe(6);
@@ -68,8 +68,8 @@ test('west wall', () => {
 
 test('east wall', () => {
   getDynamite();
-  let dynamite = game.artifacts.get(5);
-  let crack = game.artifacts.get(8);
+  const dynamite = game.artifacts.get(5);
+  const crack = game.artifacts.get(8);
   game.player.moveToRoom(8);
   game.command_parser.run('w');
   expect(game.player.room_id).toBe(8);
@@ -165,7 +165,7 @@ test('attack clonatorium', () => {
     .filter(m => m.room_id === 30)
     .forEach(m => m.destroy());
   game.player.moveToRoom(30);
-  let guards = game.monsters.get(23);
+  const guards = game.monsters.get(23);
   expect(guards.isHere()).toBeFalsy();
   game.mock_random_numbers = [1, 1];
   game.command_parser.run('attack clonatorium');

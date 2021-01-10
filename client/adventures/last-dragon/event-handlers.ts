@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -81,7 +81,7 @@ export var event_handlers = {
       game.data['infected'] = true;
       game.effects.print(42);
       game.delay(2);
-      for (let a of game.player.inventory) {
+      for (const a of game.player.inventory) {
         game.history.write(a.name + " falls from your hands.", "no-space");
         a.moveToRoom(39);
       }
@@ -103,7 +103,7 @@ export var event_handlers = {
 
   "endTurn1": function() {
     // Lisolet turns against you
-    let lis = game.monsters.get(29);
+    const lis = game.monsters.get(29);
     if (lis.isHere() && game.player.room_id > 65 && lis.reaction === Monster.RX_FRIEND) {
       lis.reaction = Monster.RX_HOSTILE;
       game.history.write(lis.name + " looks up at the tower in awe. Then she begins to laugh wildly and draws her lance!", "special");
@@ -116,7 +116,7 @@ export var event_handlers = {
       game.data['captain asked'] = true;
       game.effects.print(39);
 
-      let q1 = new ModalQuestion;
+      const q1 = new ModalQuestion;
       q1.type = 'multiple_choice';
       q1.question = "Well, Outlander, will you pay it?";
       q1.choices = ['Yes', 'No', 'Say something else'];
@@ -138,7 +138,7 @@ export var event_handlers = {
         return false; // don't ask the next question
       };
 
-      let q2 = new ModalQuestion();
+      const q2 = new ModalQuestion();
       q2.type = 'text';
       q2.question = "What do you say?";
       q2.callback = function (answer) {
@@ -154,7 +154,7 @@ export var event_handlers = {
     }
 
     if (game.player.room_id === 33 || game.player.room_id === 39 || game.player.room_id === 86 || game.player.room_id === 95) {
-      let rl = game.diceRoll(1, 10);
+      const rl = game.diceRoll(1, 10);
       if (rl === 10) {
         game.effects.print(55);
         game.player.injure(game.diceRoll(1, 4), true);
@@ -174,7 +174,7 @@ export var event_handlers = {
     // Gwynnith makes Ossoric and Ossogotrix dissapear
     if (game.monsters.get(13).isHere() && !game.data['met gwynnith']) {
       game.data['met gwynnith'] = true;
-      let dragons = [game.monsters.get(27), game.monsters.get(28)].filter(m => m.isHere());
+      const dragons = [game.monsters.get(27), game.monsters.get(28)].filter(m => m.isHere());
       if (dragons.length) {
         game.effects.print(21, 'special2');
         dragons.forEach(d => {
@@ -201,8 +201,8 @@ export var event_handlers = {
   "say": function(arg) {
     arg = arg.toLowerCase();
 
-    let ossoric = game.monsters.get(27);
-    let ossogotrix = game.monsters.get(28);
+    const ossoric = game.monsters.get(27);
+    const ossogotrix = game.monsters.get(28);
 
     if (arg === 'orowe' && game.player.room_id === 75 && game.data['befriended dragons']) {
       if (!game.data['ossoric dead'] && !ossoric.isHere()) {
@@ -226,7 +226,7 @@ export var event_handlers = {
       // ragnar/woglinde
       console.log(game.data, ossoric.isHere(), ossogotrix.isHere());
 
-      let slab = game.artifacts.get(42);
+      const slab = game.artifacts.get(42);
       if (slab.isHere()) {
         slab.destroy();
         game.effects.print(20);
@@ -243,7 +243,7 @@ export var event_handlers = {
       } else if (game.player.room_id === 25) {
         // cave entrance
         game.effects.print(28);
-        let rl = game.diceRoll(1, 4);
+        const rl = game.diceRoll(1, 4);
         if (rl === 1) {
           game.player.moveToRoom(26);
         } else if (rl === 2) {
@@ -266,7 +266,7 @@ export var event_handlers = {
             ossogotrix.reaction = Monster.RX_FRIEND;
             game.effects.print(38);
             game.data['befriended dragons'] = true;
-            let s = game.player.gender === 'm' ? ", wise and gallant warrior," : ", brave and beautiful warrior,";
+            const s = game.player.gender === 'm' ? ", wise and gallant warrior," : ", brave and beautiful warrior,";
             game.history.write('"' + game.player.name + s, "special");
             game.effects.print(22, "special");
           }
@@ -318,7 +318,7 @@ export var event_handlers = {
         game.history.write("You hear a loud sonic boom which echoes all around you!");
       } else {
         game.history.write("Some of your wounds seem to clear up.");
-        let heal_amount = game.diceRoll(2, 6);
+        const heal_amount = game.diceRoll(2, 6);
         game.player.heal(heal_amount);
       }
     }

@@ -1,7 +1,7 @@
 import Game from "../../core/models/game";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -12,8 +12,8 @@ custom_commands.push({
   examples: ['BUY POTION'],
   run: function(verb: string, arg: string): void {
     arg = arg.toLowerCase();
-    let for_sale_here = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
-    let artifact = for_sale_here.find(a => a.match(arg));
+    const for_sale_here = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
+    const artifact = for_sale_here.find(a => a.match(arg));
     if (!artifact) {
       throw new CommandException("No one here has that for sale.");
     }

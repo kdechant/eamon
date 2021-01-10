@@ -1,6 +1,6 @@
 import Game from "../../core/models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -16,8 +16,8 @@ custom_commands.push({
   name: 'go',
   verbs: ['go'],
   run: function(verb, arg) {
-    var exits = game.rooms.current_room.exits;
-    var rand = exits[Math.floor(Math.random() * exits.length)];
+    const exits = game.rooms.current_room.exits;
+    const rand = exits[Math.floor(Math.random() * exits.length)];
     game.command_parser.run(rand.direction, false);
   }
 });

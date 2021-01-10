@@ -1,7 +1,7 @@
 import {Effect} from "../models/effect";
 import Game from "../models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Class EffectRepository.
@@ -17,10 +17,10 @@ export default class EffectRepository {
   /**
    * The highest Effect ID in the system
    */
-  index: number = 0;
+  index = 0;
 
   constructor(effect_data: Array<Object>) {
-    for (let e of effect_data) {
+    for (const e of effect_data) {
       this.add(e);
     }
   }
@@ -30,7 +30,7 @@ export default class EffectRepository {
    * @param {Object} effect_data - The raw data from the back end
    */
   public add(effect_data) {
-    let e = new Effect();
+    const e = new Effect();
     e.init(effect_data);
 
     // autonumber the ID if not provided
@@ -58,7 +58,7 @@ export default class EffectRepository {
    * @return Effect
    */
   public get(id): Effect {
-    let e = this.all.find(x => x.id === id);
+    const e = this.all.find(x => x.id === id);
     return e || null;
   }
 
@@ -69,8 +69,8 @@ export default class EffectRepository {
    * to use the style specified in the effect object
    * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
-  public print(id: number, style: string = null, inline: boolean = false): void {
-    let ef = this.get(id);
+  public print(id: number, style: string = null, inline = false): void {
+    const ef = this.get(id);
     if (ef) {
       let text = ef.text;
       if (ef.replacements) {
@@ -83,7 +83,7 @@ export default class EffectRepository {
         game.history.append(" " + text);
       } else {
         // print as a new paragraph
-        let final_style = style || ef.style || "normal";
+        const final_style = style || ef.style || "normal";
         game.history.write(text, final_style, ef.is_markdown);
       }
       if (ef.next !== null) {

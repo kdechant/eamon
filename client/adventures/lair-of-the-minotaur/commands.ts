@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 

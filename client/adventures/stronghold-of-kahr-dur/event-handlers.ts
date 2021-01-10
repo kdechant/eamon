@@ -5,15 +5,15 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
   "start": function() {
     // set custom hardiness of monsters based on player's best weapon
     // (which should be the weapon the player readied at game init)
-    let wpn = game.player.getWeapon();
-    let dmg = wpn ? wpn.maxDamage() / 2 : 10;
+    const wpn = game.player.getWeapon();
+    const dmg = wpn ? wpn.maxDamage() / 2 : 10;
     game.monsters.all.filter(m => parseInt(m.special) > 0)
       .forEach(m => m.hardiness = dmg * parseInt(m.special));
 
@@ -72,7 +72,7 @@ export var event_handlers = {
   "endTurn2": function() {
     // flavor effects
     if (!game.in_battle) {
-      let odds = game.rooms.get(84).seen ? 10 : 5;
+      const odds = game.rooms.get(84).seen ? 10 : 5;
       if (game.diceRoll(1, 100) <= odds) {
         game.effects.print(game.diceRoll(1, 5) + 64);
       }
@@ -84,7 +84,7 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let artifact = game.artifacts.getLocalByName(arg, false);
+    const artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact) {
       if (artifact.id === 3 && game.player.isWearing(2)) {
         artifact.open();
@@ -116,7 +116,7 @@ export var event_handlers = {
 
       switch (action) {
         case 1:  // spell drain
-          for (let a in game.player.spell_abilities) {
+          for (const a in game.player.spell_abilities) {
             game.player.spell_abilities[a] = Math.round(game.player.spell_abilities[a] *= 0.8);
           }
           return false;
@@ -130,7 +130,7 @@ export var event_handlers = {
           game.player.injure(game.diceRoll(1,10), true);
           return false;
         default:
-          let mon = game.monsters.get(summonables[action]);
+          const mon = game.monsters.get(summonables[action]);
           mon.damage = 0;
           mon.status = Monster.STATUS_ALIVE;
           mon.moveToRoom();
@@ -213,7 +213,7 @@ export var event_handlers = {
     phrase = phrase.toLowerCase();
 
     if (phrase === 'knock nikto mellon') {
-      let cauldron = game.artifacts.get(24);
+      const cauldron = game.artifacts.get(24);
       if (cauldron.isHere() && cauldron.contains([19,20,21,22])) {
         game.effects.print(51);
         game.data['cauldron'] = true;
@@ -261,7 +261,7 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let cauldron = game.artifacts.get(24);
+    const cauldron = game.artifacts.get(24);
     if (game.data['cauldron'] && cauldron.isHere() && cauldron.contains([19,20,21,22])) {
       game.artifacts.get(7).open();
       game.artifacts.get(7).key_id = null;
@@ -275,11 +275,11 @@ export var event_handlers = {
 
     // move companions into pit
     if (isInPit(game.player)) {
-      let friends = game.monsters.all.filter(
+      const friends = game.monsters.all.filter(
         m => m.seen && m.reaction === Monster.RX_FRIEND
         && m.status === Monster.STATUS_ALIVE && !isInPit(m));
       if (friends.length > 0) {
-        for (let f of friends) {
+        for (const f of friends) {
           game.history.write(`${f.name} suddenly appears!`);
           f.moveToRoom();
         }
@@ -287,11 +287,11 @@ export var event_handlers = {
       }
     } else {
       // move companions out of pit
-      let friends = game.monsters.all.filter(
+      const friends = game.monsters.all.filter(
         m => m.seen && m.reaction === Monster.RX_FRIEND
         && m.status === Monster.STATUS_ALIVE && isInPit(m));
       if (friends.length > 0) {
-        for (let f of friends) {
+        for (const f of friends) {
           game.history.write(`${f.name} suddenly appears!`);
           f.moveToRoom();
         }

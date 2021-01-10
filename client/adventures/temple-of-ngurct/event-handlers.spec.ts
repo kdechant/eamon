@@ -9,7 +9,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -31,7 +31,7 @@ test("wandering monsters", () => {
   // wandering monsters
   game.player.moveToRoom(2);  // they never appear in room 1 because it breaks other tests
   game.mock_random_numbers = [20, 1, 12]; // first turn will not summon a monster (rnd > 8), second turn will summon monster #18
-  let joubert = game.monsters.get(18);
+  const joubert = game.monsters.get(18);
   game.command_parser.run('look');
   expect(joubert.room_id).toBeNull();
   game.command_parser.run('look');
@@ -40,7 +40,7 @@ test("wandering monsters", () => {
 
 test('dead mage artifacts', () => {
   game.data['wandering monsters'] = [];
-  let dm = game.artifacts.get(32);
+  const dm = game.artifacts.get(32);
   expect(dm.room_id).not.toBeNull();
   dm.moveToRoom(); // this is easier than going to a random room that might have monsters in it
   game.command_parser.run('look dead mage');
@@ -78,8 +78,8 @@ test('fireball wand', () => {
 
 test('oak door', () => {
   game.data['wandering monsters'] = [];
-  let door1 = game.artifacts.get(16);
-  let door2 = game.artifacts.get(17);
+  const door1 = game.artifacts.get(16);
+  const door2 = game.artifacts.get(17);
   game.player.moveToRoom(33);
   game.tick();
   game.command_parser.run('open door');
@@ -100,11 +100,11 @@ test('hieroglyphics', () => {
 
 test('potion', () => {
   game.data['wandering monsters'] = [];
-  let black_potion = game.artifacts.get(62);
+  const black_potion = game.artifacts.get(62);
   black_potion.moveToInventory();
   game.player.updateInventory();
-  let old_ag = game.player.agility;
-  let old_original_ag = game.player.stats_original.agility;
+  const old_ag = game.player.agility;
+  const old_original_ag = game.player.stats_original.agility;
   game.command_parser.run('drink black potion');
   expect(game.player.agility).toBe(old_ag + 1);
   expect(game.player.stats_original.agility).toBe(old_original_ag + 1);
@@ -112,7 +112,7 @@ test('potion', () => {
 
 test('carcass', () => {
   game.data['wandering monsters'] = [];
-  let carcass = game.artifacts.get(67);
+  const carcass = game.artifacts.get(67);
   carcass.moveToRoom();
   game.artifacts.updateVisible();
   game.command_parser.run('eat carcass');
@@ -132,7 +132,7 @@ test('door logic', () => {
 
 test('alkanda', () => {
   game.data['wandering monsters'] = [];
-  let alk = game.monsters.get(56);
+  const alk = game.monsters.get(56);
   game.command_parser.run('say annal natthrac');
   expect(alk.room_id).toBeNull();
   game.artifacts.get(37).moveToInventory();

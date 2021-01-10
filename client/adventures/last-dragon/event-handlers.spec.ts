@@ -17,7 +17,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -37,7 +37,7 @@ beforeEach(() => {
 
 test('ship, no', () => {
   game.modal.mock_answers = ['No'];
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   movePlayer(2);
   expect(game.player.room_id).toBe(2);
   expect(game.player.gold).toBe(gold);
@@ -48,7 +48,7 @@ test('ship, no', () => {
 
 test('ship pay', () => {
   game.modal.mock_answers = ['Yes'];
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   movePlayer(2);
   expect(game.player.room_id).toBe(3);
   expect(game.player.gold).toBe(gold - 100);
@@ -71,7 +71,7 @@ test('ship, not enough money', () => {
 
 test('ship free passage', () => {
   game.modal.mock_answers = ['Say something else', 'quaal dracis'];
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   movePlayer(2);
   expect(game.player.room_id).toBe(3);
   expect(game.player.gold).toBe(gold);
@@ -141,8 +141,8 @@ test('befriend dragons', () => {
   movePlayer(46);
 
   // make baby dragons neutral to avoid combat
-  let ossoric = game.monsters.get(27);
-  let ossogotrix = game.monsters.get(28);
+  const ossoric = game.monsters.get(27);
+  const ossogotrix = game.monsters.get(28);
   ossoric.reaction = Monster.RX_NEUTRAL;
   ossogotrix.reaction = Monster.RX_NEUTRAL;
 
@@ -181,7 +181,7 @@ test('mylinth', () => {
 });
 
 test('lisolet', () => {
-  let lis = game.monsters.get(29);
+  const lis = game.monsters.get(29);
   lis.moveToRoom(58);
   movePlayer(58);
   expect(lis.reaction).toBe(Monster.RX_FRIEND);
@@ -216,7 +216,7 @@ test('ready invictus without dragon', () => {
 });
 
 test('invictus / dragon', () => {
-  let vinc = game.monsters.get(26);
+  const vinc = game.monsters.get(26);
   game.artifacts.get(32).moveToInventory();
   movePlayer(45);
   runCommand('ready inv');
@@ -245,7 +245,7 @@ test('gwynnith 1', () => {
 });
 
 test('gwynnith 2', () => {
-  let dragons = [game.monsters.get(27), game.monsters.get(28)];
+  const dragons = [game.monsters.get(27), game.monsters.get(28)];
   dragons.forEach(d => {
     d.moveToRoom(55);
     d.reaction = Monster.RX_FRIEND;
@@ -299,7 +299,7 @@ test('orowe 3', () => {
 });
 
 test('boss fight', () => {
-  let tancred = game.monsters.get(11);
+  const tancred = game.monsters.get(11);
   tancred.moveToRoom(75);
   movePlayer(75);
   playerHit('harpy', 999);

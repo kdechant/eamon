@@ -1,7 +1,7 @@
 import Game from "../../core/models/game";
 import {light_trollsfire, put_out_trollsfire} from "./event-handlers";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -11,7 +11,7 @@ custom_commands.push({
   description: "Activates a special item.",
   examples: ['TROLLSFIRE or SAY TROLLSFIRE'],
   run: function(verb: string, arg: string): void {
-    let trollsfire = game.artifacts.get(10);
+    const trollsfire = game.artifacts.get(10);
 
     if (game.player.hasArtifact(trollsfire.id)) {
       if (!trollsfire.is_lit) {

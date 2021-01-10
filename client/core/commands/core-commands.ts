@@ -8,17 +8,17 @@ import {CommandException} from "../utils/command.exception";
 import {ModalQuestion} from "../models/modal";
 import {formatMonsterAction} from "../utils";
 
-declare var game: Game;
+declare let game: Game;
 
-export let core_commands = [];
+export const core_commands = [];
 
 export class MoveCommand implements BaseCommand {
-  name: string = "move";
+  name = "move";
   verbs: string[] = ["north", "n", "south", "s", "east", "e", "west", "w",
     "up", "u", "down", "d",
     "northeast", "ne", "southeast", "se", "southwest", "sw", "northwest", "nw"];
-  category: string = "movement";
-  description: string = "Moves in a direction";
+  category = "movement";
+  description = "Moves in a direction";
   examples: string[] = [
     'N - Go to the North',
     'S - Go to the South',
@@ -43,7 +43,7 @@ export class MoveCommand implements BaseCommand {
    */
   history_display(verb) {
     // turn short words ("n") into long ("north")
-    for (let d in this.directions) {
+    for (const d in this.directions) {
       if (this.directions[d] === verb) {
         return d;
       }
@@ -58,8 +58,8 @@ export class MoveCommand implements BaseCommand {
       verb = this.directions[verb];
     }
 
-    let room_from = game.rooms.current_room;
-    let exit = game.rooms.current_room.getExit(verb);
+    const room_from = game.rooms.current_room;
+    const exit = game.rooms.current_room.getExit(verb);
     let msg: string;
 
     if (!game.triggerEvent('specialMove', arg, exit)) return;
@@ -78,7 +78,7 @@ export class MoveCommand implements BaseCommand {
 
     // check if there is a door or gate blocking the way
     if (exit.door_id) {
-      let door = game.artifacts.get(exit.door_id);
+      const door = game.artifacts.get(exit.door_id);
 
       // sometimes doors get moved or blown up, so check if the door is still there
       if (door.room_id === room_from.id) {
@@ -95,7 +95,7 @@ export class MoveCommand implements BaseCommand {
 
         // try to unlock the door using a key the player is carrying
         if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
-          let key = game.artifacts.get(door.key_id);
+          const key = game.artifacts.get(door.key_id);
           game.history.write("You unlock the " + door.name + " using the " + key.name + ".");
           door.open();
         }
@@ -131,7 +131,7 @@ export class MoveCommand implements BaseCommand {
           game.exit();
         }
       } else {
-        let room_to = game.rooms.getRoomById(exit.room_to);
+        const room_to = game.rooms.getRoomById(exit.room_to);
         if (room_to) {
           if (exit.effect_id) {
             game.effects.print(exit.effect_id);
@@ -152,10 +152,10 @@ core_commands.push(new MoveCommand());
 
 
 export class LookCommand implements BaseCommand {
-  name: string = "look";
+  name = "look";
   verbs: string[] = ["look", "examine"];
-  category: string = "miscellaneous";
-  description: string = "Inspects a room, artifact, or monster. Can often be used to find hidden items in rooms.";
+  category = "miscellaneous";
+  description = "Inspects a room, artifact, or monster. Can often be used to find hidden items in rooms.";
   examples: string[] = [
     'LOOK - Show the description of the current room',
     'LOOK TORCH - Show the description of an artifact',
@@ -183,7 +183,7 @@ export class LookCommand implements BaseCommand {
       let match = false;
 
       // see if there is a matching artifact. (don't reveal yet - or we would see the description twice)
-      let a: Artifact = game.artifacts.getLocalByName(arg, false);
+      const a: Artifact = game.artifacts.getLocalByName(arg, false);
       if (a) {
         match = true;
 
@@ -204,7 +204,7 @@ export class LookCommand implements BaseCommand {
         a.updateContents(true); // override the container logic to have contents of any artifact type, just for this logic
         if (a.type !== Artifact.TYPE_CONTAINER && a.contents.length > 0) {
           game.history.write("You found something!");
-          for (let item of a.contents) {
+          for (const item of a.contents) {
             item.moveToRoom();
           }
         }
@@ -234,7 +234,7 @@ export class LookCommand implements BaseCommand {
       }
 
       // see if there is a matching monster.
-      let m = game.monsters.getLocalByName(arg);
+      const m = game.monsters.getLocalByName(arg);
       if (m) {
         match = true;
         if (m.id === Monster.PLAYER) {
@@ -248,7 +248,7 @@ export class LookCommand implements BaseCommand {
 
       // error message if nothing matched
       if (!match) {
-        let common_stuff = ["wall", "door", "floor", "ceiling", "road", "path", "trail", "window"];
+        const common_stuff = ["wall", "door", "floor", "ceiling", "road", "path", "trail", "window"];
         if (arg === 'sign' && game.rooms.current_room.description.indexOf('sign') !== -1) {
           // generic sign which is not really readable. we can pretend.
           game.rooms.current_room.show_description();
@@ -266,10 +266,10 @@ core_commands.push(new LookCommand());
 
 
 export class SayCommand implements BaseCommand {
-  name: string = "say";
+  name = "say";
   verbs: string[] = ["say"];
-  category: string = "interactive";
-  description: string = "Allows you to say a word or phrase, like a magic word or something you might say to an NPC.";
+  category = "interactive";
+  description = "Allows you to say a word or phrase, like a magic word or something you might say to an NPC.";
   examples: string[] = ['SAY OPEN SESAME'];
   run(verb, arg) {
 
@@ -296,10 +296,10 @@ core_commands.push(new SayCommand());
 
 
 export class GetCommand implements BaseCommand {
-  name: string = "get";
+  name = "get";
   verbs: string[] = ["get"];
-  category: string = "artifact manipulation";
-  description: string = "Picks something up.";
+  category = "artifact manipulation";
+  description = "Picks something up.";
   examples: string[] = [
     'GET GOLD COINS',
     'GET GO - Same as GET GOLD COINS, with partial word matching',
@@ -314,7 +314,7 @@ export class GetCommand implements BaseCommand {
     // like an artifact that's in a different room but is visible in the distance. (See Sword of Inari)
     if (game.triggerEvent('specialGet', arg)) {
 
-      for (let a of game.artifacts.inRoom) {
+      for (const a of game.artifacts.inRoom) {
         if (a.match(arg) || arg === "all") {
           match = true;
           if (arg === "all" && (a.get_all === false || a.embedded)) {
@@ -335,8 +335,8 @@ export class GetCommand implements BaseCommand {
             }
 
             // a monster is guarding it
-            if (!!a.guard_id) {
-              let guard = game.monsters.get(a.guard_id);
+            if (a.guard_id) {
+              const guard = game.monsters.get(a.guard_id);
               if (guard.isHere()) {
                 if (arg === 'all') {
                   continue;
@@ -366,7 +366,7 @@ export class GetCommand implements BaseCommand {
 
             if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
               game.player.pickUp(a);
-              let style = arg === 'all' ? "no-space" : '';
+              const style = arg === 'all' ? "no-space" : '';
               if (a.type === Artifact.TYPE_GOLD) {
                 game.history.write(a.name + " is added to your coin pouch.", style);
                 game.player.gold += a.value;
@@ -392,9 +392,9 @@ export class GetCommand implements BaseCommand {
 
       // artifact in container
       if (!match) {
-        let art = game.artifacts.getByName(arg);
+        const art = game.artifacts.getByName(arg);
         if (art && art.container_id !== null) {
-          let container = game.artifacts.get(art.container_id);
+          const container = game.artifacts.get(art.container_id);
           if (container.monster_id === Monster.PLAYER) {
             throw new CommandException("You're already carrying it. But you could REMOVE it from the " + container.name + ".");
           } else if (container.room_id === game.player.room_id && !container.embedded) {
@@ -424,10 +424,10 @@ core_commands.push(new GetCommand());
 
 
 export class RemoveCommand implements BaseCommand {
-  name: string = "remove";
+  name = "remove";
   verbs: string[] = ["remove"];
-  category: string = "artifact manipulation";
-  description: string = "Has two uses: To remove an item from a container, or to take off an article of clothing or armor.";
+  category = "artifact manipulation";
+  description = "Has two uses: To remove an item from a container, or to take off an article of clothing or armor.";
   examples: string[] = [
     "REMOVE JEWEL FROM CHEST - Removes an item from a container, and adds it to your character's inventory",
     'REMOVE PLATE ARMOR - Takes off a wearable item, for example if you wanted to put on a different armor.'
@@ -435,17 +435,17 @@ export class RemoveCommand implements BaseCommand {
   run(verb: string, arg: string) {
 
     // check if we're removing something from a container
-    let regex_result = /(.+) from (.*)/.exec(arg);
+    const regex_result = /(.+) from (.*)/.exec(arg);
     if (regex_result !== null) {
-      let item_name: string = regex_result[1];
-      let container_name: string = regex_result[2];
+      const item_name: string = regex_result[1];
+      const container_name: string = regex_result[2];
 
       // look for a container artifact and see if we can remove the item from it
-      let container: Artifact = game.artifacts.getLocalByName(container_name);
+      const container: Artifact = game.artifacts.getLocalByName(container_name);
       if (container) {
         if (container.type === Artifact.TYPE_CONTAINER) {
           if (container.is_open) {
-            let item: Artifact = container.getContainedArtifact(item_name);
+            const item: Artifact = container.getContainedArtifact(item_name);
             if (item) {
               if (game.triggerEvent("beforeRemoveFromContainer", arg, item, container)) {
                 if (!item.seen) {
@@ -455,7 +455,7 @@ export class RemoveCommand implements BaseCommand {
 
                 // a monster is guarding it
                 if (item.guard_id !== null && item.guard_id !== 0) {
-                  let guard = game.monsters.get(item.guard_id);
+                  const guard = game.monsters.get(item.guard_id);
                   if (guard.isHere()) {
                     throw new CommandException(guard.getDisplayName() + " won't let you!");
                   }
@@ -484,7 +484,7 @@ export class RemoveCommand implements BaseCommand {
       } else {
 
         // catch user mischief
-        let m: Monster = game.monsters.getLocalByName(container_name);
+        const m: Monster = game.monsters.getLocalByName(container_name);
         if (m) {
           throw new CommandException("I can't remove something from " + m.name + "!");
         }
@@ -494,7 +494,7 @@ export class RemoveCommand implements BaseCommand {
 
     } else {
 
-      let artifact = game.player.findInInventory(arg);
+      const artifact = game.player.findInInventory(arg);
       if (artifact) {
         if (artifact.is_worn) {
           if (game.triggerEvent("beforeRemoveWearable", arg, artifact)) {
@@ -517,10 +517,10 @@ core_commands.push(new RemoveCommand());
 
 
 export class PutCommand implements BaseCommand {
-  name: string = "put";
+  name = "put";
   verbs: string[] = ["put"];
-  category: string = "artifact manipulation";
-  description: string = "Places an item into a container.";
+  category = "artifact manipulation";
+  description = "Places an item into a container.";
   examples: string[] = [
     "PUT SWORD INTO SCABBARD",
   ];
@@ -529,10 +529,10 @@ export class PutCommand implements BaseCommand {
     let match = false;
 
     // check if we're putting something into a container
-    let regex_result = /(.+) in(to)? (.*)/.exec(arg);
+    const regex_result = /(.+) in(to)? (.*)/.exec(arg);
     if (regex_result !== null) {
-      let item_name: string = regex_result[1];
-      let container_name: string = regex_result[3];
+      const item_name: string = regex_result[1];
+      const container_name: string = regex_result[3];
 
       // catch user mischief
       let m: Monster = game.monsters.getLocalByName(item_name);
@@ -544,11 +544,11 @@ export class PutCommand implements BaseCommand {
         throw new CommandException("I can't put something into " + m.name + "!");
       }
 
-      let item: Artifact = game.artifacts.getLocalByName(item_name);
+      const item: Artifact = game.artifacts.getLocalByName(item_name);
       if (!item) {
         throw new CommandException("I see no " + item_name + " here!");
       }
-      let container: Artifact = game.artifacts.getLocalByName(container_name);
+      const container: Artifact = game.artifacts.getLocalByName(container_name);
       if (!container) {
         throw new CommandException("I see no " + container_name + " here!");
       }
@@ -601,10 +601,10 @@ core_commands.push(new PutCommand());
 
 
 export class DropCommand implements BaseCommand {
-  name: string = "drop";
+  name = "drop";
   verbs: string[] = ["drop"];
-  category: string = "artifact manipulation";
-  description: string = "Drops an item you are carrying.";
+  category = "artifact manipulation";
+  description = "Drops an item you are carrying.";
   examples: string[] = [
     "DROP SWORD",
     "DROP ALL - Tries to drop everything you are carrying.",
@@ -615,8 +615,8 @@ export class DropCommand implements BaseCommand {
 
     let match = false;
 
-    let inventory = game.player.inventory;
-    for (let i in inventory) {
+    const inventory = game.player.inventory;
+    for (const i in inventory) {
       if (inventory[i].match(arg) || arg === "all") {
         // "drop all" doesn't drop items the player is wearing
         if (arg === "all" && inventory[i].is_worn) {
@@ -640,17 +640,17 @@ core_commands.push(new DropCommand());
 
 
 export class ReadyCommand implements BaseCommand {
-  name: string = "ready";
+  name = "ready";
   verbs: string[] = ["ready"];
-  category: string = "artifact manipulation";
-  description: string = "Changes your ready weapon.";
+  category = "artifact manipulation";
+  description = "Changes your ready weapon.";
   examples: string[] = [
     "READY TROLLSFIRE - Put your current weapon into your pack and hold the Trollsfire sword in your hand.",
   ];
   run(verb, arg) {
 
-    let old_wpn = game.player.weapon;
-    let wpn = game.player.findInInventory(arg);
+    const old_wpn = game.player.weapon;
+    const wpn = game.player.findInInventory(arg);
     if (wpn) {
       if (game.triggerEvent("ready", arg, old_wpn, wpn)) {
         if (wpn.type === Artifact.TYPE_WEARABLE) {
@@ -677,17 +677,17 @@ core_commands.push(new ReadyCommand());
 
 
 export class WearCommand implements BaseCommand {
-  name: string = "wear";
+  name = "wear";
   verbs: string[] = ["wear"];
-  category: string = "artifact manipulation";
-  description: string = "Puts on an article of clothing or armor.";
+  category = "artifact manipulation";
+  description = "Puts on an article of clothing or armor.";
   examples: string[] = [
     "WEAR PLATE ARMOR",
     "WEAR SHIELD - In Eamon, you don't READY shields, you WEAR them like clothing."
   ];
   run(verb: string, arg: string) {
 
-    let artifact = game.player.findInInventory(arg);
+    const artifact = game.player.findInInventory(arg);
     if (game.triggerEvent('wear', arg, artifact)) {
       if (artifact) {
         if (artifact.type === Artifact.TYPE_WEARABLE) {
@@ -722,10 +722,10 @@ core_commands.push(new WearCommand());
 
 
 export class FleeCommand implements BaseCommand {
-  name: string = "flee";
+  name = "flee";
   verbs: string[] = ["flee"];
-  category: string = "movement";
-  description: string = "Runs away from a fight. Note that you might not always be able to escape.";
+  category = "movement";
+  description = "Runs away from a fight. Note that you might not always be able to escape.";
   examples: string[] = [
     "FLEE - If no direction is given, you will run in a random direction.",
     "FLEE N - Try to flee to the north. This might not always work. If a dragon is guarding a cave entrance in that direction, you might need to try to flee in a different direction.",
@@ -761,15 +761,15 @@ core_commands.push(new FleeCommand());
 
 
 export class DrinkCommand implements BaseCommand {
-  name: string = "drink";
+  name = "drink";
   verbs: string[] = ["drink"];
-  category: string = "artifact manipulation";
-  description: string = "Take a drink from a drinkable artifact.";
+  category = "artifact manipulation";
+  description = "Take a drink from a drinkable artifact.";
   examples: string[] = [
     "DRINK HEALING POTION",
   ];
   run(verb, arg) {
-    let item = game.artifacts.getLocalByName(arg);
+    const item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("drink", arg, item) !== false) {
       if (item) {
         if (item.type === Artifact.TYPE_DRINKABLE) {
@@ -784,13 +784,13 @@ export class DrinkCommand implements BaseCommand {
         }
       } else {
         // trying to drink something that's not here
-        let item = game.artifacts.getByName(arg);
+        const item = game.artifacts.getByName(arg);
         if (item && item.isInLocalContainer()) {
           const container = game.artifacts.get(item.container_id);
           throw new CommandException(`Try removing it from the ${container.name} first.`);
         } else {
           // There's no artifact, or it's not here. Gracefully handle stuff in the room description.
-          let common_stuff = ["water", "river", "stream", "lake", "ocean"];
+          const common_stuff = ["water", "river", "stream", "lake", "ocean"];
           if (common_stuff.indexOf(arg) !== -1 && game.rooms.current_room.textMatch(arg)) {
             game.history.write("Nothing happens.");
           } else {
@@ -805,15 +805,15 @@ core_commands.push(new DrinkCommand());
 
 
 export class EatCommand implements BaseCommand {
-  name: string = "eat";
+  name = "eat";
   verbs: string[] = ["eat"];
-  category: string = "artifact manipulation";
-  description: string = "Eats an edible item.";
+  category = "artifact manipulation";
+  description = "Eats an edible item.";
   examples: string[] = [
     "EAT SANDWICH",
   ];
   run(verb, arg) {
-    let item = game.artifacts.getLocalByName(arg);
+    const item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("eat", arg, item) !== false) {
       if (item) {
         if (item.type === Artifact.TYPE_EDIBLE) {
@@ -828,7 +828,7 @@ export class EatCommand implements BaseCommand {
         }
       } else {
         // trying to eat something that's not here
-        let item = game.artifacts.getByName(arg);
+        const item = game.artifacts.getByName(arg);
         if (item && item.isInLocalContainer()) {
           const container = game.artifacts.get(item.container_id);
           throw new CommandException(`Try removing it from the ${container.name} first.`);
@@ -843,17 +843,17 @@ core_commands.push(new EatCommand());
 
 
 export class UseCommand implements BaseCommand {
-  name: string = "use";
+  name = "use";
   verbs: string[] = ["use"];
-  category: string = "artifact manipulation";
-  description: string = "Uses the special ability of an item, either something you're carrying or something in the room.";
+  category = "artifact manipulation";
+  description = "Uses the special ability of an item, either something you're carrying or something in the room.";
   examples: string[] = [
     "USE ROPE - If you're carrying a rope, this might attach it to the wall or ceiling so you can climb.",
     "USE LEVER - A lever in a room might open a nearby door. This command will activate it."
   ];
   run(verb, arg) {
     if (game.triggerEvent('beforeUse', arg)) {
-      let item: Artifact = game.artifacts.getLocalByName(arg);
+      const item: Artifact = game.artifacts.getLocalByName(arg);
       if (item) {
         if (item.quantity === null || item.quantity > 0) {
           item.use();
@@ -870,10 +870,10 @@ core_commands.push(new UseCommand());
 
 
 export class AttackCommand implements BaseCommand {
-  name: string = "attack";
+  name = "attack";
   verbs: string[] = ["attack"];
-  category: string = "interactive";
-  description: string = "Attacks a monster or NPC, or sometimes an artifact like a locked door or chest.";
+  category = "interactive";
+  description = "Attacks a monster or NPC, or sometimes an artifact like a locked door or chest.";
   examples: string[] = [
     "ATTACK DRAGON",
     "AT DR - Shorthand for the same thing",
@@ -887,7 +887,7 @@ export class AttackCommand implements BaseCommand {
       throw new CommandException("You don't have a weapon ready!");
     }
 
-    let [monster_target, artifact_target] = findTarget(arg);
+    const [monster_target, artifact_target] = findTarget(arg);
     if (monster_target) {
 
       if (game.triggerEvent('attackMonster', arg, monster_target)) {
@@ -910,7 +910,7 @@ export class AttackCommand implements BaseCommand {
           return;
         }
 
-        let damage_done = artifact_target.injure(game.player.rollAttackDamage());
+        const damage_done = artifact_target.injure(game.player.rollAttackDamage());
         if (damage_done === 0) {
           game.history.write("Nothing happens.");
         } else if (damage_done === -1) {
@@ -928,10 +928,10 @@ core_commands.push(new AttackCommand());
 
 
 export class LightCommand implements BaseCommand {
-  name: string = "light";
+  name = "light";
   verbs: string[] = ["light"];
-  category: string = "artifact manipulation";
-  description: string = "Ignites or turns on a light source, or puts it out if it's already lit.";
+  category = "artifact manipulation";
+  description = "Ignites or turns on a light source, or puts it out if it's already lit.";
   examples: string[] = [
     "LIGHT TORCH",
   ];
@@ -941,7 +941,7 @@ export class LightCommand implements BaseCommand {
       throw new CommandException('Light what?')
     }
 
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
 
     if (game.triggerEvent('light', arg, artifact) !== false ) {
 
@@ -972,10 +972,10 @@ core_commands.push(new LightCommand());
 
 
 export class ReadCommand implements BaseCommand {
-  name: string = "read";
+  name = "read";
   verbs: string[] = ["read"];
-  category: string = "artifact manipulation";
-  description: string = "Reads an item like a book, scroll, sign, or inscription.";
+  category = "artifact manipulation";
+  description = "Reads an item like a book, scroll, sign, or inscription.";
   examples: string[] = [
     "READ BOOK",
   ];
@@ -991,7 +991,7 @@ export class ReadCommand implements BaseCommand {
     }
 
     // see if we're reading an artifact that has markings
-    let a = game.artifacts.getLocalByName(arg, false);
+    const a = game.artifacts.getLocalByName(arg, false);
     if (game.triggerEvent('beforeRead', arg, a)) {
       if (a !== null) {
         // don't reveal in getLocalByName above because we want to know if we revealed something.
@@ -1035,10 +1035,10 @@ core_commands.push(new ReadCommand());
 
 
 export class OpenCommand implements BaseCommand {
-  name: string = "open";
+  name = "open";
   verbs: string[] = ["open"];
-  category: string = "artifact manipulation";
-  description: string = "Tries to open a closed door, gate, or container.";
+  category = "artifact manipulation";
+  description = "Tries to open a closed door, gate, or container.";
   examples: string[] = [
     "OPEN DOUBLE DOORS",
     "OPEN WOODEN CHEST",
@@ -1049,7 +1049,7 @@ export class OpenCommand implements BaseCommand {
       throw new CommandException('Open what?')
     }
 
-    let a: Artifact = game.artifacts.getLocalByName(arg, false);
+    const a: Artifact = game.artifacts.getLocalByName(arg, false);
     if (a !== null) {
       if (game.triggerEvent("beforeOpen", arg, a)) {
         // don't reveal in getLocalByName above because we want to know if we revealed something.
@@ -1078,7 +1078,7 @@ export class OpenCommand implements BaseCommand {
               game.history.write("You'll have to force it open.");
             } else if (a.key_id > 0) {
               if (game.player.hasArtifact(a.key_id)) {
-                let key = game.artifacts.get(a.key_id);
+                const key = game.artifacts.get(a.key_id);
                 game.history.write("You unlock it using the " + key.name + ".");
                 a.open();
 
@@ -1138,10 +1138,10 @@ core_commands.push(new OpenCommand());
 
 
 export class CloseCommand implements BaseCommand {
-  name: string = "close";
+  name = "close";
   verbs: string[] = ["close"];
-  category: string = "artifact manipulation";
-  description: string = "Tries to close an open door, gate, or container.";
+  category = "artifact manipulation";
+  description = "Tries to close an open door, gate, or container.";
   examples: string[] = [
     "CLOSE DOUBLE DOORS",
     "CLOSE WOODEN CHEST",
@@ -1152,7 +1152,7 @@ export class CloseCommand implements BaseCommand {
       throw new CommandException('Close what?')
     }
 
-    let a = game.artifacts.getLocalByName(arg, false);  // not revealing embedded artifacts automatically
+    const a = game.artifacts.getLocalByName(arg, false);  // not revealing embedded artifacts automatically
     if (a !== null) {
       if (game.triggerEvent('beforeClose', arg, a)) {
         // don't reveal secret passages with this command
@@ -1190,10 +1190,10 @@ core_commands.push(new CloseCommand());
 
 
 export class GiveCommand implements BaseCommand {
-  name: string = "give";
+  name = "give";
   verbs: string[] = ["give"];
-  category: string = "artifact manipulation";
-  description: string = "Gives an artifact to a monster or NPC.";
+  category = "artifact manipulation";
+  description = "Gives an artifact to a monster or NPC.";
   examples: string[] = [
     "GIVE SWORD TO EDDIE - If you give a weapon to an NPC, and they don't already have one, they will ready it.",
     "GIVE HEALING POTION TO EDDIE - If you give an edible or drinkable artifact to an NPC, they will take one bite or drink and give it back to you.",
@@ -1201,17 +1201,17 @@ export class GiveCommand implements BaseCommand {
   ];
   run(verb: string, arg: string) {
 
-    let match = false;
+    const match = false;
 
-    let regex_result = /(.+) to (.*)/.exec(arg);
+    const regex_result = /(.+) to (.*)/.exec(arg);
     if (regex_result === null) {
       throw new CommandException("Try giving (something) to (someone).");
     }
 
-    let item_name: string = regex_result[1];
-    let monster_name: string = regex_result[2];
+    const item_name: string = regex_result[1];
+    const monster_name: string = regex_result[2];
 
-    let recipient = game.monsters.getLocalByName(monster_name);
+    const recipient = game.monsters.getLocalByName(monster_name);
     if (!recipient) {
       throw new CommandException(monster_name + " is not here!");
     }
@@ -1219,8 +1219,8 @@ export class GiveCommand implements BaseCommand {
     // check if we're giving money (GIVE 123 TO NPC or GIVE 123 GOLD TO NPC)
     let gold_amount = Number(item_name);
     if (isNaN(gold_amount)) {
-      let plural = pluralize(game.money_name);
-      let regex_result = new RegExp(`([0-9,.]+) (gold|${game.money_name}|${plural})`).exec(item_name);
+      const plural = pluralize(game.money_name);
+      const regex_result = new RegExp(`([0-9,.]+) (gold|${game.money_name}|${plural})`).exec(item_name);
       if (regex_result) {
         gold_amount = Number(regex_result[1]);
       }
@@ -1250,7 +1250,7 @@ export class GiveCommand implements BaseCommand {
     } else {
 
       // giving item
-      let item = game.player.findInInventory(item_name);
+      const item = game.player.findInInventory(item_name);
       if (!item) {
         throw new CommandException("You're not carrying it!");
       }
@@ -1262,7 +1262,7 @@ export class GiveCommand implements BaseCommand {
         }
         item.monster_id = recipient.id;
         if ((item.type === Artifact.TYPE_EDIBLE || item.type === Artifact.TYPE_DRINKABLE) && item.is_healing) {
-          let v: string = item.type === Artifact.TYPE_EDIBLE ? "eats" : "drinks";
+          const v: string = item.type === Artifact.TYPE_EDIBLE ? "eats" : "drinks";
           game.history.write(recipient.name + " " + v + " the " + item.name + " and hands it back.");
           item.use();
           item.monster_id = game.player.id;
@@ -1288,31 +1288,31 @@ core_commands.push(new GiveCommand());
 
 
 export class TakeCommand implements BaseCommand {
-  name: string = "take";
+  name = "take";
   verbs: string[] = ["take", "request"];
-  category: string = "interactive";
-  description: string = "Takes an item back from a monster or NPC. However, they might not want to give it to you. This usually only works with friendly monsters.";
+  category = "interactive";
+  description = "Takes an item back from a monster or NPC. However, they might not want to give it to you. This usually only works with friendly monsters.";
   examples: string[] = [
     "REQUEST SWORD FROM EDDIE",
     "TAKE SWORD FROM EDDIE",
   ];
   run(verb: string, arg: string) {
 
-    let match = false;
+    const match = false;
 
-    let regex_result = /(.+) from (.*)/.exec(arg);
+    const regex_result = /(.+) from (.*)/.exec(arg);
     if (regex_result === null) {
       throw new CommandException("Try taking (something) from (someone).");
     }
 
-    let item_name: string = regex_result[1];
-    let monster_name: string = regex_result[2];
+    const item_name: string = regex_result[1];
+    const monster_name: string = regex_result[2];
 
-    let monster = game.monsters.getByName(monster_name);
+    const monster = game.monsters.getByName(monster_name);
     if (!monster || monster.room_id !== game.rooms.current_room.id) {
 
       // if user types an artifact name instead of a monster name
-      let a: Artifact = game.artifacts.getLocalByName(monster_name);
+      const a: Artifact = game.artifacts.getLocalByName(monster_name);
       if (a && a.type === Artifact.TYPE_CONTAINER) {
         game.command_parser.run('remove ' + arg, false);
         return;
@@ -1323,7 +1323,7 @@ export class TakeCommand implements BaseCommand {
     }
 
     // first look in monster's inventory, then look at all items
-    let item = monster.findInInventory(item_name) || game.artifacts.getByName(item_name);
+    const item = monster.findInInventory(item_name) || game.artifacts.getByName(item_name);
     if (game.triggerEvent("beforeRequest", arg, item, monster)) {
       if (!item || !monster.hasArtifact(item.id)) {
         throw new CommandException(monster.name + " doesn't have it!");
@@ -1332,7 +1332,7 @@ export class TakeCommand implements BaseCommand {
       // legacy event handler
       if (game.triggerEvent("take", arg, item, monster)) {
         item.moveToInventory();
-        let ready_weapon_id = monster.weapon_id;
+        const ready_weapon_id = monster.weapon_id;
         monster.updateInventory();
         game.history.write(monster.name + " gives you the " + item.name + ".");
         if (!item.seen) {
@@ -1356,23 +1356,23 @@ core_commands.push(new TakeCommand());
 
 
 export class FreeCommand implements BaseCommand {
-  name: string = "free";
+  name = "free";
   verbs: string[] = ["free", "release"];
-  category: string = "interactive";
-  description: string = "Frees a bound monster. Note that a nearby monster may be guarding the bound monster and may prevent this.";
+  category = "interactive";
+  description = "Frees a bound monster. Note that a nearby monster may be guarding the bound monster and may prevent this.";
   examples: string[] = [
     "FREE PRISONER",
   ];
   run(verb: string, arg: string) {
 
-    let monster: Monster = null;
-    let message: string = "";
+    const monster: Monster = null;
+    let message = "";
 
     if (arg === '') {
       throw new CommandException('Free what?')
     }
 
-    let a = game.artifacts.getLocalByName(arg);
+    const a = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent('beforeFree', arg, a)) {
       if (a !== null) {
         if (a.type !== Artifact.TYPE_BOUND_MONSTER) {
@@ -1380,15 +1380,15 @@ export class FreeCommand implements BaseCommand {
         }
         // some adventures use guard_id of 0 to indicate no guard
         if (a.guard_id !== null && a.guard_id !== 0) {
-          let guard = game.monsters.get(a.guard_id);
+          const guard = game.monsters.get(a.guard_id);
           if (guard.isHere()) {
             throw new CommandException(guard.getDisplayName() + " won't let you!");
           }
         }
-        let monster = game.monsters.get(a.monster_id);
+        const monster = game.monsters.get(a.monster_id);
         if (a.key_id) {
           if (game.player.hasArtifact(a.key_id)) {
-            let key = game.artifacts.get(a.key_id);
+            const key = game.artifacts.get(a.key_id);
             message = `You free ${monster.name} using the ${key.name}.`;
           } else {
             throw new CommandException("You don't have the key!");
@@ -1404,7 +1404,7 @@ export class FreeCommand implements BaseCommand {
       } else {
 
         // catch user mischief
-        let m: Monster = game.monsters.getLocalByName(arg);
+        const m: Monster = game.monsters.getLocalByName(arg);
         if (m) {
           throw new CommandException(m.name + " is already free!");
         }
@@ -1418,17 +1418,17 @@ core_commands.push(new FreeCommand());
 
 
 export class PowerCommand implements BaseCommand {
-  name: string = "power";
+  name = "power";
   verbs: string[] = ["power"];
-  category: string = "magic";
-  description: string = "Casts the POWER spell. This spell has different effects in every adventure, and may be necessary to complete certain quests.";
+  category = "magic";
+  description = "Casts the POWER spell. This spell has different effects in every adventure, and may be necessary to complete certain quests.";
   examples: string[] = [
     "POWER",
   ];
   run(verb, arg) {
     if (game.player.spellCast('power')) {
       //  this spell has no effect except what is defined in the adventure
-      let roll = game.diceRoll(1, 100);
+      const roll = game.diceRoll(1, 100);
       game.triggerEvent("power", roll);
     }
   }
@@ -1437,10 +1437,10 @@ core_commands.push(new PowerCommand());
 
 
 export class HealCommand implements BaseCommand {
-  name: string = "heal";
+  name = "heal";
   verbs: string[] = ["heal"];
-  category: string = "magic";
-  description: string = "Casts the HEAL spell.";
+  category = "magic";
+  description = "Casts the HEAL spell.";
   examples: string[] = [
     "HEAL - With no target, this will heal your character.",
     "HEAL EDDIE - With a target, this will heal someone else.",
@@ -1463,7 +1463,7 @@ export class HealCommand implements BaseCommand {
 
       if (game.player.spellCast('heal')) {
 
-        let heal_amount = game.diceRoll(2, 6);
+        const heal_amount = game.diceRoll(2, 6);
         if (target.id == game.player.id) {
           game.history.write("Some of your wounds seem to clear up.");
         } else {
@@ -1478,10 +1478,10 @@ core_commands.push(new HealCommand());
 
 
 export class BlastCommand implements BaseCommand {
-  name: string = "blast";
+  name = "blast";
   verbs: string[] = ["blast"];
-  category: string = "magic";
-  description: string = "Casts the BLAST spell. This is a standard magic missile type spell that can damage monsters and some artifacts like doors and chests.";
+  category = "magic";
+  description = "Casts the BLAST spell. This is a standard magic missile type spell that can damage monsters and some artifacts like doors and chests.";
   examples: string[] = [
     "BLAST ORC - Casts a magic attack at a monster",
     "BLAST WOODEN CHEST - Casts a magic attack at an artifact, trying to smash it open",
@@ -1489,13 +1489,13 @@ export class BlastCommand implements BaseCommand {
   run(verb, arg) {
     if (game.player.spellCast('blast')) {
 
-      let [monster_target, artifact_target] = findTarget(arg);
+      const [monster_target, artifact_target] = findTarget(arg);
       let damage = game.diceRoll(2, 5);
       if (monster_target) {
         if (game.triggerEvent("blast", arg, monster_target)) {
           game.history.write(game.player.name + " casts a blast spell at " + monster_target.getDisplayName());
           game.history.write("--a direct hit!", "success no-space");
-          let damage_adjusted = game.triggerEvent('blastDamage', game.player, monster_target, damage);
+          const damage_adjusted = game.triggerEvent('blastDamage', game.player, monster_target, damage);
           if (damage_adjusted !== true) {
             // event handler returns boolean TRUE if no
             // change occurred (or handler didn't exist)
@@ -1506,7 +1506,7 @@ export class BlastCommand implements BaseCommand {
         }
       } else if (artifact_target) {
         if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
-          let damage_done = artifact_target.injure(damage, "blast");
+          const damage_done = artifact_target.injure(damage, "blast");
           if (damage_done === 0) {
             game.history.write("Nothing happens.");
           } else if (damage_done === -1) {
@@ -1523,10 +1523,10 @@ core_commands.push(new BlastCommand());
 
 
 export class SpeedCommand implements BaseCommand {
-  name: string = "speed";
+  name = "speed";
   verbs: string[] = ["speed"];
-  category: string = "magic";
-  description: string = "Casts the SPEED spell. This increases your agility for a short time, making you a better fighter. Useful just before a tough combat.";
+  category = "magic";
+  description = "Casts the SPEED spell. This increases your agility for a short time, making you a better fighter. Useful just before a tough combat.";
   examples: string[] = [
     "SPEED",
   ];
@@ -1546,10 +1546,10 @@ core_commands.push(new SpeedCommand());
 
 
 export class SaveCommand implements BaseCommand {
-  name: string = "save";
+  name = "save";
   verbs: string[] = ["save"];
-  category: string = "miscellaneous";
-  description: string = "Saves your game.";
+  category = "miscellaneous";
+  description = "Saves your game.";
   examples: string[] = [
     "SAVE",
   ];
@@ -1558,7 +1558,7 @@ export class SaveCommand implements BaseCommand {
       throw new CommandException("Saved games are not available when playing as the demo character.");
     }
 
-    let q1 = new ModalQuestion;
+    const q1 = new ModalQuestion;
     q1.type = 'multiple_choice';
     q1.question = "Please choose a saved game slot:";
     q1.choices = [];
@@ -1574,18 +1574,18 @@ export class SaveCommand implements BaseCommand {
       if (answer.toLowerCase() === 'cancel') {
         return false;
       }
-      let slot = parseInt(answer);
+      const slot = parseInt(answer);
       if (game.saved_games.hasOwnProperty(slot.toString())) {
         q2.answer = game.saved_games[slot].description;
       }
       return true;
     };
 
-    let q2 = new ModalQuestion();
+    const q2 = new ModalQuestion();
     q2.type = 'text';
     q2.question = "Enter a description for the saved game:";
     q2.callback = function (answer) {
-      let slot = parseInt(game.modal.questions[0].answer);
+      const slot = parseInt(game.modal.questions[0].answer);
       game.save(slot, answer);
       game.history.write("Game saved to slot " + slot + ".");
       return true;
@@ -1599,10 +1599,10 @@ core_commands.push(new SaveCommand());
 
 
 export class RestoreCommand implements BaseCommand {
-  name: string = "restore";
+  name = "restore";
   verbs: string[] = ["restore"];
-  category: string = "miscellaneous";
-  description: string = "Restores from a saved game.";
+  category = "miscellaneous";
+  description = "Restores from a saved game.";
   examples: string[] = [
     "RESTORE",
   ];
@@ -1611,7 +1611,7 @@ export class RestoreCommand implements BaseCommand {
       throw new CommandException("Saved games are not available when playing as the demo character.");
     }
 
-    let q1 = new ModalQuestion;
+    const q1 = new ModalQuestion;
     q1.type = 'multiple_choice';
     q1.question = "Please choose a saved game to restore:";
     q1.choices = [];
@@ -1625,7 +1625,7 @@ export class RestoreCommand implements BaseCommand {
       if (answer.toLowerCase() === 'cancel') {
         return false;
       }
-      let slot = parseInt(answer, 10);
+      const slot = parseInt(answer, 10);
       game.restore(slot);
       return true;
     };
@@ -1637,10 +1637,10 @@ core_commands.push(new RestoreCommand());
 
 
 export class SmileCommand implements BaseCommand {
-  name: string = "smile";
+  name = "smile";
   verbs: string[] = ["smile"];
-  category: string = "interactive";
-  description: string = "Greets monsters to see if they are friendly or not.";
+  category = "interactive";
+  description = "Greets monsters to see if they are friendly or not.";
   examples: string[] = [
     "SMILE",
   ];
@@ -1650,11 +1650,11 @@ export class SmileCommand implements BaseCommand {
       game.history.write("You know... you look a bit dim, smiling like that, when no one's around.");
       return;
     }
-    let friends = game.monsters.visible.filter(m => (m.reaction == Monster.RX_FRIEND));
-    let neutrals = game.monsters.visible.filter(m => (m.reaction == Monster.RX_NEUTRAL));
-    let hostiles = game.monsters.visible.filter(m => (m.reaction == Monster.RX_HOSTILE));
+    const friends = game.monsters.visible.filter(m => (m.reaction == Monster.RX_FRIEND));
+    const neutrals = game.monsters.visible.filter(m => (m.reaction == Monster.RX_NEUTRAL));
+    const hostiles = game.monsters.visible.filter(m => (m.reaction == Monster.RX_HOSTILE));
     if (friends.length > 0) {
-      let smiles = [];
+      const smiles = [];
       friends.forEach(m => {
         if (game.triggerEvent('monsterSmile', m)) {
           smiles.push(m);
@@ -1665,7 +1665,7 @@ export class SmileCommand implements BaseCommand {
       }
     }
     if (neutrals.length > 0) {
-      let ignores = [];
+      const ignores = [];
       neutrals.forEach(m => {
         if (game.triggerEvent('monsterSmile', m)) {
           ignores.push(m);
@@ -1676,7 +1676,7 @@ export class SmileCommand implements BaseCommand {
       }
     }
     if (hostiles.length > 0) {
-      let growls = [];
+      const growls = [];
       hostiles.forEach(m => {
         if (game.triggerEvent('monsterSmile', m)) {
           growls.push(m);
@@ -1692,10 +1692,10 @@ core_commands.push(new SmileCommand());
 
 
 export class InventoryCommand implements BaseCommand {
-  name: string = "inventory";
+  name = "inventory";
   verbs: string[] = ["inventory"];
-  category: string = "miscellaneous";
-  description: string = "Shows what you are carrying, or what someone else is carrying.";
+  category = "miscellaneous";
+  description = "Shows what you are carrying, or what someone else is carrying.";
   examples: string[] = [
     "INVENTORY (or INV for short) - Shows what you are carrying",
     "INV EDDIE - Shows what an NPC named Eddie is carrying. If Eddie is not friendly, this command will only show you his ready weapon.",
@@ -1707,7 +1707,7 @@ export class InventoryCommand implements BaseCommand {
       game.player.showHealth();
     } else {
       // inventory another monster
-      let m = game.monsters.getLocalByName(arg);
+      const m = game.monsters.getLocalByName(arg);
       if (m) {
         m.printInventory();
         m.showHealth();
@@ -1722,18 +1722,18 @@ core_commands.push(new InventoryCommand());
 
 // a cheat command used for debugging. say "goto" and the room number (e.g., "goto 5")
 export class GotoCommand implements BaseCommand {
-  name: string = "goto";
+  name = "goto";
   verbs: string[] = ["xgoto"];
-  secret: boolean = true;
+  secret = true;
   run(verb, arg) {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
     }
-    let room_to = game.rooms.getRoomById(parseInt(arg));
+    const room_to = game.rooms.getRoomById(parseInt(arg));
     if (!room_to) {
       throw new CommandException("There is no room " + arg);
     }
-    let room_from = game.rooms.current_room;
+    const room_from = game.rooms.current_room;
     game.skip_battle_actions = true;
     game.player.moveToRoom(room_to.id);
     game.triggerEvent("afterMove", arg, room_from, room_to);
@@ -1743,9 +1743,9 @@ core_commands.push(new GotoCommand());
 
 // a cheat command used for debugging. opens the javascript debugger
 export class DebuggerCommand implements BaseCommand {
-  name: string = "debugger";
+  name = "debugger";
   verbs: string[] = ["xdebugger"];
-  secret: boolean = true;
+  secret = true;
   run(verb, arg) {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
@@ -1757,14 +1757,14 @@ core_commands.push(new DebuggerCommand());
 
 // a cheat command used for debugging. gets an artifact no matter where it is
 export class AccioCommand implements BaseCommand {
-  name: string = "accio";
+  name = "accio";
   verbs: string[] = ["xaccio"];
-  secret: boolean = true;
+  secret = true;
   run(verb, arg) {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
     }
-    let a = game.artifacts.getByName(arg);
+    const a = game.artifacts.getByName(arg);
     if (a) {
       if (!a.seen)
         a.showDescription();

@@ -8,7 +8,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -60,11 +60,11 @@ test("blast boz", () => {
 
 test("say thor", () => {
   // we need a hostile and a neutral monster in a non-dark room
-  let rogue = game.monsters.get(4);
-  let rogue_initial_courage = rogue.courage;
+  const rogue = game.monsters.get(4);
+  const rogue_initial_courage = rogue.courage;
   rogue.moveToRoom(28);
-  let boz = game.monsters.get(20);
-  let boz_initial_courage = boz.courage;
+  const boz = game.monsters.get(20);
+  const boz_initial_courage = boz.courage;
   game.player.moveToRoom(28); game.skip_battle_actions = true; game.tick();
 
   const npc_attack_miss = [

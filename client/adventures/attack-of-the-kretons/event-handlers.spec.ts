@@ -11,7 +11,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -32,7 +32,7 @@ beforeEach(() => {
 it("should have working event handlers", () => {
 
   // prince 1
-  let orb = game.artifacts.get(45);
+  const orb = game.artifacts.get(45);
   game.player.moveToRoom(5); game.tick();
   game.command_parser.run('get orb');
   expect(game.history.getOutput(0).text).toBe("Sorry, it's not yours.");
@@ -43,7 +43,7 @@ it("should have working event handlers", () => {
   expect(game.history.getOutput(0).text).toBe("The Prince says you can't have it if you don't have a reason.");
 
   // tavern
-  let groo = game.monsters.get(3);
+  const groo = game.monsters.get(3);
   game.player.moveToRoom(1); game.tick();
   game.mock_random_numbers = [2, 2];  // for mike's random action
   game.command_parser.run("talk to mike");
@@ -142,7 +142,7 @@ it("should have working event handlers", () => {
   game.history.clear();
 
   // chichester
-  let chi = game.monsters.get(16);
+  const chi = game.monsters.get(16);
   game.player.moveToRoom(20);
   game.tick();
   game.command_parser.run('attack chichester');
@@ -164,7 +164,7 @@ it("should have working event handlers", () => {
   game.history.clear();
 
   // arba/dakarba/sage
-  let sage = game.monsters.get(21);
+  const sage = game.monsters.get(21);
   game.artifacts.get(25).moveToInventory();  // key
   game.command_parser.run('w');
   expect(game.effects.get(36).seen).toBeTruthy();
@@ -304,7 +304,7 @@ it("should have working event handlers", () => {
   expect(game.monsters.get(18).name).toBe('Mulch');
 
   // exit
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   game.player.moveToRoom(55); game.tick();
   game.command_parser.run('say cawteenahmosh');
   expect(game.effects.get(96).seen).toBeTruthy();

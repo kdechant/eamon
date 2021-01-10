@@ -1,6 +1,6 @@
 import Game from "./game";
 
-let game = new Game();
+const game = new Game();
 
 describe("Game class", function() {
 

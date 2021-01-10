@@ -1,11 +1,11 @@
-declare var game: any;
+declare let game: any;
 
 export class Modal {
 
   public questions: ModalQuestion[] = [];
   public current_question: ModalQuestion;
   private counter = 0;
-  public visible: boolean = false;
+  public visible = false;
   /**
    * Mock answers used with unit tests
    * @type {Array}
@@ -17,7 +17,7 @@ export class Modal {
    * when using mock answers in tests.
    * @type {boolean}
    */
-  private mock_answer_used: boolean = false;
+  private mock_answer_used = false;
 
   /**
    * The easy way to ask a question of the player. Asks a question that takes a text answer.
@@ -31,7 +31,7 @@ export class Modal {
    *  answer (as a string).
    */
   public show(question: string, callback: Function) {
-    let q = new ModalQuestion();
+    const q = new ModalQuestion();
     q.type = 'text';
     q.question = question;
     q.callback = callback;
@@ -51,7 +51,7 @@ export class Modal {
    *  answer (as a string).
    */
   public confirm(question: string, callback: Function) {
-    let q = new ModalQuestion();
+    const q = new ModalQuestion();
     q.type = 'multiple_choice';
     q.choices = ['Yes', 'No'];
     q.question = question;
@@ -71,7 +71,7 @@ export class Modal {
       this.setupHotKeys();
       this.counter = 0;
       if (this.mock_answers.length > 0) {
-        let answer = this.mock_answers.shift();
+        const answer = this.mock_answers.shift();
         console.log("mock answer: ", answer);
         this.mock_answer_used = true;
         this.submit(answer);
@@ -88,7 +88,7 @@ export class Modal {
     if (value !== null) {
       this.current_question.answer = value;
     }
-    let result = this.current_question.callback(this.current_question.answer);
+    const result = this.current_question.callback(this.current_question.answer);
     if (result) {
       this.counter++;
       if (this.counter >= this.questions.length) {
@@ -97,7 +97,7 @@ export class Modal {
         this.current_question = this.questions[this.counter];
         this.setupHotKeys();
         if (this.mock_answers.length > 0) {
-          let answer = this.mock_answers.shift();
+          const answer = this.mock_answers.shift();
           console.log("mock answer: ", answer);
           this.mock_answer_used = true;
           this.submit(answer);
@@ -120,7 +120,7 @@ export class Modal {
     this.current_question.hotkey_positions = [];
     this.current_question.choices.forEach((c, index) => {
       for (let i = 0; i < c.length; i++) {
-        let letter = c[i].toLowerCase();
+        const letter = c[i].toLowerCase();
         if (!this.current_question.hotkeys.hasOwnProperty(letter)) {
           this.current_question.hotkeys[letter] = c;
           this.current_question.hotkey_positions[index] = i;
@@ -149,8 +149,8 @@ export class Modal {
    * @param {number} index
    */
   public splitByHotkey(index) {
-    let pos = this.current_question.hotkey_positions[index];
-    let choice = this.current_question.choices[index];
+    const pos = this.current_question.hotkey_positions[index];
+    const choice = this.current_question.choices[index];
     return [choice.slice(0, pos), choice.slice(pos, pos + 1), choice.slice(pos + 1)];
   }
 
@@ -165,7 +165,7 @@ export class ModalQuestion {
    * The answer received from the player. For text types, this is the value of the text box. For multiple-choice types,
    * this is the value of the button the player clicked.
    */
-  answer: string = '';
+  answer = '';
   /**
    * Choices for the multiple-choice question type. Shown as buttons. This is not used with the 'text' question type
    */

@@ -16,7 +16,7 @@ export default class Bank extends React.Component<any, any> {
   };
 
   public deposit = () => {
-    let amt = parseInt(this.state.amount, 10);
+    const amt = parseInt(this.state.amount, 10);
     const player = this.props.player;
     if (isNaN(amt) || amt <= 0) {
       this.setState({message: 'The banker scowls at you and says, "Come, come, you\'re not making sense! Try again."'});
@@ -35,7 +35,7 @@ export default class Bank extends React.Component<any, any> {
   };
 
   public withdraw = () => {
-    let amt = parseInt(this.state.amount, 10);
+    const amt = parseInt(this.state.amount, 10);
     const player = this.props.player;
     if (isNaN(amt) || amt <= 0) {
       this.setState({message: 'The banker scowls at you and says, "Come, come, you\'re not making sense! Try again."'});

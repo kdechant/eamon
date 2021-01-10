@@ -1,12 +1,12 @@
 import {Loadable} from "./loadable";
 import Game from "./game";
 
-declare var game: Game;
+declare let game: Game;
 
 export class RoomExit extends Loadable {
 
-  static EXIT: number = -999;
-  static EXIT_SILENT: number = -998;  // same as regular exit, but without the "ride off into the sunset" message
+  static EXIT = -999;
+  static EXIT_SILENT = -998;  // same as regular exit, but without the "ride off into the sunset" message
 
   public direction: string;
   public room_to: number;
@@ -34,7 +34,7 @@ export class RoomExit extends Loadable {
    */
   public isOpen(): boolean {
     if (this.door_id) {
-      let door = game.artifacts.get(this.door_id);
+      const door = game.artifacts.get(this.door_id);
       return door.is_open && !door.hidden;
     } else {
       // no door
@@ -58,8 +58,8 @@ export class Room extends Loadable {
   public description: string;
   public is_markdown: boolean;
   public exits: RoomExit[] = [];
-  public seen: boolean = false;
-  public visited_in_dark: boolean = false;
+  public seen = false;
+  public visited_in_dark = false;
   public is_dark: boolean;
   public dark_name: string;
   public dark_description: string;
@@ -77,10 +77,10 @@ export class Room extends Loadable {
    * @param {Object} source an object, e.g., from JSON.
    */
   public init(source): void {
-    for (let prop in source) {
+    for (const prop in source) {
       if (prop === "exits") {
-        for (let i in source[prop]) {
-          let ex = new RoomExit();
+        for (const i in source[prop]) {
+          const ex = new RoomExit();
           ex.init(source[prop][i]);
           this.exits.push(ex);
         }
@@ -125,7 +125,7 @@ export class Room extends Loadable {
    * Gets the exit from the room in a given direction
    */
   public getExit(direction: string): RoomExit {
-    for (let i in this.exits) {
+    for (const i in this.exits) {
       // FIXME: this will only work with 'e' not 'east', etc.
       if (this.exits[i].direction === direction) {
         return this.exits[i];
@@ -156,7 +156,7 @@ export class Room extends Loadable {
    */
   public chooseRandomExit(): RoomExit {
     // choose a random exit
-    let good_exits: RoomExit[] = this.getGoodExits();
+    const good_exits: RoomExit[] = this.getGoodExits();
     if (good_exits.length === 0) {
       return null;
     } else {
@@ -175,7 +175,7 @@ export class Room extends Loadable {
    * Creates a new exit from the room in a given direction (shorthand version)
    */
   public createExit(direction: string, room_to: number, door_id: number = null): void {
-    let new_exit = new RoomExit();
+    const new_exit = new RoomExit();
     new_exit.direction = direction;
     new_exit.room_to = room_to;
     new_exit.door_id = door_id;
@@ -194,8 +194,8 @@ export class Room extends Loadable {
    */
   public textMatch(str: string): boolean {
     str = str.toLowerCase();
-    let name = this.name.toLowerCase();
-    let desc = this.description.toLowerCase();
+    const name = this.name.toLowerCase();
+    const desc = this.description.toLowerCase();
     return (name.indexOf(str) !== -1 || desc.indexOf(str) !== -1);
   }
 }

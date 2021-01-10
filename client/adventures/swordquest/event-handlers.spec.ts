@@ -9,7 +9,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -54,7 +54,7 @@ it("should have working event handlers", () => {
   expect(game.monsters.get(48).room_id).toBe(77);
 
   // mithra spells
-  let dragon = game.monsters.get(44);
+  const dragon = game.monsters.get(44);
   game.player.moveToRoom(69);
   dragon.checkReaction();
   game.command_parser.run('say pax mithrae', false);
@@ -82,7 +82,7 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(2).isHere()).toBeFalsy();
 
   // exit with excalibur
-  let ex = game.artifacts.get(32);
+  const ex = game.artifacts.get(32);
   ex.moveToInventory();
   game.player.updateInventory();
   game.exit();

@@ -22,8 +22,8 @@ class Question extends React.Component<any, any> {
 
   public handleMultipleChoiceKeyPress = (key: string, event: any) => {
     const game = this.props.game;
-    let match = game.modal.current_question.hotkeys[key.toLowerCase()];
-    if (!!match) {
+    const match = game.modal.current_question.hotkeys[key.toLowerCase()];
+    if (match) {
       this.submitMultipleChoice(match);
     }
   };
@@ -79,7 +79,7 @@ class Question extends React.Component<any, any> {
           <KeyboardEventHandler handleKeys={['alphanumeric']} handleEventType='keyup'
                                 onKeyEvent={this.handleMultipleChoiceKeyPress} />
           {game.modal.current_question.choices.map((choice, index) => {
-            let parts = game.modal.splitByHotkey(index);
+            const parts = game.modal.splitByHotkey(index);
             return (
               <button className="btn btn-primary" key={index}
                       onClick={() => this.submitMultipleChoice(choice)}>

@@ -6,7 +6,7 @@ import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare let game;
 
 export var event_handlers = {
 
@@ -139,7 +139,7 @@ export var event_handlers = {
     // friendly NPCs in temple
     if (i_am && !game.data.temple) {
       game.data.temple = true;
-      for (let i of [1, 9, 10, 11, 12]) {
+      for (const i of [1, 9, 10, 11, 12]) {
         if (game.monsters.get(i).isHere()) {
           game.effects.get(28).replacements = {
             '{name}': game.monsters.get(i).name,
@@ -171,7 +171,7 @@ export var event_handlers = {
       game.data.amulet_used++;
       switch(game.data.amulet_used) {
         case 1:
-          let ally_id = game.getRandomElement([9,10,11,12,26]);
+          const ally_id = game.getRandomElement([9,10,11,12,26]);
           game.monsters.get(ally_id).moveToRoom();
           game.effects.print(30);
           break;
@@ -199,12 +199,12 @@ export var event_handlers = {
     if (roll <= 40) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else if (roll <= 55) {
       // heal
-      let heal_amount = game.diceRoll(2, 6);
+      const heal_amount = game.diceRoll(2, 6);
       game.history.write("Some of your wounds seem to clear up.");
       game.player.heal(heal_amount);
     } else if (roll <= 80) {
@@ -259,7 +259,7 @@ function orionGetsMad() {
  */
 export function adjustMonsterStats() {
   if (game.player.hardiness > 25) {
-    let boost_amount = Math.ceil((game.player.hardiness - 20) / 3);
+    const boost_amount = Math.ceil((game.player.hardiness - 20) / 3);
     for (let m = 2; m <= 7; m++) {
       game.monsters.get(m).hardiness += boost_amount;
     }

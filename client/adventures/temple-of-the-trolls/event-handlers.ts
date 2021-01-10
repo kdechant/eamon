@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -19,7 +19,7 @@ export var event_handlers = {
     // choose one of the troll words at random for this adventure
     game.data['active words'] = game.data['troll words'][game.diceRoll(1, game.data['troll words'].length) - 1];
 
-    for (let i of [6, 20, 21, 45, 47, 48, 49, 50, 51]) {
+    for (const i of [6, 20, 21, 45, 47, 48, 49, 50, 51]) {
       game.artifacts.get(i).seen = true;
     }
 
@@ -123,7 +123,7 @@ export var event_handlers = {
       } else {
         // make the sword
         game.effects.print(2);
-        let sword = game.artifacts.get(37);
+        const sword = game.artifacts.get(37);
         if (recipient.hasArtifact(15)) {
           sword.sides = 10;
         } else if (recipient.hasArtifact(16)) {
@@ -158,7 +158,7 @@ export var event_handlers = {
   },
 
   "look": function(arg: string) {
-    let artifact = game.artifacts.getLocalByName(arg, false);
+    const artifact = game.artifacts.getLocalByName(arg, false);
     if (artifact) {
       switch (artifact.id) {
         case 27:
@@ -185,7 +185,7 @@ export var event_handlers = {
 
   "beforeMove": function(arg: string, room: Room, exit: RoomExit): boolean {
     // king
-    let king = game.monsters.get(1);
+    const king = game.monsters.get(1);
     if (king.room_id === exit.room_to && game.data['holfane speaks'] === 1) {
       game.data['holfane speaks'] = 2;
     }
@@ -257,7 +257,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {

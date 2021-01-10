@@ -6,28 +6,28 @@ import GameObject from "./game-object";
 export default class Artifact extends GameObject {
 
   // constants
-  static TYPE_GOLD: number = 0;
-  static TYPE_TREASURE: number = 1;
-  static TYPE_WEAPON: number = 2;
-  static TYPE_MAGIC_WEAPON: number = 3;
-  static TYPE_CONTAINER: number = 4;
-  static TYPE_LIGHT_SOURCE: number = 5;
-  static TYPE_DRINKABLE: number = 6;
-  static TYPE_READABLE: number = 7;
-  static TYPE_DOOR: number = 8;
-  static TYPE_EDIBLE: number = 9;
-  static TYPE_BOUND_MONSTER: number = 10;
-  static TYPE_WEARABLE: number = 11;
-  static TYPE_DISGUISED_MONSTER: number = 12;
-  static TYPE_DEAD_BODY: number = 13;
-  static TYPE_USER_1: number = 14;
-  static TYPE_USER_2: number = 15;
-  static TYPE_USER_3: number = 16;
-  static ARMOR_TYPE_ARMOR: number = 0;
-  static ARMOR_TYPE_SHIELD: number = 1;
-  static ARMOR_TYPE_HELMET: number = 2;
-  static ARMOR_TYPE_GLOVES: number = 3;
-  static ARMOR_TYPE_RING: number = 4;
+  static TYPE_GOLD = 0;
+  static TYPE_TREASURE = 1;
+  static TYPE_WEAPON = 2;
+  static TYPE_MAGIC_WEAPON = 3;
+  static TYPE_CONTAINER = 4;
+  static TYPE_LIGHT_SOURCE = 5;
+  static TYPE_DRINKABLE = 6;
+  static TYPE_READABLE = 7;
+  static TYPE_DOOR = 8;
+  static TYPE_EDIBLE = 9;
+  static TYPE_BOUND_MONSTER = 10;
+  static TYPE_WEARABLE = 11;
+  static TYPE_DISGUISED_MONSTER = 12;
+  static TYPE_DEAD_BODY = 13;
+  static TYPE_USER_1 = 14;
+  static TYPE_USER_2 = 15;
+  static TYPE_USER_3 = 16;
+  static ARMOR_TYPE_ARMOR = 0;
+  static ARMOR_TYPE_SHIELD = 1;
+  static ARMOR_TYPE_HELMET = 2;
+  static ARMOR_TYPE_GLOVES = 3;
+  static ARMOR_TYPE_RING = 4;
 
   // data properties
   room_id: number; // if on the ground, which room
@@ -62,18 +62,18 @@ export default class Artifact extends GameObject {
 
   // game-state properties
   contents: Artifact[] = [];  // the Artifact objects for the things inside a container
-  seen: boolean = false;
-  is_lit: boolean = false;
-  inventory_message: string = "";  // replaces the "lit" or "wearing" message if set
-  markings_index: number = 0; // counter used to keep track of the next marking to read
-  is_worn: boolean = false; // if the monster is wearing it
-  is_broken: boolean = false;  // for a doors/containers that has been smashed open
-  player_brought: boolean = false; // flag to indicate which items the player brought with them
+  seen = false;
+  is_lit = false;
+  inventory_message = "";  // replaces the "lit" or "wearing" message if set
+  markings_index = 0; // counter used to keep track of the next marking to read
+  is_worn = false; // if the monster is wearing it
+  is_broken = false;  // for a doors/containers that has been smashed open
+  player_brought = false; // flag to indicate which items the player brought with them
 
   // used in Marcos' shop in Main Hall
-  message: string = "";
-  messageState: string = "hidden";
-  salePending: boolean = false;
+  message = "";
+  messageState = "hidden";
+  salePending = false;
 
   /**
    * Returns the maximum damage a weapon can do.
@@ -127,7 +127,7 @@ export default class Artifact extends GameObject {
     switch (this.type) {
       case Artifact.TYPE_WEAPON:
       case Artifact.TYPE_MAGIC_WEAPON:
-        let t: string = "";
+        let t = "";
         switch (this.weapon_type) {
           case 1:
             t = "axe";

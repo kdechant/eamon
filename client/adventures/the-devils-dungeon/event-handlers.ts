@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -27,7 +27,7 @@ export var event_handlers = {
     } else if (value < 50) {
       game.history.write("The dwarf looks disgustedly at the small payment in his hand, sniffs once, and turns and walks away.", "warning");
     } else {
-      let adr = game.player.gender === "m" ? "sir" : "ma'am";
+      const adr = game.player.gender === "m" ? "sir" : "ma'am";
       game.history.write("The little man's face lights up...  He leans over to whisper to you as you climb into the hole, \"Thank you, " + adr + ", and keep a sharp eye out for secret doors down there!", "success");
     }
     game.player.gold -= value;
@@ -39,7 +39,7 @@ export var event_handlers = {
     if (attacker.id === 9) {
       if (game.diceRoll(1,6) > 1) {
         // pick a random armor item the player is wearing
-        let armors = defender.inventory.filter(a => a.isArmor() && a.is_worn);
+        const armors = defender.inventory.filter(a => a.isArmor() && a.is_worn);
         if (armors.length === 0) {
           if (defender.id === Monster.PLAYER || defender.armor_class === 0) {
             return true; // can't do anything in this case
@@ -49,10 +49,10 @@ export var event_handlers = {
           defender.armor_class--;
           return true;
         }
-        let roll = game.diceRoll(1, armors.length) - 1;
-        let target_armor = armors[roll];
+        const roll = game.diceRoll(1, armors.length) - 1;
+        const target_armor = armors[roll];
         target_armor.armor_class--;
-        let defender_name = defender.id === Monster.PLAYER ? 'your' : defender.name + "'s";
+        const defender_name = defender.id === Monster.PLAYER ? 'your' : defender.name + "'s";
         if (target_armor.armor_class <= 0) {
           game.history.write("The gelatinous cube burns a hole through " + defender_name + " " + target_armor.name + "! It's now useless!", "warning");
           target_armor.destroy();
@@ -74,12 +74,12 @@ export var event_handlers = {
 
     // if player is carrying the crystal ball, look for possible hostile monsters in the next room
     if (game.player.hasArtifact(10)) {
-      let danger = game.monsters.all.some(m => m.room_id === exit.room_to && !m.seen);
+      const danger = game.monsters.all.some(m => m.room_id === exit.room_to && !m.seen);
       if (danger) {
         game.modal.confirm("The crystal ball warns of possible danger ahead! Do you wish to proceed?", answer => {
           if (answer.toLowerCase() === 'yes') {
-            let room_to = game.rooms.get(exit.room_to);
-            let room_from = game.rooms.current_room;
+            const room_to = game.rooms.get(exit.room_to);
+            const room_from = game.rooms.current_room;
             game.player.moveToRoom(room_to.id, true);
             game.triggerEvent("afterMove", arg, room_from, room_to);
           }
@@ -145,7 +145,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {
@@ -157,13 +157,13 @@ export var event_handlers = {
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
     // reward for saving leia
-    let leia = game.monsters.get(13);
+    const leia = game.monsters.get(13);
     if (leia.isHere() && leia.reaction !== Monster.RX_HOSTILE) {
       game.after_sell_messages.push(game.effects.get(1).text);
       game.player.gold += 2500;
     }
     // reward for killing vader
-    let vader = game.monsters.get(12);
+    const vader = game.monsters.get(12);
     if (vader.room_id === null) {
       game.after_sell_messages.push(game.effects.get(2).text);
       game.player.gold += 1000;

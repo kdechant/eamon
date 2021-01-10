@@ -5,7 +5,7 @@ import axios from "axios";
 import Game from "../../core/models/game";
 import {Monster} from "../models/monster";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Init from the mock data. Used in the unit tests.
@@ -13,7 +13,7 @@ declare var game: Game;
 export function initMockGame(game) {
 
   game.slug = 'demo1';
-  let path = "http://localhost:8000/static/mock-data";
+  const path = "http://localhost:8000/static/mock-data";
   return axios.all([
     axios.get(path + '/adventure.json'),
     axios.get(path + '/rooms.json'),
@@ -37,7 +37,7 @@ export function initMockGame(game) {
  */
 export function initLiveGame(game: Game) {
 
-  let path = "http://localhost:8000/api/adventures/" + game.slug;
+  const path = "http://localhost:8000/api/adventures/" + game.slug;
   return axios.all([
     axios.get(path + ''),
     axios.get(path + '/rooms'),

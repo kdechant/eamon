@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare let game;
 
 export var event_handlers = {
 
@@ -13,7 +13,7 @@ export var event_handlers = {
     if (game.player.armor_expertise > 25) {
       game.effects.print(18);
     }
-    let a = game.player.gender === 'm' ? "son" : "miss";
+    const a = game.player.gender === 'm' ? "son" : "miss";
     game.history.write('"OK, let\'s be careful in there, ' + a + '", he says, as he walks away.');
 
     // set up game data
@@ -31,7 +31,7 @@ export var event_handlers = {
     game.monsters.get(11).seen = true;
 
     // items for sale
-    for (let id of [40, 41]) {
+    for (const id of [40, 41]) {
       game.artifacts.get(id).data.for_sale = true;
     }
   },
@@ -52,7 +52,7 @@ export var event_handlers = {
   "endTurn": function() {
     // Kobolds appear (30% chance)
     if (game.player.room_id >= 11 && game.player.room_id <= 15 && !game.data["kobolds_appear"]) {
-      let roll = game.diceRoll(1, 100);
+      const roll = game.diceRoll(1, 100);
       if (roll < 31) {
         for (let i = 6; i <= 9; i++) {
           game.monsters.get(i).room_id = game.player.room_id;
@@ -74,13 +74,13 @@ export var event_handlers = {
       game.data["sounds_room_26"] = true;
     }
     // Zapf the Conjurer brings in strangers (15% Chance)
-    let zapf = game.monsters.get(15);
+    const zapf = game.monsters.get(15);
     if (zapf.isHere() && zapf.hasArtifact(33)) {
-      let roll = game.diceRoll(1, 100);
+      const roll = game.diceRoll(1, 100);
       console.log("zapf roll", roll)
       if (roll <= 15) {
         game.effects.print(16, "special");
-        let m = game.monsters.getRandom();
+        const m = game.monsters.getRandom();
         // Zapf's spell only brings in monsters the player has already seen
         if (!m.isHere() && m.seen) {
           game.history.write("<<POOF!!>>  " + m.name + " appears!", "special");
@@ -92,7 +92,7 @@ export var event_handlers = {
 
   "endTurn2": function () {
     // display items for sale
-    let for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
+    const for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
     if (for_sale.length) {
       game.history.write("Items for sale here: " + for_sale.map(a => a.name).join(', '));
     }
@@ -102,7 +102,7 @@ export var event_handlers = {
     // Taking Purple book reveals secret passage
     if (artifact && artifact.id === 27 && game.player.room_id === 24 && !game.data["secret_library"]) {
       game.effects.print(12, "special");
-      let exit = new RoomExit();
+      const exit = new RoomExit();
       exit.direction = 'e';
       exit.room_to = 25;
       game.rooms.getRoomById(24).addExit(exit);
@@ -212,7 +212,7 @@ export var event_handlers = {
     // 20% chance of sex change
     if (roll < 21 && game.data["sex_change_counter"] < 2) {
       game.data["sex_change_counter"]++;
-      let word = game.player.gender === "m" ? "feminine" : "masculine";
+      const word = game.player.gender === "m" ? "feminine" : "masculine";
       game.history.write("You feel different...more " + word + ".");
       game.player.gender = game.player.gender === "m" ? "f" : "m";
       return;
@@ -220,7 +220,7 @@ export var event_handlers = {
     // 40% chance Charisma up (one time only)
     if (roll < 41 && !game.data["charisma_boost"]) {
       game.data["charisma_boost"] = true;
-      let word = game.player.gender === "m" ? "handsome" : "beautiful";
+      const word = game.player.gender === "m" ? "handsome" : "beautiful";
       game.player.charisma += 2;
       game.player.stats_original.charisma += 2;
       return;

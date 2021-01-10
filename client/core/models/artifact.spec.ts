@@ -2,7 +2,7 @@ import Game from "../models/game";
 import {Artifact} from "../models/artifact";
 import {initMockGame} from "../utils/testing";
 
-var game = new Game();
+const game = new Game();
 
 describe("Artifact", function() {
 
@@ -47,8 +47,8 @@ describe("Artifact", function() {
   });
 
   test("go into and out of containers", function() {
-    let torch = game.artifacts.get(9);
-    let chest = game.artifacts.get(12);
+    const torch = game.artifacts.get(9);
+    const chest = game.artifacts.get(12);
     expect(torch.monster_id).toBe(0);
     torch.putIntoContainer(chest);
     expect(torch.container_id).toBe(12);
@@ -56,20 +56,20 @@ describe("Artifact", function() {
     expect(torch.monster_id).toBeNull();
 
     game.player.moveToRoom(4);
-    let jewels = game.artifacts.get(13);
+    const jewels = game.artifacts.get(13);
     expect(jewels.container_id).toBe(12);
     jewels.removeFromContainer();
   });
 
   test("move to the correct room", function() {
-    let torch = game.artifacts.get(9);
+    const torch = game.artifacts.get(9);
     expect(torch.room_id).toBeNull();
     expect(torch.monster_id).toBe(0);
     torch.moveToRoom(5);
     expect(torch.room_id).toBe(5);
     expect(torch.monster_id).toBeNull();
 
-    let jewels = game.artifacts.get(13);
+    const jewels = game.artifacts.get(13);
     jewels.moveToRoom(); // move to player's room
     expect(jewels.room_id).toBe(1);
     expect(jewels.monster_id).toBeNull();

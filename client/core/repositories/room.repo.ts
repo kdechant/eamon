@@ -2,7 +2,7 @@ import {Room} from "../models/room";
 import Game from "../models/game";
 import { parseJSON } from '../utils/index'
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Class RoomRepository.
@@ -21,8 +21,8 @@ export default class RoomRepository {
   current_room: Room;
 
   constructor(room_data) {
-    for (let i of room_data) {
-      let r = new Room();
+    for (const i of room_data) {
+      const r = new Room();
       if (i.data) {
         i.data = parseJSON(i.data);
       } else {
@@ -39,7 +39,7 @@ export default class RoomRepository {
    * @return Room
    */
   get(room_id: number) {
-    let r = this.rooms.find(x => x.id === room_id);
+    const r = this.rooms.find(x => x.id === room_id);
     return r || null;
   }
 

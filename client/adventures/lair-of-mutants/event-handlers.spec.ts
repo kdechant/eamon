@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -48,7 +48,7 @@ test("use amulet", () => {
   expect(game.monsters.get(9).isHere()).toBeTruthy();
   expectEffectSeen(30);
 
-  let hd = game.player.hardiness;
+  const hd = game.player.hardiness;
   game.player.injure(5);
   game.command_parser.run('use amulet');
   expectEffectSeen(31);
@@ -83,7 +83,7 @@ test("temple", () => {
   expectEffectSeen(3);
   expectEffectSeen(28);
   expect(game.effects.get(28).replacements['{name}']).toBe('Orion');
-  let ch = game.player.charisma;
+  const ch = game.player.charisma;
   game.command_parser.run('worship magon');
   expectEffectSeen(19);
   expectEffectSeen(20);

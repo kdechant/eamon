@@ -2,15 +2,15 @@ import {ILoggerService} from "./logger.interface";
 import {getAxios} from "../../main-hall/utils/api";
 import Game from "../models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Real live logger class connected to API
  */
 export default class Logger implements ILoggerService {
 
-  public log(type: string = "", value: number = null) {
-    let body = {
+  public log(type = "", value: number = null) {
+    const body = {
       'player': game.demo ? null : window.localStorage.getItem('player_id'),
       'adventure': game.id,
       'type': type,

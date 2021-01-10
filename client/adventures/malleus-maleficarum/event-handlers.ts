@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -49,7 +49,7 @@ export var event_handlers = {
     game.monsters.get(30).spells = ['blast', 'heal'];
     game.monsters.get(30).spell_points = 10;
     game.monsters.get(30).spell_frequency = 40;
-    let mage_verbs = ['conjures a firebolt at', 'swings at', 'shoots lightning at'];
+    const mage_verbs = ['conjures a firebolt at', 'swings at', 'shoots lightning at'];
     game.monsters.get(31).children.forEach(c => c.combat_verbs = mage_verbs);
 
     game.monsters.get(1).health_messages = [
@@ -63,7 +63,7 @@ export var event_handlers = {
     ];
 
     // items for sale
-    for (let id of [32, 33, 34, 35, 36, 54]) {
+    for (const id of [32, 33, 34, 35, 36, 54]) {
       game.artifacts.get(id).data.for_sale = true;
     }
     // no teleport into jail (22-30), safe house (67-68), or castle (51-54)
@@ -84,7 +84,7 @@ export var event_handlers = {
     // shambling mound/assassin vine
     if (attacker.special === 'plant' && !defender.data.engulfed && game.diceRoll(1, 2) > 1) {
       // engulfs its target
-      let name = defender.id === Monster.PLAYER ? 'you' : defender.name;
+      const name = defender.id === Monster.PLAYER ? 'you' : defender.name;
       if (attacker.id === 19) {
         game.history.write(`The shambling mound engulfs ${name} with its rotting tendrils!`, 'special');
       } else if (attacker.id === 21) {
@@ -153,7 +153,7 @@ export var event_handlers = {
 
   "flee": function () {
     if (game.player.data.engulfed) {
-      let m = game.monsters.get(game.player.data.engulfed);
+      const m = game.monsters.get(game.player.data.engulfed);
       game.history.write(`You are held fast by the ${m.name} and cannot flee!`, "emphasis");
       return false;
     }
@@ -185,7 +185,7 @@ export var event_handlers = {
     // stuff that happens after room desc is shown, but before monster/artifacts
 
     // old man, after fight
-    let old_man = game.monsters.get(14);
+    const old_man = game.monsters.get(14);
     if (old_man.isHere() && !game.monsters.get(15).isHere() && !game.data.old_man_rescued) {
       game.effects.print(12);
       old_man.destroy();
@@ -194,7 +194,7 @@ export var event_handlers = {
     // old man, at standing stones
     if (old_man.isHere() && game.data.cf_defeated && !game.data.given_ring) {
       game.effects.print(48);
-      let ring = game.artifacts.get(6);
+      const ring = game.artifacts.get(6);
       game.history.write(`You receive: ${ring.name}`);
       ring.moveToInventory();
       game.data.given_ring = true;
@@ -202,7 +202,7 @@ export var event_handlers = {
     }
 
     // Maya's return
-    let maya = game.monsters.get(1);
+    const maya = game.monsters.get(1);
     if (game.countdown('maya')) {
       maya.moveToRoom();
       maya.reaction = Monster.RX_FRIEND;
@@ -214,11 +214,11 @@ export var event_handlers = {
   },
 
   "endTurn2": function () {
-    let maya = game.monsters.get(1);
-    let duke = game.monsters.get(4);
-    let inquisitor = game.monsters.get(6);
-    let velatha = game.monsters.get(30);
-    let ainha = game.monsters.get(33);
+    const maya = game.monsters.get(1);
+    const duke = game.monsters.get(4);
+    const inquisitor = game.monsters.get(6);
+    const velatha = game.monsters.get(30);
+    const ainha = game.monsters.get(33);
 
     // maya, after you escape prison
     if (maya.isHere() && game.data.arrested && !game.data.maya_gives_money) {
@@ -238,7 +238,7 @@ export var event_handlers = {
     }
 
     // maya / orb
-    let orb = game.artifacts.get(5);
+    const orb = game.artifacts.get(5);
     if (orb.isHere() && maya.isHere() && !game.data.maya_sees_orb) {
       game.data.maya_sees_orb = true;
       game.effects.print(6);
@@ -258,7 +258,7 @@ export var event_handlers = {
       return;
     }
     // if soldiers took orb to inquisitor
-    let inquisitor_has_orb = game.monsters.all.find(m =>
+    const inquisitor_has_orb = game.monsters.all.find(m =>
       m.special === 'inquisitor' && m.hasArtifact(orb.id) && m.isHere());
     if (inquisitor_has_orb) {
       game.effects.print(38);
@@ -404,7 +404,7 @@ export var event_handlers = {
     }
 
     // resurrect Maya
-    let mages = game.monsters.get(31);
+    const mages = game.monsters.get(31);
     if (game.artifacts.get(101).isHere()) {
       // take to safe house
       if (game.player.room_id === 67 && (velatha.isHere() || mages.isHere())) {
@@ -442,7 +442,7 @@ export var event_handlers = {
     }
 
     // display items for sale
-    let for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
+    const for_sale = game.artifacts.all.filter(a => a.data.for_sale && a.monster_id && game.monsters.get(a.monster_id).isHere());
     if (for_sale.length) {
       game.history.write("Items for sale here: " + for_sale.map(a => a.name).join(', '));
     }
@@ -503,7 +503,7 @@ export var event_handlers = {
   },
 
   "heal": function(arg) {
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact && artifact.id === 101) {  // maya
       game.effects.print(61);
       return false;
@@ -512,7 +512,7 @@ export var event_handlers = {
   },
 
   "afterGive": function(arg: string, artifact: Artifact, recipient: Monster) {
-    let inquisitor = game.monsters.get(6);
+    const inquisitor = game.monsters.get(6);
     if (artifact.id === 5 && isCobaltFront(recipient)) {
       game.effects.print(36);
       game.monsters.visible.filter(m => isCobaltFront(m)).forEach(m => {
@@ -596,7 +596,7 @@ export var event_handlers = {
     switch (artifact.id) {
       case 3:  // wand
         let defoliated = false;
-        let plant_monsters = game.monsters.all.filter(m => m.special === 'plant' && m.isHere());
+        const plant_monsters = game.monsters.all.filter(m => m.special === 'plant' && m.isHere());
         if (plant_monsters.length) {
           game.history.write("A ray of brown light shoots from the Wand of Defoliation!", 'special');
           plant_monsters.forEach(m => m.injure(game.diceRoll(3, 4), true));
@@ -651,7 +651,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("Your vision wavers. You find yourself standing, disoriented, somewere far from where you just were.");
-      let room = game.rooms.getRandom(game.data.no_teleport_rooms);
+      const room = game.rooms.getRandom(game.data.no_teleport_rooms);
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
 
@@ -699,7 +699,7 @@ function checkIfCaughtUsingMagic() {
 
 function goToJail() {
   game.player.inventory.forEach(a => a.moveToRoom(24));
-  let sack = game.artifacts.get(39);
+  const sack = game.artifacts.get(39);
   sack.value = game.player.gold;
   sack.moveToRoom(24);
   game.player.gold = 0;
@@ -736,7 +736,7 @@ function hasOrbInBag() {
 }
 
 function healMaya() {
-  let maya = game.monsters.get(1);
+  const maya = game.monsters.get(1);
   maya.resurrect();
   maya.moveToRoom(68);
   maya.reaction = Monster.RX_NEUTRAL;

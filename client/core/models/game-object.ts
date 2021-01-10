@@ -2,7 +2,7 @@ import * as pluralize from 'pluralize';
 import Game from "./game";
 import { parseJSON } from '../utils/index'
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * GameObject class. Parent class for monsters and artifacts.
@@ -17,7 +17,7 @@ export class GameObject {
   aliases: string[];
   effect: number;  // for extended descriptions
   effect_inline: number;  // for extended descriptions
-  seen: boolean = false;
+  seen = false;
 
   /**
    * A container for custom data used by specific adventures
@@ -34,7 +34,7 @@ export class GameObject {
     } else {
       source.data = {};
     }
-    for (let prop in source) {
+    for (const prop in source) {
       this[prop] = source[prop];
     }
   }
@@ -45,7 +45,7 @@ export class GameObject {
    * a name "healing potion" and alias "bottle"
    */
   public match(str: string): boolean {
-    let names: string[] = [  // all iterations of the monster's name
+    const names: string[] = [  // all iterations of the monster's name
       this.name.toLocaleLowerCase(),
       this.getDisplayName().toLocaleLowerCase(),
       pluralize(this.name).toLocaleLowerCase(),
@@ -59,7 +59,7 @@ export class GameObject {
       return true;
     }
     // attempt match by beginning/end of name
-    for (let name of names) {
+    for (const name of names) {
       if (name.startsWith(str) || name.endsWith(str)) {
         return true;
       }

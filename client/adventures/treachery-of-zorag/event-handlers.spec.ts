@@ -17,7 +17,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -172,8 +172,8 @@ test("camp", () => {
 });
 
 test("fill water containers", () => {
-  let canteen = game.artifacts.get(89);
-  let waterskin = game.artifacts.get(5);
+  const canteen = game.artifacts.get(89);
+  const waterskin = game.artifacts.get(5);
   canteen.moveToInventory();
   waterskin.moveToInventory();
   canteen.quantity = 0;
@@ -191,8 +191,8 @@ test("fill water containers", () => {
 });
 
 test("fill lantern", () => {
-  let lantern = game.artifacts.get(1);
-  let fuel = game.artifacts.get(7);
+  const lantern = game.artifacts.get(1);
+  const fuel = game.artifacts.get(7);
   fuel.quantity = 100;
   lantern.moveToInventory();
   fuel.moveToInventory();
@@ -214,7 +214,7 @@ test("fill lantern", () => {
 
 test('automatic lantern management', () => {
   getLamp();
-  let lamp = game.artifacts.get(1);
+  const lamp = game.artifacts.get(1);
   movePlayer(48);
   game.command_parser.run('n');
   expect(lamp.is_lit).toBeFalsy();
@@ -236,7 +236,7 @@ test('buy stuff', () => {
   original_gold = game.player.gold;
   game.modal.mock_answers = ['Yes'];
   runCommand('buy lantern');
-  let lantern = game.artifacts.get(1);
+  const lantern = game.artifacts.get(1);
   expect(game.player.hasArtifact(lantern.id)).toBeTruthy();
   expect(game.monsters.get(1).hasArtifact(lantern.id)).toBeFalsy();
   expect(game.player.gold).toBe(original_gold - lantern.data.price);
@@ -361,8 +361,8 @@ test('raulos / quest', () => {
 // region npcs
 
 test('npc healing', () => {
-  let tealand = game.monsters.get(7);
-  let zorag = game.monsters.get(34);
+  const tealand = game.monsters.get(7);
+  const zorag = game.monsters.get(34);
   tealand.moveToRoom();
   zorag.moveToRoom()
   tealand.damage = 25;
@@ -393,7 +393,7 @@ test('attack friendly npcs', () => {
 // region general plot points
 
 test('boris', () => {
-  let boris = game.monsters.get(4);
+  const boris = game.monsters.get(4);
   movePlayer(54);
   expectEffectNotSeen(22);  // boris' effects don't run when he isn't present
   movePlayer(76);
@@ -433,7 +433,7 @@ test('boris', () => {
 test('guarded artifacts', () => {
   // note: tests core logic about guarded treasure
   getLamp();
-  let chimera = game.monsters.get(5);
+  const chimera = game.monsters.get(5);
   chimera.reaction = Monster.RX_NEUTRAL;
   movePlayer(50);
   runCommand("get wand");
@@ -443,7 +443,7 @@ test('guarded artifacts', () => {
   runCommand("get wand");
   expect(game.player.hasArtifact(14)).toBeTruthy();
 
-  let garg = game.monsters.get(10);
+  const garg = game.monsters.get(10);
   garg.reaction = Monster.RX_NEUTRAL;
   movePlayer(150);
   runCommand('open hidden');
@@ -469,7 +469,7 @@ test('evil tree', () => {
   expectMonsterIsHere(1);
   // try to fight the spirit
   movePlayer(30);
-  let spirit = game.monsters.get(6);
+  const spirit = game.monsters.get(6);
   spirit.weapon_sides = 0;  // make it do no damage
   playerHit(spirit, 10);
   expect(spirit.damage).toBe(0);
@@ -496,7 +496,7 @@ test('evil tree', () => {
 test('tealand', () => {
   game.artifacts.get(9).moveToInventory();
   runCommand('wear coat');
-  let tealand = game.monsters.get(7);
+  const tealand = game.monsters.get(7);
   movePlayer(32);
   runCommand('say thor');
   expectEffectNotSeen(44);
@@ -618,7 +618,7 @@ test('drown in swamp', () => {
 // region tower
 
 test('scroll / portcullis', () => {
-  let portcullis = game.artifacts.get(51);
+  const portcullis = game.artifacts.get(51);
   movePlayer(270);
   runCommand('s');
   expect(game.history.getOutput().text).toBe('The magical portcullis blocks your way!');
@@ -664,7 +664,7 @@ test('free zorag', () => {
   runCommand('free man');
   expectEffectSeen(130);
   game.triggerEvent('power', 99);
-  let stone = game.artifacts.get(49);
+  const stone = game.artifacts.get(49);
   expect(stone.data.active).toBeTruthy();
   expect(stone.inventory_message).toBe('glowing');
   runCommand('free man');
@@ -694,7 +694,7 @@ test('raulos / zorag battle', () => {
   game.monsters.get(11).destroy();  // move some NPCs out of the way
   game.monsters.get(12).destroy();
   game.monsters.get(13).destroy();
-  let zorag = game.monsters.get(34);
+  const zorag = game.monsters.get(34);
   movePlayer(58);
   zorag.moveToRoom();
   zorag.reaction = Monster.RX_FRIEND;

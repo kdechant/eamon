@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -139,7 +139,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {
@@ -150,10 +150,10 @@ export var event_handlers = {
 
   // event handler that happens at the very end, after the player has sold their treasure to sam slicker
   "afterSell": function() {
-    let cynthia = game.monsters.get(3);
+    const cynthia = game.monsters.get(3);
     // Duke Luxom's Reward
     if (cynthia.isHere() && cynthia.reaction !== Monster.RX_HOSTILE) {
-      let reward = game.player.charisma * 10;
+      const reward = game.player.charisma * 10;
       game.after_sell_messages.push("Additionally, you receive " + reward + " gold pieces for the safe return of Cynthia.");
       game.player.gold += reward;
     }
@@ -165,7 +165,7 @@ export var event_handlers = {
 // functions used by event handlers and custom commands
 export function light_trollsfire(): void {
   "use strict";
-  let trollsfire = game.artifacts.get(10);
+  const trollsfire = game.artifacts.get(10);
   trollsfire.is_lit = true;
   trollsfire.inventory_message = "glowing";
   trollsfire.sides = 10;
@@ -173,7 +173,7 @@ export function light_trollsfire(): void {
 
 export function put_out_trollsfire(): void {
   "use strict";
-  let trollsfire = game.artifacts.get(10);
+  const trollsfire = game.artifacts.get(10);
   trollsfire.is_lit = false;
   trollsfire.inventory_message = "";
   trollsfire.sides = 6;

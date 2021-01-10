@@ -12,7 +12,7 @@ import Status from "./Status";
 import SamSlicker from "./SamSlicker";
 import Logger from "../utils/logger";
 
-declare var game: Game;
+declare let game: Game;
 
 class MainProgram extends React.Component<any, any> {
 
@@ -47,7 +47,7 @@ class MainProgram extends React.Component<any, any> {
     // TODO: this could be refactored into a method on the Game class.
     if (game.slug === 'demo1') {
       // The "demo" adventure. Load everything from the mock data.
-      let path = "/static/mock-data";
+      const path = "/static/mock-data";
       axios.all([
         axios.get(path + '/adventure.json'),
         axios.get(path + '/rooms.json'),
@@ -63,7 +63,7 @@ class MainProgram extends React.Component<any, any> {
     } else {
       // All "real" adventures. We load adventure data from the API, and the player data comes from either
       // the API (for "real" players) or from mock data (if running in "demo" mode)
-      let player_id = window.localStorage.getItem('player_id');
+      const player_id = window.localStorage.getItem('player_id');
 
       // check if we're using mock or real player data
       let player_path = "/api/players/" + player_id + '.json?uuid=' + this.state.uuid;
@@ -90,7 +90,7 @@ class MainProgram extends React.Component<any, any> {
         });
     }
 
-  };
+  }
 
   /**
    * Persists the game object to the state. Pass this as a prop
@@ -119,7 +119,7 @@ class MainProgram extends React.Component<any, any> {
    * Toggles whether a modal is open
    */
   public toggleModal = (modal: string) => {
-    let modals = {
+    const modals = {
       ...this.state.modals,
     };
     modals[modal] = !this.state.modals[modal];
@@ -130,8 +130,8 @@ class MainProgram extends React.Component<any, any> {
    * Closes the active modal
    */
   public closeModal = () => {
-    let modals = {...this.state.modals};
-    for (let m in modals) {
+    const modals = {...this.state.modals};
+    for (const m in modals) {
       modals[m] = false;
     }
     this.setState({modals: modals});
@@ -187,8 +187,8 @@ class MainProgram extends React.Component<any, any> {
     }
 
     // the regular game engine
-    let historyClass = this.state.statusOpen ? 'd-none': '';
-    let menuClass = this.state.menuOpen ? '' : 'd-none';
+    const historyClass = this.state.statusOpen ? 'd-none': '';
+    const menuClass = this.state.menuOpen ? '' : 'd-none';
     return (
       <div className="container-fluid" id="game">
           <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
@@ -260,7 +260,7 @@ class MainProgram extends React.Component<any, any> {
 export default MainProgram;
 
 const GameHeading = (props) => {
-  let game = props.game;
+  const game = props.game;
   return (
     <div className="container-fluid main-heading">
       <div className="row no-gutters">

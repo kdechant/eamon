@@ -8,7 +8,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -36,7 +36,7 @@ it("should have working event handlers", () => {
   expect(game.player.weapon_id).toBe(33);
   game.command_parser.run("ready firebrand");
   expect(game.player.weapon_id).toBe(32);
-  let tr = game.artifacts.get(10);
+  const tr = game.artifacts.get(10);
   tr.moveToRoom();
   game.player.pickUp(tr);
   game.command_parser.run("ready trollsfire");

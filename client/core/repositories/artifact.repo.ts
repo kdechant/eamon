@@ -2,7 +2,7 @@ import {Artifact} from "../models/artifact";
 import Game from "../models/game";
 import {Monster} from "../models/monster";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Class ArtifactRepository.
@@ -30,15 +30,15 @@ export default class ArtifactRepository {
   /**
    * The count of artifacts before player weapons/armor are added
    */
-  initial_count: number = 0;
+  initial_count = 0;
 
   /**
    * The highest ID in the system
    */
-  index: number = 0;
+  index = 0;
 
   constructor(artifact_data: Array<Object>) {
-    for (let i in artifact_data) {
+    for (const i in artifact_data) {
       this.add(artifact_data[i]);
     }
     this.initial_count = this.all.length;
@@ -49,7 +49,7 @@ export default class ArtifactRepository {
    * @param {object} artifact_data
    */
   add(artifact_data) {
-    let a = new Artifact();
+    const a = new Artifact();
     // "synonyms" in the back end are called "aliases" here
     if (artifact_data.synonyms) {
       artifact_data.aliases = artifact_data.synonyms.split(",").map(s => s.trim());
@@ -89,8 +89,8 @@ export default class ArtifactRepository {
    * renames weapons and armor so the names aren't duplicates of player artifacts
    */
   deduplicate() {
-    for (let item of this.all.filter(i => i.player_brought === true)) {
-      for (let item2 of this.all.filter(i => i.player_brought === false && i.name.toLowerCase() === item.name.toLowerCase())) {
+    for (const item of this.all.filter(i => i.player_brought === true)) {
+      for (const item2 of this.all.filter(i => i.player_brought === false && i.name.toLowerCase() === item.name.toLowerCase())) {
         item2.name += "#";
       }
     }
@@ -102,7 +102,7 @@ export default class ArtifactRepository {
    * @return Artifact
    */
   get(id) {
-    let a = this.all.find(a => a.id === id);
+    const a = this.all.find(a => a.id === id);
     return a || null;
   }
 
@@ -113,7 +113,7 @@ export default class ArtifactRepository {
    * @return Artifact
    */
   getByName(name: string) {
-    let a = this.all.find(a => a.match(name));
+    const a = this.all.find(a => a.match(name));
     return a || null;
   }
 
@@ -124,7 +124,7 @@ export default class ArtifactRepository {
    * Default true.
    * @return Artifact
    */
-  getLocalByName(name: string, reveal_embedded: boolean = true) {
+  getLocalByName(name: string, reveal_embedded = true) {
     // fixme: should this only return the first match? or all matches?
     // try exact match first, then fuzzy match
     let art = this.all.find(a => a.isHere() && a.name === name);
@@ -145,9 +145,9 @@ export default class ArtifactRepository {
    * @return Artifact[]
    */
   updateVisible() {
-    let visible: Artifact[] = [];
-    let inRoom: Artifact[] = [];
-    for (let a of this.all.filter(a => a.room_id === game.rooms.current_room.id)) {
+    const visible: Artifact[] = [];
+    const inRoom: Artifact[] = [];
+    for (const a of this.all.filter(a => a.room_id === game.rooms.current_room.id)) {
       a.updateContents();
       inRoom.push(a);
       if (!a.embedded) {
@@ -173,8 +173,8 @@ export default class ArtifactRepository {
    * Serializes the repo to JSON, without some unnecessary deep-copy data like artifact contents
    */
   public serialize() {
-    let data = JSON.parse(JSON.stringify(this.all));
-    for (let a of data) {
+    const data = JSON.parse(JSON.stringify(this.all));
+    for (const a of data) {
       // calculated properties don't need to be serialized
       delete a.contents;
       // some properties are only used in the main hall

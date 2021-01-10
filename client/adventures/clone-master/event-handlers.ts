@@ -6,7 +6,7 @@ import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -189,7 +189,7 @@ export var event_handlers = {
           if (game.in_battle) {
             throw new CommandException("The soldiers won't let you!");
           }
-          let q1 = new ModalQuestion;
+          const q1 = new ModalQuestion;
           q1.type = 'multiple_choice';
           q1.question = "What do you target with the cannon?";
           q1.choices = ['Battlefield', 'Power Station', 'Inner Gate'];
@@ -248,7 +248,7 @@ export var event_handlers = {
             destroy_clonatorium();
           } else if (game.in_battle) {
             game.effects.print(16);
-            for (let m of game.monsters.visible.filter(x => x.reaction === Monster.RX_HOSTILE)) {
+            for (const m of game.monsters.visible.filter(x => x.reaction === Monster.RX_HOSTILE)) {
               if (m.children.length) {
                 // group monsters take 1 hit per member
                 m.children.forEach(c => c.injure(game.diceRoll(1, 20), true));
@@ -284,7 +284,7 @@ export var event_handlers = {
     } else if (roll <= 75) {
       // teleport to random room
       game.history.write("You are being teleported...");
-      let room = game.rooms.getRandom();
+      const room = game.rooms.getRandom();
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else {
@@ -306,7 +306,7 @@ function destroy_clonatorium() {
   game.artifacts.get(34).destroy();
   game.artifacts.get(35).moveToRoom();
   // chaos
-  let guards = game.monsters.get(20);
+  const guards = game.monsters.get(20);
   guards.children.filter(g => g.room_id === 28).forEach(g => g.destroy());
 
   game.monsters.get(5).destroy();
@@ -317,11 +317,11 @@ function destroy_clonatorium() {
   game.monsters.get(24).moveToRoom(20);
   game.monsters.get(25).moveToRoom(19);
   // any other remaining soldiers
-  let possible_rooms = [10, 11, 12, 13, 16, 17, 20, 21, 22, 31, 37, 38, 43, 44, 45, 46, 47];
+  const possible_rooms = [10, 11, 12, 13, 16, 17, 20, 21, 22, 31, 37, 38, 43, 44, 45, 46, 47];
   for (let m = 7; m <= 12; m++) {
     if (game.monsters.get(m).room_id !== null) {
-      let r = game.diceRoll(1, possible_rooms.length) - 1;
-      let monster = game.monsters.get(m);
+      const r = game.diceRoll(1, possible_rooms.length) - 1;
+      const monster = game.monsters.get(m);
       monster.moveToRoom(possible_rooms[r]);
       // also move all living members of group monsters
       monster.children.filter(c => c.status === Monster.STATUS_ALIVE).forEach(c => c.moveToRoom(possible_rooms[r]));

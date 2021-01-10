@@ -9,7 +9,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -69,7 +69,7 @@ test('save old man', () => {
 test('buy stuff', () => {
   game.player.moveToRoom(70); game.tick();
   expect(game.history.getLastOutput().text).toBe("Items for sale here: battle axe#, pike");  // demo char has a battle axe, so this one is battle axe#
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   game.modal.mock_answers = ['Yes'];
   game.command_parser.run('buy pike');
   expect(game.player.hasArtifact(33)).toBeTruthy();
@@ -132,7 +132,7 @@ test('swamp thing', () => {
   // end of the array.
 
   // prevent maya from attacking (for predictable testing)
-  let maya = game.monsters.get(1);
+  const maya = game.monsters.get(1);
   maya.combat_code = Monster.COMBAT_CODE_NEVER_FIGHT;
   // engulf player
   game.mock_random_numbers = [
@@ -174,7 +174,7 @@ test("weapon confiscation", () => {
   game.command_parser.run('s');
   expectEffectSeen(32);
   expect(game.player.room_id).toBe(3);
-  let prev_gold = game.player.gold;
+  const prev_gold = game.player.gold;
   game.command_parser.run('pay fine');
   expect(game.player.gold).toBe(prev_gold - 100);
   game.command_parser.run('s');
@@ -187,7 +187,7 @@ test("go directly to jail", () => {
   expectEffectSeen(27);
   expect(game.data.arrested).toBeTruthy();
   expect(game.player.room_id).toBe(30);
-  let inventory = game.player.inventory.map(a => a);
+  const inventory = game.player.inventory.map(a => a);
   expect(game.player.inventory.length).toBe(0);
   inventory.forEach(a => expect(a.room_id).toBe(24));
   expect(game.player.gold).toBe(0);
@@ -230,9 +230,9 @@ test("attack duke", () => {
 });
 
 test("give quest items", () => {
-  let wand = game.artifacts.get(3);
-  let bag = game.artifacts.get(4);
-  let orb = game.artifacts.get(5);
+  const wand = game.artifacts.get(3);
+  const bag = game.artifacts.get(4);
+  const orb = game.artifacts.get(5);
   wand.moveToInventory();
   bag.moveToInventory();
   orb.moveToInventory();
@@ -253,8 +253,8 @@ test("give quest items", () => {
 test("soldiers and orb", () => {
   game.artifacts.get(5).moveToInventory();
   game.command_parser.run('n');
-  let soldiers = game.monsters.get(3);
-  let inquisitor = game.monsters.get(6);
+  const soldiers = game.monsters.get(3);
+  const inquisitor = game.monsters.get(6);
   expectEffectSeen(15);
   expect(soldiers.reaction).toBe(Monster.RX_HOSTILE);
   game.command_parser.run('give orb to soldier');
@@ -268,8 +268,8 @@ test("soldiers and orb (dropped orb)", () => {
   game.artifacts.get(5).moveToRoom(2);
   game.command_parser.run('n');
   expectEffectSeen(37);
-  let soldiers = game.monsters.get(3);
-  let inquisitor = game.monsters.get(6);
+  const soldiers = game.monsters.get(3);
+  const inquisitor = game.monsters.get(6);
   expect(soldiers.room_id).toBe(inquisitor.room_id);
   expect(soldiers.reaction).toBe(Monster.RX_NEUTRAL);
   expect(inquisitor.hasArtifact(5));
@@ -349,7 +349,7 @@ test('magic shielding', () => {
 
 test('letter', () => {
   game.data.old_man_rescued = true;
-  let letter = game.artifacts.get(8);
+  const letter = game.artifacts.get(8);
   letter.moveToInventory();
   game.player.moveToRoom(67); game.tick();
   game.command_parser.run('give letter to velatha');
@@ -405,7 +405,7 @@ test('maya potion', () => {
 });
 
 test('maya resurrection', () => {
-  let maya = game.monsters.get(1);
+  const maya = game.monsters.get(1);
   maya.injure(50);
   expect(maya.status).toBe(Monster.STATUS_DEAD);
   game.tick();
@@ -422,8 +422,8 @@ test('maya resurrection', () => {
 });
 
 test('maya resurrection 2', () => {
-  let maya = game.monsters.get(1);
-  let ainha = game.monsters.get(33);
+  const maya = game.monsters.get(1);
+  const ainha = game.monsters.get(33);
   ainha.moveToRoom();
   maya.injure(50);
   expect(maya.status).toBe(Monster.STATUS_DEAD);
@@ -440,7 +440,7 @@ test('maya resurrection 2', () => {
 });
 
 test('maya rejoins', () => {
-  let maya = game.monsters.get(1);
+  const maya = game.monsters.get(1);
   maya.moveToRoom(68);
   maya.reaction = Monster.RX_NEUTRAL;
   // now shortcut to end game

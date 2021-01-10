@@ -4,7 +4,7 @@ import {CommandException} from "../../core/utils/command.exception";
 import {inquisitorIsHere} from "../malleus-maleficarum/event-handlers";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare let game;
 
 export var custom_commands = [];
 
@@ -45,7 +45,7 @@ custom_commands.push({
         default:
           game.effects.print(21);
       }
-      let magon_servants = game.monsters.all.filter(m => m.isHere() && m.special == 'magon');
+      const magon_servants = game.monsters.all.filter(m => m.isHere() && m.special == 'magon');
       if (magon_servants.length) {
         game.effects.print(24);
         magon_servants.forEach(m => m.injure(999));
@@ -63,7 +63,7 @@ custom_commands.push({
   examples: ['DESTROY EQUIPMENT'],
   run: function(verb: string, arg: string): void {
     // this command is really just a wrapper around the "use" command
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id >= 14 && artifact.id <= 19) {
         game.command_parser.run(`attack ${artifact.name}`, false);

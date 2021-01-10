@@ -8,7 +8,7 @@ export class Hint extends Loadable {
   public answers: Object[];
 
   // these are used by the display logic
-  public current_index: number = 0;
-  public is_open: boolean = false;
+  public current_index = 0;
+  public is_open = false;
 
 }

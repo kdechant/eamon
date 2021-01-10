@@ -1,7 +1,7 @@
 import Game from "../../core/models/game";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -12,7 +12,7 @@ custom_commands.push({
   examples: ['PUSH BUTTON', 'HIT BUTTON'],
   run: function(verb: string, arg: string): void {
     // this command is really just an alias for the "use" command
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if ([8,9,14,15].indexOf(artifact.id) !== -1) {
         // buttons. "push x" is just a synonym for "use x"

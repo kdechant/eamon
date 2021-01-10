@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 import {ModalQuestion} from "../../core/models/modal";
 
-declare var game: Game;
+declare let game: Game;
 
 // some data - export so we can use it in tests
 export var drinks = [
@@ -92,7 +92,7 @@ export var event_handlers = {
     if (game.data['drinks'] > game.player.hardiness) {
       game.player.agility = Math.round(game.player.stats_original.agility - (game.data['drinks'] - game.player.hardiness));
       if (!sobering) {
-        let condition = game.player.agility / game.player.stats_original.agility;
+        const condition = game.player.agility / game.player.stats_original.agility;
         if (condition <= 0) {
           game.history.write("You passed out!", "danger");
           if (game.player.room_id === 22) {
@@ -101,8 +101,8 @@ export var event_handlers = {
             game.data['drinking contest active'] = 0;
             game.player.agility = game.player.stats_original.agility;
             game.history.write("You wake up several hours later. All your possessions are gone! They must have been stolen while you were passed out.", "emphasis");
-            for (let i of game.player.inventory) {
-              let dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 54, 57, 61]);
+            for (const i of game.player.inventory) {
+              const dest = game.rooms.getRandom([1, 9, 12, 16, 18, 50, 53, 54, 57, 61]);
               i.moveToRoom(dest.id);
             }
             game.player.updateInventory();
@@ -238,7 +238,7 @@ export var event_handlers = {
     if (game.player.room_id === 22) {
       if (game.data['drinking contest active']) {
 
-        let q1 = new ModalQuestion;
+        const q1 = new ModalQuestion;
         q1.type = 'multiple_choice';
         q1.question = "The bartender hands you a drink menu. What do you order?";
         q1.choices = drinks.map(d => {
@@ -249,15 +249,15 @@ export var event_handlers = {
           return true;
         };
 
-        let q2 = new ModalQuestion();
+        const q2 = new ModalQuestion();
         q2.type = 'multiple_choice';
         q2.question = "The bartender pours you a {drink}. Do you sip it, drink it, or guzzle it?";
         q2.choices = ['sip', 'drink', 'guzzle'];
         q2.callback = function (answer) {
           game.history.write("You " + answer + " the " + game.modal.questions[0].answer + ".");
           // @ts-ignore
-          let drink = drinks.find(x => x.name === game.modal.questions[0].answer);
-          let str = answer === 'sip' ? 0.5 : (answer === 'drink' ? 1 : 1.5);
+          const drink = drinks.find(x => x.name === game.modal.questions[0].answer);
+          const str = answer === 'sip' ? 0.5 : (answer === 'drink' ? 1 : 1.5);
           game.data['drinks'] += drink.strength + str;
           game.data['sober counter'] = 10;
 
@@ -268,7 +268,7 @@ export var event_handlers = {
           let m: Monster;
           if (game.data['drinker reaction'] > 2) {
             game.history.write("The men attack!", "warning");
-            for (let monster_id of game.data['drinkers']) {
+            for (const monster_id of game.data['drinkers']) {
               m = game.monsters.get(monster_id);
               m.moveToRoom();
               m.agility = Math.floor(m.agility * (1 - m.data['drinks'] / m.data['tolerance']));
@@ -279,8 +279,8 @@ export var event_handlers = {
 
           // men buy drinks ahd guzzle
           let d: any;
-          let passed_out = [];
-          for (let monster_id of game.data['drinkers']) {
+          const passed_out = [];
+          for (const monster_id of game.data['drinkers']) {
             m = game.monsters.get(monster_id);
             d = drinks[game.diceRoll(1, drinks.length) - 1];
             game.history.write(m.name + " buys a " + d.name + " and guzzles it!.");
@@ -294,7 +294,7 @@ export var event_handlers = {
 
           // now remove anyone who passed out from the drinkers list
           // (do this outside the previous loop to prevent splice() from screwing with the loop)
-          for (let monster_id of passed_out) {
+          for (const monster_id of passed_out) {
             game.data['drinkers'].splice(game.data['drinkers'].indexOf(monster_id), 1);
           }
 
@@ -327,8 +327,8 @@ export var event_handlers = {
     // bartender training room
     else if (game.player.room_id === 36) {
       if (game.data['bar tab'] === 0) {
-        let roll = game.diceRoll(1, drinks.length);
-        let drink = drinks[roll - 1];
+        const roll = game.diceRoll(1, drinks.length);
+        const drink = drinks[roll - 1];
         game.history.write("The bartender pours you a " + drink.name + ". You drink it and she asks for " + drink.price + " GP.");
         game.data['bar tab'] += drink.price;
         game.data['bartender patience'] = 2;
@@ -376,7 +376,7 @@ export var event_handlers = {
         if (game.artifacts.get(1).isHere()) {
           game.history.write("You have been teleported!");
           game.artifacts.get(1).destroy();
-          let dest = game.rooms.getRandom([1, 12, 16, 54, 61]);
+          const dest = game.rooms.getRandom([1, 12, 16, 54, 61]);
           game.player.moveToRoom(dest.id);
         } else {
           game.history.write("Try looking for something to light it with.");
@@ -461,7 +461,7 @@ export var event_handlers = {
         game.artifacts.get(26).moveToRoom();
         break;
       case 'strange brew':
-        let roll = game.diceRoll(1, 5);
+        const roll = game.diceRoll(1, 5);
         switch (roll) {
           case 1:
             game.effects.print(28);
@@ -480,7 +480,7 @@ export var event_handlers = {
             break;
           case 4:
             game.effects.print(31);
-            for (let wa in game.player.weapon_abilities) {
+            for (const wa in game.player.weapon_abilities) {
               game.player.weapon_abilities[wa] += 7;
             }
             break;
@@ -518,10 +518,10 @@ export var event_handlers = {
       return;
     }
     // resurrect
-    let bodies = game.artifacts.visible.filter(x => x.isHere() && x.type === Artifact.TYPE_DEAD_BODY);
+    const bodies = game.artifacts.visible.filter(x => x.isHere() && x.type === Artifact.TYPE_DEAD_BODY);
     if (bodies.length) {
-      for (let a of bodies) {
-        let m = game.monsters.get(a.id - game.dead_body_id);
+      for (const a of bodies) {
+        const m = game.monsters.get(a.id - game.dead_body_id);
         game.history.write(m.name + ' comes alive!', 'special');
         m.damage = 0;
         m.moveToRoom();
@@ -533,7 +533,7 @@ export var event_handlers = {
     // regular power effects
     if (roll <= 10) {
       game.history.write("You feel an increase in your magic abilities!", "special");
-      for (let spell_name in this.spell_abilities) {
+      for (const spell_name in this.spell_abilities) {
         if (this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
           this.spell_abilities[spell_name] += 5;
           this.spell_abilities_original[spell_name] += 5;
@@ -559,14 +559,14 @@ export var event_handlers = {
       game.player.injure(3);
     } else if (roll <= 69) {
       game.effects.print(22, "special");
-      let inc = game.player.charisma < 15 ? 15 : 5;
+      const inc = game.player.charisma < 15 ? 15 : 5;
       game.player.charisma += 5;
       game.player.stats_original.charisma += 5;
     } else if (roll <= 77) {
       // horse
       game.effects.print(23, "special");
       game.effects.print(25, "special");
-      for (let wa in game.player.weapon_abilities) {
+      for (const wa in game.player.weapon_abilities) {
         game.player.weapon_abilities[wa] -= 10;
       }
     } else if (roll <= 85) {
@@ -592,6 +592,6 @@ export var event_handlers = {
 function update_status(status: number) {
   if (status === 0 || status === game.data['how drunk']) return;
   game.data['how drunk'] = status;
-  let st = drunk_messages[status - 1];
+  const st = drunk_messages[status - 1];
   game.history.write(st.text, st.style);
 }

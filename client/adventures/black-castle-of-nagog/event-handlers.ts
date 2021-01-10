@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -29,11 +29,11 @@ export var event_handlers = {
     // balor
     if (monster.id === 30) {
       game.history.write("As the demon dies, its body explodes, destroying its weapons and blasting you with a powerful jolt of fire!", "special2");
-      let rl = game.diceRoll(1, 6);
+      const rl = game.diceRoll(1, 6);
       game.player.injure(rl, true);
-      for (let m of game.monsters.visible) {
+      for (const m of game.monsters.visible) {
         if (m.id !== 30) {
-          let rl = game.diceRoll(1, 6);
+          const rl = game.diceRoll(1, 6);
           m.injure(rl);
         }
       }
@@ -93,7 +93,7 @@ export var event_handlers = {
     if (artifact && artifact.id === 2) {
       // idol
       // TODO: convert to new style saving throw
-      let rnd = game.diceRoll(1, 20) + 5;
+      const rnd = game.diceRoll(1, 20) + 5;
       if (rnd > game.player.agility) {
         game.history.write("When you touched the idol, a bolt of lightning from the ceiling hits you.", "special");
         game.player.injure(Math.max(2, Math.floor((game.player.hardiness - game.player.damage) / 3)), true);
@@ -135,7 +135,7 @@ export var event_handlers = {
   "afterRead": function(arg: string, artifact: Artifact) {
     // book
     if (artifact && artifact.id === 10) {
-      for (let spell_name of ['blast', 'heal', 'speed', 'power']) {
+      for (const spell_name of ['blast', 'heal', 'speed', 'power']) {
         if (game.player.spell_abilities_original[spell_name]) { // only improves spells you already know
           game.player.spell_abilities[spell_name] += 5;
           game.player.spell_abilities_original[spell_name] += 5;
@@ -157,7 +157,7 @@ export var event_handlers = {
   "seeMonster": function(monster: Monster): void {
     // mummy
     if (monster.id === 17) {
-      for (let m of game.monsters.visible) {
+      for (const m of game.monsters.visible) {
         // friendly monsters can change their reaction
         if (m.reaction == Monster.RX_FRIEND) {
           m.friendliness = Monster.FRIEND_RANDOM;
@@ -184,10 +184,10 @@ export var event_handlers = {
     } else {
 
       // resurrection
-      for (let a of game.artifacts.visible) {
+      for (const a of game.artifacts.visible) {
         if (a.type === Artifact.TYPE_DEAD_BODY) {
-          let monster_id = a.id - game.dead_body_id + 1;
-          let monster = game.monsters.get(monster_id);
+          const monster_id = a.id - game.dead_body_id + 1;
+          const monster = game.monsters.get(monster_id);
           if (monster) {
             monster.damage = 0;
             monster.moveToRoom();
@@ -203,7 +203,7 @@ export var event_handlers = {
       } else if (roll <= 75) {
         // teleport to random room
         game.history.write("You are being teleported...");
-        let room = game.rooms.getRandom([65,67]);
+        const room = game.rooms.getRandom([65,67]);
         game.player.moveToRoom(room.id);
         game.skip_battle_actions = true;
       } else {
@@ -215,7 +215,7 @@ export var event_handlers = {
 
   "exit": function() {
     if (game.player.hasArtifact(2)) {
-      let value = game.player.charisma * 100;
+      const value = game.player.charisma * 100;
       game.history.write("Because you successfully recovered the gold idol, King Mithidas has knighted you and given you a land grant worth " + value + " gp!", "success");
       game.player.gold += value;
       game.player.charisma++;

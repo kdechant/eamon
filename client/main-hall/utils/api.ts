@@ -40,7 +40,7 @@ export function getAxios() {
  *   or other numeric data like move count)
  * @return {AxiosPromise} the promise from the API call
  */
-export function log(type: string = "", value: number|null = null) {
+export function log(type = "", value: number|null = null) {
 
   // using player ID from local storage to avoid race condition if this.player isn't loaded yet
   const body = {

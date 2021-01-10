@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 

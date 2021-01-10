@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -13,7 +13,7 @@ custom_commands.push({
   examples: ['WAVE WAND'],
   run: function(verb: string, arg: string): void {
     // this command is really just a wrapper around the "use" command
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id === 3) {
         // black wand. "wave x" is just a synonym for "use x"

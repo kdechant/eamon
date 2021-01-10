@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -164,7 +164,7 @@ it("should have working event handlers", () => {
   game.history.clear();
 
   // necromancer
-  let necro = game.monsters.get(22);
+  const necro = game.monsters.get(22);
   game.skip_battle_actions = true;
   game.player.moveToRoom(56); game.tick();
   game.mock_random_numbers = [1, 1];

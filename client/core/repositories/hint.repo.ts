@@ -15,10 +15,10 @@ export default class HintRepository {
   /**
    * The highest ID in the system
    */
-  index: number = 0;
+  index = 0;
 
   constructor(hint_data: Array<Object>) {
-    for (let i of hint_data) {
+    for (const i of hint_data) {
       this.add(i);
     }
   }
@@ -28,7 +28,7 @@ export default class HintRepository {
    * @param {Object} hint_data
    */
   public add(hint_data) {
-    let h = new Hint();
+    const h = new Hint();
 
     h.init(hint_data);
 
@@ -56,7 +56,7 @@ export default class HintRepository {
    * @return Monster
    */
   public get(id) {
-    let h = this.all.find(x => x.id === id);
+    const h = this.all.find(x => x.id === id);
     return h || null;
   }
 

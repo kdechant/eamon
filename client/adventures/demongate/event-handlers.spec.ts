@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -79,8 +79,8 @@ test("use scroll", () => {
 });
 
 test("exit stuff", () => {
-  let ankh = game.artifacts.get(36);
-  let lila = game.monsters.get(4);
+  const ankh = game.artifacts.get(36);
+  const lila = game.monsters.get(4);
   ankh.moveToInventory();
   lila.moveToRoom(63);
   movePlayer(63);

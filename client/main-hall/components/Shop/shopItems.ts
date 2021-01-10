@@ -43,15 +43,15 @@ for (let t = 1; t <= 5; t++) {
 }
 
 // some special weapons
-let artifact_names = {
+const artifact_names = {
   1: ["Slaymor", "Falcoor", "Ironheart", "Blood Claw", "Orenmir", "Shadowfury", "Mooncleaver"],
   2: ["Stinger", "Meteor", "Featherdraw", "Heartpiercer", "Quintain", "Ashwood", "Arrowsong"],
   3: ["Scrunch", "Warmace", "Earthshatter", "Spinefall", "Justifier", "Haunted Hammer", "Guiding Star"],
   4: ["Centuri", "Shiverspine", "Twisted Spike", "Mithril Lance", "Blinkstrike", "Nightbane", "Ebon Halberd"],
   5: ["Slasher", "Freedom", "Ghost Reaver", "Doombringer", "Malevolent Crusader", "Swiftblade", "Oathkeeper"]
 };
-let magic_weapons: Artifact[] = [];
-let num_weapons: number = 3;
+const magic_weapons: Artifact[] = [];
+const num_weapons = 3;
 for (let i = 0; i < num_weapons; i++) {
   item = new Artifact();
   item.uuid = uuidv4();
@@ -59,7 +59,7 @@ for (let i = 0; i < num_weapons; i++) {
   item.weapon_type = diceRoll(1, 5);
 
   // choose a unique name
-  let name_index = diceRoll(1, artifact_names[item.weapon_type].length) - 1;
+  const name_index = diceRoll(1, artifact_names[item.weapon_type].length) - 1;
   item.name = artifact_names[item.weapon_type][name_index];
   artifact_names[item.weapon_type].splice(name_index, 1);
 
@@ -80,8 +80,8 @@ magic_weapons.sort((w1, w2) => w1.value - w2.value);
 weapons = weapons.concat(magic_weapons);
 
 // some basic armor and shields
-let armor_types = ["leather", "chain", "scale", "plate"];
-for (let a of armor_types) {
+const armor_types = ["leather", "chain", "scale", "plate"];
+for (const a of armor_types) {
   item = new Artifact;
   item.uuid = uuidv4();
   item.type = Artifact.TYPE_WEARABLE;

@@ -2,7 +2,7 @@ import Game from "../models/game";
 import {initMockGame} from "../utils/testing";
 import { Monster, GroupMonster } from "./monster";
 
-var game = new Game();
+const game = new Game();
 
 describe("Group monster handling", function() {
 
@@ -16,7 +16,7 @@ describe("Group monster handling", function() {
   });
 
   it("should unpack members and assign weapons", () => {
-    let kobolds = game.monsters.get(5);
+    const kobolds = game.monsters.get(5);
     expect(kobolds.children.length).toBe(3);
 
     expect(kobolds.children[0].id).toBe(5.0001);
@@ -36,27 +36,27 @@ describe("Group monster handling", function() {
   });
 
   it("should move as a group when using moveToRoom", () => {
-    let kobolds = game.monsters.get(5);
+    const kobolds = game.monsters.get(5);
     kobolds.moveToRoom(2);
     expect(kobolds.room_id).toBe(2);
-    for (let c of kobolds.children) {
+    for (const c of kobolds.children) {
       expect(c.room_id).toBe(2);
     }
   });
 
   it("should appear as a group when freed", () => {
-    let bound_prisoner = game.artifacts.get(22);
+    const bound_prisoner = game.artifacts.get(22);
     bound_prisoner.freeBoundMonster();
-    let prisoners = game.monsters.get(6);
+    const prisoners = game.monsters.get(6);
     expect(prisoners.room_id).toBe(5);
-    for (let c of prisoners.children) {
+    for (const c of prisoners.children) {
       expect(c.room_id).toBe(5);
     }
   });
 
   it("should assign damage to a random member", () => {
     game.player.moveToRoom(7);
-    let kobolds = game.monsters.get(5);
+    const kobolds = game.monsters.get(5);
     game.mock_random_numbers = [1, 3, 2];
     for (let i=1; i<=3; i++) {
       kobolds.injure(i);
@@ -74,7 +74,7 @@ describe("Group monster handling", function() {
   });
 
   it ("should flee to different rooms when using flee()", () => {
-    let kobolds = game.monsters.get(5);
+    const kobolds = game.monsters.get(5);
     kobolds.moveToRoom(1);  // this room has multiple exits, so it makes a better test
     game.mock_random_numbers = [2, 2, 1];
     kobolds.flee();
@@ -85,7 +85,7 @@ describe("Group monster handling", function() {
   });
 
   it ("should flee to different rooms during combat", () => {
-    let kobolds = game.monsters.get(5);
+    const kobolds = game.monsters.get(5);
     kobolds.moveToRoom(1);  // this room has multiple exits, so it makes a better test
     game.mock_random_numbers = [
       100, 100, 100,  // this will cause all three to flee (fear = 100)
@@ -100,7 +100,7 @@ describe("Group monster handling", function() {
   });
 
   it ("should add and remove members", () => {
-    let kobolds: GroupMonster = game.monsters.get(5);
+    const kobolds: GroupMonster = game.monsters.get(5);
     kobolds.spawnChild();
     expect(kobolds.children.length).toBe(4);
     expect(kobolds.count).toBe(4);
@@ -112,7 +112,7 @@ describe("Group monster handling", function() {
   });
 
   it ("should move with the player if friendly", () => {
-    let prisoners = game.monsters.get(6);
+    const prisoners = game.monsters.get(6);
     prisoners.moveToRoom(1);
     game.monsters.updateVisible();
     expect(prisoners.reaction).toBe(Monster.RX_FRIEND);
@@ -120,13 +120,13 @@ describe("Group monster handling", function() {
     game.player.moveToRoom(2);
     game.monsters.updateVisible();
     expect(prisoners.room_id).toBe(2);
-    for (let c of prisoners.children) {
+    for (const c of prisoners.children) {
       expect(c.room_id).toBe(2);
     }
   });
 
   it ("should handle reaction checks", () => {
-    let prisoners = game.monsters.get(6);
+    const prisoners = game.monsters.get(6);
     prisoners.moveToRoom(1);
     game.monsters.updateVisible();
     expect(prisoners.reaction).toBe(Monster.RX_FRIEND);
@@ -136,20 +136,20 @@ describe("Group monster handling", function() {
     game.mock_random_numbers = [99, 1];  // this will make it neutral
     prisoners.hurtFeelings();
     expect(prisoners.reaction).toBe(Monster.RX_NEUTRAL);
-    for (let c of prisoners.children) {
+    for (const c of prisoners.children) {
       expect(c.reaction).toBe(Monster.RX_NEUTRAL);
     }
 
     game.mock_random_numbers = [99, 99];  // this will make it hostile
     prisoners.hurtFeelings();
     expect(prisoners.reaction).toBe(Monster.RX_HOSTILE);
-    for (let c of prisoners.children) {
+    for (const c of prisoners.children) {
       expect(c.reaction).toBe(Monster.RX_HOSTILE);
     }
   });
 
   it("should know if it's able to attack (group monster)", function () {
-    let kobolds = game.monsters.get(5);
+    const kobolds = game.monsters.get(5);
 
     // one of them should not have a weapon
     kobolds.children[1].drop(game.artifacts.get(20));

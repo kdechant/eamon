@@ -8,7 +8,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -30,8 +30,8 @@ beforeEach(() => {
 it("should have working event handlers", () => {
 
   // some artifact shortcuts
-  let sword = game.artifacts.get(12);
-  let amulet = game.artifacts.get(11);
+  const sword = game.artifacts.get(12);
+  const amulet = game.artifacts.get(11);
 
   // generic power - without sword or amulet
   game.player.moveToRoom(8);
@@ -129,7 +129,7 @@ it("should have working event handlers", () => {
 
   // buying stuff
   game.player.moveToRoom(15);
-  let beer = game.artifacts.get(32);
+  const beer = game.artifacts.get(32);
   game.command_parser.run('give 9 to bartender');
   expect(game.history.getOutput().text).toBe("He wants 10 gold pieces, no more, no less!");
   game.command_parser.run('buy drink');

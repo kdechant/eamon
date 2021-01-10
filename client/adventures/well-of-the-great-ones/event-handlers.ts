@@ -6,7 +6,7 @@ import {Room} from "../../core/models/room";
 import {CommandException} from "../../core/utils/command.exception";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -39,7 +39,7 @@ export var event_handlers = {
     });
 
     // Imam
-    let imam = game.monsters.get(7);
+    const imam = game.monsters.get(7);
     imam.spells = ['blast'];
     imam.spell_points = 5;
     imam.spell_frequency = 50;
@@ -192,8 +192,8 @@ export var event_handlers = {
       // make some zombies
       let printed2 = false;
       let summoned = false;
-      for (let art of game.artifacts.all.filter(a => a.isHere() && a.id > 100)) {
-        let m = game.monsters.get(art.id - 100);
+      for (const art of game.artifacts.all.filter(a => a.isHere() && a.id > 100)) {
+        const m = game.monsters.get(art.id - 100);
         if (m && m.special === 'zombie') {
           if (m.id === 40) {
             game.effects.print(12, 'special');
@@ -216,8 +216,8 @@ export var event_handlers = {
     } else if (arg === game.data.phrases.unsummon) {
       // kill zombies
       let unsummoned = false;
-      for (let m of game.monsters.visible.filter(m => m.special === 'zombie')) {
-        let body = game.artifacts.get(m.dead_body_id);
+      for (const m of game.monsters.visible.filter(m => m.special === 'zombie')) {
+        const body = game.artifacts.get(m.dead_body_id);
         if (body) {
           body.moveToRoom();
         }
@@ -304,11 +304,11 @@ export var event_handlers = {
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
   "power": function(roll) {
-    let resurrectables = game.artifacts.visible.filter(a => a.id > 100);
+    const resurrectables = game.artifacts.visible.filter(a => a.id > 100);
     if (roll <= 10) {
       // teleport to random room
       game.history.write("There is a cloud of dust and a flash of light!");
-      let room = game.rooms.getRandom(game.data.no_teleport_rooms);
+      const room = game.rooms.getRandom(game.data.no_teleport_rooms);
       game.player.moveToRoom(room.id);
       game.skip_battle_actions = true;
     } else if (roll < 30) {
@@ -319,8 +319,8 @@ export var event_handlers = {
       game.history.write("All your wounds are healed!");
       game.player.heal(1000);
     } else if (roll < 55 && resurrectables.length > 0) {
-      for (let art of resurrectables) {
-        let m = game.monsters.get(art.id - 100);
+      for (const art of resurrectables) {
+        const m = game.monsters.get(art.id - 100);
         if (m) {
           game.history.write(`${m.name} comes alive!`);
           m.resurrect();

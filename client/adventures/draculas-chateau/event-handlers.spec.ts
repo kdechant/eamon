@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -69,7 +69,7 @@ test("vampires and cross", () => {
 
 test("xorn movements", () => {
   // xorn
-  let xorn = game.monsters.get(12);
+  const xorn = game.monsters.get(12);
   xorn.reaction = Monster.RX_NEUTRAL; // no need for combat to test this
   game.rooms.get(33).is_dark = false;
   game.player.moveToRoom(33); game.tick();
@@ -151,8 +151,8 @@ test("see key in dark", () => {
 test("goldenwrath", () => {
   // goldenwrath
   game.rooms.get(30).is_dark = false;
-  let dracula = game.monsters.get(2);
-  let gw = game.artifacts.get(8);
+  const dracula = game.monsters.get(2);
+  const gw = game.artifacts.get(8);
   dracula.reaction = Monster.RX_NEUTRAL;
   game.player.moveToRoom(30, false); game.tick();
   expect(gw.dice).toBe(3);
@@ -172,7 +172,7 @@ test("goldenwrath", () => {
 });
 
 test("dracula", () => {
-  let dracula = game.monsters.get(2);
+  const dracula = game.monsters.get(2);
   game.artifacts.get(2).moveToInventory();  // stake
   game.player.moveToRoom(30, false); game.tick();
   dracula.injure(dracula.hardiness, true);

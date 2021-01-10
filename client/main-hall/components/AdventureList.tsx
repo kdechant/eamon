@@ -22,20 +22,20 @@ class AdventureList extends React.Component<any, any> {
         const all_adventures: Adventure[] = [];
         let tags: string[] = [];
         let authors: string[] = [];
-        for (let d of res.data) {
+        for (const d of res.data) {
           d.authors_display = d.authors.join(' and ');
-          let adv = new Adventure();
+          const adv = new Adventure();
           adv.init(d);
           adv.name_sort = adv.name.slice(0,4) === 'The ' ? adv.name.slice(4) : adv.name;
           all_adventures.push(adv);
 
-          for (let tag of adv.tags) {
+          for (const tag of adv.tags) {
             if (tags.indexOf(tag) === -1) {
               tags.push(tag);
             }
           }
 
-          for (let author of d.authors) {
+          for (const author of d.authors) {
             if (authors.indexOf(author) === -1) {
               authors.push(author);
             }

@@ -5,21 +5,21 @@ let player;
 
 beforeEach(() => {
   player = new Player();
-  let artifact1 = new Artifact();
+  const artifact1 = new Artifact();
   artifact1.init({
     'name': 'trollsfire',
     'type': Artifact.TYPE_WEAPON,
     'dice': 2,
     'sides': 10
   });
-  let artifact2 = new Artifact();
+  const artifact2 = new Artifact();
   artifact2.init({
     'name': 'axe',
     'type': Artifact.TYPE_WEAPON,
     'dice': 1,
     'sides': 6
   });
-  let artifact3 = new Artifact();
+  const artifact3 = new Artifact();
   artifact3.init({
     'name': 'leather armor',
     'type': Artifact.TYPE_WEARABLE,

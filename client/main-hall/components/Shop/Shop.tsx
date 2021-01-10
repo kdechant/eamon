@@ -19,9 +19,9 @@ class Shop extends React.Component<any, any> {
     if (artifact.type === Artifact.TYPE_WEAPON) {
       return;  // infinite supply of non-magic weapons
     }
-    let index = this.state.weapons.indexOf(artifact);
+    const index = this.state.weapons.indexOf(artifact);
     if (index > -1) {
-      let weapons = this.state.weapons;
+      const weapons = this.state.weapons;
       weapons.splice(index, 1);
       this.setState({weapons});
     }

@@ -2,7 +2,7 @@ import Game from "../models/game";
 import {initMockGame} from "../utils/testing";
 import {Monster} from "../models/monster";
 
-var game = new Game();
+const game = new Game();
 
 describe("Monster Repo", function() {
 
@@ -29,21 +29,21 @@ describe("Monster Repo", function() {
 
   it("should find a monster by name in the current room", function() {
     // find a monster in the player's current room
-    let alfred = game.monsters.getLocalByName('alfred');
+    const alfred = game.monsters.getLocalByName('alfred');
     expect(alfred).not.toBeNull();
     expect(alfred.id).toBe(3);
 
     // should not find a monster that is in a different room
-    let thief = game.monsters.getLocalByName('thief');
+    const thief = game.monsters.getLocalByName('thief');
     expect(thief).toBeNull();
 
     // special case where there are 2 monsters with the same name, in different rooms
-    let king = game.monsters.get(2);
+    const king = game.monsters.get(2);
     king.name = 'alfred';
-    let someone = game.monsters.getLocalByName('alfred');
+    const someone = game.monsters.getLocalByName('alfred');
     expect(someone.id).toBe(3);
     game.player.moveToRoom(3);
-    let someone2 = game.monsters.getLocalByName('alfred');
+    const someone2 = game.monsters.getLocalByName('alfred');
     expect(someone2.id).toBe(2);
   });
 

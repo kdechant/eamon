@@ -4,7 +4,7 @@ import {Monster} from "../../core/models/monster";
 import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -47,17 +47,17 @@ export var event_handlers = {
   },
 
   "endTurn": function() {
-    let hb = game.artifacts.get(25);
-    let scabbard = game.artifacts.get(56);
-    let box = game.artifacts.get(55);
-    let key = game.artifacts.get(58);
-    let door = game.artifacts.get(71);
+    const hb = game.artifacts.get(25);
+    const scabbard = game.artifacts.get(56);
+    const box = game.artifacts.get(55);
+    const key = game.artifacts.get(58);
+    const door = game.artifacts.get(71);
 
     if (hb.container_id === scabbard.id && scabbard.container_id === box.id && key.monster_id === 31 && !game.data['hb safe']) {
       game.effects.print(20);
       game.data['hb safe'] = true;
       door.moveToRoom();
-      let re = new RoomExit();
+      const re = new RoomExit();
       re.direction = 'n';
       re.room_to = -999;
       game.rooms.getRoomById(64).addExit(re);
@@ -70,13 +70,13 @@ export var event_handlers = {
       game.delay(1);
       game.history.write("The Hellsblade whirls in your hand! You can't stop swinging!", "special2");
       game.delay(1);
-      let m = game.monsters.visible[game.diceRoll(1, game.monsters.visible.length) - 1]; // can choose friends
+      const m = game.monsters.visible[game.diceRoll(1, game.monsters.visible.length) - 1]; // can choose friends
       game.player.attack(m);
       game.tick();
     }
 
     // hb starts in inventory, so show description manually
-    let hb = game.artifacts.get(25);
+    const hb = game.artifacts.get(25);
     if (!hb.seen) {
       game.history.write(hb.description);
       hb.seen = true;
@@ -102,7 +102,7 @@ export var event_handlers = {
 
   "afterMove": function(arg: string, room_from: Room, room_to: Room) {
     // soggy torch
-    let torch = game.artifacts.get(27);
+    const torch = game.artifacts.get(27);
     if ((room_to.id === 50 || room_to.id == 71) && torch.isHere() && torch.is_lit) {
       game.history.write("The " + torch.name + " is quenched!");
       torch.is_lit = false;
@@ -222,7 +222,7 @@ export var event_handlers = {
   },
 
   "use": function(arg: string, artifact: Artifact) {
-    let slab = game.artifacts.get(63);
+    const slab = game.artifacts.get(63);
     if (artifact && artifact.id === 4 && slab.isHere()) {
       destroySlab();
     }

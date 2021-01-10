@@ -1,6 +1,6 @@
 import Game from "../../core/models/game";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 

@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
 import {CommandException} from "../../core/utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -12,13 +12,13 @@ custom_commands.push({
   description: "Kiss someone or something.",
   examples: ['KISS BLARNEY STONE'],
   run: function(verb: string, arg: string): void {
-    let m: Monster = game.monsters.getLocalByName(arg);
+    const m: Monster = game.monsters.getLocalByName(arg);
     if (m) {
       game.history.write("SMACK!" + m.name + " blushes slightly.");
       return;
     }
 
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       if (artifact.id === 11) {
         // blarney stone

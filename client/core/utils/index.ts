@@ -1,7 +1,7 @@
 import Game from "../models/game";
 import {Monster} from "../models/monster";
 
-declare var game: Game;
+declare let game: Game;
 
 export function gamevars(value) {
   if (typeof value === "undefined") {
@@ -22,7 +22,7 @@ export function gamevars(value) {
  */
 export function formatMonsterAction(monsters: Monster[], singularAction: string, pluralAction: string): string {
   let plural = false;
-  let output: string = "";
+  let output = "";
   if (monsters.length > 1) { plural = true; }
   for (let i = 0; i < monsters.length; i++) {
     let count = 1;

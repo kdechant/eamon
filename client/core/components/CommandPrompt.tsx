@@ -48,7 +48,7 @@ class CommandPrompt extends React.Component<any, any> {
         game.ready = false;
 
         // run the command
-        let result = game.command_parser.run(command);
+        const result = game.command_parser.run(command);
 
         // clear the input box
         this.setState({ command: '', last_command: command });
@@ -60,14 +60,14 @@ class CommandPrompt extends React.Component<any, any> {
         break;
       case 'ArrowUp':
         // up arrow moves back through the history
-        let prev_command = game.history.getOlderCommand();
+        const prev_command = game.history.getOlderCommand();
         if (prev_command !== null) {
           this.setState({command: prev_command});
         }
         break;
       case 'ArrowDown':
         // down arrow moves forward through the history
-        let next_command = game.history.getNewerCommand();
+        const next_command = game.history.getNewerCommand();
         if (next_command !== null) {
           this.setState({command: next_command});
         }
@@ -91,7 +91,7 @@ class CommandPrompt extends React.Component<any, any> {
   };
 
   public restoreSavedGame = (sv) => {
-    let slot = parseInt(sv, 10);
+    const slot = parseInt(sv, 10);
     const game = this.props.game;
     game.restore(slot);
     game.tick();

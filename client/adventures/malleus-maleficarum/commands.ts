@@ -2,7 +2,7 @@ import Game from "../../core/models/game";
 import {CommandException} from "../../core/utils/command.exception";
 import {inquisitorIsHere} from "./event-handlers";
 
-declare var game: Game;
+declare let game: Game;
 
 export var custom_commands = [];
 
@@ -13,7 +13,7 @@ custom_commands.push({
   examples: ['BUY BEER'],
   run: function(verb: string, arg: string): void {
     arg = arg.toLowerCase();
-    let artifact = game.artifacts.getByName(arg);
+    const artifact = game.artifacts.getByName(arg);
     // if (artifact.length > 1) {
     //   throw new CommandException("Did you mean '" + artifact.join("' or '") + "'?");
     // }
@@ -52,7 +52,7 @@ custom_commands.push({
       arg = arg.slice(3);
     }
 
-    let monster = game.monsters.getLocalByName(arg);
+    const monster = game.monsters.getLocalByName(arg);
     if (monster) {
       // maya special in castle
       if (monster.id === 1 && game.player.room_id >= 51 && game.player.room_id <= 54) {
@@ -86,7 +86,7 @@ custom_commands.push({
         if (!game.data.orb_quest) {
           game.data.orb_quest = true;
           game.monsters.get(1).data.talk = 5;
-          let bag = game.artifacts.get(4);
+          const bag = game.artifacts.get(4);
           bag.moveToInventory();
           game.history.write(`You receive: ${bag.name}`);
           bag.showDescription();
@@ -104,7 +104,7 @@ custom_commands.push({
     }
 
     // if you try to talk to an artifact
-    let artifact = game.artifacts.getLocalByName(arg);
+    const artifact = game.artifacts.getLocalByName(arg);
     if (artifact) {
       // the prisoners in stocks (who are an artifact)
       if (artifact.id === 2) {

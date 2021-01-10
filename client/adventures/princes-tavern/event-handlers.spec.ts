@@ -11,7 +11,7 @@ import {drunk_messages} from "./event-handlers";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -166,10 +166,10 @@ test("strange brew", () => {
   game.player.moveToRoom(51);
   game.monsters.get(17).moveToRoom(50);  // get fire worm out of the way
   game.mock_random_numbers = [1, 2, 3, 4, 5];
-  let original_ag = game.player.agility;
-  let original_ch = game.player.charisma;
-  let original_sword = game.player.weapon_abilities[5];
-  let original_ae = game.player.armor_expertise;
+  const original_ag = game.player.agility;
+  const original_ch = game.player.charisma;
+  const original_sword = game.player.weapon_abilities[5];
+  const original_ae = game.player.armor_expertise;
 
   game.command_parser.run("drink strange brew");
   expect(game.effects.get(28).seen).toBeTruthy();

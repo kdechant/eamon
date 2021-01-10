@@ -3,5 +3,5 @@ import Game from '../../core/models/game';
 import { custom_commands } from './commands';
 import { event_handlers } from './event-handlers';
 
-export let game = new Game();
+export const game = new Game();
 game.registerAdventureLogic(event_handlers, custom_commands);

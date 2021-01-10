@@ -3,7 +3,7 @@ import {Artifact} from "../../core/models/artifact";
 import {Monster} from "../../core/models/monster";
 import {ModalQuestion} from "../../core/models/modal";
 
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 
@@ -76,7 +76,7 @@ export var event_handlers = {
 
   "endTurn1": function () {
     // stuff that happens after room desc is shown, but before monster/artifacts
-    let xorn = game.monsters.get(12);
+    const xorn = game.monsters.get(12);
     if (xorn.seen) {
       if (xorn.isHere()) {
         if (game.diceRoll(1, 4) === 4) {
@@ -90,7 +90,7 @@ export var event_handlers = {
       }
     }
 
-    let dracula = game.monsters.get(2);
+    const dracula = game.monsters.get(2);
     if (game.countdown('dracula')) {
       dracula.status = Monster.STATUS_ALIVE;
       dracula.damage = Math.floor(dracula.hardiness / 2);
@@ -178,7 +178,7 @@ export var event_handlers = {
 
   "say": function(phrase) {
     phrase = phrase.toLowerCase();
-    let gw = game.artifacts.get(8);
+    const gw = game.artifacts.get(8);
     if (phrase === 'miyrm') {
       if (game.artifacts.get(67).room_id === 40) {
         game.effects.print(game.player.room_id === 40 ? 18 : 19, 'special');
@@ -233,9 +233,9 @@ export var event_handlers = {
           }
         }
       } else if (artifact.id === 10) {  // iron cross
-        let vampires = game.monsters.all.filter(m => m.special === 'vampire' && m.isHere());
+        const vampires = game.monsters.all.filter(m => m.special === 'vampire' && m.isHere());
         if (vampires.length) {
-          for (let v of vampires) {
+          for (const v of vampires) {
             game.history.write(`${v.name} recoils from the cross!`, 'special');
             v.flee();
           }
@@ -248,7 +248,7 @@ export var event_handlers = {
           return false;
         }
         game.pause();
-        let q1 = new ModalQuestion;
+        const q1 = new ModalQuestion;
         q1.type = 'multiple_choice';
         q1.question = "You only have one bullet. Shoot whom?";
         q1.choices = game.monsters.visible.map(m => m.name);
@@ -256,9 +256,9 @@ export var event_handlers = {
         q1.callback = function (answer) {
           answer = answer.toLowerCase();
           if (answer !== 'no one') {
-            let target = game.monsters.getLocalByName(answer);
+            const target = game.monsters.getLocalByName(answer);
             game.history.write("B A N G ! !", "emphasis");
-            let article = [2, 7, 8, 25, 26].indexOf(target.id) === -1 ? "the" : "";
+            const article = [2, 7, 8, 25, 26].indexOf(target.id) === -1 ? "the" : "";
             game.history.write(`${game.player.name} shoots ${article} ${target.name}!`);
             if (target.id === 4) {
               target.injure(target.hardiness, true);
@@ -330,7 +330,7 @@ export var event_handlers = {
 // functions used by event handlers and custom commands
 function light_goldenwrath(): void {
   "use strict";
-  let gw = game.artifacts.get(8);
+  const gw = game.artifacts.get(8);
   gw.dice = 3;
   gw.is_lit = true;
   gw.inventory_message = "flaming";
@@ -338,7 +338,7 @@ function light_goldenwrath(): void {
 
 function put_out_goldenwrath(): void {
   "use strict";
-  let gw = game.artifacts.get(8);
+  const gw = game.artifacts.get(8);
   gw.dice = 2;
   gw.is_lit = false;
   gw.inventory_message = "";

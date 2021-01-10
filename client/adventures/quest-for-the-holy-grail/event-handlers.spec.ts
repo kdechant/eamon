@@ -11,7 +11,7 @@ import player from "../../main-hall/models/player";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });

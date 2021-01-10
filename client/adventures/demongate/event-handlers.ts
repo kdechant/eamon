@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare let game;
 
 export var event_handlers = {
 
@@ -65,7 +65,7 @@ export var event_handlers = {
     if (roll <= 90) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else {
-      for (let m of game.monsters.visible.filter(m => m.reaction === Monster.RX_FRIEND)) {
+      for (const m of game.monsters.visible.filter(m => m.reaction === Monster.RX_FRIEND)) {
         game.history.write("All of " + m.name + "'s wounds are healed!");
         m.heal(1000);
       }
@@ -87,7 +87,7 @@ export var event_handlers = {
       game.after_sell_messages.push(game.effects.get(19).text);
       game.player.gold += 1000;
     }
-    let lila = game.monsters.get(4);
+    const lila = game.monsters.get(4);
     if (lila.isHere() && lila.reaction !== Monster.RX_HOSTILE) {
       game.after_sell_messages.push(game.effects.get(20).text);
     }

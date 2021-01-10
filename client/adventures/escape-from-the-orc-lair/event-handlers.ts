@@ -5,7 +5,7 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
 // NOTE: nothing special here. This adventure runs on the base code.
-declare var game: Game;
+declare let game: Game;
 
 export var event_handlers = {
 

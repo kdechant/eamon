@@ -5,7 +5,7 @@ import {CustomCommand} from "../commands/base-command";
 import {core_commands} from "../commands/core-commands";
 import {CommandException} from "../utils/command.exception";
 
-declare var game: Game;
+declare let game: Game;
 
 /**
  * Command Parser class. Handles registration of available commands and parsing
@@ -24,13 +24,13 @@ export class CommandParser {
   available_commands: { [key: string]: BaseCommand; } = {};
 
   constructor(custom_commands) {
-    for (let i in core_commands) {
+    for (const i in core_commands) {
       this.register(core_commands[i]);
     }
 
     // register custom commands
-    for (let c of custom_commands) {
-      let cmd = new CustomCommand();
+    for (const c of custom_commands) {
+      const cmd = new CustomCommand();
       cmd.name = c.name;
       cmd.verbs = c.verbs;
       cmd.category = c.category;  // for command list modal
@@ -48,7 +48,7 @@ export class CommandParser {
   public register(command: BaseCommand): void {
 
     // add to the list of verbs, used for parsing commands
-    for (let i in command.verbs) {
+    for (const i in command.verbs) {
       this.available_verbs[command.verbs[i]] = command.name;
     }
     // add to the list of all the command objects
@@ -65,10 +65,10 @@ export class CommandParser {
    *   Set this to false when calling a command from within another command,
    *   to prevent multiple game clock ticks.
    */
-  public run(input: string, tick: boolean = true): void {
+  public run(input: string, tick = true): void {
 
     input = input.toLowerCase().trim();
-    let space_pos = input.indexOf(" ");
+    const space_pos = input.indexOf(" ");
     let verb: string, args: string;
     if (space_pos === -1) {
       // single word command
@@ -81,15 +81,15 @@ export class CommandParser {
     }
 
     // look up the command in the list of available verbs
-    let command_match: string[] = [];
+    const command_match: string[] = [];
     // first, match by the exact string
     if (this.available_verbs.hasOwnProperty(verb)) {
       command_match.push(verb);
     }
     // if no direct match, try the fuzzy matching
     if (command_match.length === 0) {
-      let keys: string[] = Object.keys(this.available_verbs);
-      for (let k in keys) {
+      const keys: string[] = Object.keys(this.available_verbs);
+      for (const k in keys) {
         if (keys[k].startsWith(verb)) {
           command_match.push(keys[k]);
         }
@@ -98,7 +98,7 @@ export class CommandParser {
 
     if (command_match.length === 1) {
       // found exactly one match. run it.
-      let command = this.available_commands[this.available_verbs[command_match[0]]];
+      const command = this.available_commands[this.available_verbs[command_match[0]]];
       let ct = command_match[0];
       if (typeof command.history_display === 'function') {
         ct = command.history_display(verb);

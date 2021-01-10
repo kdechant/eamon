@@ -27,10 +27,10 @@ export function titleCase(input: string): string {
 /**
  * Capitalizes the first letter of a string.
  * From https://dzone.com/articles/how-to-capitalize-the-first-letter-of-a-string-in
- * @param string
  * @return string
+ * @param {string} str
  */
-export function ucFirst(str) {
+export function ucFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -42,7 +42,7 @@ export function ucFirst(str) {
  * @return string
  */
 export function percentOrNone(input: string): string {
-  let n = parseFloat(input);
+  const n = parseFloat(input);
   if (n === 0 || isNaN(n)) {
     return 'none';
   } else {

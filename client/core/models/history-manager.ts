@@ -1,7 +1,7 @@
 import {HistoryEntry} from "../models/history-entry";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare let game;
 
 /**
  * History manager model. Provides a container for all the history entries.
@@ -10,11 +10,11 @@ export class HistoryManager {
   history: HistoryEntry[];
   current_entry: HistoryEntry;
   index: number;  // used for the history recall
-  delay: number = 100;
-  page_size: number = 20;
-  paused: boolean = false;
-  counter: number = 0;  // used for display pagination
-  suppressNextMessage: boolean = false;
+  delay = 100;
+  page_size = 20;
+  paused = false;
+  counter = 0;  // used for display pagination
+  suppressNextMessage = false;
 
   constructor() {
     this.history = [];
@@ -24,7 +24,7 @@ export class HistoryManager {
   public display() {
     if (this.paused) this.counter = 0;
     this.paused = false;
-    let line = this.current_entry.results.shift();
+    const line = this.current_entry.results.shift();
     if (line) {
       this.history[this.index - 1].push(line.text, line.type, line.markdown);
       if (this.delay > 0) {
@@ -35,7 +35,7 @@ export class HistoryManager {
         if (pause) {
           this.paused = true;
         } else {
-          let no_space = line.type.indexOf('no-space') !== -1;
+          const no_space = line.type.indexOf('no-space') !== -1;
           this.counter += no_space ? 1 : 2;
           if (line.text.length > 150) {
             this.counter++;
@@ -62,7 +62,7 @@ export class HistoryManager {
    * been displayed.
    */
   flush() {
-    let delay = this.delay;
+    const delay = this.delay;
     this.delay = 0;
     this.display();
     this.delay = delay;
@@ -89,7 +89,7 @@ export class HistoryManager {
    * @param {boolean} markdown
    *   Whether to use the Markdown formatter (true) or the plain text formatter (false)
    */
-  write(text: string, type: string = "normal", markdown: boolean = false) {
+  write(text: string, type = "normal", markdown = false) {
     if (!this.suppressNextMessage) {
       text = text.charAt(0).toUpperCase() + text.slice(1);
       if (!this.current_entry) {
@@ -148,7 +148,7 @@ export class HistoryManager {
    * Used for recalling the history with the arrow keys.
    */
   getOlderCommand() {
-    let commands = this.getPastCommands();
+    const commands = this.getPastCommands();
     if (this.index > 0) {
       this.index--;
     }
@@ -167,7 +167,7 @@ export class HistoryManager {
    * Used for recalling the history with the arrow keys.
    */
   getNewerCommand() {
-    let commands = this.getPastCommands();
+    const commands = this.getPastCommands();
     if (this.index <= commands.length) {
       this.index++;
     }
@@ -191,10 +191,10 @@ export class HistoryManager {
    *   The zero-based index number of the history line (default 0, which is the first line of history since the last command)
    *   1 is the second line, 2 the third, and so on.
    */
-  getOutput(index: number = 0) {
+  getOutput(index = 0) {
     this.display();
     if (this.history.length > 0) {
-      let res = this.history[this.history.length - 1]["results"];
+      const res = this.history[this.history.length - 1]["results"];
       if (index < 0) {
         return res[res.length + index];
       } else if (res.length >= index + 1) {
@@ -213,10 +213,10 @@ export class HistoryManager {
    * @param {number} num
    *   The number of history entries to go back (default 1)
    */
-  getLastOutput(num: number = 1) {
+  getLastOutput(num = 1) {
     this.display();
     if (this.history.length > 0) {
-      let res = this.history[this.history.length - 1]["results"];
+      const res = this.history[this.history.length - 1]["results"];
       if (res.length >= num) {
         return res[res.length - num];
       } else {
@@ -236,7 +236,7 @@ export class HistoryManager {
    * appear when the prompt is empty.
    */
   getPastCommands() {
-    let commands = [];
+    const commands = [];
 
     this.history.forEach(e => {
       if (e.command !== '' && commands[commands.length - 1] !== e.command) {
@@ -259,7 +259,7 @@ export class HistoryManager {
    * Prints the entire history as plain text (for testing)
    */
   summary() {
-    let output = [];
+    const output = [];
     this.history.forEach(
     h => {
       output.push(`-- ${h.command} --`);

@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -93,7 +93,7 @@ test("dragon", () => {
 test("julene", () => {
   game.monsters.get(11).moveToRoom(24);
   game.player.moveToRoom(24); game.tick(); game.tick();
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   game.command_parser.run('n');
   expectEffectSeen(3);
   expect(game.player.gold).toBe(gold + 1000);
@@ -103,7 +103,7 @@ test("julene", () => {
 test("sadness", () => {
   game.artifacts.get(30).moveToInventory();
   game.player.moveToRoom(24); game.tick();
-  let gold = game.player.gold;
+  const gold = game.player.gold;
   game.command_parser.run('n');
   expectEffectSeen(2);
   expect(game.player.gold).toBe(gold);

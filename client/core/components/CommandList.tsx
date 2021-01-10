@@ -57,7 +57,7 @@ const CommandList = (props) => {
           </Popover>
         </p>
         {category_names.map(name => {
-          let commands = categories[name];
+          const commands = categories[name];
           if (baseCommandsCheck(commands)) {
             return (
               <div className="command-list-category" key={name}>

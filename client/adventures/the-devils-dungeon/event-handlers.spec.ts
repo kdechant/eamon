@@ -10,7 +10,7 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-var game = new Game();
+const game = new Game();
 
 beforeAll(() => { global['game'] = game; });
 afterAll(() => { delete global['game']; });
@@ -42,7 +42,7 @@ test("crystal ball", () => {
 test("blarney stone", () => {
   game.player.moveToRoom(20);
   game.monsters.get(8).destroy();
-  let prev_ch = game.player.charisma;
+  const prev_ch = game.player.charisma;
   game.command_parser.run('kiss blarney stone');
   expect(game.player.charisma).toBe(prev_ch + 1);
   game.command_parser.run('kiss blarney stone');
