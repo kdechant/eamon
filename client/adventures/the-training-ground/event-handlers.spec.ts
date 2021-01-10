@@ -8,7 +8,6 @@ import {custom_commands} from "./commands";
 
 // SETUP
 
-// @ts-ignore
 var game = new Game();
 
 beforeAll(() => { global['game'] = game; });

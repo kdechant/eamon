@@ -58,7 +58,6 @@ export default class EffectRepository {
    * @return Effect
    */
   public get(id): Effect {
-    // @ts-ignore
     let e = this.all.find(x => x.id === id);
     return e || null;
   }

@@ -100,7 +100,6 @@ describe("Group monster handling", function() {
   });
 
   it ("should add and remove members", () => {
-    // @ts-ignore
     let kobolds: GroupMonster = game.monsters.get(5);
     kobolds.spawnChild();
     expect(kobolds.children.length).toBe(4);

@@ -90,7 +90,6 @@ export class CommandParser {
     if (command_match.length === 0) {
       let keys: string[] = Object.keys(this.available_verbs);
       for (let k in keys) {
-        // @ts-ignore
         if (keys[k].startsWith(verb)) {
           command_match.push(keys[k]);
         }

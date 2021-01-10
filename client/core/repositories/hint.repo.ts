@@ -56,7 +56,6 @@ export default class HintRepository {
    * @return Monster
    */
   public get(id) {
-    // @ts-ignore
     let h = this.all.find(x => x.id === id);
     return h || null;
   }
