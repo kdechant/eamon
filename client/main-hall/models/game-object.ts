@@ -22,12 +22,14 @@ export default class GameObject {
 
   /**
    * Loads data from JSON source into the object properties.
-   * @param {Object} source an object, e.g., from JSON.
+   * @param {Record<string, unknown>} source an object, e.g., from JSON.
    */
-  public init(source): void {
+  public init(source: Record<string, unknown>): void {
     this.uuid = uuidv4();
     for (const prop in source) {
-      this[prop] = source[prop];
+      if (source.hasOwnProperty(prop)) {
+        this[prop] = source[prop];
+      }
     }
   }
 

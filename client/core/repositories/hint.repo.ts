@@ -1,5 +1,4 @@
 import {Hint} from "../models/hint";
-import Game from "../models/game";
 
 /**
  * Class HintRepository.
@@ -17,7 +16,7 @@ export default class HintRepository {
    */
   index = 0;
 
-  constructor(hint_data: Array<Object>) {
+  constructor(hint_data: Array<Record<string, unknown>>) {
     for (const i of hint_data) {
       this.add(i);
     }
@@ -27,7 +26,7 @@ export default class HintRepository {
    * Adds a hint.
    * @param {Object} hint_data
    */
-  public add(hint_data) {
+  public add(hint_data): Hint {
     const h = new Hint();
 
     h.init(hint_data);
@@ -55,7 +54,7 @@ export default class HintRepository {
    * @param {number} id
    * @return Monster
    */
-  public get(id) {
+  public get(id): Hint|null {
     const h = this.all.find(x => x.id === id);
     return h || null;
   }

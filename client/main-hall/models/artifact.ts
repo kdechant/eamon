@@ -124,10 +124,10 @@ export default class Artifact extends GameObject {
    * Returns the icon to use. Return value must match an available icon filename.
    */
   public getIcon(): string {
+    let t = "";
     switch (this.type) {
       case Artifact.TYPE_WEAPON:
       case Artifact.TYPE_MAGIC_WEAPON:
-        let t = "";
         switch (this.weapon_type) {
           case 1:
             t = "axe";

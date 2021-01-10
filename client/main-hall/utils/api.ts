@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosInstance, AxiosPromise} from "axios";
 import * as Cookie from 'js-cookie';
 
 /**
@@ -10,7 +10,7 @@ import * as Cookie from 'js-cookie';
  * Gets the headers we need to make API calls, including the CSRF token from Django
  * if the user is logged in to the admin
  */
-export function getHeaders(): object {
+export function getHeaders(): Record<string, unknown> {
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -24,7 +24,7 @@ export function getHeaders(): object {
 /**
  * Gets the configured Axios instance that is ready to make API calls.
  */
-export function getAxios() {
+export function getAxios(): AxiosInstance {
   return axios.create({
     baseURL: "/api",
     headers: getHeaders(),
@@ -40,7 +40,7 @@ export function getAxios() {
  *   or other numeric data like move count)
  * @return {AxiosPromise} the promise from the API call
  */
-export function log(type = "", value: number|null = null) {
+export function log(type = "", value: number|null = null): AxiosPromise {
 
   // using player ID from local storage to avoid race condition if this.player isn't loaded yet
   const body = {
