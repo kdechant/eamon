@@ -8,14 +8,16 @@ class CommandPrompt extends React.Component<any, any> {
     restore: false,
   };
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     // Key press handler for the screen pause. When the "hit any key"
     // button is visible, this will resume output.
+    // FIXME: this should ignore F keys
     const game = this.props.game;
     document.addEventListener("keydown", (ev) => {
-      if (game.history.paused) {
+      if (game.queue.paused) {
         ev.preventDefault();
-        game.history.display();
+        game.history.counter = 0;
+        game.queue.run();
       }
     }, false);
   }
@@ -48,7 +50,7 @@ class CommandPrompt extends React.Component<any, any> {
         game.ready = false;
 
         // run the command
-        const result = game.command_parser.run(command);
+        game.command_parser.run(command);
 
         // clear the input box
         this.setState({ command: '', last_command: command });
@@ -104,15 +106,16 @@ class CommandPrompt extends React.Component<any, any> {
   };
 
   public continue = () => {
+    console.log('continue');
     const game = this.props.game;
-    game.history.display();
+    game.queue.run();
     // Note: input will autofocus again as soon as it reappears.
   };
 
   public render() {
     const game = this.props.game;
 
-    if (game.history.paused) {
+    if (game.queue.paused) {
       return <button className="btn btn-info paused" onClick={this.continue}>
           Hit any key to continue...
         </button>;

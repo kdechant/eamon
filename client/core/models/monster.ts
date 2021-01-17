@@ -89,11 +89,13 @@ export class Monster extends GameObject {
   weapon_abilities: { [key: number]: number; };
   armor_expertise: number;
   saved_games: Object[] = [];
+  profit = 0; // the money the player makes for selling items when they leave the adventure
 
   // game-state properties
   reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
   status_message = "";
+  turn_taken = false;  // whether monster acted this turn
   original_group_size: number;
   damage = 0;
   weight_carried = 0;
@@ -102,7 +104,6 @@ export class Monster extends GameObject {
   spell_counters: { [key: string]: number };  // time remaining on various spells (e.g., speed)
   speed_multiplier = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
-  profit = 0; // the money the player makes for selling items when they leave the adventure
 
   constructor (){
     super();
@@ -152,6 +153,9 @@ export class Monster extends GameObject {
         }
       }
     }
+
+    // no battle actions on turn when they appeared
+    this.turn_taken = true;
   }
 
   /**
@@ -363,8 +367,8 @@ export class Monster extends GameObject {
         inv = inv.filter(x => x.type !== Artifact.TYPE_DEAD_BODY)
       }
 
-      const delay = game.history.delay;
-      game.history.delay = Math.floor(game.history.delay / 2);
+      const delay_time = game.queue.delay_time;
+      game.queue.delay_time = Math.floor(game.queue.delay_time / 2);
 
       const worn = inv.filter(x => x.is_worn === true);
       if (worn.length) {
@@ -395,7 +399,7 @@ export class Monster extends GameObject {
         game.history.write(` - ${this.getMoneyFormatted()}`, "no-space");
         game.history.write(`Weight carried: ${ game.player.weight_carried } of ${ game.player.hardiness * 10 } gronds`, "no-space");
       }
-      game.history.delay = delay;
+      game.queue.delay_time = delay_time;
     } else {
       if (this.weapon) {
         game.history.write(this.name + " is armed with: " + this.weapon.name);
@@ -669,16 +673,16 @@ export class Monster extends GameObject {
     const weapon_type = wpn ? wpn.weapon_type : 0;
     if (this.combat_code === 1) {
       // generic "attacks" message for unusual creatures like blob monsters, etc.
-      game.history._print(this.name + " attacks " + target.getDisplayName());
+      game.history.write(this.name + " attacks " + target.getDisplayName());
     } else if (this.combat_verbs && this.combat_verbs.length) {
       // custom combat messages for this monster. assign these in the game start event handler.
       const attack_verb = this.combat_verbs[Math.floor(Math.random() * this.combat_verbs.length)];
-      game.history._print(this.name + " " + attack_verb + " " + target.getDisplayName());
+      game.history.write(this.name + " " + attack_verb + " " + target.getDisplayName());
     } else {
       // standard attack message based on type of weapon
       const attack_verbs = Monster.COMBAT_VERBS_ATTACK[weapon_type];
       const attack_verb = attack_verbs[Math.floor(Math.random() * attack_verbs.length)];
-      game.history._print(this.name + " " + attack_verb + " at " + target.getDisplayName());
+      game.history.write(this.name + " " + attack_verb + " at " + target.getDisplayName());
     }
 
     // calculate hit, miss, or fumble
@@ -690,7 +694,7 @@ export class Monster extends GameObject {
       let ignore_armor = false;
       // regular or critical hit
       if (can_critical && hit_roll <= 5) {
-        game.history._print("-- a critical hit!", "success no-space");
+        game.history.write("-- a critical hit!", "success no-space");
         // roll another die to determine the effect of the critical hit
         const critical_roll = game.diceRoll(1, 100);
         if (critical_roll <= 50) {
@@ -705,7 +709,7 @@ export class Monster extends GameObject {
           multiplier = 1000;	// instant kill
         }
       } else {
-        game.history._print("-- a hit!", "success no-space");
+        game.history.write("-- a hit!", "success no-space");
       }
       // deal the damage
       damage = Math.floor(damage * multiplier);
@@ -730,7 +734,7 @@ export class Monster extends GameObject {
             // new feature (not in original) - slower ability increase above 50%
             this.weapon_abilities[wpn.weapon_type] += 1;
           }
-          game.history._print("Your " + wpn.getTypeName() + " ability increased!", "success");
+          game.history.write("Your " + wpn.getTypeName() + " ability increased!", "success");
         }
         // check for armor expertise increase
         const af = this.getArmorFactor();
@@ -739,7 +743,7 @@ export class Monster extends GameObject {
           // always a 5% chance to increase. this was not present in the original.
           if (Math.max(af, 5) < inc_roll) {
             this.armor_expertise += Math.min(af, 2); // can sometimes increase by only 1
-            game.history._print("Your armor expertise increased!", "success");
+            game.history.write("Your armor expertise increased!", "success");
           }
         }
       }
@@ -752,26 +756,26 @@ export class Monster extends GameObject {
         if (game.triggerEvent('miss', this, target)) {
           const miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type] || ['missed'];
           const miss_verb = miss_verbs[game.diceRoll(1, miss_verbs.length) - 1];
-          game.history._print("-- " + miss_verb + "!", "no-space");
+          game.history.write("-- " + miss_verb + "!", "no-space");
         }
       } else {
-        game.history._print("-- a fumble!", "warning no-space");
+        game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
         const fumble_roll = game.diceRoll(1, 100);
         if (game.triggerEvent('fumble', this, target, fumble_roll)) {
           if (fumble_roll <= 40) {
 
-            game.history._print("-- fumble recovered!", "no-space");
+            game.history.write("-- fumble recovered!", "no-space");
 
           } else if (fumble_roll <= 80) {
 
-            game.history._print("-- weapon dropped!", "warning no-space");
+            game.history.write("-- weapon dropped!", "warning no-space");
             this.drop(wpn);
 
           } else if (fumble_roll <= 85) {
 
             // not broken, user just injured self
-            game.history._print("-- weapon hits user!", "danger no-space");
+            game.history.write("-- weapon hits user!", "danger no-space");
             this.injure(game.diceRoll(wpn.dice, wpn.sides), false, this);
 
           } else {
@@ -780,23 +784,23 @@ export class Monster extends GameObject {
             if (wpn.type === Artifact.TYPE_MAGIC_WEAPON) {
 
               // magic weapons don't break or get damaged
-              game.history._print("-- sparks fly from " + wpn.name + "!", "warning no-space");
+              game.history.write("-- sparks fly from " + wpn.name + "!", "warning no-space");
 
             } else {
 
               if (fumble_roll <= 95 && wpn.sides > 2) {
                 // weapon damaged - decrease its damage potential
-                game.history._print("-- weapon damaged!", "warning no-space");
+                game.history.write("-- weapon damaged!", "warning no-space");
                 wpn.sides -= 2;
               } else {
-                game.history._print("-- weapon broken!", "danger no-space");
+                game.history.write("-- weapon broken!", "danger no-space");
                 this.weapon_id = null;
                 this.weapon = null;
                 wpn.destroy();
                 this.courage /= 2;
                 // broken weapon can hurt user
                 if (game.diceRoll(1, 10) > 5) {
-                  game.history._print("-- broken weapon hurts user!", "danger no-space");
+                  game.history.write("-- broken weapon hurts user!", "danger no-space");
                   let dice = wpn.dice;
                   if (fumble_roll === 100) dice++;  // worst case - extra damage
                   this.injure(game.diceRoll(dice, wpn.sides), false, this);
@@ -902,7 +906,7 @@ export class Monster extends GameObject {
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
       if (show_message) {
-        game.history._print(`${this.name} looks frantically for an exit but finds nowhere to go!`, "warning");
+        game.history.write(`${this.name} looks frantically for an exit but finds nowhere to go!`, "warning");
       }
       return;
     }
@@ -911,9 +915,9 @@ export class Monster extends GameObject {
 
     if (show_message) {
       if (exit.direction == 'u' || exit.direction == 'd') {
-        game.history._print(`${this.name} ${game.flee_verbs.singular} ${exit.getFriendlyDirection()}ward.`, "warning");
+        game.history.write(`${this.name} ${game.flee_verbs.singular} ${exit.getFriendlyDirection()}ward.`, "warning");
       } else {
-        game.history._print(`${this.name} ${game.flee_verbs.singular} to the ${exit.getFriendlyDirection()}.`, "warning");
+        game.history.write(`${this.name} ${game.flee_verbs.singular} to the ${exit.getFriendlyDirection()}.`, "warning");
       }
     }
     this.moveToRoom(exit.room_to);
@@ -971,7 +975,7 @@ export class Monster extends GameObject {
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
       if (damage <= 0) {
-        game.history._print("-- blow bounces off armor!", "no-space");
+        game.history.write("-- blow bounces off armor!", "no-space");
         return 0; // no need to show health here.
       }
     }

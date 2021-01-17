@@ -10,9 +10,7 @@ export class HistoryManager {
   history: HistoryEntry[];
   current_entry: HistoryEntry;
   index: number;  // used for the history recall
-  delay = 0;  // should be off; not needed with the operations queue
   page_size = 20;
-  paused = false;
   counter = 0;  // used for display pagination
   suppressNextMessage = false;
 
@@ -21,39 +19,29 @@ export class HistoryManager {
     this.index = this.history.length;
   }
 
-  public display() {
-    // TODO: figure out how much of this I can rip out in favor of the queue
-    if (this.paused) this.counter = 0;
-    this.paused = false;
-    const line = this.current_entry.results.shift();
-    if (line) {
+  public shouldPause(): boolean {
+    // don't pause on game start text because it's ugly
+    if (this.current_entry.command === "") return false;
+    return this.counter > this.page_size;
+  }
+
+  /**
+   * Output the history text to the browser
+   */
+  public display(): void {
+    this.current_entry.results.forEach(line => {
+      this.current_entry.results.shift();
       this.history[this.index - 1].push(line.text, line.type, line.markdown);
-      if (this.delay > 0) {
-        let pause = (line.type && line.type.indexOf('pause') !== -1)
-          || (this.counter > this.page_size && this.current_entry.results.length > 2);
-        // don't pause on game start text because it's ugly
-        if (this.current_entry.command === "") pause = false;
-        if (pause) {
-          this.paused = true;
-        } else {
-          const no_space = line.type.indexOf('no-space') !== -1;
-          this.counter += no_space ? 1 : 2;
-          if (line.text.length > 150) {
-            this.counter++;
-          }
-          if (line.text.length > 225) {
-            this.counter++;
-          }
-          setTimeout(() => { this.display(); }, no_space ? this.delay : this.delay / 2);
-        }
-      } else {
-        // No delay (i.e., unit tests). Not using setTimeout because it breaks the tests.
-        this.display();
+
+      const no_space = line.type.indexOf('no-space') !== -1;
+      this.counter += no_space ? 1 : 2;
+      if (line.text.length > 150) {
+        this.counter++;
       }
-    } else {
-      // we've displayed everything, so reactivate the command prompt
-      // game.setReady();
-    }
+      if (line.text.length > 225) {
+        this.counter++;
+      }
+    });
     game.refresh();
   }
 
@@ -62,11 +50,8 @@ export class HistoryManager {
    * need to ask a question to the user after some output has
    * been displayed.
    */
-  flush() {
-    const delay = this.delay;
-    this.delay = 0;
+  flush(): void {
     this.display();
-    this.delay = delay;
   }
 
   /**
@@ -90,20 +75,19 @@ export class HistoryManager {
    * @param {boolean} markdown
    *   Whether to use the Markdown formatter (true) or the plain text formatter (false)
    */
-  write(text: string, type: string = "normal", markdown = false) {
-    game.queue.push(() => this._print(text, type, markdown));
-  }
-
-  _print(text: string, type: string = "normal", markdown = false) {
-    // TODO: currying
+  write(text: string, type = "normal", markdown = false): void {
     if (!this.suppressNextMessage) {
-      text = text.charAt(0).toUpperCase() + text.slice(1);
-      if (!this.current_entry) {
-        this.push("");
-      }
-      this.current_entry.push(text, type, markdown);
+      game.queue.push(() => this._print(text, type, markdown));
     }
     this.suppressNextMessage = false;
+  }
+
+  _print(text: string, type = "normal", markdown = false): void {
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    if (!this.current_entry) {
+      this.push("");
+    }
+    this.current_entry.push(text, type, markdown);
   }
 
   /**
@@ -113,32 +97,11 @@ export class HistoryManager {
    * game.history.write("This is");
    * game.history.append(" all one line");
    */
-  append(text: string) {
+  append(text: string): void {
     // TODO: test this with the operations queue
     game.queue.push(() => {
       this.current_entry.append(text);
     });
-  }
-
-  /**
-   * Increases speed
-   */
-  faster(amount = 25) {
-    this.delay = Math.max(0, this.delay - amount);
-  }
-
-  /**
-   * Decreases speed
-   */
-  slower(amount = 25) {
-    this.delay += amount;
-  }
-
-  /**
-   * Implements a screen pause
-   */
-  public pause() {
-    this.current_entry.push("", "pause", false);
   }
 
   /**

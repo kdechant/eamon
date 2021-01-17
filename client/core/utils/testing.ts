@@ -26,7 +26,7 @@ export function initMockGame(game) {
 
      game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, [], responses[5].data, []);
 
-     game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
+     game.queue.delay_time = 0; // bypasses the history setTimeout() calls which break the tests
 
      game.start();
    });
@@ -60,7 +60,7 @@ export function initLiveGame(game: Game) {
        []
      );
 
-     game.history.delay = 0; // bypasses the history setTimeout() calls which break the tests
+     game.queue.delay_time = 0; // bypasses the setTimeout() calls which break the tests
 
      game.died = false;
      game.won = false;

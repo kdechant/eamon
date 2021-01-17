@@ -10,5 +10,6 @@ module.exports = {
   ],
   rules: {
     'no-prototype-builtins': 'off',
+    'no-case-declarations': 'off',
   }
 };

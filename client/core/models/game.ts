@@ -413,7 +413,7 @@ export default class Game {
    * Tick the game clock. Monster/artifact maintenance and things like changing
    * torch fuel will happen here.
    */
-  tick() {
+  tick(): void {
     if (!this.active) {
       return;
     }
@@ -457,34 +457,38 @@ export default class Game {
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
 
+    this.monsters.visible.forEach(m => m.turn_taken = false);
     this.queue.callback = () => this.monsterActions();
     this.queue.run();
   }
 
-  monsterActions() {
+  monsterActions(): void {
     // non-player monster actions
-    // FIXME: anything output by history.write() during a monster's actions
-    //  or during an EH will get output after all the monsters have gone.
-    //  Need to implement a "has attacked" flag on monsters which gets reset
-    //  every turn. Then call this function once per monster until they've all gone,
-    //  after which the 'aftermonsteractions()' should be called.
-    if (this.in_battle && !this.skip_battle_actions) {
-      for (const m of this.monsters.all) {
-        if (m.id !== Monster.PLAYER && m.isHere() && !m.parent) {
-          this.queue.push(() => {
-            if (m.isHere() && m.status === Monster.STATUS_ALIVE && this.player.status === Monster.STATUS_ALIVE) {
-              this.queue.push('delay:3');
-              m.doBattleActions();
-            }
-          });
-        }
-      }
+    if (this.skip_battle_actions) {
+      this.afterMonsterActions();
+      return;
     }
-    this.queue.callback = () => this.afterMonsterActions();
-    this.queue.run();
+
+    const actor = this.monsters.visible.find(m => !m.turn_taken && !m.parent);
+    if (actor === undefined) {
+      // Everyone has acted. Begin end turn phase.
+      this.afterMonsterActions();
+      return;
+    }
+
+    if (this.in_battle || actor.wantsToPickUpWeapon()) {
+      this.queue.push(() => {
+        actor.doBattleActions();
+        actor.turn_taken = true;
+      });
+      this.queue.callback = () => this.monsterActions();
+      this.queue.run();
+    } else {
+      this.afterMonsterActions();
+    }
   }
 
-  afterMonsterActions() {
+  afterMonsterActions(): void {
     // the first end turn event triggers here, so we can see any artifacts or monsters that have appeared,
     // but any monsters that have just entered the room won't be able to attack.
     this.triggerEvent("endTurn");
@@ -499,8 +503,7 @@ export default class Game {
   }
 
   /**
-   * Shows the room, artifact, and monster descriptions. Normally called right after tick() unless there
-   * was a command exception, in which case the tick is bypassed.
+   * Shows the room, artifact, and monster descriptions.
    */
   public endTurn(): void {
 
@@ -705,11 +708,8 @@ export default class Game {
    * @param {number} time
    *   The amount of time to delay, in seconds
    */
-  public delay(time = 3) {
-    // TODO: rework this (currently no-op, removed in favor of automatic screen pauses)
-    // if (this.history.delay > 0) {
-    //   this.history.total_delay += time * 1000;
-    // }
+  public delay(time = 3): void {
+    this.queue.delay(time);
   }
 
   /**

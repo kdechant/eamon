@@ -54,7 +54,7 @@ export var event_handlers = {
   "death": function(monster: Monster, attacker: Monster) {
     // player / belg
     if (monster.id === 0 && attacker && attacker.id === 26) {
-      game.history.pause();
+      game.pause();
       attacker.destroy();
       game.effects.print(16);
       game.rooms.get(98).description = game.effects.get(4).text;

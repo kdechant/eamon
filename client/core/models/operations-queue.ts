@@ -1,58 +1,62 @@
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare var game;
+declare const game;
+
+type Callback = () => void;
 
 /**
  * Operations queue class. Used for timing of game operations
  */
 export class OperationsQueue {
-  queue: any[];
-  callback: Function;
-  delay: number = 200;
-  paused: boolean = false;
+  queue: (string|Callback)[];
+  callback: Callback;
+  delay_time = 100;
+  paused = false;
 
   constructor() {
     this.queue = [];
   }
 
-  public run() {
-    // console.log('queue run', this.queue);
-    // TODO: should the counter be here or in the history manager?
-    // if (this.paused) this.counter = 0;
+  public run(): void {
     this.paused = false;
 
     // run the first operation in the queue (if any)
     if (this.queue.length) {
-      let operation = this.queue.shift();
-      // console.log('running operation:', operation);
-      // things here:
+      const operation = this.queue.shift();
+      console.log('running op:', operation);
+      // 'operation' can be:
       //  * a function we can call
-      //  * a delay of X seconds
-      //  * a pause
-      if (operation === 'pause') {
-        this.paused = true;
-        return;
-      } else if (typeof operation === 'string' && operation.substr(0,5) === 'delay') {
-        let parts = operation.split(':');
-        let time = parseFloat(parts[1]);
-        console.log('delay', time);
-        setTimeout(() => this.run(), time * 1000);
-        return;
-      } else {
-        // It must be a function. Call it.
+      //  * a delay of X seconds (string, in format 'delay:3')
+      //  * a pause (string 'pause')
+      if (typeof operation === 'function') {
         operation();
-        game.history.flush();
+        // automatic screen pauses when output is long
+        if (game.history.shouldPause()) {
+          this.paused = true;
+          game.refresh();
+          return;
+        }
+        game.history.display();
+      } else {
+        if (operation === 'pause') {
+          this.paused = true;
+          game.refresh();
+          return;
+        } else if (operation.substr(0,5) === 'delay') {
+          const parts = operation.split(':');
+          const time = parseFloat(parts[1]);
+          setTimeout(() => this.run(), time * 1000);
+          return;
+        }
       }
     }
 
     // Check if we're done, and run the callback if so.
     if (!this.queue.length) {
-      // console.log('running callback', this);
       this.callback();
     } else {
       // Not done. Schedule the next action to happen.
-      // TODO: handle pauses here
-      if (this.delay > 0) {
-        setTimeout(() => this.run(), this.delay);
+      if (this.delay_time > 0) {
+        setTimeout(() => this.run(), this.delay_time);
       } else {
         this.run();
       }
@@ -62,9 +66,36 @@ export class OperationsQueue {
   /**
    * Pushes an operation onto the queue
    */
-  push(operation: string|Function) {
-    // console.log('queue push', operation);
+  push(operation: Callback): void {
     this.queue.push(operation);
+  }
+
+  /**
+   * Pushes a delay onto the queue
+   */
+  delay(seconds = 2): void {
+    this.queue.push(`delay:${seconds}`);
+  }
+
+  /**
+   * Pauses processing
+   */
+  pause(): void {
+    this.queue.push(`pause`);
+  }
+
+  /**
+   * Increases speed
+   */
+  faster(amount = 25): void {
+    this.delay_time = Math.max(0, this.delay_time - amount);
+  }
+
+  /**
+   * Decreases speed
+   */
+  slower(amount = 25): void {
+    this.delay_time += amount;
   }
 
 }
