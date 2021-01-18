@@ -106,7 +106,6 @@ class CommandPrompt extends React.Component<any, any> {
   };
 
   public continue = () => {
-    console.log('continue');
     const game = this.props.game;
     game.queue.run();
     // Note: input will autofocus again as soon as it reappears.

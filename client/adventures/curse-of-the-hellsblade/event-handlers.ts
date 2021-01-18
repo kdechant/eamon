@@ -66,13 +66,16 @@ export var event_handlers = {
   },
 
   "endTurn2": function() {
+    // If player has the hellsblade ready, repeat the attack phase until there
+    // are no more monsters left.
     if (game.player.weapon_id === 25 && !game.player.isWearing(57) && game.monsters.visible.length > 0 && game.player.room_id !== 64) {
       game.delay(1);
       game.history.write("The Hellsblade whirls in your hand! You can't stop swinging!", "special2");
       game.delay(1);
-      const m = game.monsters.visible[game.diceRoll(1, game.monsters.visible.length) - 1]; // can choose friends
-      game.player.attack(m);
-      game.tick();
+      const m = game.getRandomElement(game.monsters.visible); // can choose friends
+      game.queue.push(() => game.player.attack(m));
+      game.monsters.visible.forEach(m => m.turn_taken = false);
+      game.queue.callback = () => game.monsterActions();
     }
 
     // hb starts in inventory, so show description manually

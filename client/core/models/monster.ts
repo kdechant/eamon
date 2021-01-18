@@ -574,7 +574,8 @@ export class Monster extends GameObject {
     if (game.triggerEvent('monsterAction', this)) {
 
       // see if we have a valid exit to flee to
-      if (game.rooms.getRoomById(this.room_id).hasGoodExits()) {
+      const room = game.rooms.get(this.room_id);
+      if (room && room.hasGoodExits()) {
         // check if the monster should flee (single monster only)
         if (!this.parent && !this.checkCourage()) {
           this.flee();

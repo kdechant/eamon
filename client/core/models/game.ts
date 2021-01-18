@@ -588,11 +588,14 @@ export default class Game {
       }
     }
 
-    // the third end-turn event triggers here, so things can happen after we have seen the artifact
-    // and monster descriptions (e.g., some monsters may speak when you see them)
-    this.triggerEvent("endTurn2");
+    // the third end-turn event triggers here, so things can happen after
+    // we have seen the artifact and monster descriptions (e.g., some
+    // monsters may speak when you see them)
 
+    // Note: set callback before running event handler, so EH can change
+    // to a different callback (e.g., hellsblade repeats attack phase)
     this.queue.callback = () => this.setReady();
+    this.triggerEvent("endTurn2");
     this.queue.run();
   }
 

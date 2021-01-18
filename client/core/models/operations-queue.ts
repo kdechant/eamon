@@ -22,7 +22,6 @@ export class OperationsQueue {
     // run the first operation in the queue (if any)
     if (this.queue.length) {
       const operation = this.queue.shift();
-      console.log('running op:', operation);
       // 'operation' can be:
       //  * a function we can call
       //  * a delay of X seconds (string, in format 'delay:3')
