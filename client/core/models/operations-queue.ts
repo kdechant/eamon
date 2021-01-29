@@ -28,13 +28,13 @@ export class OperationsQueue {
       //  * a pause (string 'pause')
       if (typeof operation === 'function') {
         operation();
+        game.history.display();
         // automatic screen pauses when output is long
         if (game.history.shouldPause()) {
           this.paused = true;
           game.refresh();
           return;
         }
-        game.history.display();
       } else {
         if (operation === 'pause') {
           this.paused = true;
@@ -60,6 +60,11 @@ export class OperationsQueue {
         this.run();
       }
     }
+  }
+
+  public resume(): void {
+    game.history.counter = 0;
+    this.run();
   }
 
   /**
