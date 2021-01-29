@@ -22,6 +22,7 @@ export class HistoryEntry {
   }
 
   public append(text: string) {
+    // TODO: make appends not take any time
     this.results[this.results.length - 1].text += text;
   }
 }

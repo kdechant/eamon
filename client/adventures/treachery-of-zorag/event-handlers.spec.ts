@@ -146,7 +146,6 @@ test("camp", () => {
   game.mock_random_numbers = [99];  // no monsters
   runCommand('camp');
   expect(game.data.fatigue).toBe(0);
-  // player is alone, so no watch output
   expect(game.history.getOutput().text).toBe('You make camp for the night...');
   expect(game.history.getOutput(1).text).toBe('Sorsha takes the first watch...');
   expect(game.history.getOutput(2).text).toBe('Elric takes the next watch...');

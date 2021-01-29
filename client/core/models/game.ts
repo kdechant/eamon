@@ -148,6 +148,11 @@ export default class Game {
   in_battle = false;
 
   /**
+   * Has there been fighting this turn? If so, NPCs can pick up a weapon if they dropped it.
+   */
+  is_battle_turn = false;
+
+  /**
    * "skip battle actions" flag. Set this to true to not have battle actions
    * happen this turn (e.g., when first moving into a room)
    */
@@ -457,6 +462,10 @@ export default class Game {
     this.artifacts.updateVisible();
     this.monsters.updateVisible();
 
+    if (this.in_battle) {
+      this.is_battle_turn = true;
+    }
+
     this.monsters.visible.forEach(m => m.turn_taken = false);
     this.queue.callback = () => this.monsterActions();
     this.queue.run();
@@ -476,13 +485,15 @@ export default class Game {
       return;
     }
 
-    if (this.in_battle || actor.wantsToPickUpWeapon()) {
+    if (this.in_battle) {
       this.queue.push(() => {
         actor.doBattleActions();
         actor.turn_taken = true;
       });
       this.queue.callback = () => this.monsterActions();
       this.queue.run();
+    } else if (this.is_battle_turn) {
+      // TODO: allow monsters to pick up weapons or cast heal spells even if the battle is over.
     } else {
       this.afterMonsterActions();
     }
@@ -497,6 +508,7 @@ export default class Game {
 
     // clear the "skip battle" flag if it was set
     this.skip_battle_actions = false;
+    this.is_battle_turn = false;
 
     this.queue.callback = () => this.endTurn();
     this.queue.run();

@@ -492,7 +492,8 @@ export var event_handlers = {
 
   "afterTalk": function(monster: Monster, subject: string, word: any) {
     if (monster.id === 4 && (word.effect === 14 || word.effect === 16)) {
-      game.history.flush();
+      // TODO: test this with ops queue
+      // game.history.flush();
       game.modal.confirm('Do you join Boris to search for the treasure?', answer => {
         if (answer.toLowerCase() === 'yes') {
           game.effects.print(17);

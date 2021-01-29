@@ -1,6 +1,17 @@
 import {HistoryManager} from "./history-manager";
+import Game from "./game";
+import {OperationsQueue} from "./operations-queue";
+
+const game = new Game();
 
 describe("Command history", function() {
+
+  // global handling
+  beforeAll(() => {
+    game.queue = new OperationsQueue;
+    global['game'] = game;
+  });
+  afterAll(() => { delete global['game']; });
 
   let hist: HistoryManager;
   beforeEach(() => {

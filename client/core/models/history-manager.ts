@@ -26,40 +26,11 @@ export class HistoryManager {
   }
 
   /**
-   * Output the history text to the browser
-   */
-  public display(): void {
-    this.current_entry.results.forEach(line => {
-      this.current_entry.results.shift();
-      this.history[this.index - 1].push(line.text, line.type, line.markdown);
-
-      const no_space = line.type.indexOf('no-space') !== -1;
-      this.counter += no_space ? 1 : 2;
-      if (line.text.length > 150) {
-        this.counter++;
-      }
-      if (line.text.length > 225) {
-        this.counter++;
-      }
-    });
-    game.refresh();
-  }
-
-  /**
-   * Outputs everything in the history with no delay. Used if you
-   * need to ask a question to the user after some output has
-   * been displayed.
-   */
-  flush(): void {
-    this.display();
-  }
-
-  /**
    * Pushes a command onto the history
    */
   push(command: string) {
-    this.current_entry = new HistoryEntry(command);  // temp holding area for the results
-    this.history.push(new HistoryEntry(command));  // this will stay empty (except for the command) until the results are pushed onto it with display()
+    this.current_entry = new HistoryEntry(command);
+    this.history.push(this.current_entry);
 
     // reset the counter whenever a command is added.
     this.counter = 0;
@@ -88,6 +59,9 @@ export class HistoryManager {
       this.push("");
     }
     this.current_entry.push(text, type, markdown);
+
+    const no_space = type.indexOf('no-space') !== -1;
+    this.counter += (no_space ? 0 : 1) + Math.floor(text.length / 75);
   }
 
   /**
@@ -98,9 +72,9 @@ export class HistoryManager {
    * game.history.append(" all one line");
    */
   append(text: string): void {
-    // TODO: test this with the operations queue
     game.queue.push(() => {
       this.current_entry.append(text);
+      this.counter += Math.floor(text.length / 75);
     });
   }
 
@@ -164,7 +138,6 @@ export class HistoryManager {
    *   1 is the second line, 2 the third, and so on.
    */
   getOutput(index = 0) {
-    this.display();
     if (this.history.length > 0) {
       const res = this.history[this.history.length - 1]["results"];
       if (index < 0) {
@@ -186,7 +159,6 @@ export class HistoryManager {
    *   The number of history entries to go back (default 1)
    */
   getLastOutput(num = 1) {
-    this.display();
     if (this.history.length > 0) {
       const res = this.history[this.history.length - 1]["results"];
       if (res.length >= num) {

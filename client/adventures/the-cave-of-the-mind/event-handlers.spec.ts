@@ -24,11 +24,11 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
-it("should have working event handlers", () => {
+test("game setup", () => {
   expect(game.rooms.rooms.length).toBe(31);
   expect(game.artifacts.all.length).toBe(51 + 5); // includes player artifacts
   expect(game.effects.all.length).toBe(15);
@@ -36,15 +36,17 @@ it("should have working event handlers", () => {
 
   expect(game.monsters.get(12).name).toBe("The Mind");
   expect(game.monsters.get(12).combat_verbs.length).toBe(3);
+});
 
-  // use the miner's pick
+test("miner's pick", () => {
   game.player.moveToRoom(5);
   game.artifacts.get(19).reveal();
   game.triggerEvent("use", "", game.artifacts.get(7));
   expect(game.artifacts.get(19).room_id).toBeNull();
   expect(game.artifacts.get(18).room_id).toBe(5);
+});
 
-  // inscription
+test("inscription", () => {
   game.mock_random_numbers = [1, 2, 3];
   expect(game.player.inventory.length).toBe(5);
   game.triggerEvent("beforeRead", "", game.artifacts.get(17));
@@ -52,19 +54,22 @@ it("should have working event handlers", () => {
   expect(game.artifacts.get(52).room_id).toBe(1);
   expect(game.artifacts.get(53).room_id).toBe(2);
   expect(game.artifacts.get(54).room_id).toBe(3);
+});
 
-  // power spell effects
+test("power spell effects", () => {
   game.triggerEvent("power", 20);
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe("You hear a loud sonic boom which echoes all around you!");
   game.mock_random_numbers = [16];
   game.triggerEvent("power", 51);
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe("You are being teleported...");
   expect(game.player.room_id).toBe(16);
+});
 
-  // use the potion
+test("potion", () => {
   const p = game.artifacts.get(16);
   game.triggerEvent("use", "potion", p);
   expect(game.effects.get(10).seen).toBeTruthy();
   expect(game.won).toBeTruthy();
-
 });

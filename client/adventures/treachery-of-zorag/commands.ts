@@ -60,7 +60,7 @@ custom_commands.push({
     const monsters_appear = game.diceRoll(1, 100) <= monster_odds;
     const active_watcher = game.diceRoll(1, watchers.length) - 1;
     let summoned = false;
-    game.history.slower(1000);  // FIXME: not currently working.
+    game.queue.slower(1000);  // FIXME: not currently working.
     watchers.forEach((m, index) => {
       if (summoned) return;
       if (m.id === Monster.PLAYER) {
@@ -106,7 +106,7 @@ custom_commands.push({
         game.command_parser.run(`drink ${water.name}`, false);
       }
     }
-    game.history.faster(1000);
+    game.queue.faster(1000);
   }
 });
 

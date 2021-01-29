@@ -28,7 +28,7 @@ export class OperationsQueue {
       //  * a pause (string 'pause')
       if (typeof operation === 'function') {
         operation();
-        game.history.display();
+        game.refresh();
         // automatic screen pauses when output is long
         if (game.history.shouldPause()) {
           this.paused = true;
@@ -92,14 +92,18 @@ export class OperationsQueue {
    * Increases speed
    */
   faster(amount = 25): void {
-    this.delay_time = Math.max(0, this.delay_time - amount);
+    if (this.delay_time !== 0) {
+      this.delay_time = Math.max(1, this.delay_time - amount);
+    }
   }
 
   /**
    * Decreases speed
    */
   slower(amount = 25): void {
-    this.delay_time += amount;
+    if (this.delay_time !== 0) {
+      this.delay_time += amount;
+    }
   }
 
 }

@@ -197,7 +197,8 @@ export var event_handlers = {
           game.history.write("Lady Mirabelle has not been rescued.");
         }
       }
-      game.history.flush();
+      // TODO: test this with ops queue
+      // game.history.flush();
     }
 
     return true;
