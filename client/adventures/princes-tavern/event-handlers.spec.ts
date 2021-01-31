@@ -33,7 +33,7 @@ test("general event handlers", () => {
   expect(game.rooms.rooms.length).toBe(63);
   expect(game.artifacts.all.length).toBe(72 + 5); // includes player artifacts
   expect(game.effects.all.length).toBe(44);
-  expect(game.monsters.all.length).toBe(33); // includes player
+  expect(game.monsters.all.length).toBe(46); // includes player
 
   // eat peanuts
   game.player.moveToRoom(23);
@@ -112,18 +112,23 @@ test("blood alcohol content", () => {
   game.data['drinks'] = 18; // mock player has HD of 50
   game.data['sober counter'] = 100;
   game.triggerEvent('endTurn');
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe(drunk_messages[0].text);
   game.data['drinks'] = 21;
   game.triggerEvent('endTurn');
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe(drunk_messages[1].text);
   game.data['drinks'] = 25;
   game.triggerEvent('endTurn');
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe(drunk_messages[2].text);
   game.data['drinks'] = 29;
   game.triggerEvent('endTurn');
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe(drunk_messages[3].text);
   game.data['drinks'] = 33;
   game.triggerEvent('endTurn');
+  game.queue.run();
   expect(game.history.getLastOutput().text).toBe(drunk_messages[4].text);
 });
 

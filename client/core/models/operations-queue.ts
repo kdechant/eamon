@@ -30,20 +30,28 @@ export class OperationsQueue {
         operation();
         game.refresh();
         // automatic screen pauses when output is long
-        if (game.history.shouldPause()) {
+        if (this.delay_time > 0 && game.history.shouldPause() && this.queue.length) {
+          console.log('auto screen pause')
           this.paused = true;
           game.refresh();
           return;
         }
       } else {
         if (operation === 'pause') {
-          this.paused = true;
-          game.refresh();
-          return;
+          if (this.delay_time > 0) {
+            console.log('manual pause')
+            this.paused = true;
+            game.refresh();
+            return;
+          }
         } else if (operation.substr(0,5) === 'delay') {
           const parts = operation.split(':');
           const time = parseFloat(parts[1]);
-          setTimeout(() => this.run(), time * 1000);
+          if (this.delay_time > 0) {
+            setTimeout(() => this.run(), time * 1000);
+          } else {
+            this.run();
+          }
           return;
         }
       }

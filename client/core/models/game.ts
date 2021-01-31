@@ -396,7 +396,6 @@ export default class Game {
       // event handler that can change the intro text
       this.triggerEvent("intro");
     }
-    this.history.display();
   }
 
   /**
@@ -518,7 +517,6 @@ export default class Game {
    * Shows the room, artifact, and monster descriptions.
    */
   public endTurn(): void {
-
     if (game.died) return;
 
     const light = this.artifacts.isLightSource();
@@ -708,6 +706,7 @@ export default class Game {
    * Pauses the game so the clock won't tick while waiting for something (e.g., a user prompt)
    */
   public pause() {
+    // TODO: make this pause the queue
     this.active = false;
   }
 
@@ -715,6 +714,7 @@ export default class Game {
    * Resumes a paused game
    */
   public resume() {
+    // TODO: make this resume the queue
     this.active = true;
   }
 
@@ -734,7 +734,7 @@ export default class Game {
     if (this.triggerEvent('exit')) {
       this.active = false;
       this.won = true;
-      this.history.display();
+      this.queue.run();
 
       this.logger.log('exit adventure', this.timer);
       for (const s in this.statistics) {
@@ -771,7 +771,7 @@ export default class Game {
     if (this.triggerEvent("death", this.player)) {
       this.active = false;
       this.died = true;
-      this.history.display();
+      this.queue.run();
 
       // saved games needs to be an array for rendering in browser
       this.saves = [];

@@ -32,20 +32,21 @@ beforeEach(() => {
 it("should have working custom commands", () => {
 
   // before active
-  game.command_parser.run("locate rum", false);
-  expect(game.history.getLastOutput().text).toBe("Nothing happens.");
+  game.command_parser.run("locate rum");
+  expect(game.history.getOutput().text).toBe("Nothing happens.");
 
   // after active
   game.data['locate active'] = true;
-  game.command_parser.run("locate rum", false);
-  expect(game.history.getLastOutput().text).toBe("Case of rum is in a supply room.");
-  game.command_parser.run("locate firebox", false);
-  expect(game.history.getLastOutput().text).toBe("Firebox is being carried by the prince.");
-  game.command_parser.run("locate timmy", false);
-  expect(game.history.getLastOutput().text).toBe("Timmy is in the nursery.");
-  game.command_parser.run("locate pink elephant", false);
-  expect(game.history.getLastOutput().text).toBe("Pink elephant could not be located.");
-  game.command_parser.run("locate asdf", false);
-  expect(game.history.getLastOutput().text).toBe("Asdf could not be located.");
+  game.command_parser.run("locate rum");
+  expect(game.history.getOutput(0).text).toBe("Your mind reaches beyond your body...");
+  expect(game.history.getOutput(1).text).toBe("Case of rum is in a supply room.");
+  game.command_parser.run("locate firebox");
+  expect(game.history.getOutput(1).text).toBe("Firebox is being carried by the prince.");
+  game.command_parser.run("locate timmy");
+  expect(game.history.getOutput(1).text).toBe("Timmy is in the nursery.");
+  game.command_parser.run("locate pink elephant");
+  expect(game.history.getOutput(1).text).toBe("Pink elephant could not be located.");
+  game.command_parser.run("locate asdf");
+  expect(game.history.getOutput(1).text).toBe("Asdf could not be located.");
 
 });

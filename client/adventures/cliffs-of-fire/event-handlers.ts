@@ -23,7 +23,7 @@ export var event_handlers = {
 
     if (exit.room_to === RoomExit.EXIT) {
       if (!game.player.hasArtifact(16)) {
-        game.pause();
+        game.queue.pause();
         const q1 = new ModalQuestion;
         q1.type = 'multiple_choice';
         q1.question = "Seeing that you are not carrying the sceptre, the priests look at you with disapproval. One says, 'Do you really wish to return to the Main Hall?'";

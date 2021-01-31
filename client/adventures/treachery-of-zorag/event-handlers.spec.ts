@@ -65,13 +65,15 @@ test("cold mountain pass", () => {
   expect(game.player.damage).toBe(0);  // not cold here
   movePlayer(41);
   expectEffectSeen(47);
-  expect(game.player.damage).toBe(10);  // brr
+  expect(game.player.damage).toBe(5);  // brr
   runCommand('u');
-  expect(game.player.damage).toBe(20);
+  expect(game.player.damage).toBe(15);
   game.artifacts.get(9).moveToInventory();
   game.player.wear(game.artifacts.get(9));
   runCommand('d');
-  expect(game.player.damage).toBe(20); // no change
+  expect(game.player.damage).toBe(15); // no change
+  movePlayer(1);
+  expect(game.data.freeze_damage).toBe(5);
 });
 
 test("hunger/thirst", () => {

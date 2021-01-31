@@ -74,12 +74,12 @@ custom_commands.push({
       if (monster.id === 2) {
         // minstrel
         game.effects.printSequence([2,3,4,5,6,7]);
-        game.pause();
+        game.queue.pause();
         game.effects.printSequence([8, 9, 10, 11]);
         monster.destroy();
         game.monsters.get(3).moveToRoom();
         game.artifacts.get(8).moveToRoom();
-        game.pause();
+        game.queue.pause();
         return;
       }
       if (monster.id === 6 && game.data['prince unconscious']) {

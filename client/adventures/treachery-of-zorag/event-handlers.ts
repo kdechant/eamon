@@ -37,6 +37,7 @@ export var event_handlers = {
       hunger: 0,
       thirst: 0,
       fatigue: 0,
+      freeze_damage: 5,
       original_ag: game.player.agility,
       summoned_tealand: false,
       raulos_zorag: false,
@@ -234,7 +235,6 @@ export var event_handlers = {
     }
 
     const not_wearing_effects = game.data.triggered_events.filter(e => e.room === game.player.room_id && e.type === 4 && e.triggered !== 1 && !game.player.isWearing(e.artifact));
-    if (not_wearing_effects.length) console.trace();
     for (const e of not_wearing_effects) {
       game.effects.print(e.effect);
       if (e.triggered === 0) {
@@ -244,9 +244,11 @@ export var event_handlers = {
 
     // cold weather
     if (game.player.room_id >= 41 && game.player.room_id <= 43 && !game.player.isWearing(9)) {
-      game.effects.print(47);
-      game.player.injure(10, true);
-      // TODO: make this damage amount increase each time, so you can't just tough it out
+      // game.effects.print(47);
+      game.player.injure(game.data.freeze_damage, true);
+      game.data.freeze_damage += 5;
+    } else if (game.rooms.current_room.data.env !== 'mountains') {
+      game.data.freeze_damage = 5;
     }
 
     // region hunger/thirst/fatigue

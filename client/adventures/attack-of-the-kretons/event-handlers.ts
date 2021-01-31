@@ -305,7 +305,6 @@ export var event_handlers = {
         zombies.destroy();
       }
       if (chakaal.isHere()) {
-        console.log('chakaal leaves');
         game.effects.printSequence([72, 73]);
         game.history.write(`${chakaal.name} mopes away.`);
         chakaal.destroy();
@@ -357,7 +356,7 @@ export var event_handlers = {
         game.history.write("But Groo has no brain!");
         game.effects.print(86);
         cg.destroy();
-        game.pause();
+        game.queue.pause();
         game.monsters.get(40).moveToRoom();
         game.monsters.get(40).showDescription();
         game.monsters.get(40).seen = true;
@@ -695,7 +694,7 @@ export var event_handlers = {
     if (game.monsters.get(39).room_id === null
       && game.monsters.get(40).room_id === null) {
       game.effects.printSequence([96, 97, 98, 99, 100]);
-      game.pause();
+      game.queue.pause();
       game.effects.printSequence([101, 102, 103, 104, 105]);
       game.player.gold += 5000;
     }

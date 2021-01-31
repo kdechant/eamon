@@ -3,7 +3,13 @@
  */
 import Game from "../../core/models/game";
 import {Monster} from "../../core/models/monster";
-import {initLiveGame, expectEffectSeen, expectEffectNotSeen, playerAttackMock} from "../../core/utils/testing";
+import {
+  initLiveGame,
+  expectEffectSeen,
+  expectEffectNotSeen,
+  playerAttackMock,
+  runCommand, movePlayer
+} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -375,7 +381,7 @@ test('letter', () => {
 
   // after fight with inquisitors
   game.monsters.all.filter(m => m.isHere() && m.special === 'inquisitor').forEach(m => m.injure(1000));
-  game.tick();
+  runCommand('look');
   expect(game.data.cf_defeated).toBeTruthy();
   expect(game.artifacts.get(5).room_id).toBeNull();
   expectEffectSeen(44);
@@ -389,7 +395,7 @@ test('letter', () => {
   expect(game.monsters.get(14).reaction).toBe(Monster.RX_NEUTRAL);
 
   // go to old man at standing stones
-  game.player.moveToRoom(46); game.tick();
+  movePlayer(46);
   expectEffectSeen(48);
   expect(game.player.hasArtifact(6));
 

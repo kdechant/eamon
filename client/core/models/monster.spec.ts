@@ -14,6 +14,9 @@ describe("Monster", function() {
     return initMockGame(game);
   });
 
+  // uncomment the following for debugging
+  // afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+
   it("should know its carrying capacity", () => {
     expect(game.monsters.get(1).maxWeight()).toEqual(400);
     expect(game.monsters.get(2).maxWeight()).toEqual(100);
@@ -92,6 +95,7 @@ describe("Monster", function() {
   it("should know how to pick up and ready a weapon", () => {
     const m = game.monsters.get(1);
     m.pickUpWeapon(game.artifacts.get(3));
+    game.queue.run();
     expect(m.hasArtifact(3)).toBe(true);
     expect(m.weapon_id).toBe(3);
     expect(game.history.getLastOutput().text).toBe("Guard picks up magic sword.");
@@ -195,15 +199,19 @@ describe("Monster", function() {
     const alfred = game.monsters.get(3);
     alfred.damage = 5;
     alfred.showHealth();
+    game.queue.run();
     expect(game.history.getLastOutput().text).toBe("Alfred is hurting.");
     alfred.health_messages = ["is fine", "says he's ok", "is a bit banged up", "is bleeding a little", "screams in pain", "is barely conscious", "breathes his last"];
     alfred.showHealth();
+    game.queue.run();
     expect(game.history.getLastOutput().text).toBe("Alfred is a bit banged up");
     alfred.damage = 10;
     alfred.showHealth();
+    game.queue.run();
     expect(game.history.getLastOutput().text).toBe("Alfred screams in pain");
     alfred.damage = 14;
     alfred.showHealth();
+    game.queue.run();
     expect(game.history.getLastOutput().text).toBe("Alfred is barely conscious");
   });
 

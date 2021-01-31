@@ -54,7 +54,7 @@ export var event_handlers = {
   "death": function(monster: Monster, attacker: Monster) {
     // player / belg
     if (monster.id === 0 && attacker && attacker.id === 26) {
-      game.pause();
+      game.queue.pause();
       attacker.destroy();
       game.effects.print(16);
       game.rooms.get(98).description = game.effects.get(4).text;
@@ -247,7 +247,7 @@ export var event_handlers = {
           game.history.write("There's no one here to shoot!");
           return false;
         }
-        game.pause();
+        game.queue.pause();
         const q1 = new ModalQuestion;
         q1.type = 'multiple_choice';
         q1.question = "You only have one bullet. Shoot whom?";
