@@ -493,8 +493,11 @@ export class RemoveCommand implements BaseCommand {
       }
 
     } else {
-
-      const artifact = game.player.findInInventory(arg);
+      // taking off an item of clothing or gear
+      let artifact = game.player.inventory.filter(a => a.is_worn).find(x => x.match(arg));
+      if (!artifact) {
+        artifact = game.player.findInInventory(arg);
+      }
       if (artifact) {
         if (artifact.is_worn) {
           if (game.triggerEvent("beforeRemoveWearable", arg, artifact)) {
@@ -897,6 +900,10 @@ export class AttackCommand implements BaseCommand {
         monster_target.hurtFeelings();
 
         game.player.attack(monster_target);
+
+        // if player attacked, allow other monsters to do battle actions like
+        // picking up a weapon or healing.
+        game.is_battle_turn = true;
       }
 
     } else if (artifact_target) {
@@ -1764,7 +1771,11 @@ export class AccioCommand implements BaseCommand {
     if (!game.data['bort']) {
       throw new CommandException("I don't know the command '" + verb + "'!")
     }
-    const a = game.artifacts.getByName(arg);
+    let a = game.artifacts.getByName(arg);
+    const m = game.monsters.getByName(arg);
+    if (a && a.type === Artifact.TYPE_DEAD_BODY && m) {
+      a = null;
+    }
     if (a) {
       if (!a.seen)
         a.showDescription();
@@ -1772,6 +1783,14 @@ export class AccioCommand implements BaseCommand {
       game.history.write(`${a.name} taken.`);
       a.data.for_sale = false;
       game.player.updateInventory();
+    } else {
+      if (m) {
+        m.moveToRoom();
+        game.history.write(`${m.name} appears.`);
+        game.monsters.updateVisible();
+      } else {
+        game.history.write(`I don't know what ${arg} is!`);
+      }
     }
   }
 }

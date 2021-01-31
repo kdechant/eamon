@@ -472,7 +472,7 @@ export default class Game {
 
   monsterActions(): void {
     // non-player monster actions
-    if (this.skip_battle_actions) {
+    if (this.skip_battle_actions || !this.is_battle_turn) {
       this.afterMonsterActions();
       return;
     }
@@ -491,10 +491,11 @@ export default class Game {
       });
       this.queue.callback = () => this.monsterActions();
       this.queue.run();
-    } else if (this.is_battle_turn) {
-      // TODO: allow monsters to pick up weapons or cast heal spells even if the battle is over.
     } else {
-      this.afterMonsterActions();
+      // TODO: allow monsters to pick up weapons or cast heal spells even if the battle is over.
+      actor.turn_taken = true;
+      this.queue.callback = () => this.monsterActions();
+      this.queue.run();
     }
   }
 

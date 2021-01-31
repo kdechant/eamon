@@ -431,7 +431,15 @@ export class Monster extends GameObject {
    * @returns Artifact
    */
   public findInInventory(artifact_name): Artifact {
-    const a = this.inventory.find(x => x.match(artifact_name));
+    // Try exact matches first, then exact match with display name, then partial match
+    // TODO: improve this and ask the player to disambiguate if there are multiple matches
+    let a = this.inventory.find(x => x.name.toLowerCase() === artifact_name.toLowerCase());
+    if (!a) {
+      a = this.inventory.find(x => x.getDisplayName().toLowerCase() === artifact_name.toLowerCase());
+    }
+    if (!a) {
+      a = this.inventory.find(x => x.match(artifact_name));
+    }
     return a || null;
   }
 

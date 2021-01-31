@@ -5,11 +5,11 @@ import {RoomExit} from "../../core/models/room";
 import {Room} from "../../core/models/room";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare let game: Game;
+declare const game: Game;
 
-export var event_handlers = {
+export const event_handlers = {
 
-  "start": function() {
+  "start": function(): void {
     // add your custom game start code here
   },
 
@@ -18,7 +18,7 @@ export var event_handlers = {
   // every adventure should have a "power" event handler.
   // 'power' event handler takes a 1d100 dice roll as an argument.
   // this event handler only runs if the spell was successful.
-  "power": function(roll) {
+  "power": function(roll: number): void {
     if (roll <= 50) {
       game.history.write("You hear a loud sonic boom which echoes all around you!");
     } else if (roll <= 75) {
