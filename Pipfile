@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-bleach = "~=3.2"
+bleach = "~=3.3"
 chardet = "~=4.0"
 django-braces = "~=1.13"
 django-ckeditor = "~=6.0"
