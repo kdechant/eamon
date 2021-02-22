@@ -1,0 +1,26 @@
+{
+  "name": "eamon",
+  "version": "3.0.0",
+  "description": "A rewrite of the classic text adventure game, The Wonderful World of Eamon.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon express/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kdechant/eamon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kdechant/eamon/issues"
+  },
+  "homepage": "https://github.com/kdechant/eamon#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "sequelize": "^6.5.0",
+    "sqlite3": "^5.0.2"
+  }
+}
