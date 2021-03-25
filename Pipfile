@@ -23,7 +23,7 @@ requests-oauthlib = "~=1.2.0"
 six = "~=1.15.0"
 sqlparse = "~=0.4.1"
 Django = "~=3.1.5"
-PyYAML = "~=5.1.2"
+PyYAML = "~=5.4"
 fabric = "*"
 
 [dev-packages]
