@@ -23,6 +23,7 @@ const sequelize = new Sequelize({
 
 const modelDefiners = [
 	require('./models/adventure'),
+	require('./models/author'),
 	require('./models/room'),
 	require('./models/room-exit')
 ];
@@ -33,7 +34,7 @@ for (const modelDefiner of modelDefiners) {
 }
 
 // We execute any extra setup after the models are defined, such as adding associations.
-const { adventure, room, roomExit } = sequelize.models;
+const { adventure, author, room, roomExit } = sequelize.models;
 
 adventure.hasMany(room, {
   foreignKey: 'adventure_id'
@@ -41,11 +42,21 @@ adventure.hasMany(room, {
 room.belongsTo(adventure, {
   foreignKey: 'adventure_id'
 });
+adventure.belongsToMany(author, {
+  foreignKey: 'adventure_id',
+  through: 'adventure_adventure_authors',
+  timestamps: false
+});
+author.belongsToMany(adventure, {
+  foreignKey: 'author_id',
+  through: 'adventure_adventure_authors',
+  timestamps: false
+});
 room.hasMany(roomExit, {
   foreignKey: 'room_from_id'
 });
 roomExit.belongsTo(room, {
-    foreignKey: 'room_from_id'
+  foreignKey: 'room_from_id'
 });
 
 // We export the sequelize connection instance to be used around our app.
