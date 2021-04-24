@@ -1,0 +1,427 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../db/eamon.sqlite3"
+}
+
+model activityLog {
+  id                  Int                  @id @default(autoincrement())
+  type                String
+  created             String?  // DateTime?
+  adventure_id        Int?
+  value               Int?
+  player_id           Int?
+  adventure           adventure? @relation(fields: [adventure_id], references: [id])
+  player              player?    @relation(fields: [player_id], references: [id])
+
+  @@map("adventure_activitylog")
+
+  @@index([player_id], name: "adventure_activitylog_player_id_634095b3")
+  @@index([adventure_id], name: "adventure_activitylog_adventure_id_6b4f71dc")
+}
+
+model adventure {
+  id                          Int                           @id @default(autoincrement())
+  name                        String
+  description                 String
+  edx                         String?
+  edx_artifact_offset         Int?
+  edx_effect_offset           Int?
+  edx_monster_offset          Int?
+  edx_room_offset             Int?
+  directions                  Int
+  edx_version                 Float?
+  slug                        String?
+  edx_program_file            String?
+  active                      Int?
+  first_hint                  Int?
+  last_hint                   Int?
+  full_description            String
+  intro_question              String
+  dead_body_id                Int?
+  featured_month              String?
+  date_published              String?  // DateTime?
+  intro_text                  String
+  activityLogs                activityLog[]
+  authors                     adventureAuthor[]
+  artifacts                   artifact[]
+  effects                     effect[]
+  hints                       hint[]
+  monsters                    monster[]
+  rooms                       room[]
+  ratings                     rating[]
+  savedGames                  savedGame[]
+
+  @@map("adventure_adventure")
+
+  @@index([slug], name: "adventure_adventure_slug_a39794a4")
+}
+
+// not sure if i need this...
+model adventureAuthor {
+  id                  Int                 @id @default(autoincrement())
+  adventure_id        Int
+  author_id           Int
+  adventure           adventure           @relation(fields: [adventure_id], references: [id])
+  author              author              @relation(fields: [author_id], references: [id])
+
+  @@map("adventure_adventure_authors")
+  @@unique([adventure_id, author_id], name: "adventure_adventure_authors_adventure_id_author_id_03fe30b6_uniq")
+  @@index([author_id], name: "adventure_adventure_authors_author_id_b61bb2b2")
+  @@index([adventure_id], name: "adventure_adventure_authors_adventure_id_a126f355")
+}
+
+model artifact {
+  id                        Int                         @id @default(autoincrement())
+  artifact_id               Int
+  name                      String
+  description               String
+  room_id                   Int?
+  monster_id                Int?
+  container_id              Int?
+  weight                    Int
+  value                     Int
+  type                      Int?
+  is_open                   Int?
+  weapon_type               Int?
+  hands                     Int
+  weapon_odds               Int?
+  dice                      Int?
+  sides                     Int?
+  armor_class               Int?
+  get_all                   Int?
+  embedded                  Int?
+  quantity                  Int?
+  adventure_id              Int
+  is_worn                   Int?
+  effect                    Int?
+  effect_inline             Int?
+  key_id                    Int?
+  guard_id                  Int?
+  effect_id                 Int?
+  num_effects               Int?
+  synonyms                  String?
+  clothing_type             Int?
+  hidden                    Int?
+  hardiness                 Int?
+  armor_penalty             Int?
+  linked_door_id            Int?
+  is_markdown               Int?
+  article                   String?
+  armor_type                Int?
+  adventure                 adventure         @relation(fields: [adventure_id], references: [id])
+
+  @@map("adventure_artifact")
+  @@index([adventure_id], name: "adventure_artifact_adventure_id_19e12eca")
+}
+
+model author {
+  id                          Int                           @id @default(autoincrement())
+  name                        String
+  adventures                  adventureAuthor[]
+  @@map("adventure_author")
+}
+
+model effect {
+  id                  Int                 @id @default(autoincrement())
+  effect_id           Int
+  text                String
+  adventure_id        Int
+  next                Int?
+  next_inline         Int?
+  is_markdown         Int?
+  style               String?
+  adventure           adventure      @relation(fields: [adventure_id], references: [id])
+
+  @@map("adventure_effect")
+  @@index([adventure_id], name: "adventure_effect_adventure_id_d5de9aa1")
+}
+
+model hint {
+  id                   Int                    @id @default(autoincrement())
+  index                Int?
+  question             String
+  adventure_id         Int?
+  edx                  String?
+  adventure            adventure?   @relation(fields: [adventure_id], references: [id])
+  answers              hintAnswer[]
+
+  @@map("adventure_hint")
+  @@index([adventure_id], name: "adventure_hint_adventure_id_3a7870d4")
+}
+
+model hintAnswer {
+  id             Int                 @id @default(autoincrement())
+  index          Int?
+  hint_id        Int
+  spoiler        Int?
+  answer         String
+  hint           hint      @relation(fields: [hint_id], references: [id])
+
+  @@map("adventure_hintanswer")
+  @@index([hint_id], name: "adventure_hintanswer_hint_id_ab763689")
+}
+
+model monster {
+  id                  Int                 @id @default(autoincrement())
+  monster_id          Int
+  name                String
+  description         String
+  hardiness           Int
+  agility             Int
+  friendliness        String
+  friend_odds         Int
+  combat_code         Int
+  courage             Int
+  room_id             Int?
+  gender              String
+  weapon_id           Int?
+  attack_odds         Int
+  weapon_dice         Int
+  weapon_sides        Int
+  defense_bonus       Int
+  armor_class         Int
+  adventure_id        Int
+  count               Int
+  effect              Int?
+  effect_inline       Int?
+  synonyms            String?
+  pursues             Int?
+  container_id        Int?
+  special             String?
+  name_plural         String?
+  is_markdown         Int?
+  article             String?
+  adventure           adventure @relation(fields: [adventure_id], references: [id])
+
+  @@map("adventure_monster")
+  @@index([adventure_id], name: "adventure_monster_adventure_id_9ef05b50")
+}
+
+model player {
+  id                       Int                        @id @default(autoincrement())
+  name                     String
+  gender                   String
+  hardiness                Int
+  agility                  Int
+  charisma                 Int
+  gold                     Int
+  gold_in_bank             Int
+  wpn_axe                  Int
+  wpn_bow                  Int
+  wpn_club                 Int
+  wpn_spear                Int
+  wpn_sword                Int
+  armor_expertise          Int
+  spl_blast                Int
+  spl_heal                 Int
+  spl_power                Int
+  spl_speed                Int
+  uuid                     String?
+  activitylogs             activityLog[]
+  artifacts                playerArtifact[]
+  savedgames               savedGame[]
+  @@map("adventure_player")
+}
+
+model playerArtifact {
+  id               Int              @id @default(autoincrement())
+  name             String
+  description      String
+  type             Int
+  weapon_type      Int?
+  weapon_odds      Int?
+  dice             Int?
+  sides            Int?
+  armor_class      Int?
+  armor_penalty    Int?
+  player_id        Int
+  hands            Int
+  weight           Int
+  value            Int
+  armor_type       Int?
+  player           player @relation(fields: [player_id], references: [id])
+
+  @@map("adventure_playerArtifact")
+  @@index([player_id], name: "adventure_playerartifact_player_id_f8b902ce")
+}
+
+model playerProfile {
+  id        Int     @id @default(autoincrement())
+  social_id String?
+  uuid      String?
+  @@map("adventure_playerProfile")
+}
+
+model room {
+  id                  Int                  @id @default(autoincrement())
+  room_id             Int
+  name                String
+  description         String
+  is_dark             Int?
+  adventure_id        Int
+  effect              Int?
+  effect_inline       Int?
+  is_markdown         Int?
+  dark_description    String?
+  dark_name           String?
+  adventure           adventure  @relation(fields: [adventure_id], references: [id])
+  exits               roomExit[]
+
+  @@index([adventure_id], name: "adventure_room_adventure_id_452be143")
+  @@map("adventure_room")
+}
+
+model roomExit {
+  id             Int        @id @default(autoincrement())
+  direction      String
+  room_to        Int
+  door_id        Int?
+  room_from_id   Int
+  effect_id      Int?
+  room           room       @relation(fields: [room_from_id], references: [id])
+
+  @@map("adventure_roomexit")
+  @@index([room_from_id], name: "adventure_roomexit_room_from_id_2c73d83d")
+}
+//
+//model auth_group {
+//  id                     Int                      @id @default(autoincrement())
+//  name                   String                   @unique
+//  auth_group_permissions auth_group_permissions[]
+//  auth_user_groups       auth_user_groups[]
+//}
+//
+//model auth_group_permissions {
+//  id              Int             @id @default(autoincrement())
+//  group_id        Int
+//  permission_id   Int
+//  auth_group      auth_group      @relation(fields: [group_id], references: [id])
+//  auth_permission auth_permission @relation(fields: [permission_id], references: [id])
+//
+//  @@unique([group_id, permission_id], name: "auth_group_permissions_group_id_permission_id_0cd325b0_uniq")
+//  @@index([permission_id], name: "auth_group_permissions_permission_id_84c5c92e")
+//  @@index([group_id], name: "auth_group_permissions_group_id_b120cbf9")
+//}
+//
+//model auth_permission {
+//  id                         Int                          @id @default(autoincrement())
+//  content_type_id            Int
+//  codename                   String
+//  name                       String
+//  django_content_type        django_content_type          @relation(fields: [content_type_id], references: [id])
+//  auth_group_permissions     auth_group_permissions[]
+//  auth_user_user_permissions auth_user_user_permissions[]
+//
+//  @@unique([content_type_id, codename], name: "auth_permission_content_type_id_codename_01ab375a_uniq")
+//  @@index([content_type_id], name: "auth_permission_content_type_id_2f476e4b")
+//}
+//
+//model auth_user {
+//  id                         Int                          @id @default(autoincrement())
+//  password                   String
+//  last_login                 DateTime?
+//  is_superuser               Int?
+//  username                   String                       @unique
+//  first_name                 String
+//  email                      String
+//  is_staff                   Int?
+//  is_active                  Int?
+//  date_joined                DateTime
+//  last_name                  String
+//  auth_user_groups           auth_user_groups[]
+//  auth_user_user_permissions auth_user_user_permissions[]
+//  django_admin_log           django_admin_log[]
+//}
+//
+//model auth_user_groups {
+//  id         Int        @id @default(autoincrement())
+//  user_id    Int
+//  group_id   Int
+//  auth_group auth_group @relation(fields: [group_id], references: [id])
+//  auth_user  auth_user  @relation(fields: [user_id], references: [id])
+//
+//  @@unique([user_id, group_id], name: "auth_user_groups_user_id_group_id_94350c0c_uniq")
+//  @@index([group_id], name: "auth_user_groups_group_id_97559544")
+//  @@index([user_id], name: "auth_user_groups_user_id_6a12ed8b")
+//}
+//
+//model auth_user_user_permissions {
+//  id              Int             @id @default(autoincrement())
+//  user_id         Int
+//  permission_id   Int
+//  auth_permission auth_permission @relation(fields: [permission_id], references: [id])
+//  auth_user       auth_user       @relation(fields: [user_id], references: [id])
+//
+//  @@unique([user_id, permission_id], name: "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq")
+//  @@index([permission_id], name: "auth_user_user_permissions_permission_id_1fbb5f2c")
+//  @@index([user_id], name: "auth_user_user_permissions_user_id_a95ead1b")
+//}
+//
+//model corsheaders_corsmodel {
+//  id   Int    @id @default(autoincrement())
+//  cors String
+//}
+
+model newsArticle {
+  id         Int      @id @default(autoincrement())
+  title      String
+  created_at String  //DateTime
+  body       String
+  @@map("news_article")
+}
+
+model rating {
+  id                  Int                 @id @default(autoincrement())
+  uuid                String?
+  overall             Int?
+  combat              Int?
+  puzzle              Int?
+  created             String?  // DateTime?
+  adventure_id        Int
+  adventure           adventure           @relation(fields: [adventure_id], references: [id])
+
+  @@map("player_rating")
+  @@index([adventure_id], name: "player_rating_adventure_id_46ac951c")
+}
+
+model savedGame {
+  id                  Int                 @id @default(autoincrement())
+  slot                Int?
+  description         String
+  data                String?
+  adventure_id        Int
+  player_id           Int
+  created             String  // DateTime
+  adventure           adventure         @relation(fields: [adventure_id], references: [id])
+  player              player            @relation(fields: [player_id], references: [id])
+
+  @@map("player_savedgame")
+  @@index([player_id], name: "player_savedgame_player_id_6d0a4b3a")
+  @@index([adventure_id], name: "player_savedgame_adventure_id_ea6117b3")
+}
+//
+//model taggit_tag {
+//  id                Int                 @id @default(autoincrement())
+//  name              String              @unique
+//  slug              String              @unique
+//  taggit_taggeditem taggit_taggeditem[]
+//}
+//
+//model taggit_taggeditem {
+//  id                  Int                 @id @default(autoincrement())
+//  object_id           Int
+//  content_type_id     Int
+//  tag_id              Int
+//  django_content_type django_content_type @relation(fields: [content_type_id], references: [id])
+//  taggit_tag          taggit_tag          @relation(fields: [tag_id], references: [id])
+//
+//  @@unique([content_type_id, object_id, tag_id], name: "taggit_taggeditem_content_type_id_object_id_tag_id_4bb97a8e_uniq")
+//  @@index([content_type_id, object_id], name: "taggit_taggeditem_content_type_id_object_id_196cc965_idx")
+//  @@index([tag_id], name: "taggit_taggeditem_tag_id_f4f5b767")
+//  @@index([content_type_id], name: "taggit_taggeditem_content_type_id_9957a03c")
+//  @@index([object_id], name: "taggit_taggeditem_object_id_e2d7d1df")
+//}

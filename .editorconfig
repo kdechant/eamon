@@ -60,3 +60,6 @@ indent_size = 2
 [*.md]
 insert_final_newline = false
 trim_trailing_whitespace = false
+
+[*.prisma]
+indent_size = 2
