@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
     # custom code
     'adventure',
+    'designer',
     'news',
     'player',
 ]

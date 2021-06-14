@@ -3,7 +3,8 @@ const path = require('path');
 
 let entry_scripts = {
     'main-hall': './main-hall/index.tsx',
-    'core': './core/index.tsx'
+    'core': './core/index.tsx',
+    'designer': './designer/index.tsx',
 };
 // Each subfolder of this 'adventures' folder is its own bundle. Use glob to find every
 // subfolder that has an 'index.ts' file and add each one to our entry script.

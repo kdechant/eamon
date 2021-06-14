@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Adventure Designer{% endblock %}
+
+{% block scripts %}
+    <base href="/designer/">
+{% endblock %}
+
+{% block content %}
+
+  <div id="root">Welcome to the Eamon Adventure Designer...</div>
+  <script type="text/javascript" src="{% static 'designer.js' %}"></script>
+
+{% endblock %}
