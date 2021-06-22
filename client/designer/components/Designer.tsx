@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import AdventureList from "./AdventureList";
-import AdventureDetail from "./AdventureDetail";
+import AdventureMainMenu from "./AdventureDetail";
 
 
 const Designer = () => {
@@ -13,7 +13,7 @@ const Designer = () => {
             <Switch>
               <Route path="/designer/" exact={true} component={AdventureList}/>
               {/* non-exact route below is used so we can have child routes inside the component */}
-              <Route path="/designer/:slug" component={AdventureDetail}/>
+              <Route path="/designer/:slug" component={AdventureMainMenu}/>
             </Switch>
           </Router>
         </div>
