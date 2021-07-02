@@ -39,11 +39,11 @@ function RoomList(): JSX.Element {
                       </tr>
                     </thead>
                     <tbody>
-                      {state.rooms.map((room) => {
+                      {Object.values(state.rooms).map((room) => {
                         return (
                           <tr className="room-list-item" key={room.id}>
                             <td>{room.id}</td>
-                            <td>{room.name}</td>
+                            <td><Link to={`${room.id}`}>{room.name}</Link></td>
                           </tr>
                         );
                       })}

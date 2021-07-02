@@ -15,7 +15,7 @@ class AdventureList extends React.Component<any, any> {
   };
 
   public componentDidMount() {
-    fetch('/api/adventures.json')
+    fetch('/api/adventures/designer-list')
       .then(res => res.json())
       .then(data => {
         console.log('data from api', data)
@@ -116,16 +116,6 @@ class AdventureList extends React.Component<any, any> {
     // Note: if no sort order is specified, the default is to sort by the order they come back
     // from the API, which is determined in the Django model (currently: alphabetical)
   };
-  //
-  // /**
-  //  * Saves the player and redirects the browser to the adventure
-  //  * @param {Adventure} adv the Adventure object
-  //  * @param event
-  //  */
-  // public gotoAdventure = (adv: Adventure, event) => {
-  //   event.preventDefault();
-  //   window.location.href = '/designer/adventure/' + adv.slug;
-  // };
 
   public render() {
     if (!this.state.all_adventures) {
@@ -188,33 +178,46 @@ class AdventureList extends React.Component<any, any> {
               </div>
             </div>
 
-            <div className="adventure-list col-md-10">
+            <div className="col-md-10">
               {emptyMessage}
+              <table border={1} style={{width: '100%'}}>
+                <thead>
+                  <tr>
+                    <td>#</td>
+                    <td>Name</td>
+                    <td>Authors</td>
+                    {/*<td>Rooms</td>*/}
+                    {/*<td>Artifacts</td>*/}
+                    {/*<td>Effects</td>*/}
+                    {/*<td>Monsters</td>*/}
+                    <td>Tags</td>
+                    <td>Published</td>
+                    <td>Times Played</td>
+                    <td>Active?</td>
+                  </tr>
+                </thead>
+                <tbody>
               {adventures.map((adv) => {
                 return (
-                  <div className="adventure-list-item" key={adv.id}>
-                    <div className="row">
-                      <div className="col-sm-2 d-none d-sm-block">
-                        <img src="/static/images/ravenmore/128/map.png" width="64" alt="Map"/>
-                      </div>
-                      <div className="col-sm-10">
-                        <div className="float-right text-secondary d-none d-md-block adv-id">#{adv.id}</div>
-                        <h3><a href={adv.slug}>{adv.name}</a></h3>
-                        <p>{adv.authors_display.length ? "By: " + adv.authors_display : ""}</p>
-                      </div>
-                      <div className="col-12">
-                        <p className="desc">{adv.description}</p>
-                      </div>
-                      <div className="tags col-12 col-md-6">
-                        {adv.tags.map(tag =>
-                          <div className="tag" key={tag}>{tag}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="clearfix"/>
-                  </div>
+                  <tr key={adv.id}>
+                    <td>{adv.id}</td>
+                    <td><a href={adv.slug}>{adv.name}</a></td>
+                    <td>{adv.authors_display}</td>
+                    {/*<td>{adv.rooms_count}</td>*/}
+                    {/*<td>{adv.artifacts_count}</td>*/}
+                    {/*<td>{adv.effects_count}</td>*/}
+                    {/*<td>{adv.monsters_count}</td>*/}
+                    <td>{adv.tags.map(tag =>
+                        <div className="tag" key={tag}>{tag}</div>
+                    )}</td>
+                    <td>{adv.date_published}</td>
+                    <td>{adv.times_played}</td>
+                    <td>{adv.active ? "Yes" : "No"}</td>
+                  </tr>
                 );
               })}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

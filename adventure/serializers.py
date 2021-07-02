@@ -23,6 +23,24 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializ
                   'dead_body_id', 'featured_month', 'date_published', 'authors', 'tags', 'times_played', 'avg_ratings')
 
 
+class AdventureDesignSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializer):
+    """Serializer used for the designer app. Includes additional info."""
+    authors = serializers.StringRelatedField(many=True)
+    tags = TagListSerializerField()
+    # rooms_count = serializers.IntegerField()
+    # artifacts_count = serializers.IntegerField()
+    # effects_count = serializers.IntegerField()
+    # monsters_count = serializers.IntegerField()
+
+    class Meta:
+        model = Adventure
+        fields = ('id', 'name', 'description', 'full_description', 'intro_text', 'intro_question', 'slug',
+                  'featured_month', 'date_published', 'authors', 'tags', 'times_played', 'active'
+                  # 'rooms_count', 'artifacts_count', 'effects_count', 'monsters_count'
+        )
+
+
+
 class RoomExitSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomExit

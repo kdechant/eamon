@@ -1,8 +1,9 @@
 from rest_framework import viewsets, mixins
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from . import serializers
 from .models import Adventure, Author, Room, Artifact, Effect, Monster, Player, PlayerProfile, Hint, ActivityLog
@@ -80,6 +81,14 @@ class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
         adv = get_object_or_404(queryset, slug=pk)
         serializer = serializers.AdventureSerializer(adv)
         return Response(serializer.data)
+
+    @action(detail=False, url_path='designer-list')
+    def designer_list(self, request):
+        queryset = Adventure.objects.all()
+        serializer = serializers.AdventureDesignSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # TODO: handle create/update
 
 
 class RoomViewSet(viewsets.ReadOnlyModelViewSet):

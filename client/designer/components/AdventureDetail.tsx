@@ -6,6 +6,7 @@ import RoomList from "./RoomList";
 
 import Adventure from "../models/adventure";
 import AdventureContext from "../context";
+import RoomDetail from "./RoomDetail";
 
 function AdventureDetail(): JSX.Element {
   const { slug } = useParams();
@@ -17,7 +18,7 @@ function AdventureDetail(): JSX.Element {
             {state.adventure.description}
           </div>
           <div>
-            <p><Link to={slug + '/rooms'}>{state.rooms.length} Rooms</Link></p>
+            <p><Link to={slug + '/rooms'}>{Object.keys(state.rooms).length} Rooms</Link></p>
             <p><Link to={slug + '/artifacts'}>{state.artifacts.length} Artifacts</Link></p>
             <p><Link to={slug + '/effects'}>{state.effects.length} Effects</Link></p>
             <p><Link to={slug + '/monsters'}>{state.monsters.length} Monsters</Link></p>
@@ -48,7 +49,8 @@ function AdventureMainMenu(): JSX.Element {
     adventure.authors_display = adventure.authors.join(' and ');
     setState({
       adventure: adventure,
-      rooms: rooms_data,
+      // rooms: rooms_data,
+      rooms: Object.assign({}, ...rooms_data.map(r => ({[r.id]: r}))),
       artifacts: artifacts_data,
       effects: effects_data,
       monsters: monsters_data,
@@ -81,8 +83,11 @@ function AdventureMainMenu(): JSX.Element {
           <AdventureDetail/>
         )}/>
 
-        <Route path='/designer/:slug/rooms' render={() => (
+        <Route exact path='/designer/:slug/rooms' render={() => (
           <RoomList/>
+        )}/>
+        <Route path='/designer/:slug/rooms/:id' render={() => (
+          <RoomDetail/>
         )}/>
 
       </div>

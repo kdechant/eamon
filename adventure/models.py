@@ -104,6 +104,22 @@ class Adventure(models.Model):
     def avg_ratings(self):
         return self.ratings.all().aggregate(models.Avg('overall'), models.Avg('combat'), models.Avg('puzzle'))
 
+    @property
+    def rooms_count(self):
+        return Room.objects.filter(adventure_id=self.id).count()
+
+    @property
+    def artifacts_count(self):
+        return Artifact.objects.filter(adventure_id=self.id).count()
+
+    @property
+    def effects_count(self):
+        return Effect.objects.filter(adventure_id=self.id).count()
+
+    @property
+    def monsters_count(self):
+        return Monster.objects.filter(adventure_id=self.id).count()
+
     class Meta:
         ordering = ['name']
 
