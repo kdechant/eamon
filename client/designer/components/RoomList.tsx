@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
-
 import {useParams} from "react-router";
+
 import AdventureContext from "../context";
+import {RoomLink} from "./common";
 
 function RoomList(): JSX.Element {
   const { slug } = useParams();
@@ -28,28 +28,25 @@ function RoomList(): JSX.Element {
 
             <div className="container-fluid">
               <div className="row">
-
-                <div className="adventure-list col-md-10">
-                  {emptyMessage}
-                  <table>
-                    <thead>
-                      <tr>
-                        <td>#</td>
-                        <td>Name</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.values(state.rooms).map((room) => {
-                        return (
-                          <tr className="room-list-item" key={room.id}>
-                            <td>{room.id}</td>
-                            <td><Link to={`${room.id}`}>{room.name}</Link></td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                {emptyMessage}
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <td>#</td>
+                      <td>Name</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.values(state.rooms).map((room) => {
+                      return (
+                        <tr className="room-list-item" key={room.id}>
+                          <td>{room.id}</td>
+                          <td><RoomLink id={room.id} /></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

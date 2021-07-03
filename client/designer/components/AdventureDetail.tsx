@@ -7,6 +7,8 @@ import RoomList from "./RoomList";
 import Adventure from "../models/adventure";
 import AdventureContext from "../context";
 import RoomDetail from "./RoomDetail";
+import ArtifactList from "./ArtifactList";
+import MonsterList from "./MonsterList";
 
 function AdventureDetail(): JSX.Element {
   const { slug } = useParams();
@@ -18,11 +20,11 @@ function AdventureDetail(): JSX.Element {
             {state.adventure.description}
           </div>
           <div>
-            <p><Link to={slug + '/rooms'}>{Object.keys(state.rooms).length} Rooms</Link></p>
-            <p><Link to={slug + '/artifacts'}>{state.artifacts.length} Artifacts</Link></p>
-            <p><Link to={slug + '/effects'}>{state.effects.length} Effects</Link></p>
-            <p><Link to={slug + '/monsters'}>{state.monsters.length} Monsters</Link></p>
-            <p><Link to={slug + '/hints'}>{state.hints.length} Hints</Link></p>
+            <p><Link to={'rooms'}>{Object.keys(state.rooms).length} Rooms</Link></p>
+            <p><Link to={'artifacts'}>{Object.keys(state.artifacts).length} Artifacts</Link></p>
+            <p><Link to={'effects'}>{Object.keys(state.effects).length} Effects</Link></p>
+            <p><Link to={'monsters'}>{Object.keys(state.monsters).length} Monsters</Link></p>
+            <p><Link to={'hints'}>{state.hints.length} Hints</Link></p>
           </div>
         </>
       )}
@@ -51,9 +53,9 @@ function AdventureMainMenu(): JSX.Element {
       adventure: adventure,
       // rooms: rooms_data,
       rooms: Object.assign({}, ...rooms_data.map(r => ({[r.id]: r}))),
-      artifacts: artifacts_data,
-      effects: effects_data,
-      monsters: monsters_data,
+      artifacts: Object.assign({}, ...artifacts_data.map(r => ({[r.id]: r}))),
+      effects: Object.assign({}, ...effects_data.map(r => ({[r.id]: r}))),
+      monsters: Object.assign({}, ...monsters_data.map(r => ({[r.id]: r}))),
       hints: hints_data,
     })
   }
@@ -90,6 +92,13 @@ function AdventureMainMenu(): JSX.Element {
           <RoomDetail/>
         )}/>
 
+        <Route exact path='/designer/:slug/artifacts' render={() => (
+          <ArtifactList/>
+        )}/>
+
+        <Route exact path='/designer/:slug/monsters' render={() => (
+          <MonsterList/>
+        )}/>
       </div>
     </AdventureContext.Provider>
   );
