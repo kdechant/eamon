@@ -17,7 +17,7 @@ function ArtifactList(): JSX.Element {
         }
 
         let emptyMessage = '';
-        if (!state.rooms.length) {
+        if (!state.artifacts.length) {
           emptyMessage = 'no artifacts yet';
         }
 

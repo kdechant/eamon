@@ -111,4 +111,10 @@ export function MonsterWeaponLink(props): JSX.Element {
   );
 }
 
+export function TextStyleLabel(props): JSX.Element {
+  const style = props.style || 'default';
+  return (
+    <span className={style}>{style}</span>
+  )
+}
 

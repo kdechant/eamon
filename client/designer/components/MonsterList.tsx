@@ -17,7 +17,7 @@ function MonsterList(): JSX.Element {
         }
 
         let emptyMessage = '';
-        if (!state.rooms.length) {
+        if (!state.monsters.length) {
           emptyMessage = 'no monsters yet';
         }
 
