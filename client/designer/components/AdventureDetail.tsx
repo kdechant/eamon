@@ -10,6 +10,12 @@ import RoomDetail from "./RoomDetail";
 import ArtifactList from "./ArtifactList";
 import MonsterList from "./MonsterList";
 import EffectList from "./EffectList";
+import ArtifactDetail from "./ArtifactDetail";
+import ArtifactRepository from "../repositories/artifact.repo";
+import EffectRepository from "../repositories/effect.repo";
+import MonsterRepository from "../repositories/monster.repo";
+import HintRepository from "../repositories/hint.repo";
+import RoomRepository from "../repositories/room.repo";
 
 function AdventureDetail(): JSX.Element {
   const { slug } = useParams();
@@ -21,11 +27,11 @@ function AdventureDetail(): JSX.Element {
             {state.adventure.description}
           </div>
           <div>
-            <p><Link to={`${slug}/rooms`}>{Object.keys(state.rooms).length} Rooms</Link></p>
-            <p><Link to={`${slug}/artifacts`}>{Object.keys(state.artifacts).length} Artifacts</Link></p>
-            <p><Link to={`${slug}/effects`}>{Object.keys(state.effects).length} Effects</Link></p>
-            <p><Link to={`${slug}/monsters`}>{Object.keys(state.monsters).length} Monsters</Link></p>
-            <p><Link to={`${slug}/hints`}>{state.hints.length} Hints</Link></p>
+            <p><Link to={`${slug}/rooms`}>{state.rooms?.all?.length} Rooms</Link></p>
+            <p><Link to={`${slug}/artifacts`}>{state.artifacts?.all.length} Artifacts</Link></p>
+            <p><Link to={`${slug}/effects`}>{state.effects?.all?.length} Effects</Link></p>
+            <p><Link to={`${slug}/monsters`}>{state.monsters?.all?.length} Monsters</Link></p>
+            <p><Link to={`${slug}/hints`}>{state.hints?.all?.length} Hints</Link></p>
           </div>
         </>
       )}
@@ -52,12 +58,11 @@ function AdventureMainMenu(): JSX.Element {
     adventure.authors_display = adventure.authors.join(' and ');
     setState({
       adventure: adventure,
-      // rooms: rooms_data,
-      rooms: Object.assign({}, ...rooms_data.map(r => ({[r.id]: r}))),
-      artifacts: Object.assign({}, ...artifacts_data.map(r => ({[r.id]: r}))),
-      effects: Object.assign({}, ...effects_data.map(r => ({[r.id]: r}))),
-      monsters: Object.assign({}, ...monsters_data.map(r => ({[r.id]: r}))),
-      hints: hints_data,
+      rooms: new RoomRepository(rooms_data),
+      artifacts: new ArtifactRepository(artifacts_data),
+      effects: new EffectRepository(effects_data),
+      monsters: new MonsterRepository(monsters_data),
+      hints: new HintRepository(hints_data),
     })
   }
 
@@ -95,6 +100,9 @@ function AdventureMainMenu(): JSX.Element {
 
         <Route exact path='/designer/:slug/artifacts' render={() => (
           <ArtifactList/>
+        )}/>
+        <Route path='/designer/:slug/artifacts/:id' render={() => (
+          <ArtifactDetail/>
         )}/>
 
         <Route exact path='/designer/:slug/effects' render={() => (

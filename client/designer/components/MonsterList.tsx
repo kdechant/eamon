@@ -43,7 +43,7 @@ function MonsterList(): JSX.Element {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.values(state.monsters).map((mon) => {
+                    {state.monsters?.all.map((mon) => {
                       return (
                         <tr className="monster-list-item" key={mon.id}>
                           <td>{mon.id}</td>

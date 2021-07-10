@@ -44,7 +44,7 @@ function ArtifactList(): JSX.Element {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.values(state.artifacts).map((art) => {
+                    {state.artifacts.all.map((art) => {
                       return (
                         <tr className="room-list-item" key={art.id}>
                           <td>{art.id}</td>

@@ -14,7 +14,7 @@ class AdventureList extends React.Component<any, any> {
     currentTag: ''
   };
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     fetch('/api/adventures/designer-list')
       .then(res => res.json())
       .then(data => {
@@ -47,19 +47,19 @@ class AdventureList extends React.Component<any, any> {
       });
   }
 
-  public filterByTag = (tag: string, event) => {
+  public filterByTag = (tag: string, event): void => {
     this.setState({currentTag: this.state.currentTag === tag ? '' : tag});
   };
 
-  public filterByAuthor = (author: string, event) => {
+  public filterByAuthor = (author: string, event): void => {
     this.setState({currentAuthor: this.state.currentAuthor === author ? '' : author});
   };
 
-  public sort = (currentSort: string) => {
+  public sort = (currentSort: string): void => {
     this.setState({currentSort});
   };
 
-  public filterAndSort = () => {
+  public filterAndSort = (): void => {
     let adventures = this.state.all_adventures;
 
     // filter by tag
@@ -132,13 +132,6 @@ class AdventureList extends React.Component<any, any> {
     // filter and sort logic
     const adventures = this.filterAndSort();
 
-    const sort_options: string[] = [
-      'alphabetical',
-      'most popular',
-      'newest',
-      'original adventure number',
-    ];
-
     return (
       <div id="AdventureList">
         <h2><img src="/static/images/ravenmore/128/map.png" alt="Map" /> Edit an adventure</h2>
@@ -147,52 +140,33 @@ class AdventureList extends React.Component<any, any> {
 
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-2">
-              <div className="tags tags-vertical mb-3">
-                <div className="mb-2">Filter by tag:</div>
-                <div className="tag"><a onClick={(ev) => this.filterByTag('', ev)}>all</a></div>
-                {this.state.tags.map(tag =>
-                  <div className="tag" key={tag}>
-                    <a className={this.state.currentTag === tag ? 'font-weight-bold' : ''} onClick={(ev) => this.filterByTag(tag, ev)}>{tag}</a>
-                  </div>
-                )}
-              </div>
-
-              <div className="tags tags-vertical mb-3">
-                <div className="mb-2">Filter by author:</div>
-                <div className="tag"><a onClick={(ev) => this.filterByAuthor('', ev)}>all</a></div>
-                {this.state.authors.map(author =>
-                  <div className="tag" key={author}>
-                    <a className={this.state.currentAuthor === author ? 'font-weight-bold' : ''} onClick={(ev) => this.filterByAuthor(author, ev)}>{author}</a>
-                  </div>
-                )}
-              </div>
-
-              <div className="tags tags-vertical mb-3">
-                <div className="mb-2">Sort by:</div>
-                {sort_options.map(sort =>
-                  <div className="tag" key={sort}>
-                    <a className={this.state.currentSort === sort ? 'font-weight-bold' : ''} onClick={(s) => this.sort(sort)}>{sort}</a>
-                  </div>
-                )}
-              </div>
-            </div>
-
             <div className="col-md-10">
               {emptyMessage}
-              <table border={1} style={{width: '100%'}}>
+              <table className="table">
                 <thead>
                   <tr>
-                    <td>#</td>
-                    <td>Name</td>
+                    <td><a className={this.state.currentSort === 'original adventure number' ? 'font-weight-bold' : ''}
+                           onClick={() => this.sort('original adventure number')}>
+                      #</a>
+                    </td>
+                    <td><a className={this.state.currentSort === 'alphabetical' ? 'font-weight-bold' : ''}
+                           onClick={() => this.sort('alphabetical')}>
+                      Name</a>
+                    </td>
                     <td>Authors</td>
                     {/*<td>Rooms</td>*/}
                     {/*<td>Artifacts</td>*/}
                     {/*<td>Effects</td>*/}
                     {/*<td>Monsters</td>*/}
                     <td>Tags</td>
-                    <td>Published</td>
-                    <td>Times Played</td>
+                    <td><a className={this.state.currentSort === 'newest' ? 'font-weight-bold' : ''}
+                           onClick={() => this.sort('newest')}>
+                      Published</a>
+                    </td>
+                    <td><a className={this.state.currentSort === 'most popular' ? 'font-weight-bold' : ''}
+                           onClick={() => this.sort('most popular')}>
+                      Times Played</a>
+                    </td>
                     <td>Active?</td>
                   </tr>
                 </thead>
@@ -218,6 +192,28 @@ class AdventureList extends React.Component<any, any> {
               })}
                 </tbody>
               </table>
+            </div>
+
+            <div className="col-md-2">
+              <div className="tags tags-vertical mb-3">
+                <div className="mb-2">Filter by tag:</div>
+                <div className="tag"><a onClick={(ev) => this.filterByTag('', ev)}>all</a></div>
+                {this.state.tags.map(tag =>
+                  <div className="tag" key={tag}>
+                    <a className={this.state.currentTag === tag ? 'font-weight-bold' : ''} onClick={(ev) => this.filterByTag(tag, ev)}>{tag}</a>
+                  </div>
+                )}
+              </div>
+
+              <div className="tags tags-vertical mb-3">
+                <div className="mb-2">Filter by author:</div>
+                <div className="tag"><a onClick={(ev) => this.filterByAuthor('', ev)}>all</a></div>
+                {this.state.authors.map(author =>
+                  <div className="tag" key={author}>
+                    <a className={this.state.currentAuthor === author ? 'font-weight-bold' : ''} onClick={(ev) => this.filterByAuthor(author, ev)}>{author}</a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

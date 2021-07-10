@@ -11,5 +11,6 @@ module.exports = {
   rules: {
     'no-prototype-builtins': 'off',
     'no-case-declarations': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
   }
 };

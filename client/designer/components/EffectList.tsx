@@ -39,7 +39,7 @@ function EffectList(): JSX.Element {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.values(state.effects).map((eff) => {
+                    {state.effects?.all.map(eff => {
                       return (
                         <tr className="effects-list-item" key={eff.id}>
                           <td>{eff.id}</td>
