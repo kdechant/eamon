@@ -30,6 +30,7 @@ export default class Artifact extends GameObject {
   static ARMOR_TYPE_RING = 4;
 
   // data properties
+  article: string;
   room_id: number; // if on the ground, which room
   monster_id: number; // if in inventory, who is carrying it
   container_id: number; // if inside a container, the artifact id of the container

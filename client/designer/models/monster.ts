@@ -45,6 +45,7 @@ export default class Monster extends GameObject {
 
   // data properties for all monsters
   // don't use default values here because they won't be overwritten when loading the data object.
+  article: string;
   room_id: number;
   container_id: number;
   gender: string;
@@ -85,5 +86,31 @@ export default class Monster extends GameObject {
    */
   public maxWeight(): number {
     return this.hardiness * 10;
+  }
+
+  public getFriendlinessDisplay(): string {
+    switch (this.friendliness) {
+      case Monster.FRIEND_ALWAYS:
+        return "Always Friendly";
+      case Monster.FRIEND_NEUTRAL:
+        return "Always Neutral";
+      case Monster.FRIEND_NEVER:
+        return "Always Hostile";
+      case Monster.FRIEND_RANDOM:
+        return "Random Friendliness";
+    }
+  }
+
+  public getCombatCodeDisplay(): string {
+    switch (this.combat_code) {
+      case Monster.COMBAT_CODE_SPECIAL:
+        return "Attacks with generic 'Attacks' message";
+      case Monster.COMBAT_CODE_NORMAL:
+        return "Attacks only if it has a weapon, or if natural weapons are specified.";
+      case Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE:
+        return "Uses a weapon if carrying one. Otherwise falls back to natural weapons.";
+      case Monster.COMBAT_CODE_NEVER_FIGHT:
+        return "Never fights.";
+    }
   }
 }
