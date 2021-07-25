@@ -5,102 +5,88 @@ import {Link} from "react-router-dom";
 import {useParams} from "react-router";
 import {ArtifactIcons} from "../constants";
 
-export function RoomLink(props): JSX.Element {
+type LinkProps = {
+  id: number
+}
+
+export function RoomLink(props: LinkProps): JSX.Element {
+  const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
+  if (id === 0) {
+    return <span className="disabled">no connection</span>;
+  }
+  if (id === -999 || id === -998) {
+    return <>Adventure exit (#{id})</>;
+  }
+  if (id) {
+    const room = context.rooms.get(id);
+    if (room) {
+      return (
+        <Link to={`/designer/${slug}/rooms/${id}`}>
+          #{id}: {room ? room.name : 'unknown'}
+        </Link>
+      );
+    }
+    if (id < 0) {
+      return <>Special Connection: #{id}</>;
+    }
+    return <>Unknown room: #{id}</>;
+  }
+  return <span className="disabled">-</span>;
+}
 
+export function ArtifactLink(props: LinkProps): JSX.Element {
+  const context = React.useContext(AdventureContext);
+  const { slug } = useParams();
+  const id = props.id;
+  const artifact = context.artifacts.get(id);
   return (
-    <AdventureContext.Consumer>
-      {state => {
-        if (id === 0) {
-          return <span className="disabled">no connection</span>;
-        }
-        if (id === -999 || id === -998) {
-          return <>Adventure exit (#{id})</>;
-        }
-        if (id === 0) {
-          return <span className="disabled">no connection</span>;
-        }
-        if (id) {
-          const room = state.rooms.get(id);
-          return (
-            <Link to={`/designer/${slug}/rooms/${id}`}>
-              #{id}: {room ? room.name : 'unknown'}
-            </Link>
-          );
-        }
-        return <span className="disabled">-</span>;
-      }}
-    </AdventureContext.Consumer>
+    <>
+      {id ? (
+        <Link to={`/designer/${slug}/artifacts/${id}`}>
+          #{id}: {artifact ? artifact.name : 'unknown'}
+        </Link>) : (
+        <span className="disabled">-</span>
+        )
+      }
+    </>
   );
 }
 
-export function ArtifactLink(props): JSX.Element {
+export function EffectLink(props: LinkProps): JSX.Element {
+  const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
+  const effect = context.effects.get(id);
   return (
-    <AdventureContext.Consumer>
-      {state => {
-        const artifact = state.artifacts.get(id);
-        return (
-          <>
-            {id ? (
-              <Link to={`/designer/${slug}/artifacts/${id}`}>
-                #{id}: {artifact ? artifact.name : 'unknown'}
-              </Link>) : (
-              <span className="disabled">-</span>
-              )
-            }
-          </>
-        );
-      }}
-    </AdventureContext.Consumer>
+    <>
+      {id ? (
+        <Link to={`/designer/${slug}/effects/${id}`}>
+          #{id}: {effect[id] ? effect.text.slice(0, 25) : 'unknown'}
+        </Link>) : (
+        <span className="disabled">-</span>
+        )
+      }
+    </>
   );
 }
 
-export function EffectLink(props): JSX.Element {
+export function MonsterLink(props: LinkProps): JSX.Element {
+  const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
+  const monster = context.monsters.get(id);
   return (
-    <AdventureContext.Consumer>
-      {state => {
-        const effect = state.effects.get(id);
-        return (
-          <>
-            {id ? (
-              <Link to={`/designer/${slug}/effects/${id}`}>
-                #{id}: {effect[id] ? effect.text.slice(0, 25) : 'unknown'}
-              </Link>) : (
-              <span className="disabled">-</span>
-              )
-            }
-          </>
-        );
-      }}
-    </AdventureContext.Consumer>
-  );
-}
-
-export function MonsterLink(props): JSX.Element {
-  const { slug } = useParams();
-  const id = props.id;
-  return (
-    <AdventureContext.Consumer>
-      {state => {
-        const monster = state.monsters.get(id);
-        return (
-          <>
-            {id ? (
-              <Link to={`/designer/${slug}/monsters/${id}`}>
-                #{id}: {monster ? monster.name : 'unknown'}
-              </Link>) : (
-              <span className="disabled">-</span>
-            )
-            }
-          </>
-        );
-      }}
-    </AdventureContext.Consumer>
+    <>
+      {id ? (
+        <Link to={`/designer/${slug}/monsters/${id}`}>
+          #{id}: {monster ? monster.name : 'unknown'}
+        </Link>) : (
+        <span className="disabled">-</span>
+      )
+      }
+    </>
   );
 }
 

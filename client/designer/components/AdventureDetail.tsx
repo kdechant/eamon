@@ -16,27 +16,23 @@ import EffectRepository from "../repositories/effect.repo";
 import MonsterRepository from "../repositories/monster.repo";
 import HintRepository from "../repositories/hint.repo";
 import RoomRepository from "../repositories/room.repo";
+import MonsterDetail from "./MonsterDetail";
 
 function AdventureDetail(): JSX.Element {
   const { slug } = useParams();
-  return (
-    <AdventureContext.Consumer>
-      {state => (
-        <>
-          <div>
-            {state.adventure.description}
-          </div>
-          <div>
-            <p><Link to={`${slug}/rooms`}>{state.rooms?.all?.length} Rooms</Link></p>
-            <p><Link to={`${slug}/artifacts`}>{state.artifacts?.all.length} Artifacts</Link></p>
-            <p><Link to={`${slug}/effects`}>{state.effects?.all?.length} Effects</Link></p>
-            <p><Link to={`${slug}/monsters`}>{state.monsters?.all?.length} Monsters</Link></p>
-            <p><Link to={`${slug}/hints`}>{state.hints?.all?.length} Hints</Link></p>
-          </div>
-        </>
-      )}
-    </AdventureContext.Consumer>
-  );
+  const context = React.useContext(AdventureContext);
+  return <>
+    <div>
+      {context.adventure.description}
+    </div>
+    <div>
+      <p><Link to={`${slug}/rooms`}>{context.rooms?.all?.length} Rooms</Link></p>
+      <p><Link to={`${slug}/artifacts`}>{context.artifacts?.all.length} Artifacts</Link></p>
+      <p><Link to={`${slug}/effects`}>{context.effects?.all?.length} Effects</Link></p>
+      <p><Link to={`${slug}/monsters`}>{context.monsters?.all?.length} Monsters</Link></p>
+      <p><Link to={`${slug}/hints`}>{context.hints?.all?.length} Hints</Link></p>
+    </div>
+  </>;
 }
 
 function AdventureMainMenu(): JSX.Element {
@@ -111,6 +107,9 @@ function AdventureMainMenu(): JSX.Element {
 
         <Route exact path='/designer/:slug/monsters' render={() => (
           <MonsterList/>
+        )}/>
+        <Route path='/designer/:slug/monsters/:id' render={() => (
+          <MonsterDetail/>
         )}/>
       </div>
     </AdventureContext.Provider>
