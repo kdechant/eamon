@@ -138,6 +138,7 @@ class Room(models.Model):
 
 
 class RoomExit(models.Model):
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='room_exits', null=True)
     direction = models.CharField(max_length=2)
     room_from = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='exits')
     room_to = models.IntegerField(default=0)  # Not a real foreign key. Yet.
@@ -150,6 +151,11 @@ class RoomExit(models.Model):
 
     def __str__(self):
         return str(self.room_from) + " " + self.direction
+
+    def save(self, **kwargs):
+        if self.room and self.adventure_id != self.room.adventure_id:
+            self.adventure_id = self.room.adventure_id
+        super().save(**kwargs)
 
 
 class Artifact(models.Model):
@@ -393,11 +399,17 @@ class HintAnswer(models.Model):
     """
     Represents an answer to a hint. Each hint may have more than one answer.
     """
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='hint_answers', null=True)
     hint = models.ForeignKey(Hint, on_delete=models.CASCADE, related_name='answers')
     index = models.IntegerField(null=True)
     answer = models.TextField(max_length=1000, help_text="Supports Markdown.")
     spoiler = models.BooleanField(default=False,
                                   help_text="Obscure the answer until the user shows it.")
+
+    def save(self, **kwargs):
+        if self.hint and self.adventure_id != self.hint.adventure_id:
+            self.adventure_id = self.hint.adventure_id
+        super().save(**kwargs)
 
 
 class PlayerProfile(models.Model):

@@ -16,7 +16,7 @@ if platform.system() == 'Windows':
     # this requires SSH key to be loaded into pageant
     connect_kwargs = {
         "key_filename": "c:/users/keith/.ssh/id_rsa",
-    },
+    }
 
 c = Connection(
     host='kdechant.com',
@@ -53,7 +53,13 @@ def _db_pull(tables=None):
         local('7z.exe e ./{}.gz -y'.format(fn), hide='out')
     else:
         local('gunzip {}'.format(fn))
-    local_pw = _get_local_db_pw()
+
+    # We can sniff out the local PW on *nix but Windows should just use an empty PW.
+    if platform.system() == 'Windows':
+        local_pw = ""
+    else:
+        local_pw = _get_local_db_pw()
+
     if local_pw != "":
         local('mysql -u root -p{} eamon -e "source {}"'.format(local_pw, fn))
     else:
@@ -190,17 +196,24 @@ def deploy_js(context):
 
 @task
 def build_sqlite_db(context):
-    """Creates the committable SQLite DB from the MySQL DB"""
-    print('-- Exporting data from the master DB...')
-    local("python manage.py dumpdata --indent 2 --database default --exclude=contenttypes --exclude=auth --exclude=admin --exclude=sessions --output db/dumpdata.json")
+    """Creates the committable SQLite DB from the MySQL DB
+
+    This requires both the MySQL ("default") and SQLite ("sqlite")
+    DB connections to be configured in your local_settings.py file.
+    """
+    # print('-- Exporting data from the master DB...')
+    # local("python -Xutf8 manage.py dumpdata --indent 2 --database default --exclude=contenttypes --exclude=auth --exclude=admin --exclude=sessions --output db/dumpdata.json")
     print('-- Running Migrations on SQLite DB...')
     local("python manage.py migrate --database sqlite")
     print('-- Importing data...')
-    local("python manage.py loaddata --database sqlite db/dumpdata.json")
+    local("python -Xutf8 manage.py loaddata --database sqlite db/dumpdata.json")
     print('-- Creating distributable copy...')
-    # FIXME: Linux vs. Windows commands
-    local("del db/eamon.sqlite3.dist.old")
-    # local("rm db/eamon.sqlite3.dist.old")  # linux
-    local("mv db/eamon.sqlite3.dist db/eamon/sqlite3.dist.old")
-    local("cp db/eamon.sqlite3 db/eamon.sqlite3.dist")
+    if platform.system() == 'Windows':
+        local("del db\eamon.sqlite3.dist.old")
+        local("move db\eamon.sqlite3.dist db\eamon.sqlite3.dist.old")
+        local("copy db\eamon.sqlite3 db\eamon.sqlite3.dist")
+    else:
+        local("rm db/eamon.sqlite3.dist.old")
+        local("mv db/eamon.sqlite3.dist db/eamon/sqlite3.dist.old")
+        local("cp db/eamon.sqlite3 db/eamon.sqlite3.dist")
     print('-- Done!')

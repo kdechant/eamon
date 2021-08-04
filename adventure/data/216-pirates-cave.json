@@ -1,0 +1,3164 @@
+[
+{
+  "model": "adventure.adventure",
+  "pk": 216,
+  "fields": {
+    "name": "The Pirate's Cave",
+    "description": "Help track down Prince Charlie, who has been captured by Dirty Dick and his pirates. This is a small, simple adventure suitable for younger folks or novice characters.",
+    "full_description": "",
+    "intro_text": "Greetings, Adventurer!\r\n\r\nDirty Dick is the meanest pirate there ever was. He and his crew have kidnapped Prince Charlie. Dirty Dick and his crew left their ship at the Pirate Cave and went to town. You think it is a good time to check the cave and see if you can find Prince Charlie. There are also rumored to be a lot of treasures in the cave. Good luck.",
+    "intro_question": "",
+    "slug": "pirates-cave",
+    "edx": "n/a",
+    "edx_version": null,
+    "edx_room_offset": null,
+    "edx_artifact_offset": null,
+    "edx_effect_offset": null,
+    "edx_monster_offset": null,
+    "edx_program_file": null,
+    "directions": 0,
+    "dead_body_id": null,
+    "active": true,
+    "first_hint": null,
+    "last_hint": null,
+    "date_published": "2018-07-02",
+    "featured_month": null,
+    "authors": [
+      15
+    ]
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 1,
+  "fields": {
+    "name": "beginner",
+    "slug": "beginner"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 2,
+  "fields": {
+    "name": "quest",
+    "slug": "quest"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 9,
+  "fields": {
+    "name": "pirates",
+    "slug": "pirates"
+  }
+},
+{
+  "model": "taggit.taggeditem",
+  "pk": 43,
+  "fields": {
+    "tag": 1,
+    "content_type": [
+      "adventure",
+      "adventure"
+    ],
+    "object_id": 216
+  }
+},
+{
+  "model": "taggit.taggeditem",
+  "pk": 44,
+  "fields": {
+    "tag": 2,
+    "content_type": [
+      "adventure",
+      "adventure"
+    ],
+    "object_id": 216
+  }
+},
+{
+  "model": "taggit.taggeditem",
+  "pk": 45,
+  "fields": {
+    "tag": 9,
+    "content_type": [
+      "adventure",
+      "adventure"
+    ],
+    "object_id": 216
+  }
+},
+{
+  "model": "adventure.author",
+  "pk": 15,
+  "fields": {
+    "name": "Margaret Anderson"
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9059,
+  "fields": {
+    "adventure": 216,
+    "room_id": 1,
+    "name": "On a beach (N/S/W)",
+    "is_markdown": false,
+    "description": "You are on a beach by the ocean. There is a dock going south and a cave to the north. You can go west to go home.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9060,
+  "fields": {
+    "adventure": 216,
+    "room_id": 2,
+    "name": "On the dock (N/S)",
+    "is_markdown": false,
+    "description": "You are on a dock. You can go north to the beach or south to a pirate ship.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9061,
+  "fields": {
+    "adventure": 216,
+    "room_id": 3,
+    "name": "On the deck (N/U/D)",
+    "is_markdown": false,
+    "description": "You are on the deck of a pirate ship. The mast goes up and you can climb to the crow's nest, or you can go down into the hold. The dock is to the north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9062,
+  "fields": {
+    "adventure": 216,
+    "room_id": 4,
+    "name": "In the hold (U)",
+    "is_markdown": false,
+    "description": "You are in the hold of a pirate ship. There is a ladder nailed to the side so you can climb out.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9063,
+  "fields": {
+    "adventure": 216,
+    "room_id": 5,
+    "name": "In the crow's nest (D)",
+    "is_markdown": false,
+    "description": "You are in the crow's nest. You can slide down to the deck if you want to.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9064,
+  "fields": {
+    "adventure": 216,
+    "room_id": 6,
+    "name": "At the cave entrance (N/S/E/W)",
+    "is_markdown": false,
+    "description": "You are in the first room of the cave. The floor is dry and covered with footprints.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9065,
+  "fields": {
+    "adventure": 216,
+    "room_id": 7,
+    "name": "A huge room (N/E/W)",
+    "is_markdown": false,
+    "description": "This is a huge room. It looks like the pirates live here sometimes.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9066,
+  "fields": {
+    "adventure": 216,
+    "room_id": 8,
+    "name": "A painted room (S)",
+    "is_markdown": false,
+    "description": "You are in a room with painted designs on all the walls. The person who did the painting was a bad artist.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9067,
+  "fields": {
+    "adventure": 216,
+    "room_id": 9,
+    "name": "Dirty Dick's study (E)",
+    "is_markdown": false,
+    "description": "This is dirty dick's study. There is a big flat stone on the floor for a desk.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9068,
+  "fields": {
+    "adventure": 216,
+    "room_id": 10,
+    "name": "End of dusty tunnel (S/E)",
+    "is_markdown": false,
+    "description": "You are in a dusty tunnel. It looks like it goes east for a while. South of here is the entrance room.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9069,
+  "fields": {
+    "adventure": 216,
+    "room_id": 11,
+    "name": "A very dusty tunnel (E/W)",
+    "is_markdown": false,
+    "description": "This tunnel is very dusty. It looks like no one has been here for a long time.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9070,
+  "fields": {
+    "adventure": 216,
+    "room_id": 12,
+    "name": "In the middle of the tunnel (S/E/W)",
+    "is_markdown": false,
+    "description": "You are in the middle of a very dusty tunnel. There are some footprints going south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9071,
+  "fields": {
+    "adventure": 216,
+    "room_id": 13,
+    "name": "A dirty dusty tunnel (E/W)",
+    "is_markdown": false,
+    "description": "The tunnel is dirty as well as dusty here. You can go east or west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9072,
+  "fields": {
+    "adventure": 216,
+    "room_id": 14,
+    "name": "The east end of the tunnel (S/W)",
+    "is_markdown": false,
+    "description": "This is the east end of a very dusty tunnel. If you go west you will go through the tunnel. You can go south into a room.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9073,
+  "fields": {
+    "adventure": 216,
+    "room_id": 15,
+    "name": "A cave room (N/E/W)",
+    "is_markdown": false,
+    "description": "You are in a cave room. Someone has carved his initials in the wall. They read 'D.D.'",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9074,
+  "fields": {
+    "adventure": 216,
+    "room_id": 16,
+    "name": "The prison room (W)",
+    "is_markdown": false,
+    "description": "This room is used for a prison. The only door is on the west wall.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9075,
+  "fields": {
+    "adventure": 216,
+    "room_id": 17,
+    "name": "A bend in the wooden tunnel (S/E/U)",
+    "is_markdown": false,
+    "description": "You are in a tunnel with wooden walls. It bends here. The tunnel goes south and a room is to the east. A ladder against the wall goes up.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9076,
+  "fields": {
+    "adventure": 216,
+    "room_id": 18,
+    "name": "A low room (N)",
+    "is_markdown": false,
+    "description": "This room has a low roof so you need to bend to get in.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9077,
+  "fields": {
+    "adventure": 216,
+    "room_id": 19,
+    "name": "The east end of wooden tunnel (N/W/D)",
+    "is_markdown": false,
+    "description": "The wooden tunnel goes north and west from here. A rickety stairway goes down.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9078,
+  "fields": {
+    "adventure": 216,
+    "room_id": 20,
+    "name": "The middle of the wooden tunnel (E/W)",
+    "is_markdown": false,
+    "description": "This is the middle of the wooden tunnel.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9079,
+  "fields": {
+    "adventure": 216,
+    "room_id": 21,
+    "name": "The east end of the wood tunnel (N/E)",
+    "is_markdown": false,
+    "description": "This is the east end of a tunnel. The walls are wood.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9080,
+  "fields": {
+    "adventure": 216,
+    "room_id": 22,
+    "name": "The stair room (S/W/U/D)",
+    "is_markdown": false,
+    "description": "This room is not big but there is a stairway going up and down in the middle of it.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9081,
+  "fields": {
+    "adventure": 216,
+    "room_id": 23,
+    "name": "At the bottom of the stairs (E/U)",
+    "is_markdown": false,
+    "description": "You are at the bottom of the stairs. A damp tunnel goes east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": true,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9082,
+  "fields": {
+    "adventure": 216,
+    "room_id": 24,
+    "name": "A damp tunnel (N/E/W)",
+    "is_markdown": false,
+    "description": "The tunnel is damp and water drips from the ceiling. You see a stairway to the west, or you can go north or east in the tunnel.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": true,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9083,
+  "fields": {
+    "adventure": 216,
+    "room_id": 25,
+    "name": "A dry tunnel (N/S)",
+    "is_markdown": false,
+    "description": "The tunnel gets dry here. There are a lot of footprints here and all of them go north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": true,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9084,
+  "fields": {
+    "adventure": 216,
+    "room_id": 26,
+    "name": "The dungeon (S)",
+    "is_markdown": false,
+    "description": "This is the dungeon. The walls are solid rock.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9085,
+  "fields": {
+    "adventure": 216,
+    "room_id": 27,
+    "name": "A wet tunnel (S/W)",
+    "is_markdown": false,
+    "description": "The floor of the tunnel is wet. You can go south to a stairway, or go west where it looks a like it is not so wet.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": true,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9086,
+  "fields": {
+    "adventure": 216,
+    "room_id": 28,
+    "name": "The bottom of the stairway (N/U)",
+    "is_markdown": false,
+    "description": "A rickety stairway goes up from here or you can go north to a wet tunnel.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": true,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9087,
+  "fields": {
+    "adventure": 216,
+    "room_id": 29,
+    "name": "The top of the stairs (N/S/W/D)",
+    "is_markdown": false,
+    "description": "You are at the top of the stairs. There are rooms north and west and a hall goes south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9088,
+  "fields": {
+    "adventure": 216,
+    "room_id": 30,
+    "name": "A big room (S)",
+    "is_markdown": false,
+    "description": "This is a big room that looks like it was used for someone's bedroom.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9089,
+  "fields": {
+    "adventure": 216,
+    "room_id": 31,
+    "name": "A closet (E)",
+    "is_markdown": false,
+    "description": "This is a small room that is used for a closet.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9090,
+  "fields": {
+    "adventure": 216,
+    "room_id": 32,
+    "name": "A hallway (N/S)",
+    "is_markdown": false,
+    "description": "There is a stairway to the north. The tunnel goes south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9091,
+  "fields": {
+    "adventure": 216,
+    "room_id": 33,
+    "name": "Bend in hallway (N/E)",
+    "is_markdown": false,
+    "description": "The hallway bends here. You can go east or north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9092,
+  "fields": {
+    "adventure": 216,
+    "room_id": 34,
+    "name": "A twisty tunnel (N/E/W)",
+    "is_markdown": false,
+    "description": "The tunnel is twisty here. You can go north or west in the tunnel or go east into a room.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9093,
+  "fields": {
+    "adventure": 216,
+    "room_id": 35,
+    "name": "The treasure room (W)",
+    "is_markdown": false,
+    "description": "This is a plain room with white painted walls. There are lots of shelves to store things on.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9094,
+  "fields": {
+    "adventure": 216,
+    "room_id": 36,
+    "name": "A hallway (S/E)",
+    "is_markdown": false,
+    "description": "The hallway bends here. You can go eastor south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9095,
+  "fields": {
+    "adventure": 216,
+    "room_id": 37,
+    "name": "The end of the hallway (N/W)",
+    "is_markdown": false,
+    "description": "This is the end if a hallway. You can go north to a small room or west following the hallway.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 9096,
+  "fields": {
+    "adventure": 216,
+    "room_id": 38,
+    "name": "A small room (S/D)",
+    "is_markdown": false,
+    "description": "You are in a very small room. There is a ladder going down.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105706,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9059,
+    "room_to": 6,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105707,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9059,
+    "room_to": -999,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105708,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9059,
+    "room_to": 2,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105709,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9060,
+    "room_to": 1,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105710,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9060,
+    "room_to": 3,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105711,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9061,
+    "room_to": 2,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105712,
+  "fields": {
+    "adventure": 216,
+    "direction": "u",
+    "room_from": 9061,
+    "room_to": 5,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105713,
+  "fields": {
+    "adventure": 216,
+    "direction": "d",
+    "room_from": 9061,
+    "room_to": 4,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105714,
+  "fields": {
+    "adventure": 216,
+    "direction": "u",
+    "room_from": 9062,
+    "room_to": 3,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105715,
+  "fields": {
+    "adventure": 216,
+    "direction": "d",
+    "room_from": 9063,
+    "room_to": 3,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105716,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9064,
+    "room_to": 10,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105717,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9064,
+    "room_to": 7,
+    "door_id": 3,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105718,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9064,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105719,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9064,
+    "room_to": 1,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105720,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9065,
+    "room_to": 8,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105721,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9065,
+    "room_to": 9,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105722,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9065,
+    "room_to": 6,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105723,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9066,
+    "room_to": 7,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105724,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9067,
+    "room_to": 7,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105725,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9068,
+    "room_to": 11,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105726,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9068,
+    "room_to": 6,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105727,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9069,
+    "room_to": 10,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105728,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9069,
+    "room_to": 12,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105729,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9070,
+    "room_to": 11,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105730,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9070,
+    "room_to": 13,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105731,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9070,
+    "room_to": 18,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105732,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9071,
+    "room_to": 12,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105733,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9071,
+    "room_to": 14,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105734,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9072,
+    "room_to": 13,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105735,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9072,
+    "room_to": 15,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105736,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9073,
+    "room_to": 14,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105737,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9073,
+    "room_to": 17,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105738,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9073,
+    "room_to": 16,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105739,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9074,
+    "room_to": 15,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105740,
+  "fields": {
+    "adventure": 216,
+    "direction": "u",
+    "room_from": 9075,
+    "room_to": 38,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105741,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9075,
+    "room_to": 15,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105742,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9075,
+    "room_to": 19,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105743,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9076,
+    "room_to": 12,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105744,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9077,
+    "room_to": 17,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105745,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9077,
+    "room_to": 20,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105746,
+  "fields": {
+    "adventure": 216,
+    "direction": "d",
+    "room_from": 9077,
+    "room_to": 28,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105747,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9078,
+    "room_to": 21,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105748,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9078,
+    "room_to": 19,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105749,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9079,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105750,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9079,
+    "room_to": 20,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105751,
+  "fields": {
+    "adventure": 216,
+    "direction": "u",
+    "room_from": 9080,
+    "room_to": 29,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105752,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9080,
+    "room_to": 6,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105753,
+  "fields": {
+    "adventure": 216,
+    "direction": "d",
+    "room_from": 9080,
+    "room_to": 23,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105754,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9080,
+    "room_to": 21,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105755,
+  "fields": {
+    "adventure": 216,
+    "direction": "u",
+    "room_from": 9081,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105756,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9081,
+    "room_to": 24,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105757,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9082,
+    "room_to": 25,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105758,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9082,
+    "room_to": 23,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105759,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9082,
+    "room_to": 27,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105760,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9083,
+    "room_to": 26,
+    "door_id": 12,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105761,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9083,
+    "room_to": 24,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105762,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9084,
+    "room_to": 25,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105763,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9085,
+    "room_to": 24,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105764,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9085,
+    "room_to": 28,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105765,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9086,
+    "room_to": 27,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105766,
+  "fields": {
+    "adventure": 216,
+    "direction": "u",
+    "room_from": 9086,
+    "room_to": 19,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105767,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9087,
+    "room_to": 30,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105768,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9087,
+    "room_to": 31,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105769,
+  "fields": {
+    "adventure": 216,
+    "direction": "d",
+    "room_from": 9087,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105770,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9087,
+    "room_to": 32,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105771,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9088,
+    "room_to": 29,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105772,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9089,
+    "room_to": 29,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105773,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9090,
+    "room_to": 29,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105774,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9090,
+    "room_to": 33,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105775,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9091,
+    "room_to": 32,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105776,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9091,
+    "room_to": 34,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105777,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9092,
+    "room_to": 36,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105778,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9092,
+    "room_to": 33,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105779,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9092,
+    "room_to": 35,
+    "door_id": 14,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105780,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9093,
+    "room_to": 34,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105781,
+  "fields": {
+    "adventure": 216,
+    "direction": "e",
+    "room_from": 9094,
+    "room_to": 37,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105782,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9094,
+    "room_to": 34,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105783,
+  "fields": {
+    "adventure": 216,
+    "direction": "n",
+    "room_from": 9095,
+    "room_to": 38,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105784,
+  "fields": {
+    "adventure": 216,
+    "direction": "w",
+    "room_from": 9095,
+    "room_to": 36,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105785,
+  "fields": {
+    "adventure": 216,
+    "direction": "d",
+    "room_from": 9096,
+    "room_to": 17,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 105786,
+  "fields": {
+    "adventure": 216,
+    "direction": "s",
+    "room_from": 9096,
+    "room_to": 37,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6850,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 1,
+    "article": null,
+    "name": "wooden chest",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see an old wooden chest. The lock is broken. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 4,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 4,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": 20,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6851,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 2,
+    "article": null,
+    "name": "pistol",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see Dirty Dick's favorite pistol. It is a mean-looking weapon. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": null,
+    "container_id": 1,
+    "guard_id": null,
+    "weight": 5,
+    "value": 75,
+    "type": 3,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 2,
+    "hands": 1,
+    "weapon_odds": 20,
+    "dice": 2,
+    "sides": 6,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6852,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 3,
+    "article": null,
+    "name": "solid wooden door",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "A solid wooden door blocks the way west. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 6,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 8,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": 4,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6853,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 4,
+    "article": null,
+    "name": "rusty key",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a small rusty key here. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 5,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 1,
+    "value": 1,
+    "type": 9,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6854,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 5,
+    "article": null,
+    "name": "flashlight",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a flashlight on the floor here, with fresh batteries in it. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 7,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 3,
+    "value": 5,
+    "type": 5,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": -1,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6855,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 6,
+    "article": null,
+    "name": "medicine",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a bottle of medicine. The label says: 'Drink this to heal wounds'. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 8,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 15,
+    "type": 6,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": 15,
+    "sides": 1,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": 5,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6856,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 7,
+    "article": null,
+    "name": "note",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a note here that dirty dick was writing before he left. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 9,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 1,
+    "value": 0,
+    "type": 7,
+    "is_worn": false,
+    "is_open": true,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": 1,
+    "num_effects": 1,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6857,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 8,
+    "article": null,
+    "name": "big knife",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see Prince Charlie's big knife. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 2,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 15,
+    "type": 2,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 5,
+    "hands": 1,
+    "weapon_odds": 10,
+    "dice": 1,
+    "sides": 9,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6858,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 9,
+    "article": null,
+    "name": "club",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the troll's club. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 3,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 8,
+    "value": 10,
+    "type": 2,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 3,
+    "hands": 1,
+    "weapon_odds": 5,
+    "dice": 1,
+    "sides": 3,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6859,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 10,
+    "article": null,
+    "name": "Prince Charlie",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "Prince Charlie is here. He is chained to the wall and says \"Please, help me.\" ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 16,
+    "monster_id": 2,
+    "container_id": null,
+    "guard_id": 3,
+    "weight": 999,
+    "value": 0,
+    "type": 10,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6860,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 11,
+    "article": null,
+    "name": "iron key",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a big iron key here, lying on the stone. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 9,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 3,
+    "value": 1,
+    "type": 9,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6861,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 12,
+    "article": null,
+    "name": "iron door",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is an iron door that keeps you from going north. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 25,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 8,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": 13,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6862,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 13,
+    "article": null,
+    "name": "fancy key",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a fancy key, with a jewel at the top. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": null,
+    "container_id": 16,
+    "guard_id": null,
+    "weight": 3,
+    "value": 30,
+    "type": 9,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6863,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 14,
+    "article": null,
+    "name": "steel door",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a solid steel door in the wall on the east side of the passage. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 34,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 8,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": 15,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6864,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 15,
+    "article": null,
+    "name": "steel key",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a plain steel key. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 26,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 1,
+    "value": 2,
+    "type": 9,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6865,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 16,
+    "article": null,
+    "name": "iron chest",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is an iron chest here. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 18,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 50,
+    "value": 50,
+    "type": 4,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": 11,
+    "linked_door_id": null,
+    "hardiness": 40,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6866,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 17,
+    "article": null,
+    "name": "queen's necklace",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the queen's necklace, covered with jewels. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 35,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 200,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6867,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 18,
+    "article": null,
+    "name": "money",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a pile of money here.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 30,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 100,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6868,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 19,
+    "article": null,
+    "name": "gold ring",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a pretty gold ring hiding on the shelf. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 31,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 2,
+    "value": 50,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6869,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 20,
+    "article": null,
+    "name": "treasure chest",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a big chest on the floor. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 35,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 4,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": 30,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6870,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 21,
+    "article": null,
+    "name": "pirate's treasure",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "The pirate's treasure fills the chest. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": null,
+    "container_id": 20,
+    "guard_id": null,
+    "weight": 70,
+    "value": 1000,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6871,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 22,
+    "article": null,
+    "name": "spear",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a plain spear. It belongs to Hector. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 4,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 10,
+    "type": 2,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 4,
+    "hands": 1,
+    "weapon_odds": 10,
+    "dice": 1,
+    "sides": 6,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6872,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 23,
+    "article": null,
+    "name": "mace",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see Nick's mace. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 5,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 7,
+    "value": 10,
+    "type": 2,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 3,
+    "hands": 1,
+    "weapon_odds": 10,
+    "dice": 1,
+    "sides": 5,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6873,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 24,
+    "article": null,
+    "name": "club",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the troll's club. ",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 9,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 8,
+    "value": 10,
+    "type": 2,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 3,
+    "hands": 1,
+    "weapon_odds": 5,
+    "dice": 1,
+    "sides": 3,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 6874,
+  "fields": {
+    "adventure": 216,
+    "artifact_id": 25,
+    "article": null,
+    "name": "rapier",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the pirate's rapier. It has some nicks in the blade.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 10,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 25,
+    "type": 2,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 5,
+    "hands": 1,
+    "weapon_odds": 10,
+    "dice": 1,
+    "sides": 7,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 2565,
+  "fields": {
+    "adventure": 216,
+    "effect_id": 1,
+    "is_markdown": false,
+    "text": "Dear King,\r\n\r\nGive me $1000 ransom money or you will never see Prince Charlie again.\r\n\r\nSigned,\r\nDirty Dick",
+    "style": null,
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3569,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 1,
+    "article": null,
+    "name": "Toby",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is an enormous black and white dog here. He jumps and wags his tail when he sees you.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 14,
+    "agility": 18,
+    "friendliness": "friend",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 1,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 2,
+    "weapon_sides": 5,
+    "defense_bonus": 0,
+    "armor_class": 2,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3570,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 2,
+    "article": null,
+    "name": "Prince Charlie",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "Prince Charlie jumps up and looks glad to see you. 'Thank you', he says.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 18,
+    "agility": 16,
+    "friendliness": "friend",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 0,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 8,
+    "attack_odds": 50,
+    "weapon_dice": 2,
+    "weapon_sides": 5,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3571,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 3,
+    "article": null,
+    "name": "troll",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "There is a big troll standing guard in here. He looks at you and says 'Goody, my lunch is here.'\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 12,
+    "agility": 8,
+    "friendliness": "hostile",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 30,
+    "pursues": true,
+    "room_id": 16,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 4,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3572,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 4,
+    "article": null,
+    "name": "Hector",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a fierce fighter named Hector.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 16,
+    "agility": 16,
+    "friendliness": "friend",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 150,
+    "pursues": true,
+    "room_id": 26,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 22,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 8,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3573,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 5,
+    "article": null,
+    "name": "Nick",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a strong fighter named Nick. He smiles when he sees you.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 16,
+    "agility": 14,
+    "friendliness": "friend",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 180,
+    "pursues": true,
+    "room_id": 26,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 23,
+    "attack_odds": 50,
+    "weapon_dice": 2,
+    "weapon_sides": 4,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3574,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 6,
+    "article": null,
+    "name": "rat",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You are attacked by a bunch of rats as soon as you come into the room!\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 5,
+    "hardiness": 3,
+    "agility": 17,
+    "friendliness": "hostile",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 18,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 25,
+    "weapon_dice": 1,
+    "weapon_sides": 3,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3575,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 7,
+    "article": null,
+    "name": "giant lizard",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "Two giant lizards are here. They do not like the way you look.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 2,
+    "hardiness": 7,
+    "agility": 10,
+    "friendliness": "hostile",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 50,
+    "pursues": true,
+    "room_id": 29,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 3,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3576,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 8,
+    "article": null,
+    "name": "giant spider",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "A giant spider has started to build a web here. It is big enough to eat you and that is what is wants to do.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 8,
+    "agility": 10,
+    "friendliness": "hostile",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 100,
+    "pursues": true,
+    "room_id": 36,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 3,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3577,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 9,
+    "article": null,
+    "name": "troll guard",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "A big mean troll is standing guard here.\n",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 14,
+    "agility": 10,
+    "friendliness": "hostile",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 80,
+    "pursues": true,
+    "room_id": 24,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 24,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 3,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 3578,
+  "fields": {
+    "adventure": 216,
+    "monster_id": 10,
+    "article": null,
+    "name": "pirate",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see one of Dirty Dick's pirates. He is armed with a rapier.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 12,
+    "agility": 12,
+    "friendliness": "hostile",
+    "friend_odds": -1,
+    "combat_code": 0,
+    "courage": 100,
+    "pursues": true,
+    "room_id": 7,
+    "container_id": null,
+    "gender": "m",
+    "weapon_id": 25,
+    "attack_odds": 40,
+    "weapon_dice": 1,
+    "weapon_sides": 7,
+    "defense_bonus": 0,
+    "armor_class": 1,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+}
+]
