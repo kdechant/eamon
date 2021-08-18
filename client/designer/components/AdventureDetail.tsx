@@ -6,6 +6,7 @@ import RoomList from "./RoomList";
 
 import Adventure from "../models/adventure";
 import AdventureContext from "../context";
+import { UserContext } from "../context";
 import RoomDetail from "./RoomDetail";
 import ArtifactList from "./ArtifactList";
 import MonsterList from "./MonsterList";
@@ -37,17 +38,25 @@ function AdventureDetail(): JSX.Element {
 
 function AdventureMainMenu(): JSX.Element {
   const [state, setState] = useState(null);
+  const user_context = React.useContext(UserContext);
   const { slug } = useParams();
 
   // get the adventure details from the API
   async function loadAdventureData(slug) {
+    const headers = {}
+    if (user_context.token) {
+      console.log('has token', user_context.token);
+      headers['Authorization'] = `Bearer ${user_context.token}`
+    } else {
+      console.log('no token');
+    }
     const [adv_data, rooms_data, artifacts_data, effects_data, monsters_data, hints_data] = await Promise.all([
-      fetch(`/api/adventures/${slug}`).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/rooms`).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/artifacts`).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/effects`).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/monsters`).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/hints`).then(response => response.json()),
+      fetch(`/api/adventures/${slug}`, {headers: headers}).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/rooms`, {headers: headers}).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/artifacts`, {headers: headers}).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/effects`, {headers: headers}).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/monsters`, {headers: headers}).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/hints`, {headers: headers}).then(response => response.json()),
     ]);
     const adventure = new Adventure();
     adventure.init(adv_data);

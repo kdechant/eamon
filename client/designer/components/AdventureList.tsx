@@ -18,7 +18,6 @@ class AdventureList extends React.Component<any, any> {
     fetch('/api/adventures/designer-list')
       .then(res => res.json())
       .then(data => {
-        console.log('data from api', data)
         const all_adventures: Adventure[] = [];
         let tags: string[] = [];
         let authors: string[] = [];
@@ -136,7 +135,9 @@ class AdventureList extends React.Component<any, any> {
       <div id="AdventureList">
         <h2><img src="/static/images/ravenmore/128/map.png" alt="Map" /> Edit an adventure</h2>
 
-        <p>Choose an adventure to work on:</p>
+        <p>Welcome to the Eamon Dungeon Designer. This is a program for viewing and
+          editing adventure data. Click an adventure below to view its data,
+          or <Link to={`/designer/login`}>log in to edit adventures</Link>.</p>
 
         <div className="container-fluid">
           <div className="row">

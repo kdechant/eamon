@@ -18,3 +18,11 @@ interface AdventureContextInterface {
 const AdventureContext = React.createContext<AdventureContextInterface | null>(null);
 
 export default AdventureContext;
+
+interface UserContextInterface {
+  username: string,
+  token: string,
+  changeUserState: (username: string, token: string) => void,
+}
+export const UserContext = React.createContext<UserContextInterface | null>(null);
+
