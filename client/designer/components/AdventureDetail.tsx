@@ -2,19 +2,35 @@ import * as React from 'react';
 import {useParams} from "react-router";
 import {Link} from "react-router-dom";
 import AdventureContext from "../context";
+import {UserContext} from "../context";
 
 function AdventureDetail(): JSX.Element {
   const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
+  const user_context = React.useContext(UserContext);
 
   const setField = (ev) => {
     context.setAdventureField(ev.target.name, ev.target.value);
   };
 
   return <>
-    <div>
+    {user_context.username && (
+      <div className="form-group">
+        <label htmlFor="name">Name</label>
+        <input type="text" name="name" className="form-control"
+               onChange={setField} value={context.adventure.name} />
+      </div>
+    )}
+    <div className="form-group">
+      <label htmlFor="slug">URL Slug</label>
+      <input type="text" name="slug" className="form-control"
+             onChange={setField} value={context.adventure.slug} disabled={!user_context.username} />
+    </div>
+    <div className="form-group">
+      <label htmlFor="description">Description</label>
       <textarea className="form-control" name="description" rows={10}
-                onChange={setField} value={context.adventure.description}>
+                onChange={setField} value={context.adventure.description}
+                disabled={!user_context.username}>
       </textarea>
     </div>
     <div>
