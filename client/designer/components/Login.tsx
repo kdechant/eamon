@@ -44,19 +44,7 @@ function Login(): JSX.Element {
       });
     const data = await(token_response);
     if (data) {
-      // Call token refresh URL to get longer-lived token
-      const refresh_body = JSON.stringify({'refresh': data.refresh});
-      const response = await fetch(`/api/token/refresh/`, {
-        method: 'POST',
-        body: refresh_body,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then(res => res.json());
-      const refresh_data = await response;
-      console.log(refresh_data)
-      const token = refresh_data.access;
-      context.changeUserState(username, token);
+      context.changeUserState(username, data.access, data.refresh);
       setRedirect('/designer/');
     }
   }

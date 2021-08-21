@@ -13,6 +13,7 @@ interface AdventureContextInterface {
   effects: EffectRepository,
   monsters: MonsterRepository,
   hints: HintRepository,
+  setAdventureField: (field: string, value: string) => void,
 }
 
 const AdventureContext = React.createContext<AdventureContextInterface | null>(null);
@@ -22,7 +23,8 @@ export default AdventureContext;
 interface UserContextInterface {
   username: string,
   token: string,
-  changeUserState: (username: string, token: string) => void,
+  changeUserState: (username: string, token: string, refresh_token: string) => void,
+  getToken: () => Promise<string>,
 }
 export const UserContext = React.createContext<UserContextInterface | null>(null);
 

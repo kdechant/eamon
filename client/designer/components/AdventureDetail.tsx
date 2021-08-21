@@ -22,9 +22,16 @@ import MonsterDetail from "./MonsterDetail";
 function AdventureDetail(): JSX.Element {
   const { slug } = useParams();
   const context = React.useContext(AdventureContext);
+
+  const setField = (ev) => {
+    context.setAdventureField(ev.target.name, ev.target.value);
+  };
+
   return <>
     <div>
-      {context.adventure.description}
+      <textarea className="form-control" name="description" rows={10}
+                onChange={setField} value={context.adventure.description}>
+      </textarea>
     </div>
     <div>
       <p><Link to={`${slug}/rooms`}>{context.rooms?.all?.length} Rooms</Link></p>
@@ -38,29 +45,26 @@ function AdventureDetail(): JSX.Element {
 
 function AdventureMainMenu(): JSX.Element {
   const [state, setState] = useState(null);
+  const [timeouts, setTimeouts] = useState({});
   const user_context = React.useContext(UserContext);
   const { slug } = useParams();
 
   // get the adventure details from the API
   async function loadAdventureData(slug) {
-    const headers = {}
-    if (user_context.token) {
-      console.log('has token', user_context.token);
-      headers['Authorization'] = `Bearer ${user_context.token}`
-    } else {
-      console.log('no token');
-    }
     const [adv_data, rooms_data, artifacts_data, effects_data, monsters_data, hints_data] = await Promise.all([
-      fetch(`/api/adventures/${slug}`, {headers: headers}).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/rooms`, {headers: headers}).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/artifacts`, {headers: headers}).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/effects`, {headers: headers}).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/monsters`, {headers: headers}).then(response => response.json()),
-      fetch(`/api/adventures/${slug}/hints`, {headers: headers}).then(response => response.json()),
+      fetch(`/api/adventures/${slug}`).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/rooms`).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/artifacts`).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/effects`).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/monsters`).then(response => response.json()),
+      fetch(`/api/adventures/${slug}/hints`).then(response => response.json()),
     ]);
     const adventure = new Adventure();
     adventure.init(adv_data);
-    adventure.authors_display = adventure.authors.join(' and ');
+    adventure.authors_display = "";
+    if (adventure.authors) {
+      adventure.authors_display = adventure.authors.join(' and ');
+    }
     setState({
       adventure: adventure,
       rooms: new RoomRepository(rooms_data),
@@ -69,6 +73,47 @@ function AdventureMainMenu(): JSX.Element {
       monsters: new MonsterRepository(monsters_data),
       hints: new HintRepository(hints_data),
     })
+  }
+
+  async function saveAdventureField(field: string): Promise<void> {
+    const body: Record<string, string | number> = {};
+    body[field] = state.adventure[field];
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+    // TODO: check expiry on token. If expired, refresh it with the refresh endpoint.
+    const token = await user_context.getToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+    fetch(`/api/adventures/${slug}`,{
+      method: 'PATCH',
+      body: JSON.stringify(body),
+      headers: headers
+    }).then(response => response.json()).then(data => {
+      const adventure = state.adventure;
+      adventure[field] = data[field];
+      setState({
+        ...state,
+        adventure,
+      })
+      delete timeouts[field];
+      setTimeouts(timeouts);
+    });
+  }
+
+  function setAdventureField(field: string, value: string) {
+    const adventure = state.adventure;
+    adventure[field] = value;
+    setState({
+      ...state,
+      adventure
+    });
+    if (timeouts[field]) {
+      clearTimeout(timeouts[field]);
+    }
+    timeouts[field] = setTimeout(() => {saveAdventureField(field)}, 500);
+    setTimeouts(timeouts);
   }
 
   useEffect(() => {
@@ -80,7 +125,7 @@ function AdventureMainMenu(): JSX.Element {
   }
 
   return (
-    <AdventureContext.Provider value={state}>
+    <AdventureContext.Provider value={{...state, setAdventureField}}>
       <div className="container-fluid" id="AdventureDetail">
         <div className="row">
           <div className="col-sm-2 d-none d-sm-block">

@@ -65,30 +65,23 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
+class AdventureViewSet(viewsets.ModelViewSet):
     """
     For listing or retrieving adventure data.
     """
     queryset = Adventure.objects.filter(active=True)
     serializer_class = serializers.AdventureSerializer
+    lookup_field = 'slug'
 
     def get_queryset(self):
         queryset = Adventure.objects.filter(active=True)
         return queryset
-
-    def retrieve(self, request, pk=None):
-        queryset = self.queryset
-        adv = get_object_or_404(queryset, slug=pk)
-        serializer = serializers.AdventureSerializer(adv)
-        return Response(serializer.data)
 
     @action(detail=False, url_path='designer-list')
     def designer_list(self, request):
         queryset = Adventure.objects.all()
         serializer = serializers.AdventureDesignSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    # TODO: handle create/update
 
 
 class RoomViewSet(viewsets.ReadOnlyModelViewSet):

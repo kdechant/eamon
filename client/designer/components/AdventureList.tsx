@@ -176,7 +176,7 @@ class AdventureList extends React.Component<any, any> {
                 return (
                   <tr key={adv.id}>
                     <td>{adv.id}</td>
-                    <td><a href={adv.slug}>{adv.name}</a></td>
+                    <td><Link to={`/designer/${adv.slug}`}>{adv.name}</Link></td>
                     <td>{adv.authors_display}</td>
                     {/*<td>{adv.rooms_count}</td>*/}
                     {/*<td>{adv.artifacts_count}</td>*/}

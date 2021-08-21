@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
+        "esModuleInterop": true,
+        "jsx": "react",
+        "lib": ["es5", "es6", "dom"],
+        "module": "commonjs",
+        "noImplicitAny": false,
         "outDir": "./dist/",
         "sourceMap": true,
-        "noImplicitAny": false,
-        "module": "commonjs",
         "target": "es5",
-        "jsx": "react",
-        "lib": ["es5", "es6", "dom"]
     },
     "include": [
         "./main-hall/**/*",
