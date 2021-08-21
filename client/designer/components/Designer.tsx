@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import AdventureList from "./AdventureList";
-import AdventureMainMenu from "./AdventureDetail";
 import Login from "./Login";
 import {UserContext} from "../context";
 import {useState} from "react";
 import jwt_decode from "jwt-decode";
+import AdventureMainMenu from "./AdventureMainMenu";
 
 type accessToken = {
   exp: number,
@@ -35,7 +35,6 @@ const Designer = (): JSX.Element => {
    */
   const getToken = async (): Promise<string> => {
     const decoded: accessToken = jwt_decode(token);
-    console.log('decoded token', decoded);
     // if expired, call refresh endpoint to get a new one
     const exp_date = new Date(decoded.exp * 1000);
     if (exp_date > new Date()) {
@@ -52,8 +51,8 @@ const Designer = (): JSX.Element => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(res => res.json());
-    const refresh_data = await response;
+    });
+    const refresh_data = await response.json();
     setToken(refresh_data.access);
     return refresh_data.access;
   }
