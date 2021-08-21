@@ -6,7 +6,7 @@ import AdventureContext from "../context";
 import {TextStyleLabel} from "./common";
 
 function EffectList(): JSX.Element {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {

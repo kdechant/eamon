@@ -58,7 +58,7 @@ class AdventureList extends React.Component<any, any> {
     this.setState({currentSort});
   };
 
-  public filterAndSort = (): void => {
+  public filterAndSort = (): Adventure[] => {
     let adventures = this.state.all_adventures;
 
     // filter by tag

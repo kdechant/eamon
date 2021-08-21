@@ -6,7 +6,7 @@ import Artifact from '../models/artifact';
 import {ArtifactLink, EffectLink, RoomLink} from "./common";
 
 function ArtifactDetail(): JSX.Element {
-  const { slug, id } = useParams();
+  const { slug, id } = useParams<{ slug: string, id: string }>();
   const context = React.useContext(AdventureContext);
   const artifact = context.artifacts.get(id);
   if (!artifact) {
@@ -49,7 +49,7 @@ function ArtifactDetail(): JSX.Element {
           <span>(Don't be absurd.)</span>
         )}
       </p>
-      {(artifact.isWeapon() && (
+      {artifact.isWeapon() && (
         <>
           <p>
             Weapon Type<br />

@@ -15,5 +15,6 @@ export default class Adventure extends GameObject {
   authors: string[];
   authors_display: string;
   tags: string[];
+  active: boolean;
 
 }

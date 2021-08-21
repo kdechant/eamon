@@ -7,7 +7,7 @@ import {ArtifactLink, MonsterLink, MonsterWeaponLink, RoomLink} from "./common";
 
 function MonsterList(): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
 
   if (!context.adventure) {
     return <p>Loading {slug}...</p>;

@@ -20,7 +20,7 @@ import RoomRepository from "../repositories/room.repo";
 import MonsterDetail from "./MonsterDetail";
 
 function AdventureDetail(): JSX.Element {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   const setField = (ev) => {
@@ -47,7 +47,7 @@ function AdventureMainMenu(): JSX.Element {
   const [state, setState] = useState(null);
   const [timeouts, setTimeouts] = useState({});
   const user_context = React.useContext(UserContext);
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
 
   // get the adventure details from the API
   async function loadAdventureData(slug) {

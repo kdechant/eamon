@@ -11,7 +11,7 @@ type LinkProps = {
 
 export function RoomLink(props: LinkProps): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const id = props.id;
   if (id === 0) {
     return <span className="disabled">no connection</span>;
@@ -38,7 +38,7 @@ export function RoomLink(props: LinkProps): JSX.Element {
 
 export function ArtifactLink(props: LinkProps): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const id = props.id;
   const artifact = context.artifacts.get(id);
   return (
@@ -56,7 +56,7 @@ export function ArtifactLink(props: LinkProps): JSX.Element {
 
 export function EffectLink(props: LinkProps): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const id = props.id;
   const effect = context.effects.get(id);
   return (
@@ -74,7 +74,7 @@ export function EffectLink(props: LinkProps): JSX.Element {
 
 export function MonsterLink(props: LinkProps): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const id = props.id;
   const monster = context.monsters.get(id);
   return (
@@ -91,7 +91,7 @@ export function MonsterLink(props: LinkProps): JSX.Element {
 }
 
 export function MonsterWeaponLink(props): JSX.Element {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const id = props.id;
   if (id === 0) {
     return <>natural weapons</>

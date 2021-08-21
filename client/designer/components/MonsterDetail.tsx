@@ -9,7 +9,7 @@ import Monster from "../models/monster";
 
 function MonsterDetail(): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug, id } = useParams();
+  const { slug, id } = useParams<{ slug: string, id: string }>();
   const monster = context.monsters.get(id);
   if (!monster) {
     return <>Monster #${id} not found!</>;

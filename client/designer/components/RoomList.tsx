@@ -5,7 +5,7 @@ import AdventureContext from "../context";
 import {RoomLink} from "./common";
 
 function RoomList(): JSX.Element {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {

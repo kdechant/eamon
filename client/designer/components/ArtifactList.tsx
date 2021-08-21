@@ -6,7 +6,7 @@ import AdventureContext from "../context";
 import {ArtifactLink, MonsterLink, RoomLink} from "./common";
 
 function ArtifactList(): JSX.Element {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {
