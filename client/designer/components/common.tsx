@@ -17,7 +17,7 @@ export function RoomLink(props: LinkProps): JSX.Element {
     return <span className="disabled">no connection</span>;
   }
   if (id === -999 || id === -998) {
-    return <>Adventure exit (#{id})</>;
+    return <span>Adventure exit (#{id})</span>;
   }
   if (id) {
     const room = context.rooms.get(id);
@@ -29,9 +29,9 @@ export function RoomLink(props: LinkProps): JSX.Element {
       );
     }
     if (id < 0) {
-      return <>Special Connection: #{id}</>;
+      return <span>Special Connection: #{id}</span>;
     }
-    return <>Unknown room: #{id}</>;
+    return <span>Unknown room: #{id}</span>;
   }
   return <span className="disabled">-</span>;
 }
@@ -63,7 +63,7 @@ export function EffectLink(props: LinkProps): JSX.Element {
     <>
       {id ? (
         <Link to={`/designer/${slug}/effects/${id}`}>
-          #{id}: {effect[id] ? effect.text.slice(0, 25) : 'unknown'}
+          #{id}: {effect ? effect.text.slice(0, 25) : 'unknown'}
         </Link>) : (
         <span className="disabled">-</span>
         )
@@ -90,8 +90,7 @@ export function MonsterLink(props: LinkProps): JSX.Element {
   );
 }
 
-export function MonsterWeaponLink(props): JSX.Element {
-  const { slug } = useParams<{ slug: string }>();
+export function MonsterWeaponLink(props: LinkProps): JSX.Element {
   const id = props.id;
   if (id === 0) {
     return <>natural weapons</>
@@ -117,7 +116,7 @@ export function MonsterWeaponLink(props): JSX.Element {
 //   );
 // }
 
-export function TextStyleLabel(props): JSX.Element {
+export function TextStyleLabel(props: Record<string, string>): JSX.Element {
   const style = props.style || 'default';
   return (
     <span className={style}>{style}</span>

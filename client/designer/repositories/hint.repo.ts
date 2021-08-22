@@ -16,7 +16,7 @@ export default class HintRepository {
    */
   index = 0;
 
-  constructor(hint_data: Array<Record<string, unknown>>) {
+  constructor(hint_data: Array<Record<string, number|string>>) {
     for (const i of hint_data) {
       this.add(i);
     }
