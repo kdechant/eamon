@@ -68,12 +68,12 @@ const Designer = (): JSX.Element => {
 
   return (
     <UserContext.Provider value={{...state, getToken, changeUserState}}>
-      {state.username && (
-        <div>Welcome, {state.username}!</div>
-      )}
       <div className="container-fluid" id="app">
         <div className="parchment">
           <div className="parchment-inner">
+            {state.username && (
+              <div>Welcome, {state.username}!</div>
+            )}
             <Router>
               <Switch>
                 <Route path="/designer/" exact={true} component={AdventureList}/>

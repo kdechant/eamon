@@ -146,29 +146,29 @@ class AdventureList extends React.Component<any, any> {
               <table className="table">
                 <thead>
                   <tr>
-                    <td><a className={this.state.currentSort === 'original adventure number' ? 'font-weight-bold' : ''}
+                    <th><a className={this.state.currentSort === 'original adventure number' ? 'font-weight-bold' : ''}
                            onClick={() => this.sort('original adventure number')}>
                       #</a>
-                    </td>
-                    <td><a className={this.state.currentSort === 'alphabetical' ? 'font-weight-bold' : ''}
+                    </th>
+                    <th><a className={this.state.currentSort === 'alphabetical' ? 'font-weight-bold' : ''}
                            onClick={() => this.sort('alphabetical')}>
                       Name</a>
-                    </td>
-                    <td>Authors</td>
+                    </th>
+                    <th>Authors</th>
                     {/*<td>Rooms</td>*/}
                     {/*<td>Artifacts</td>*/}
                     {/*<td>Effects</td>*/}
                     {/*<td>Monsters</td>*/}
-                    <td>Tags</td>
-                    <td><a className={this.state.currentSort === 'newest' ? 'font-weight-bold' : ''}
+                    <th>Tags</th>
+                    <th><a className={this.state.currentSort === 'newest' ? 'font-weight-bold' : ''}
                            onClick={() => this.sort('newest')}>
                       Published</a>
-                    </td>
-                    <td><a className={this.state.currentSort === 'most popular' ? 'font-weight-bold' : ''}
+                    </th>
+                    <th><a className={this.state.currentSort === 'most popular' ? 'font-weight-bold' : ''}
                            onClick={() => this.sort('most popular')}>
                       Times Played</a>
-                    </td>
-                    <td>Active?</td>
+                    </th>
+                    <th>Active?</th>
                   </tr>
                 </thead>
                 <tbody>
