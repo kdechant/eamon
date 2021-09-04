@@ -1,6 +1,7 @@
 import * as React from 'react';
-import * as ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import Game from "../models/game";
+import rehypeRaw from "rehype-raw";
 
 declare let game: Game;
 
@@ -42,7 +43,7 @@ class History extends React.Component<any, any> {
               if (line.markdown) {
                 return (
                   <div className={className} key={index}>
-                    <ReactMarkdown source={line.text} escapeHtml={false}/>
+                    <ReactMarkdown children={line.text} rehypePlugins={[rehypeRaw]}/>
                   </div>
                 );
               }

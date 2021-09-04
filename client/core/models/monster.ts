@@ -946,7 +946,7 @@ export class Monster extends GameObject {
    * @returns string
    */
   public getMoneyFormatted(): string {
-    return this.gold.toLocaleString() + " " + pluralize(game.money_name, this.gold);
+    return this.gold.toLocaleString() + " " + pluralize.plural(game.money_name, this.gold);
   }
 
   /**
@@ -1296,7 +1296,7 @@ export class GroupMonster extends Monster {
 
     // default plural name for group monsters. if you want a better name, enter it in the database.
     if (this.count > 1 && !this.name_plural) {
-      this.name_plural = pluralize(this.name, 2);
+      this.name_plural = pluralize.plural(this.name, 2);
     }
 
     this.original_group_size = this.count;

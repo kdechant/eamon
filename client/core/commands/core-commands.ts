@@ -1226,7 +1226,7 @@ export class GiveCommand implements BaseCommand {
     // check if we're giving money (GIVE 123 TO NPC or GIVE 123 GOLD TO NPC)
     let gold_amount = Number(item_name);
     if (isNaN(gold_amount)) {
-      const plural = pluralize(game.money_name);
+      const plural = pluralize.plural(game.money_name);
       const regex_result = new RegExp(`([0-9,.]+) (gold|${game.money_name}|${plural})`).exec(item_name);
       if (regex_result) {
         gold_amount = Number(regex_result[1]);

@@ -48,7 +48,7 @@ export class GameObject {
     const names: string[] = [  // all iterations of the monster's name
       this.name.toLocaleLowerCase(),
       this.getDisplayName().toLocaleLowerCase(),
-      pluralize(this.name).toLocaleLowerCase(),
+      pluralize.plural(this.name).toLocaleLowerCase(),
     ];
     if (this.aliases) {
       this.aliases.forEach(a => names.push(a));

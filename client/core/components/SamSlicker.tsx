@@ -1,7 +1,6 @@
 import * as pluralize from 'pluralize';
 import * as React from 'react';
-import axios from "axios";
-import {getHeaders, getAxios} from "../../main-hall/utils/api";
+import {getAxios} from "../../main-hall/utils/api";
 import Game from "../models/game";
 
 declare let game: Game;
@@ -189,7 +188,7 @@ class SamSlicker extends React.Component<any, any> {
     }
 
     const profit = game.player.profit.toLocaleString();
-    const money_name = pluralize(game.money_name, game.player.profit);
+    const money_name = pluralize.plural(game.money_name, game.player.profit);
     return (
       <div>
         <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>

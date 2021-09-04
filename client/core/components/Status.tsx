@@ -1,9 +1,10 @@
 import * as React from 'react';
-import * as ReactMarkdown from "react-markdown";
-import * as pluralize from 'pluralize';
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+
 import {titleCase} from "../../main-hall/utils";
 import {Monster} from "../models/monster";
-import {formatList} from "../utils/index";
+import {formatList} from "../utils";
 
 class Status extends React.Component<any, any> {
 
@@ -119,8 +120,8 @@ class Status extends React.Component<any, any> {
 
             {/*   [class.hidden]="hiddenDesc" */}
             <ReactMarkdown className="room-description"
-                           source={game.rooms.current_room.description}
-                           escapeHtml={false}/>
+                           children={game.rooms.current_room.description}
+                           rehypePlugins={[rehypeRaw]}/>
             <div className="room-exits">Visible Exits:&nbsp;
               {visible_exits.map((exit, index) => (
                 <span key={index}>{exit.direction}&nbsp;</span>
@@ -139,8 +140,8 @@ class Status extends React.Component<any, any> {
             )}
             {game.rooms.current_room.dark_description && (
               <ReactMarkdown className="room-description"
-                 source={game.rooms.current_room.dark_description}
-                 escapeHtml={false}/>
+                             children={game.rooms.current_room.dark_description}
+                             rehypePlugins={[rehypeRaw]}/>
             )}
           </div>
         )}

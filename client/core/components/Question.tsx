@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as KeyboardEventHandler from 'react-keyboard-event-handler';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 class Question extends React.Component<any, any> {
   public state = {

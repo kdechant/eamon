@@ -1,5 +1,8 @@
 import * as React from 'react';
-import * as ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
+// @ts-ignore
+import rehypeRaw from "rehype-raw";
+
 import Game from "../models/game";
 import {gamevars} from "../utils";
 
@@ -30,11 +33,12 @@ class IntroText extends React.Component<any, any> {
     this.props.setGameState(game);
   };
 
-  public render() {
+  public render(): JSX.Element {
     const game = this.props.game;
     return (
       <div id="intro-text">
-        <ReactMarkdown source={gamevars(game.intro_text[this.state.index])} escapeHtml={false} />
+        <ReactMarkdown children={gamevars(game.intro_text[this.state.index])}
+                       rehypePlugins={[rehypeRaw]} />
         {this.state.index < game.intro_text.length - 1 && (
         <p className="intro-next">
           <button className="btn btn-success" id="intro-next" onClick={this.intro_next}>Next</button>

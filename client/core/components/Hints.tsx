@@ -1,6 +1,7 @@
 import * as React from 'react';
-import * as ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import rehypeRaw from "rehype-raw";
 
 class Hints extends React.Component<any, any> {
 
@@ -54,7 +55,10 @@ class Hints extends React.Component<any, any> {
                         <span className="blur">{h.answers[h.current_index].answer}</span><br />
                         <span className="small">Spoiler alert! <a onClick={() => this.reveal(h)}>Click here to show the answer</a>.</span>
                       </span> :
-                      <ReactMarkdown source={h.answers[h.current_index].answer} escapeHtml={false} linkTarget="_blank" /> }
+                      <ReactMarkdown
+                        children={h.answers[h.current_index].answer}
+                        rehypePlugins={[rehypeRaw]}
+                        linkTarget="_blank" /> }
                   </div>
                   {h.answers.length > 1 && (
                   <div className="hint-next-prev">
