@@ -3,26 +3,36 @@ from rest_framework import routers
 
 from . import views
 
-from .views import PlayerViewSet, PlayerProfileViewSet, AdventureViewSet, AuthorViewSet, RoomViewSet, ArtifactViewSet, EffectViewSet, MonsterViewSet, HintViewSet, LogViewSet
+from adventure.api.game import views as adventure_views
+from adventure.api.designer import views as designer_views
 from player.views import RatingViewSet, SavedGameViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'players', PlayerViewSet)
-router.register(r'profiles', PlayerProfileViewSet)
-router.register(r'authors', AuthorViewSet)
-router.register(r'adventures', AdventureViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w-]+)/rooms$', RoomViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w-]+)/artifacts$', ArtifactViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w-]+)/effects$', EffectViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w-]+)/monsters$', MonsterViewSet)
-router.register(r'adventures/(?P<adventure_id>[\w-]+)/hints', HintViewSet)
+router.register(r'players', adventure_views.PlayerViewSet)
+router.register(r'profiles', adventure_views.PlayerProfileViewSet)
+router.register(r'authors', adventure_views.AuthorViewSet)
+router.register(r'adventures', adventure_views.AdventureViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w-]+)/rooms$', adventure_views.RoomViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w-]+)/artifacts$', adventure_views.ArtifactViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w-]+)/effects$', adventure_views.EffectViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w-]+)/monsters$', adventure_views.MonsterViewSet)
+router.register(r'adventures/(?P<adventure_id>[\w-]+)/hints', adventure_views.HintViewSet)
 router.register(r'saves', SavedGameViewSet)
 router.register(r'ratings', RatingViewSet)
-router.register(r'log', LogViewSet)
+router.register(r'log', adventure_views.LogViewSet)
+
+designer_router = routers.DefaultRouter(trailing_slash=False)
+designer_router.register(r'', designer_views.AdventureViewSet)
+designer_router.register(r'(?P<adventure_id>[\w-]+)/rooms$', designer_views.RoomViewSet)
+designer_router.register(r'(?P<adventure_id>[\w-]+)/artifacts$', designer_views.ArtifactViewSet)
+designer_router.register(r'(?P<adventure_id>[\w-]+)/effects$', designer_views.EffectViewSet)
+designer_router.register(r'(?P<adventure_id>[\w-]+)/monsters$', designer_views.MonsterViewSet)
+designer_router.register(r'(?P<adventure_id>[\w-]+)/hints', designer_views.HintViewSet)
 
 urlpatterns = [
     # REST API routes
     url(r'^api/', include(router.urls)),
+    url(r'^api/designer/', include(designer_router.urls)),
 
     # regular Django pages
     url(r'^$', views.index, name='index'),

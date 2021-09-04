@@ -27,12 +27,12 @@ function AdventureMainMenu(): JSX.Element {
     // get the adventure details from the API
     async function loadAdventureData(slug) {
         const [adv_data, rooms_data, artifacts_data, effects_data, monsters_data, hints_data] = await Promise.all([
-            fetch(`/api/adventures/${slug}`).then(response => response.json()),
-            fetch(`/api/adventures/${slug}/rooms`).then(response => response.json()),
-            fetch(`/api/adventures/${slug}/artifacts`).then(response => response.json()),
-            fetch(`/api/adventures/${slug}/effects`).then(response => response.json()),
-            fetch(`/api/adventures/${slug}/monsters`).then(response => response.json()),
-            fetch(`/api/adventures/${slug}/hints`).then(response => response.json()),
+            fetch(`/api/designer/${slug}`).then(response => response.json()),
+            fetch(`/api/designer/${slug}/rooms`).then(response => response.json()),
+            fetch(`/api/designer/${slug}/artifacts`).then(response => response.json()),
+            fetch(`/api/designer/${slug}/effects`).then(response => response.json()),
+            fetch(`/api/designer/${slug}/monsters`).then(response => response.json()),
+            fetch(`/api/designer/${slug}/hints`).then(response => response.json()),
         ]);
         const adventure = new Adventure();
         adventure.init(adv_data);
