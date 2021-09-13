@@ -11,7 +11,7 @@ import AdventureList from "./AdventureList";
 import {screen} from '@testing-library/dom'
 
 const server = setupServer(
-  rest.get('/api/adventures/designer-list', (req, res, ctx) => {
+  rest.get('/api/designer/adventures', (req, res, ctx) => {
     return res(ctx.json([
       {
         id: 1,

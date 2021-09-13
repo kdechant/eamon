@@ -42,4 +42,14 @@ export default class RoomRepository {
     return r || null;
   }
 
+  /**
+   * Gets the array index of a numbered room.
+   * @param {number} id
+   * @return number
+   */
+  getIndex(id: number|string): number {
+    if (typeof id === 'string') id = parseInt(id);
+    return this.all.findIndex(x => x.id === id);
+  }
+
 }

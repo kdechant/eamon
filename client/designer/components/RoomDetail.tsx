@@ -1,32 +1,45 @@
 import * as React from 'react';
-import {Route, useParams} from "react-router";
+import {useParams} from "react-router";
 
-import AdventureContext from "../context";
+import AdventureContext, {UserContext} from "../context";
 import {ArtifactLink, EffectLink, RoomLink} from "./common";
 
 function RoomDetail(): JSX.Element {
   const { slug, id } = useParams<{ slug: string, id: string }>();
   const context = React.useContext(AdventureContext);
+  const user_context = React.useContext(UserContext);
+
   const room = context.rooms.get(id);
   if (!room) {
     return <>room #${id} not found!</>;
   }
+
+  const setField = (ev) => {
+    context.setRoomField(parseInt(id), ev.target.name, ev.target.value);
+  };
+
   return (
     <>
       <p>
         Room # {id}
       </p>
-      <p>
-        Name:<br />
-        {room.name}
-      </p>
-      <p>
-        Description:<br />
-        {room.description}
-      </p>
-      <p>
-        Is Dark? {room.is_dark ? "Yes" : "No"}
-      </p>
+      <div className="form-group">
+        <label htmlFor="name">Name</label>
+        <input type="text" name="name" className="form-control"
+               onChange={setField} value={room.name} disabled={!user_context.username} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="description">Description</label>
+        <textarea className="form-control" name="description" rows={10}
+                  onChange={setField} value={room.description}
+                  disabled={!user_context.username}>
+        </textarea>
+      </div>
+      <div className="form-group">
+        <label htmlFor="description">Is Dark?</label>
+        <input type="radio" value={1} checked={room.is_dark} onChange={setField} /> Yes
+        <input type="radio" value={0} checked={!room.is_dark} onChange={setField} /> No
+      </div>
       {room.is_dark && (
         <>
           <p>Dark name: <br/>

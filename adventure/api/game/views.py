@@ -19,7 +19,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class AdventureViewSet(viewsets.ModelViewSet):
+class AdventureViewSet(viewsets.ReadOnlyModelViewSet):
     """
     For listing or retrieving adventure data.
     """

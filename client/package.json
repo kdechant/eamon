@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "ie-array-find-polyfill": "^1.1.0",
+    "immutability-helper": "^3.1.1",
     "js-cookie": "^2.2.0",
     "jwt-decode": "^3.1.2",
     "lz-string": "^1.4.4",

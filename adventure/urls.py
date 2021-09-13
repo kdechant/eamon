@@ -22,12 +22,12 @@ router.register(r'ratings', RatingViewSet)
 router.register(r'log', adventure_views.LogViewSet)
 
 designer_router = routers.DefaultRouter(trailing_slash=False)
-designer_router.register(r'', designer_views.AdventureViewSet)
-designer_router.register(r'(?P<adventure_id>[\w-]+)/rooms$', designer_views.RoomViewSet)
-designer_router.register(r'(?P<adventure_id>[\w-]+)/artifacts$', designer_views.ArtifactViewSet)
-designer_router.register(r'(?P<adventure_id>[\w-]+)/effects$', designer_views.EffectViewSet)
-designer_router.register(r'(?P<adventure_id>[\w-]+)/monsters$', designer_views.MonsterViewSet)
-designer_router.register(r'(?P<adventure_id>[\w-]+)/hints', designer_views.HintViewSet)
+designer_router.register(r'adventures', designer_views.AdventureViewSet)
+designer_router.register(r'adventures/(?P<adventure_id>[\w-]+)/rooms', designer_views.RoomViewSet)
+designer_router.register(r'adventures/(?P<adventure_id>[\w-]+)/artifacts$', designer_views.ArtifactViewSet)
+designer_router.register(r'adventures/(?P<adventure_id>[\w-]+)/effects$', designer_views.EffectViewSet)
+designer_router.register(r'adventures/(?P<adventure_id>[\w-]+)/monsters$', designer_views.MonsterViewSet)
+designer_router.register(r'adventures/(?P<adventure_id>[\w-]+)/hints', designer_views.HintViewSet)
 
 urlpatterns = [
     # REST API routes

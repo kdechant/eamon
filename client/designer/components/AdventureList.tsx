@@ -15,7 +15,7 @@ class AdventureList extends React.Component<any, any> {
   };
 
   public componentDidMount(): void {
-    fetch('/api/adventures/designer-list')
+    fetch('/api/designer/adventures')
       .then(res => res.json())
       .then(data => {
         const all_adventures: Adventure[] = [];

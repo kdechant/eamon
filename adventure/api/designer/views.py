@@ -1,9 +1,5 @@
-from rest_framework import viewsets, mixins
-from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Q, Count
+from rest_framework import viewsets
+from django.db.models import Q
 
 from . import serializers
 from adventure.models import Adventure, Author, Room, Artifact, Effect, Monster, Hint
@@ -34,12 +30,13 @@ class AdventureViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class RoomViewSet(viewsets.ReadOnlyModelViewSet):
+class RoomViewSet(viewsets.ModelViewSet):
     """
     Lists room data for an adventure.
     """
     queryset = Room.objects.all()
     serializer_class = serializers.RoomSerializer
+    lookup_field = 'room_id'
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
