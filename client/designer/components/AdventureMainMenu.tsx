@@ -21,6 +21,7 @@ import update from 'immutability-helper';
 
 
 function AdventureMainMenu(): JSX.Element {
+    // TODO: split state into separate states for each repo?
     const [state, setState] = useState(null);
     const [timeouts, setTimeouts] = useState({});
     const user_context = React.useContext(UserContext);
@@ -52,45 +53,50 @@ function AdventureMainMenu(): JSX.Element {
         })
     }
 
-    async function saveAdventureField(field: string): Promise<void> {
-        const body: Record<string, string | number> = {};
-        body[field] = state.adventure[field];
-        const headers: Record<string, string> = {
-            'Content-Type': 'application/json'
+    async function saveAdventureField(field: string, value: string): Promise<void> {
+      const body: Record<string, string | number> = {};
+      body[field] = value;
+      const headers: Record<string, string> = {
+          'Content-Type': 'application/json'
+      }
+      const token = await user_context.getToken();
+      if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+      }
+      fetch(`/api/designer/adventures/${slug}`, {
+          method: 'PATCH',
+          body: JSON.stringify(body),
+          headers: headers
+      }).then(response => response.json()).then(data => {
+        if (data[field] !== value) {
+          const adventure = state.adventure;
+          const new_adv = update(adventure, {
+            [field]: {$set: value}
+          });
+          setState(update(state, {
+              adventure: {$set: new_adv}
+          }));
         }
-        const token = await user_context.getToken();
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-        }
-        fetch(`/api/designer/adventures/${slug}`, {
-            method: 'PATCH',
-            body: JSON.stringify(body),
-            headers: headers
-        }).then(response => response.json()).then(data => {
-            const adventure = state.adventure;
-            adventure[field] = data[field];
-            setState({
-                ...state,
-                adventure,
-            })
-            setTimeouts(timeouts);
-        });
+      });
     }
 
     function setAdventureField(field: string, value: string) {
-        const adventure = state.adventure;
-        adventure[field] = value;
-        setState({
-            ...state,
-            adventure
-        });
-        if (timeouts[field]) {
-            clearTimeout(timeouts[field]);
-        }
-        timeouts['adventure'][field] = setTimeout(() => {
-            saveAdventureField(field)
-        }, 2000);
-        setTimeouts(timeouts);
+      const adventure = state.adventure;
+      const new_adv = update(adventure, {
+        [field]: {$set: value}
+      });
+      setState(update(state, {
+          adventure: {$set: new_adv}
+      }));
+      // TODO: put the cursor back into the same spot after saving
+      const timeout_name = `adv-${field}`;
+      if (timeouts[timeout_name]) {
+          clearTimeout(timeouts[timeout_name]);
+      }
+      const timeout_id = setTimeout(() => saveAdventureField(field, value), 2000);
+      setTimeouts(update(timeouts, {
+        [timeout_name]: {$set: timeout_id}
+      }));
     }
 
     async function saveRoomField(id: number, field: string, value: string): Promise<void> {
@@ -120,6 +126,7 @@ function AdventureMainMenu(): JSX.Element {
      */
     function _setRoomField(id: number, field: string, value: string) {
         const room = state.rooms.get(id);
+        if (room[field] === value) return;
         const new_r = update(room, {[field]: {$set: value}});
         const idx = state.rooms.getIndex(id);
         const new_repo = update(state.rooms, {'all': {[idx]: {$set: new_r}}});

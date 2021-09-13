@@ -8,6 +8,7 @@ export default class Adventure extends GameObject {
   name_sort: string;
   description: string;
   full_description: string;
+  intro_text: string;
   slug: string;
   featured_month: string;
   date_published: string;
