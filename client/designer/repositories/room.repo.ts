@@ -1,5 +1,4 @@
 import {Room} from "../models/room";
-import { parseJSON } from '../../core/utils'
 
 /**
  * Class RoomRepository.
@@ -20,12 +19,6 @@ export default class RoomRepository {
   constructor(room_data: Array<Record<string, number|string>>) {
     for (const i of room_data) {
       const r = new Room();
-      if (i.data) {
-        i.data = parseJSON(i.data);
-      } else {
-        // @ts-ignore
-        i.data = {};
-      }
       r.init(i);
       this.all.push(r);
     }

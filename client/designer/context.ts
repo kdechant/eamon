@@ -15,6 +15,7 @@ interface AdventureContextInterface {
   hints: HintRepository,
   setAdventureField: (field: string, value: string) => void,
   setRoomField: (id: number, field: string, value: string) => void,
+  setArtifactField: (id: number, field: string, value: string) => void,
 }
 
 const AdventureContext = React.createContext<AdventureContextInterface | null>(null);

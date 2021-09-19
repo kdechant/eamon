@@ -81,4 +81,14 @@ export default class ArtifactRepository {
     return a || null;
   }
 
+  /**
+   * Gets the array index of a numbered artifact.
+   * @param {number} id
+   * @return number
+   */
+  getIndex(id: number|string): number {
+    if (typeof id === 'string') id = parseInt(id);
+    return this.all.findIndex(x => x.id === id);
+  }
+
 }

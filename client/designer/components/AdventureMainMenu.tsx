@@ -89,7 +89,7 @@ function AdventureMainMenu(): JSX.Element {
         }
         timeouts['adventure'][field] = setTimeout(() => {
             saveAdventureField(field)
-        }, 500);
+        }, 2000);
         setTimeouts(timeouts);
     }
 
@@ -117,23 +117,13 @@ function AdventureMainMenu(): JSX.Element {
      * @param id
      * @param field
      * @param value
-     * @param callback
      */
-    function _setRoomField(id: number, field: string, value: string,
-                                 callback: () => void = null) {
+    function _setRoomField(id: number, field: string, value: string) {
         const room = state.rooms.get(id);
-        const fields_to_update = {}
-        fields_to_update[field] = {$set: value};
-        const new_r = update(room, fields_to_update)
-
+        const new_r = update(room, {[field]: {$set: value}});
         const idx = state.rooms.getIndex(id);
-        const repl = {'all': {}}
-        repl.all[idx] = {$set: new_r};
-        const new_repo = update(state.rooms, repl);
-
-        setState(update(state, {
-            rooms: {$set: new_repo}
-        }));
+        const new_repo = update(state.rooms, {'all': {[idx]: {$set: new_r}}});
+        setState(update(state, {rooms: {$set: new_repo}}));
     }
 
     function setRoomField(id: number, field: string, value: string) {
@@ -141,18 +131,66 @@ function AdventureMainMenu(): JSX.Element {
         if (timeouts[timeout_name]) {
             clearTimeout(timeouts[timeout_name]);
         }
-
         _setRoomField(id, field, value);
-
-        // FIXME: saveRoomField is getting stale state. Need to use a different
-        //  hook or something to make sure it gets the latest. Not sure which.
-        const timeouts_to_update = {}
-        timeouts_to_update[timeout_name] = {$set: setTimeout(() => {
-            saveRoomField(id, field, value)
-            // console.log('would save')
-          }, 500)};
+        const timeouts_to_update = {
+          [timeout_name]: {$set: setTimeout(() => saveRoomField(id, field, value), 2000)}
+        }
         setTimeouts(update(timeouts, timeouts_to_update));
     }
+
+    async function saveArtifactField(id: number, field: string, value: string): Promise<void> {
+        const body: Record<string, string | number> = {};
+        body[field] = value;
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json'
+        }
+        const token = await user_context.getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`
+        }
+        fetch(`/api/designer/adventures/${slug}/artifacts/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+            headers: headers
+        }).then(response => response.json()).then(data => {
+          _setRoomField(id, field, data[field]);
+        });
+    }
+
+    /**
+     * Helper function for setting room data in the state
+     * @param id
+     * @param field
+     * @param value
+     */
+    function _setArtifactField(id: number, field: string, value: string) {
+        const art = state.artifacts.get(id);
+        const new_a = update(art, {[field]: {$set: value}});
+        const idx = state.artifacts.getIndex(id);
+        const new_repo = update(state.artifacts, {'all': {[idx]: {$set: new_a}}});
+        setState(update(state, {artifacts: {$set: new_repo}}));
+    }
+
+    function setArtifactField(id: number, field: string, value: string) {
+        const timeout_name = `artifacts-${id}-${field}`;
+        if (timeouts[timeout_name]) {
+            clearTimeout(timeouts[timeout_name]);
+        }
+        _setArtifactField(id, field, value);
+
+        const timeouts_to_update = {
+          [timeout_name]: {
+            $set: setTimeout(() => saveArtifactField(id, field, value), 2000)
+          }
+        };
+        setTimeouts(update(timeouts, timeouts_to_update));
+    }
+    const context_value = {
+      ...state,
+      setAdventureField,
+      setRoomField,
+      setArtifactField
+    };
 
     useEffect(() => {
         loadAdventureData(slug);
@@ -163,7 +201,7 @@ function AdventureMainMenu(): JSX.Element {
     }
 
     return (
-        <AdventureContext.Provider value={{...state, setAdventureField, setRoomField}}>
+        <AdventureContext.Provider value={context_value}>
             <div className="container-fluid" id="AdventureDetail">
                 <div className="row">
                     <div className="col-sm-2 d-none d-sm-block">

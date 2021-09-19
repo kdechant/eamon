@@ -43,36 +43,39 @@ class RoomViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(adventure__slug=adventure_id)
 
 
-class ArtifactViewSet(viewsets.ReadOnlyModelViewSet):
+class ArtifactViewSet(viewsets.ModelViewSet):
     """
     Lists artifact data for an adventure.
     """
     queryset = Artifact.objects.order_by('artifact_id')
     serializer_class = serializers.ArtifactSerializer
+    lookup_field = 'artifact_id'
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
         return self.queryset.filter(adventure__slug=adventure_id)
 
 
-class EffectViewSet(viewsets.ReadOnlyModelViewSet):
+class EffectViewSet(viewsets.ModelViewSet):
     """
     Lists effect data for an adventure.
     """
     queryset = Effect.objects.all()
     serializer_class = serializers.EffectSerializer
+    lookup_field = 'effect_id'
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']
         return self.queryset.filter(adventure__slug=adventure_id)
 
 
-class MonsterViewSet(viewsets.ReadOnlyModelViewSet):
+class MonsterViewSet(viewsets.ModelViewSet):
     """
     Lists monster data for an adventure.
     """
     queryset = Monster.objects.all().order_by('monster_id')
     serializer_class = serializers.MonsterSerializer
+    lookup_field = 'monster_id'
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']

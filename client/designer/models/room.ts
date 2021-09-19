@@ -25,6 +25,12 @@ export class RoomExit extends Loadable {
 
 }
 
+type roomSource = {
+  id: number,
+  name: string,
+  exits: Record<string, string | number>
+}
+
 export class Room extends Loadable {
 
   public id: number;
@@ -39,21 +45,20 @@ export class Room extends Loadable {
   public dark_description: string;
   public effect: number;
   public effect_inline: number;
-
-  /**
-   * A container for custom data used by specific adventures
-   */
-  public data: { [key: string]: any; } = {};
+  // Note: unlike in the main pgm, data here is just a string.
+  // (This may change if I ever implement a rich JSON form field.)
+  public data: string;
 
   /**
    * Loads data from JSON source into the object properties.
    * Override of parent method to handle RoomExit objects.
    * @param {Object} source an object, e.g., from JSON.
    */
-  public init(source): void {
+  public init(source: roomSource): void {
     for (const prop in source) {
       if (prop === "exits") {
-        for (const i in source[prop]) {
+        const exits = source[prop] as Record<string, string | number>;
+        for (const i in exits) {
           const ex = new RoomExit();
           ex.init(source[prop][i]);
           this.exits.push(ex);
