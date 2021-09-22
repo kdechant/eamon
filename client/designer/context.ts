@@ -1,5 +1,5 @@
 import * as React from "react";
-import Adventure from "./models/Adventure";
+import Adventure from "./models/adventure";
 import RoomRepository from "./repositories/room.repo";
 import ArtifactRepository from "./repositories/artifact.repo";
 import EffectRepository from "./repositories/effect.repo";

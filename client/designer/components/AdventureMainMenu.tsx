@@ -153,7 +153,7 @@ function AdventureMainMenu(): JSX.Element {
             body: JSON.stringify(body),
             headers: headers
         }).then(response => response.json()).then(data => {
-          _setRoomField(id, field, data[field]);
+          _setArtifactField(id, field, data[field]);
         });
     }
 
@@ -172,18 +172,18 @@ function AdventureMainMenu(): JSX.Element {
     }
 
     function setArtifactField(id: number, field: string, value: string) {
-        const timeout_name = `artifacts-${id}-${field}`;
-        if (timeouts[timeout_name]) {
-            clearTimeout(timeouts[timeout_name]);
-        }
-        _setArtifactField(id, field, value);
+      const timeout_name = `artifacts-${id}-${field}`;
+      if (timeouts[timeout_name]) {
+          clearTimeout(timeouts[timeout_name]);
+      }
+      _setArtifactField(id, field, value);
 
-        const timeouts_to_update = {
-          [timeout_name]: {
-            $set: setTimeout(() => saveArtifactField(id, field, value), 2000)
-          }
-        };
-        setTimeouts(update(timeouts, timeouts_to_update));
+      const timeouts_to_update = {
+        [timeout_name]: {
+          $set: setTimeout(() => saveArtifactField(id, field, value), 2000)
+        }
+      };
+      setTimeouts(update(timeouts, timeouts_to_update));
     }
     const context_value = {
       ...state,
