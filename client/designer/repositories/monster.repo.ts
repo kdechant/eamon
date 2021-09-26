@@ -1,10 +1,11 @@
 import Monster from "../models/monster";
+import {BaseRepository} from "./base.repo";
 
 /**
  * Class MonsterRepository.
  * Storage class for all monster data.
  */
-export default class MonsterRepository {
+export default class MonsterRepository extends BaseRepository {
 
   /**
    * An array of all the Monster objects
@@ -17,6 +18,7 @@ export default class MonsterRepository {
   index = 0;
 
   constructor(monster_data: Array<Record<string, number|string>>) {
+    super();
     monster_data.forEach((m) => {
       this.add(m);
     });

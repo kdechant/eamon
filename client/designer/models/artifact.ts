@@ -30,8 +30,6 @@ export default class Artifact extends GameObject {
   static ARMOR_TYPE_RING = 4;
 
   // data properties
-  article: string;
-  synonyms: string;
   room_id: number; // if on the ground, which room
   monster_id: number; // if in inventory, who is carrying it
   container_id: number; // if inside a container, the artifact id of the container
@@ -60,17 +58,11 @@ export default class Artifact extends GameObject {
   quantity: number;
   effect_id: number; // for readable artifacts, the ID of the marking in the effects table
   num_effects: number; // for readable artifacts, the number of markings in the effects table
-  public is_markdown: boolean;
 
   // game-state properties
   contents: Artifact[] = [];  // the Artifact objects for the things inside a container
-  seen = false;
-  is_lit = false;
   inventory_message = "";  // replaces the "lit" or "wearing" message if set
-  markings_index = 0; // counter used to keep track of the next marking to read
   is_worn = false; // if the monster is wearing it
-  is_broken = false;  // for a doors/containers that has been smashed open
-  player_brought = false; // flag to indicate which items the player brought with them
 
   /**
    * Returns the maximum damage a weapon can do.

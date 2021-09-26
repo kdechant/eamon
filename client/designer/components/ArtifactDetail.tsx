@@ -1,10 +1,15 @@
 import * as React from 'react';
 import {useParams} from "react-router";
 
-import AdventureContext, {UserContext} from "../context";
+import { AdventureContext, UserContext, FormContext} from "../context";
 import Artifact from '../models/artifact';
-import {ArtifactLink, EffectLink, MonsterLink, RoomLink} from "./common";
-import {ObjectDiceSidesField, ObjectNumberField, ObjectTextField} from "./fields";
+import {ArtifactLink, ArtifactLocation} from "./common";
+import {
+  ObjectDescriptionField,
+  ObjectDiceSidesField,
+  ObjectNumberField,
+  ObjectTextField
+} from "./fields";
 
 function ArtifactDetail(): JSX.Element {
   const { slug, id } = useParams<{ slug: string, id: string }>();
@@ -25,91 +30,43 @@ function ArtifactDetail(): JSX.Element {
     context.setArtifactField(parseInt(id), ev.target.name, ev.target.value);
   };
 
+  const saveField = (ev: any) => {
+    context.saveArtifactField(parseInt(id), ev.target.name, ev.target.value);
+  };
+
   const prev = context.artifacts.getPrev(id);
   const next = context.artifacts.getNext(id);
 
   return (
-    <>
+    <FormContext.Provider value={{setField, saveField}}>
       <div className="row no-gutters">
         <div className="col-md-8">
           <strong>Artifact # {id}</strong>
         </div>
         <div className="col-md-2">
-        {prev && (
-          <>
-            &larr; <ArtifactLink id={prev} />
-          </>
-        )}
+        {prev && <>&larr; <ArtifactLink id={prev} /></>}
         </div>
         <div className="col-md-2">
-        {next && (
-          <>
-            <ArtifactLink id={next} /> &rarr;
-          </>
-        )}
+        {next && <><ArtifactLink id={next} /> &rarr;</>}
         </div>
       </div>
       <div className="row">
         <div className="col-md-2">
           <ObjectTextField name="article" label="Article" value={artifact.article || ''}
                            helpText="An article like 'the', 'a', or 'some'. Optional. Makes the text
-                           flow more easily but has no effect on game play."
-                           setField={setField} />
+                           flow more easily but has no effect on game play." />
         </div>
         <div className="col-md-4">
-          <ObjectTextField name="name" label="Name" value={artifact.name} helpText="" setField={setField} />
+          <ObjectTextField name="name" label="Name" value={artifact.name} helpText="" />
         </div>
         <div className="col-md-6">
           <ObjectTextField name="synonyms" label="Synonyms / Alternate names" value={artifact.synonyms || ''}
                            helpText="Separate with commas. Useful for artifacts with odd names or for hidden items.
-                           e.g., 'bottle' for a potion, or 'strange rock' for a secret door"
-                           setField={setField} />
+                           e.g., 'bottle' for a potion, or 'strange rock' for a secret door" />
         </div>
       </div>
-      <div className="form-group">
-        <label htmlFor="description">Description</label>
-        <textarea className="form-control" name="description" rows={5}
-                  onChange={setField} value={artifact.description}
-                  disabled={!user_context.username}>
-        </textarea>
-        <div className="form-group">
-          <span className="mr-2">Description format:</span>
-          <div className="form-check form-check-inline">
-            <input type="radio" className="form-check-input" name="is_markdown" id="is_markdown_n" value={0}
-                   checked={!artifact.is_markdown} onChange={setField} />
-            <label htmlFor="is_markdown_n" className="form-check-label">Plain Text</label>
-          </div>
-          <div className="form-check form-check-inline">
-            <input type="radio" className="form-check-input" name="is_markdown" id="is_markdown_y" value={1}
-                   checked={artifact.is_markdown} onChange={setField} />
-            <label htmlFor="is_markdown_y" className="form-check-label">Markdown</label>
-          </div>
-        </div>
-      </div>
-      <p>
-        Location:
-        {' '}
-        {artifact.room_id && (
-          <>
-            In room: <RoomLink id={artifact.room_id} />
-          </>
-        )}
-        {artifact.monster_id && artifact.type != 10 && artifact.type != 12 && (
-          <>
-            Carried by monster: <MonsterLink id={artifact.monster_id} />
-          </>
-        )}
-        {artifact.container_id && (
-          <>
-            In container: <ArtifactLink id={artifact.container_id} />
-          </>
-        )}
-        {!artifact.room_id && !artifact.monster_id && !artifact.container_id && (
-          <>
-            Nowhere
-          </>
-        )}
-      </p>
+      <ObjectDescriptionField value={artifact.description} isMarkdown={artifact.is_markdown} />
+      <ArtifactLocation id={artifact.id} />
       <div className="row">
         <div className="col-sm-4">
           <div className="form-group">
@@ -135,7 +92,7 @@ function ArtifactDetail(): JSX.Element {
           </div>
         </div>
         <div className="col-sm-4">
-          <ObjectNumberField name="value" label="Value" value={artifact.value} helpText="" afterText="gp" setField={setField} />
+          <ObjectNumberField name="value" label="Value" value={artifact.value} afterText="gp" />
         </div>
         <div className="col-sm-4">
           <div className="form-group">
@@ -159,6 +116,7 @@ function ArtifactDetail(): JSX.Element {
           </div>
         </div>
       </div>
+
       {artifact.isWeapon() && (
         <>
           <div className="row">
@@ -178,23 +136,25 @@ function ArtifactDetail(): JSX.Element {
             <div className="col-sm-4">
               <ObjectNumberField name="weapon_odds" label="Weapon Odds" value={artifact.weapon_odds}
                                  helpText="Amount added to chance to hit. May be negative. A.k.a, Complexity"
-                                 afterText="%"
-                                 setField={setField} />
+                                 afterText="%" />
             </div>
             <div className="col-sm-4">
               <ObjectDiceSidesField
-                diceName="dice" sidesName="sides" label="Weapon Damage" diceValue={artifact.dice} sidesValue={artifact.sides}
-                helpText="The weapon's damage roll. e.g., '1d8' or '2d6'"
-                setField={setField} />
+                label="Weapon Damage"
+                diceName="dice" diceValue={artifact.dice}
+                sidesName="sides" sidesValue={artifact.sides}
+                helpText="The weapon's damage roll. e.g., '1d8' or '2d6'" />
             </div>
           </div>
         </>
       )}
+
       {(artifact.type === Artifact.TYPE_EDIBLE || artifact.type === Artifact.TYPE_DRINKABLE) && (
         <>
           <div className="row">
             <div className="col-sm-3">
-              <ObjectTextField name="quantity" label="Drinks/Bites" value={artifact.quantity} helpText="" setField={setField} />
+              <ObjectTextField name="quantity" label="Drinks/Bites"
+                               value={artifact.quantity} helpText="" />
             </div>
             <div className="col-sm-3">
               <ObjectDiceSidesField
@@ -202,8 +162,7 @@ function ArtifactDetail(): JSX.Element {
                 diceName="dice" diceValue={artifact.dice}
                 sidesName="sides" sidesValue={artifact.sides}
                 helpText="The item's healing roll. e.g., '1d8' or '2d6'. Many items use a 'd1'
-                          value to heal an exact value, e.g., '6d1' to heal exactly 6 HP."
-                setField={setField} />
+                          value to heal an exact value, e.g., '6d1' to heal exactly 6 HP." />
             </div>
           </div>
         </>
@@ -219,7 +178,7 @@ function ArtifactDetail(): JSX.Element {
           ))}
         </div>
       )}
-    </>
+    </FormContext.Provider>
   );
 }
 

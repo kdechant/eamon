@@ -14,13 +14,16 @@ interface AdventureContextInterface {
   monsters: MonsterRepository,
   hints: HintRepository,
   setAdventureField: (field: string, value: string) => void,
+  saveAdventureField: (field: string, value: string) => void,
   setRoomField: (id: number, field: string, value: string) => void,
+  saveRoomField: (id: number, field: string, value: string) => void,
   setArtifactField: (id: number, field: string, value: string) => void,
+  saveArtifactField: (id: number, field: string, value: string) => void,
+  setMonsterField: (id: number, field: string, value: string) => void,
+  saveMonsterField: (id: number, field: string, value: string) => void,
 }
 
-const AdventureContext = React.createContext<AdventureContextInterface | null>(null);
-
-export default AdventureContext;
+export const AdventureContext = React.createContext<AdventureContextInterface | null>(null);
 
 interface UserContextInterface {
   username: string,
@@ -29,4 +32,11 @@ interface UserContextInterface {
   getToken: () => Promise<string>,
 }
 export const UserContext = React.createContext<UserContextInterface | null>(null);
+
+interface FormContextInterface {
+  setField: (ev: any) => void,
+  saveField: (ev: any) => void,
+}
+export const FormContext = React.createContext<FormContextInterface | null>(null);
+
 

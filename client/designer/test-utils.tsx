@@ -2,7 +2,7 @@ import * as React from 'react';
 import {render, RenderResult} from '@testing-library/react'
 import {Route} from "react-router";
 import {MemoryRouter} from "react-router-dom";
-import AdventureContext from "./context";
+import {AdventureContext} from "./context";
 import RoomRepository from "./repositories/room.repo";
 import ArtifactRepository from "./repositories/artifact.repo";
 import EffectRepository from "./repositories/effect.repo";

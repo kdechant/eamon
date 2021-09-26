@@ -1,56 +1,50 @@
 import * as React from 'react';
 import {useParams} from "react-router";
 
-import AdventureContext, {UserContext} from "../context";
+import { AdventureContext, FormContext, UserContext} from "../context";
 import {ArtifactLink, EffectLink, MonsterLink, RoomLink} from "./common";
+import {ObjectDescriptionField, ObjectTextareaField, ObjectTextField} from "./fields";
 
 function RoomDetail(): JSX.Element {
   const { slug, id } = useParams<{ slug: string, id: string }>();
   const context = React.useContext(AdventureContext);
-  const user_context = React.useContext(UserContext);
 
   const room = context.rooms.get(id);
   if (!room) {
-    return <>room #${id} not found!</>;
+    return <>Room #${id} not found!</>;
   }
 
   const artifacts = context.artifacts.all.filter(a => a.room_id == room.id);
   const monsters = context.monsters.all.filter(m => m.room_id == room.id);
 
+  const prev = context.rooms.getPrev(id);
+  const next = context.rooms.getNext(id);
+
   const setField = (ev) => {
+    // TODO: special handling for RoomExit fields
     context.setRoomField(parseInt(id), ev.target.name, ev.target.value);
   };
 
+  const saveField = (ev) => {
+    // TODO: special handling for RoomExit fields
+    context.saveRoomField(parseInt(id), ev.target.name, ev.target.value);
+  };
+
   return (
-    <>
-      <p>
-        Room # {id}
-      </p>
-      <div className="form-group">
-        <label htmlFor="name">Name</label>
-        <input type="text" name="name" className="form-control"
-               onChange={setField} value={room.name} disabled={!user_context.username} />
-      </div>
-      <div className="form-group">
-        <label htmlFor="description">Description</label>
-        <textarea className="form-control" name="description" rows={5}
-                  onChange={setField} value={room.description}
-                  disabled={!user_context.username}>
-        </textarea>
-        <div className="form-group">
-          <span className="mr-2">Description format:</span>
-          <div className="form-check form-check-inline">
-            <input type="radio" className="form-check-input" name="is_markdown" id="is_markdown_n" value={0}
-                   checked={!room.is_markdown} onChange={setField} />
-            <label htmlFor="is_markdown_n" className="form-check-label">Plain Text</label>
-          </div>
-          <div className="form-check form-check-inline">
-            <input type="radio" className="form-check-input" name="is_markdown" id="is_markdown_y" value={1}
-                   checked={room.is_markdown} onChange={setField} />
-            <label htmlFor="is_markdown_y" className="form-check-label">Markdown</label>
-          </div>
+    <FormContext.Provider value={{setField, saveField}}>
+      <div className="row no-gutters">
+        <div className="col-md-8">
+          <strong>Room # {id}</strong>
+        </div>
+        <div className="col-md-2">
+        {prev && <>&larr; <RoomLink id={prev} /></>}
+        </div>
+        <div className="col-md-2">
+        {next && <><RoomLink id={next} /> &rarr;</>}
         </div>
       </div>
+      <ObjectTextField name="name" label="Name" value={room.name} />
+      <ObjectDescriptionField value={room.description} isMarkdown={room.is_markdown} />
       <div className="form-group">
         <span className="mr-2">Is Dark?</span>
         <div className="form-check form-check-inline">
@@ -66,38 +60,18 @@ function RoomDetail(): JSX.Element {
       </div>
       {room.is_dark && (
         <>
-          <div className="form-group">
-            <label htmlFor="dark_name">Dark name</label>
-            <input type="text" className="form-control" name="dark_name"
-                      onChange={setField} value={room.dark_name}
-                      disabled={!user_context.username} />
-            <small className="form-text text-muted">
-              Shown when the player is in the room and there is no light source.
-            </small>
-          </div>
-          <div className="form-group">
-            <label htmlFor="dark_description">Dark Description</label>
-            <textarea className="form-control" name="dark_description" rows={5}
-                      onChange={setField} value={room.dark_description || ""}
-                      disabled={!user_context.username}>
-            </textarea>
-            <small className="form-text text-muted">
-              Shown when the player first enters the room and there is no light source. Is also shown if the
-              player previously entered the room when it was light and later entered it again in the dark.
-            </small>
-          </div>
+          <ObjectTextField name="dark_name" label="Dark name" value={room.dark_name}
+                           helpText="Shown when the player is in the room and there is no light source." />
+          <ObjectTextareaField name="dark_description" label="Dark Description" value={room.dark_description}
+                           helpText="Shown when the player first enters the room and there is no
+                                     light source. Is also shown if the player previously entered
+                                     the room when it was light and later entered it again in the dark." />
         </>
       )}
-      <div className="form-group">
-        <label htmlFor="data">Custom Data</label>
-        <textarea className="form-control" name="data" rows={5}
-                  onChange={setField} value={room.data || ""}
-                  disabled={!user_context.username}>
-        </textarea>
-        <small className="form-text text-muted">
-          Custom data about the room. This data may be used in custom code. Must be valid JSON format.
-        </small>
-      </div>
+      <ObjectTextareaField name="data" label="Custom Data" value={room.data}
+                       helpText="Custom data about the room. This data may be
+                       used in custom code. Must be valid JSON format." />
+
       <p>Exits:</p>
       <table className="table">
         <thead>
@@ -137,7 +111,7 @@ function RoomDetail(): JSX.Element {
           </div>
         ))}
       </p>
-    </>
+    </FormContext.Provider>
   );
 }
 

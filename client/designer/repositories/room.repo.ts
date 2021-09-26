@@ -1,10 +1,12 @@
 import {Room} from "../models/room";
+import {BaseRepository} from "./base.repo";
+import {roomSource} from "../types";
 
 /**
  * Class RoomRepository.
  * Storage class for all room data.
  */
-export default class RoomRepository {
+export default class RoomRepository extends BaseRepository {
 
   /**
    * An array of all the Room objects
@@ -16,7 +18,8 @@ export default class RoomRepository {
    */
   current_room: Room;
 
-  constructor(room_data: Array<Record<string, number|string>>) {
+  constructor(room_data: Array<roomSource>) {
+    super();
     for (const i of room_data) {
       const r = new Room();
       r.init(i);
@@ -33,16 +36,6 @@ export default class RoomRepository {
     if (typeof id === 'string') id = parseInt(id);
     const r = this.all.find(x => x.id === id);
     return r || null;
-  }
-
-  /**
-   * Gets the array index of a numbered room.
-   * @param {number} id
-   * @return number
-   */
-  getIndex(id: number|string): number {
-    if (typeof id === 'string') id = parseInt(id);
-    return this.all.findIndex(x => x.id === id);
   }
 
 }

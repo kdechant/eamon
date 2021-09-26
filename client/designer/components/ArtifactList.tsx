@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Link } from "react-router-dom";
 
 import {useParams} from "react-router";
-import AdventureContext from "../context";
-import {ArtifactLink, MonsterLink, RoomLink} from "./common";
+import {AdventureContext} from "../context";
+import {ArtifactLink, ArtifactLocation, MonsterLink, RoomLink} from "./common";
 
 function ArtifactList(): JSX.Element {
   const { slug } = useParams<{ slug: string }>();
@@ -33,9 +33,7 @@ function ArtifactList(): JSX.Element {
                 <td>#</td>
                 <td>Name</td>
                 <td>Type</td>
-                <td>In Room</td>
-                <td>In Container</td>
-                <td>Carried by Monster</td>
+                <td>Location</td>
                 <td>Weight</td>
                 <td>Value</td>
               </tr>
@@ -48,9 +46,7 @@ function ArtifactList(): JSX.Element {
                     <td><Link to={`artifacts/${art.id}`}>{art.name}</Link></td>
                     {/* TODO: show type name */}
                     <td>{art.type}</td>
-                    <td><RoomLink id={art.room_id} /></td>
-                    <td><ArtifactLink id={art.container_id} /></td>
-                    <td><MonsterLink id={art.monster_id} /></td>
+                    <td><ArtifactLocation id={art.id} /></td>
                     <td>{art.weight}</td>
                     <td>{art.value}</td>
                   </tr>

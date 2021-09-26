@@ -1,10 +1,11 @@
 import {Effect} from "../models/effect";
+import {BaseRepository} from "./base.repo";
 
 /**
  * Class EffectRepository.
  * Storage class for all effect data.
  */
-export default class EffectRepository {
+export default class EffectRepository extends BaseRepository {
 
   /**
    * An array of all the Effect objects
@@ -17,6 +18,7 @@ export default class EffectRepository {
   index = 0;
 
   constructor(effect_data: Array<Record<string, unknown>>) {
+    super();
     for (const e of effect_data) {
       this.add(e);
     }

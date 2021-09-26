@@ -1,4 +1,5 @@
 import {Loadable} from "./loadable";
+import {roomSource} from "../types";
 
 export class RoomExit extends Loadable {
 
@@ -23,12 +24,6 @@ export class RoomExit extends Loadable {
     "d": "down"
   };
 
-}
-
-type roomSource = {
-  id: number,
-  name: string,
-  exits: Record<string, string | number>
 }
 
 export class Room extends Loadable {

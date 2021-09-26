@@ -1,10 +1,11 @@
 import Artifact from "../models/artifact";
+import {BaseRepository} from "./base.repo";
 
 /**
  * Class ArtifactRepository.
  * Storage class for all artifact data.
  */
-export default class ArtifactRepository {
+export default class ArtifactRepository extends BaseRepository {
 
   /**
    * An array of all the Artifact objects
@@ -22,6 +23,7 @@ export default class ArtifactRepository {
   index = 0;
 
   constructor(artifact_data: Array<Record<string, number|string>>) {
+    super();
     for (const i in artifact_data) {
       this.add(artifact_data[i]);
     }
@@ -79,48 +81,6 @@ export default class ArtifactRepository {
     if (typeof id === 'string') id = parseInt(id);
     const a = this.all.find(a => a.id === id);
     return a || null;
-  }
-
-  /**
-   * Gets the array index of a numbered artifact.
-   * @param {number} id
-   * @return number
-   */
-  getIndex(id: number|string): number {
-    if (typeof id === 'string') id = parseInt(id);
-    return this.all.findIndex(x => x.id === id);
-  }
-
-  /**
-   * Gets the index of the previous object in the repository. Can
-   * handle sparse numbering.
-   *
-   * @param {number} id
-   * @return number
-   */
-  getPrev(id: number|string): number {
-    if (typeof id === 'string') id = parseInt(id);
-    const ids = this.all
-      .filter(a => a.id < id)
-      .map(a => a.id)
-      .sort((a, b) => b - a);  // `b - a` sorts in reverse order
-    return ids.length ? ids[0] : null;
-  }
-
-  /**
-   * Gets the index of the next object in the repository. Can
-   * handle sparse numbering.
-   *
-   * @param {number} id
-   * @return number
-   */
-  getNext(id: number|string): number {
-    if (typeof id === 'string') id = parseInt(id);
-    const ids = this.all
-      .filter(a => a.id > id)
-      .map(a => a.id)
-      .sort((a, b) => a - b);
-    return ids.length ? ids[0] : null;
   }
 
 }

@@ -17,8 +17,11 @@ export default class GameObject {
    * It is not persisted to the database and doesn't need to be.
    */
   uuid: string;
+  article: string;
   name: string;
   description: string;
+  is_markdown: boolean;
+  synonyms: string;
 
   /**
    * Loads data from JSON source into the object properties.

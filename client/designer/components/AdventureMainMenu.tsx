@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useEffect, useState} from "react";
-import AdventureContext, {UserContext} from "../context";
+import {AdventureContext, UserContext} from "../context";
 import {Route, useParams} from "react-router";
 import Adventure from "../models/adventure";
 import RoomRepository from "../repositories/room.repo";
@@ -88,7 +88,6 @@ function AdventureMainMenu(): JSX.Element {
       setState(update(state, {
           adventure: {$set: new_adv}
       }));
-      // TODO: put the cursor back into the same spot after saving
       const timeout_name = `adv-${field}`;
       if (timeouts[timeout_name]) {
           clearTimeout(timeouts[timeout_name]);
@@ -134,15 +133,15 @@ function AdventureMainMenu(): JSX.Element {
     }
 
     function setRoomField(id: number, field: string, value: string) {
-        const timeout_name = `rooms-${id}-${field}`;
-        if (timeouts[timeout_name]) {
-            clearTimeout(timeouts[timeout_name]);
-        }
+        // const timeout_name = `rooms-${id}-${field}`;
+        // if (timeouts[timeout_name]) {
+        //     clearTimeout(timeouts[timeout_name]);
+        // }
         _setRoomField(id, field, value);
-        const timeouts_to_update = {
-          [timeout_name]: {$set: setTimeout(() => saveRoomField(id, field, value), 2000)}
-        }
-        setTimeouts(update(timeouts, timeouts_to_update));
+        // const timeouts_to_update = {
+        //   [timeout_name]: {$set: setTimeout(() => saveRoomField(id, field, value), 2000)}
+        // }
+        // setTimeouts(update(timeouts, timeouts_to_update));
     }
 
     async function saveArtifactField(id: number, field: string, value: string): Promise<void> {
@@ -165,7 +164,7 @@ function AdventureMainMenu(): JSX.Element {
     }
 
     /**
-     * Helper function for setting room data in the state
+     * Helper function for setting artifact data in the state
      * @param id
      * @param field
      * @param value
@@ -179,24 +178,78 @@ function AdventureMainMenu(): JSX.Element {
     }
 
     function setArtifactField(id: number, field: string, value: string) {
-      const timeout_name = `artifacts-${id}-${field}`;
-      if (timeouts[timeout_name]) {
-          clearTimeout(timeouts[timeout_name]);
-      }
+      // const timeout_name = `artifacts-${id}-${field}`;
+      // if (timeouts[timeout_name]) {
+      //     clearTimeout(timeouts[timeout_name]);
+      // }
       _setArtifactField(id, field, value);
 
-      const timeouts_to_update = {
-        [timeout_name]: {
-          $set: setTimeout(() => saveArtifactField(id, field, value), 2000)
-        }
-      };
-      setTimeouts(update(timeouts, timeouts_to_update));
+      // const timeouts_to_update = {
+      //   [timeout_name]: {
+      //     $set: setTimeout(() => saveArtifactField(id, field, value), 2000)
+      //   }
+      // };
+      // setTimeouts(update(timeouts, timeouts_to_update));
     }
+
+    async function saveMonsterField(id: number, field: string, value: string): Promise<void> {
+        const body: Record<string, string | number> = {};
+        body[field] = value;
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json'
+        }
+        const token = await user_context.getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`
+        }
+        fetch(`/api/designer/adventures/${slug}/monsters/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+            headers: headers
+        }).then(response => response.json()).then(data => {
+          _setMonsterField(id, field, data[field]);
+        });
+    }
+
+    /**
+     * Helper function for setting monster data in the state
+     * @param id
+     * @param field
+     * @param value
+     */
+    function _setMonsterField(id: number, field: string, value: string) {
+        const art = state.monsters.get(id);
+        const new_a = update(art, {[field]: {$set: value}});
+        const idx = state.monsters.getIndex(id);
+        const new_repo = update(state.monsters, {'all': {[idx]: {$set: new_a}}});
+        setState(update(state, {monsters: {$set: new_repo}}));
+    }
+
+    function setMonsterField(id: number, field: string, value: string) {
+      // const timeout_name = `monsters-${id}-${field}`;
+      // if (timeouts[timeout_name]) {
+      //     clearTimeout(timeouts[timeout_name]);
+      // }
+      _setMonsterField(id, field, value);
+      //
+      // const timeouts_to_update = {
+      //   [timeout_name]: {
+      //     $set: setTimeout(() => saveMonsterField(id, field, value), 2000)
+      //   }
+      // };
+      // setTimeouts(update(timeouts, timeouts_to_update));
+    }
+
     const context_value = {
       ...state,
       setAdventureField,
+      saveAdventureField,
       setRoomField,
-      setArtifactField
+      saveRoomField,
+      setArtifactField,
+      saveArtifactField,
+      setMonsterField,
+      saveMonsterField,
     };
 
     useEffect(() => {
