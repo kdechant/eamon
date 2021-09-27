@@ -1,4 +1,5 @@
 import GameObject from "./game-object";
+import Monster from "./monster";
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -172,4 +173,40 @@ export default class Artifact extends GameObject {
     return (this.type === Artifact.TYPE_WEARABLE && (this.armor_type !== null));
   }
 
+}
+
+export const ARTIFACT_TYPES = {
+  [Artifact.TYPE_GOLD]: "0: Gold",
+  [Artifact.TYPE_TREASURE]: "1: Treasure",
+  [Artifact.TYPE_WEAPON]: "2: Non-magic Weapon",
+  [Artifact.TYPE_MAGIC_WEAPON]: "3: Magic Weapon",
+  [Artifact.TYPE_CONTAINER]: "4: Container",
+  [Artifact.TYPE_LIGHT_SOURCE]: "5: Light Source",
+  [Artifact.TYPE_DRINKABLE]: "6: Drinkable",
+  [Artifact.TYPE_READABLE]: "7: Readable",
+  [Artifact.TYPE_DOOR]: "8: Door/Gate",
+  [Artifact.TYPE_EDIBLE]: "9: Edible",
+  [Artifact.TYPE_BOUND_MONSTER]: "10: Bound Monster",
+  [Artifact.TYPE_WEARABLE]: "11: Wearable",
+  [Artifact.TYPE_DISGUISED_MONSTER]: "12: Disguised Monster",
+  [Artifact.TYPE_DEAD_BODY]: "13: Dead Body",
+  [Artifact.TYPE_USER_1]: "14: User-defined",
+  [Artifact.TYPE_USER_2]: "15: User-defined",
+  [Artifact.TYPE_USER_3]: "16: User-defined",
+}
+
+export const ARTIFACT_WEAPON_TYPES = {
+  1: "1: Axe",
+  2: "2: Bow / Missile",
+  3: "3: Club / Mace / War Hammer",
+  4: "4: Spear / Halberd / Polearm",
+  5: "3: Sword / Dagger",
+}
+
+export const ARTIFACT_ARMOR_TYPES = {
+  [Artifact.ARMOR_TYPE_ARMOR]: "Body Armor",
+  [Artifact.ARMOR_TYPE_SHIELD]: "Shield",
+  [Artifact.ARMOR_TYPE_HELMET]: "Helmet",
+  [Artifact.ARMOR_TYPE_GLOVES]: "Gloves",
+  [Artifact.ARMOR_TYPE_RING]: "Ring",
 }

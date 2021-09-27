@@ -2,12 +2,17 @@ import * as React from 'react';
 import {useParams} from "react-router";
 
 import { AdventureContext, UserContext, FormContext} from "../context";
-import Artifact from '../models/artifact';
+import Artifact, {
+  ARTIFACT_ARMOR_TYPES,
+  ARTIFACT_TYPES,
+  ARTIFACT_WEAPON_TYPES
+} from '../models/artifact';
 import {ArtifactLink, ArtifactLocation} from "./common";
 import {
+  ArtifactSelectField, MonsterSelectField,
   ObjectDescriptionField,
   ObjectDiceSidesField,
-  ObjectNumberField,
+  ObjectNumberField, ObjectSelectField,
   ObjectTextField
 } from "./fields";
 
@@ -50,134 +55,204 @@ function ArtifactDetail(): JSX.Element {
         {next && <><ArtifactLink id={next} /> &rarr;</>}
         </div>
       </div>
+
       <div className="row">
-        <div className="col-md-2">
-          <ObjectTextField name="article" label="Article" value={artifact.article || ''}
-                           helpText="An article like 'the', 'a', or 'some'. Optional. Makes the text
-                           flow more easily but has no effect on game play." />
-        </div>
-        <div className="col-md-4">
-          <ObjectTextField name="name" label="Name" value={artifact.name} helpText="" />
-        </div>
         <div className="col-md-6">
+          <div className="form-row">
+            <div className="col-md-4">
+              <ObjectTextField name="article" label="Article" value={artifact.article || ''}
+                               helpText="An article like 'the', 'a', or 'some'. Optional. Makes the text
+                               flow more easily but has no effect on game play." />
+            </div>
+            <div className="col-md-8">
+              <ObjectTextField name="name" label="Name" value={artifact.name} helpText="" />
+            </div>
+          </div>
+
           <ObjectTextField name="synonyms" label="Synonyms / Alternate names" value={artifact.synonyms || ''}
                            helpText="Separate with commas. Useful for artifacts with odd names or for hidden items.
                            e.g., 'bottle' for a potion, or 'strange rock' for a secret door" />
-        </div>
-      </div>
-      <ObjectDescriptionField value={artifact.description} isMarkdown={artifact.is_markdown} />
-      <ArtifactLocation id={artifact.id} />
-      <div className="row">
-        <div className="col-sm-4">
-          <div className="form-group">
-            <label htmlFor="type">Type</label>
-            <select className="custom-select" name="type" value={artifact.type}
-                    onChange={setField} disabled={!user_context.username}>
-              {/* TODO: implement a choice system like ModelChoices */}
-              <option value="0">0: Gold</option>
-              <option value="1">1: Treasure</option>
-              <option value="2">2: Non-magic Weapon</option>
-              <option value="3">3: Magic Weapon</option>
-              <option value="4">4: Container</option>
-              <option value="5">5: Light Source</option>
-              <option value="6">6: Drinkable</option>
-              <option value="7">7: Readable</option>
-              <option value="8">8: Door/Gate</option>
-              <option value="9">9: Edible</option>
-              <option value="10">10: Bound Monster</option>
-              <option value="11">11: Wearable</option>
-              <option value="12">12: Disguised Monster</option>
-              <option value="13">13: Dead Body</option>
-            </select>
-          </div>
-        </div>
-        <div className="col-sm-4">
-          <ObjectNumberField name="value" label="Value" value={artifact.value} afterText="gp" />
-        </div>
-        <div className="col-sm-4">
-          <div className="form-group">
-            <label htmlFor="name">Weight</label>
-            {/* TODO: Add a tooltip with some examples of common objects. */}
-            <div className="input-group">
-              <input type="text" name="weight" className="form-control"
-                     onChange={setField} value={artifact.weight} disabled={!user_context.username} />
-              <span className="input-group-text">gronds</span>
-              {artifact.weight === -999 && (
-                <span className="input-group-text">(Can't be picked up.)</span>
-              )}
-              {artifact.weight >= 900 && (
-                <span className="input-group-text">(Don't be absurd.)</span>
-              )}
-            </div>
-            <small className="form-text text-muted">
-              Enter -999 if the item can't be picked up. Enter any number &gt; 900 to show the message "Don't be absurd"
-              if the player tries to pick it up.
-            </small>
-          </div>
-        </div>
-      </div>
 
-      {artifact.isWeapon() && (
-        <>
-          <div className="row">
-            <div className="col-sm-4">
+          <ObjectDescriptionField value={artifact.description} isMarkdown={artifact.is_markdown} />
+          <ArtifactLocation id={artifact.id} />
+        </div>
+
+        <div className="col-md-6">
+          <div className="form-row">
+            <div className="col-md-4">
+              <ObjectSelectField name="type" value={artifact.type}
+                                 label="Type" choices={ARTIFACT_TYPES} />
+            </div>
+            <div className="col-md-4">
+              <ObjectNumberField name="value" label="Value" value={artifact.value} afterText="gp" />
+            </div>
+            <div className="col-md-4">
               <div className="form-group">
-                <label htmlFor="weapon_type">Weapon Type</label>
-                <select className="custom-select" name="weapon_type" value={artifact.weapon_type}
-                        onChange={setField} disabled={!user_context.username}>
-                  <option value="1">Axe</option>
-                  <option value="2">Bow / Missile</option>
-                  <option value="3">Club / Mace / War Hammer</option>
-                  <option value="4">Spear / Halberd / Polearm</option>
-                  <option value="5">Sword / Dagger</option>
-                </select>
+                <label htmlFor="name">Weight</label>
+                {/* TODO: Add a tooltip with some examples of common objects. */}
+                <div className="input-group">
+                  <input type="text" name="weight" className="form-control"
+                         onChange={setField} value={artifact.weight} disabled={!user_context.username} />
+                  <span className="input-group-text">gronds</span>
+                  {artifact.weight === -999 && (
+                    <span className="input-group-text">(Can't be picked up.)</span>
+                  )}
+                  {artifact.weight >= 900 && (
+                    <span className="input-group-text">(Don't be absurd.)</span>
+                  )}
+                </div>
+                <small className="form-text text-muted">
+                  Enter -999 if the item can't be picked up. Enter any number &gt; 900 to show the message "Don't be absurd"
+                  if the player tries to pick it up.
+                </small>
               </div>
             </div>
-            <div className="col-sm-4">
-              <ObjectNumberField name="weapon_odds" label="Weapon Odds" value={artifact.weapon_odds}
-                                 helpText="Amount added to chance to hit. May be negative. A.k.a, Complexity"
-                                 afterText="%" />
-            </div>
-            <div className="col-sm-4">
-              <ObjectDiceSidesField
-                label="Weapon Damage"
-                diceName="dice" diceValue={artifact.dice}
-                sidesName="sides" sidesValue={artifact.sides}
-                helpText="The weapon's damage roll. e.g., '1d8' or '2d6'" />
-            </div>
           </div>
-        </>
-      )}
 
-      {(artifact.type === Artifact.TYPE_EDIBLE || artifact.type === Artifact.TYPE_DRINKABLE) && (
-        <>
-          <div className="row">
-            <div className="col-sm-3">
-              <ObjectTextField name="quantity" label="Drinks/Bites"
-                               value={artifact.quantity} helpText="" />
+          {artifact.isWeapon() && (
+            <>
+              <div className="form-row">
+                <div className="col-sm-6">
+                  <ObjectSelectField name="type" value={artifact.weapon_type}
+                                     label="Type" choices={ARTIFACT_WEAPON_TYPES} />
+                </div>
+                <div className="col-sm-6">
+                  <ObjectNumberField name="hands" value={artifact.hands}
+                                     label="1-handed or 2-handed weapon?"
+                                     helpText="Enter 1 or 2" />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="col-sm-6">
+                  <ObjectNumberField name="weapon_odds" label="Weapon Odds" value={artifact.weapon_odds}
+                                     helpText="Amount added to chance to hit. May be negative. A.k.a, Complexity"
+                                     afterText="%" />
+                </div>
+                <div className="col-sm-6">
+                  <ObjectDiceSidesField
+                    label="Weapon Damage"
+                    diceName="dice" diceValue={artifact.dice}
+                    sidesName="sides" sidesValue={artifact.sides}
+                    helpText="The weapon's damage roll. e.g., '1d8' or '2d6'" />
+                </div>
+              </div>
+            </>
+          )}
+
+          {(artifact.type === Artifact.TYPE_EDIBLE || artifact.type === Artifact.TYPE_DRINKABLE) && (
+            <div className="form-row">
+              <div className="col-sm-6">
+                <ObjectTextField name="quantity" label="Drinks/Bites"
+                                 value={artifact.quantity} helpText="" />
+              </div>
+              <div className="col-sm-6">
+                <ObjectDiceSidesField
+                  label="Healing Amount"
+                  diceName="dice" diceValue={artifact.dice}
+                  sidesName="sides" sidesValue={artifact.sides}
+                  helpText="The item's healing roll. e.g., '1d8' or '2d6'. Many items use a 'd1'
+                            value to heal an exact value, e.g., '6d1' to heal exactly 6 HP." />
+              </div>
             </div>
-            <div className="col-sm-3">
-              <ObjectDiceSidesField
-                label="Healing Amount"
-                diceName="dice" diceValue={artifact.dice}
-                sidesName="sides" sidesValue={artifact.sides}
-                helpText="The item's healing roll. e.g., '1d8' or '2d6'. Many items use a 'd1'
-                          value to heal an exact value, e.g., '6d1' to heal exactly 6 HP." />
+          )}
+
+          {(artifact.type === Artifact.TYPE_DOOR || artifact.type === Artifact.TYPE_CONTAINER) && (
+            <div className="form-row">
+              <div className="col-sm-6">
+                <ArtifactSelectField
+                  name="key_id" label="Key"
+                  value={artifact.key_id}
+                  extraOptions={{'-1': "Can't be opened normally", 0: "No key"}}
+                  helpText="If no key, and the 'Hit points' field is set, the player will have to
+                    ATTACK the artifact to open it."
+                />
+              </div>
+              <div className="col-sm-6">
+                <ObjectNumberField name="hardiness" label="Hit points" value={artifact.hardiness}
+                                   helpText="Amount of damage it takes to smash open the artifact.
+                                     Leave blank for artifacts that can't be broken open without
+                                     the key."
+                />
+              </div>
             </div>
-          </div>
-        </>
-      )}
-      {(artifact.type === Artifact.TYPE_CONTAINER) && (
-        <div>
-          Contents<br />
-          {contents.length === 0 && <span>nothing</span>}
-          {contents.map(a => (
-            <div key={a.id}>
-              <ArtifactLink id={a.id} />
+          )}
+
+          {(artifact.type === Artifact.TYPE_BOUND_MONSTER) && (
+            <div className="form-row">
+              <div className="col-sm-4">
+                <MonsterSelectField name="monster_id" label="Monster"
+                                    value={artifact.monster_id} allowEmpty={true}
+                                    helpText="The monster freed when you use the FREE command on this
+                                      bound monster."
+                />
+              </div>
+              <div className="col-sm-4">
+                <ArtifactSelectField name="key_id" label="Key"
+                                     value={artifact.key_id} allowEmpty={true}
+                                     helpText="The player needs to have this key to free the monster"
+                />
+              </div>
+              <div className="col-sm-4">
+                <MonsterSelectField name="guard_id" label="Guarded by"
+                                    value={artifact.guard_id} allowEmpty={true}
+                                    helpText="Another monster that stops the player from freeing this
+                                    bound monster, if that monster is in the room and alive." />
+              </div>
             </div>
-          ))}
+          )}
+
+          {(artifact.type === Artifact.TYPE_DISGUISED_MONSTER) && (
+            <MonsterSelectField name="monster_id" label="Monster"
+                                value={artifact.key_id} allowEmpty={true}
+                                helpText="The monster that is revealed when the player tries to
+                                  inspect or pick up this artifact." />
+          )}
+
+          {(artifact.type === Artifact.TYPE_CONTAINER) && (
+            <div>
+              Contents<br />
+              {contents.length === 0 && <span>nothing</span>}
+              {contents.map(a => (
+                <div key={a.id}>
+                  <ArtifactLink id={a.id} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {(artifact.type === Artifact.TYPE_WEARABLE) && (
+            <>
+              <div className="form-row">
+                <div className="col-sm-4">
+                  <ObjectSelectField
+                    name="armor_type" value={artifact.armor_type}
+                    label="Armor Type" choices={ARTIFACT_ARMOR_TYPES} allowEmpty={true}
+                    helpText="The player can wear one of each type. Leave blank for general wearable
+                      items that aren't armor (e.g., a winter coat, a non-magical ring, or a pirate hat)."
+                  />
+                </div>
+                <div className="col-sm-4">
+                  <ObjectNumberField name="armor_class" label="Armor Class" value={artifact.armor_class} />
+                </div>
+                <div className="col-sm-4">
+                  <ObjectNumberField
+                    name="armor_penalty" value={artifact.armor_class}
+                    label="Armor Penalty" afterText="%"
+                    helpText="The amount this item restricts the wearer's combat ability. Offset by
+                      wearer's armor expertise. Applies to the player only." />
+                </div>
+              </div>
+            </>
+          )}
+
+          {(artifact.type !== Artifact.TYPE_BOUND_MONSTER) && (
+            <MonsterSelectField name="guard_id" label="Guarded by"
+                                value={artifact.guard_id} allowEmpty={true}
+                                helpText="Another monster that stops the player from picking up
+                                this artifact, if that monster is alive and in the room." />
+          )}
         </div>
-      )}
+      </div>
     </FormContext.Provider>
   );
 }

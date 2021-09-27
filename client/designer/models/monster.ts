@@ -54,8 +54,9 @@ export default class Monster extends GameObject {
   friendliness: string;
   friend_odds: number;
   combat_code: number;
-  combat_verbs: string[] = [];  // custom messages that replace the normal attack messages
-  health_messages: string[] = [];  // custom messages that replace the normal health status messages
+  combat_verbs: string;  // custom messages that replace the normal attack messages
+  // TODO: make health_messages a field in the DB
+  // health_messages: string;  // custom messages that replace the normal health status messages
   courage: number;
   pursues: boolean;
   gold: number;
@@ -65,52 +66,43 @@ export default class Monster extends GameObject {
   attack_odds: number;
   defense_bonus: number;
   armor_class: number;
-  spells: string[] = [];  // spells that an NPC knows, e.g., ['blast', 'heal']
-  spell_points = 0;  // number of spells the monster can cast (each spell takes 1 SP)
-  spell_frequency = 33;  // percent chance the monster will cast a spell instead of other battle actions
+  spells: string;  // spells that an NPC knows, e.g., ['blast', 'heal']
+  spell_points;  // number of spells the monster can cast (each spell takes 1 SP)
+  spell_frequency;  // percent chance the monster will cast a spell instead of other battle actions
   special: string;  // special flags used for special effects.
 
   // properties used for managing group monsters
   name_plural: string;
   count: number;
-  parent: Monster = null;
-  children: Monster[] = [];
 
   constructor (){
     super();
   }
 
-  /**
-   * Calculates the maximum weight the monster can carry
-   * @return number
-   */
-  public maxWeight(): number {
-    return this.hardiness * 10;
-  }
-
   public getFriendlinessDisplay(): string {
-    switch (this.friendliness) {
-      case Monster.FRIEND_ALWAYS:
-        return "Always Friendly";
-      case Monster.FRIEND_NEUTRAL:
-        return "Always Neutral";
-      case Monster.FRIEND_NEVER:
-        return "Always Hostile";
-      case Monster.FRIEND_RANDOM:
-        return "Random Friendliness";
-    }
+    return MONSTER_FRIENDLINESS[this.friendliness];
   }
 
   public getCombatCodeDisplay(): string {
-    switch (this.combat_code) {
-      case Monster.COMBAT_CODE_SPECIAL:
-        return "Attacks with generic 'Attacks' message";
-      case Monster.COMBAT_CODE_NORMAL:
-        return "Attacks only if it has a weapon, or if natural weapons are specified.";
-      case Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE:
-        return "Uses a weapon if carrying one. Otherwise falls back to natural weapons.";
-      case Monster.COMBAT_CODE_NEVER_FIGHT:
-        return "Never fights.";
-    }
+    return MONSTER_COMBAT_CODES[this.combat_code];
   }
+}
+
+export const MONSTER_FRIENDLINESS = {
+  [Monster.FRIEND_ALWAYS]: "Always Friendly",
+  [Monster.FRIEND_NEUTRAL]: "Always Neutral",
+  [Monster.FRIEND_NEVER]: "Always Hostile",
+  [Monster.FRIEND_RANDOM]: "Random Friendliness",
+}
+
+export const MONSTER_COMBAT_CODES = {
+  [Monster.COMBAT_CODE_SPECIAL]: "Attacks with generic 'Attacks' message",
+  [Monster.COMBAT_CODE_NORMAL]: "Attacks only if has a weapon, or if natural weapons are specified",
+  [Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE]: "Uses a weapon if carrying one. Otherwise falls back to natural weapons",
+  [Monster.COMBAT_CODE_NEVER_FIGHT]: "Never fights",
+}
+
+export const MONSTER_PURSUES = {
+  0: "No",
+  1: "Yes",
 }

@@ -2,6 +2,7 @@ import * as React from "react";
 import {useEffect, useState} from "react";
 import {AdventureContext, UserContext} from "../context";
 import {Route, useParams} from "react-router";
+import {Link} from "react-router-dom";
 import Adventure from "../models/adventure";
 import RoomRepository from "../repositories/room.repo";
 import ArtifactRepository from "../repositories/artifact.repo";
@@ -269,7 +270,7 @@ function AdventureMainMenu(): JSX.Element {
                     </div>
                     <div className="col-sm-10">
                         <div className="float-right text-secondary d-none d-md-block adv-id">#{state.adventure.id}</div>
-                        <h3>{state.adventure.name}</h3>
+                        <h3><Link to={`/designer/${slug}`}>{state.adventure.name}</Link></h3>
                         <p>{state.adventure.authors_display.length ? "By: " + state.adventure.authors_display : ""}</p>
                     </div>
                 </div>

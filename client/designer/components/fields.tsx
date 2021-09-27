@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import {FormContext, UserContext} from "../context";
+import {AdventureContext, FormContext, UserContext} from "../context";
+import {ArtifactLink, MonsterLink} from "./common";
 
 interface FieldProps {
   name: string,
@@ -140,12 +141,13 @@ export function ObjectNumberField(props: FieldProps): JSX.Element {
       </div>
     )
   }
+  const val = props.value === null ? '' : props.value;
   return (
     <div className="form-group">
       <label htmlFor={props.name}>{props.label}</label>
       <div className="input-group">
         <input type="number" className="form-control"
-               name={props.name} value={props.value}
+               name={props.name} value={val}
                onChange={form_context.setField} onBlur={form_context.saveField} />
         {props.afterText && (
           <span className="input-group-text">{props.afterText}</span>
@@ -192,6 +194,122 @@ export function ObjectDiceSidesField(props: DiceSidesFieldProps): JSX.Element {
                className="form-control" placeholder="1" aria-label="Sides"
                onChange={form_context.setField} onBlur={form_context.saveField} />
       </div>
+      <HelpText text={props.helpText} />
+    </div>
+  );
+}
+
+interface SelectFieldProps {
+  name: string,
+  label: string,
+  value: number | string,
+  choices: Record<number | string, string>,
+  allowEmpty?: boolean,
+  helpText?: string,
+}
+
+export function ObjectSelectField(props: SelectFieldProps): JSX.Element {
+  const user_context = React.useContext(UserContext);
+  const form_context = React.useContext(FormContext);
+  if (!user_context.username) {
+    return (
+      <div className="form-group">
+        <label>{props.label}</label>
+        <span>{props.choices[props.value]}</span>
+        <HelpText text={props.helpText} />
+      </div>
+    )
+  }
+  const setAndSaveField = (ev: any) => {
+    form_context.setField(ev);
+    form_context.saveField(ev);
+  };
+  return (
+    <div className="form-group">
+      <label htmlFor="weapon_type">{props.label}</label>
+      <select className="custom-select" name={props.name} value={props.value || ""}
+              onChange={setAndSaveField}>
+        {props.allowEmpty && <option value="">-</option>}
+        {Object.entries(props.choices).map(v => <option value={v[0]} key={v[0]}>{v[1]}</option>)}
+      </select>
+      <HelpText text={props.helpText} />
+    </div>
+  );
+}
+
+interface GameObjectFieldProps {
+  name: string,
+  label: string,
+  value: number,
+  allowEmpty?: boolean,
+  extraOptions?: Record<number, string>,
+  helpText?: string,
+}
+
+export function ArtifactSelectField(props: GameObjectFieldProps): JSX.Element {
+  const adventure_context = React.useContext(AdventureContext);
+  const user_context = React.useContext(UserContext);
+  const form_context = React.useContext(FormContext);
+  if (!user_context.username) {
+    return (
+      <div className="form-group">
+        <label>{props.label}</label>
+        <span><ArtifactLink id={props.value} /></span>
+        <HelpText text={props.helpText} />
+      </div>
+    )
+  }
+  const setAndSaveField = (ev: any) => {
+    form_context.setField(ev);
+    form_context.saveField(ev);
+  };
+
+  const artifact_entries = adventure_context.artifacts.all.map(a => [a.id, a.name]);
+
+  return (
+    <div className="form-group">
+      <label htmlFor="weapon_type">{props.label}</label>
+      <select className="custom-select" name={props.name} value={props.value || ""}
+              onChange={setAndSaveField}>
+        {props.allowEmpty && <option value="">-</option>}
+        {props.extraOptions && Object.entries(props.extraOptions).map(opt => (
+            <option value={opt[0]} key={opt[0]}>{opt[0]}: {opt[1]}</option>
+        ))}
+        {artifact_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
+      </select>
+      <HelpText text={props.helpText} />
+    </div>
+  );
+}
+
+export function MonsterSelectField(props: GameObjectFieldProps): JSX.Element {
+  const adventure_context = React.useContext(AdventureContext);
+  const user_context = React.useContext(UserContext);
+  const form_context = React.useContext(FormContext);
+  if (!user_context.username) {
+    return (
+      <div className="form-group">
+        <label>{props.label}</label>
+        <span><MonsterLink id={props.value} /></span>
+        <HelpText text={props.helpText} />
+      </div>
+    )
+  }
+  const setAndSaveField = (ev: any) => {
+    form_context.setField(ev);
+    form_context.saveField(ev);
+  };
+
+  const monster_entries = adventure_context.monsters.all.map(a => [a.id, a.name]);
+
+  return (
+    <div className="form-group">
+      <label htmlFor="weapon_type">{props.label}</label>
+      <select className="custom-select" name={props.name} value={props.value || ""}
+              onChange={setAndSaveField}>
+        {props.allowEmpty && <option value="">-</option>}
+        {monster_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
+      </select>
       <HelpText text={props.helpText} />
     </div>
   );

@@ -36,11 +36,11 @@ function AdventureDetail(): JSX.Element {
         </div>
         <div className="col-md-4">
           <div>
-            <p><Link to={`rooms`}>{context.rooms?.all?.length} Rooms</Link></p>
-            <p><Link to={`artifacts`}>{context.artifacts?.all.length} Artifacts</Link></p>
-            <p><Link to={`effects`}>{context.effects?.all?.length} Effects</Link></p>
-            <p><Link to={`monsters`}>{context.monsters?.all?.length} Monsters</Link></p>
-            <p><Link to={`hints`}>{context.hints?.all?.length} Hints</Link></p>
+            <p><Link to={`/designer/${slug}/rooms`}>{context.rooms?.all?.length} Rooms</Link></p>
+            <p><Link to={`/designer/${slug}/artifacts`}>{context.artifacts?.all.length} Artifacts</Link></p>
+            <p><Link to={`/designer/${slug}/effects`}>{context.effects?.all?.length} Effects</Link></p>
+            <p><Link to={`/designer/${slug}/monsters`}>{context.monsters?.all?.length} Monsters</Link></p>
+            <p><Link to={`/designer/${slug}/hints`}>{context.hints?.all?.length} Hints</Link></p>
           </div>
         </div>
       </div>
