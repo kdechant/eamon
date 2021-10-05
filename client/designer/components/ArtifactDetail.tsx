@@ -7,9 +7,9 @@ import Artifact, {
   ARTIFACT_TYPES,
   ARTIFACT_WEAPON_TYPES
 } from '../models/artifact';
-import {ArtifactLink, ArtifactLocation} from "./common";
+import {ArtifactLink, ArtifactLocation, EffectLink} from "./common";
 import {
-  ArtifactSelectField, MonsterSelectField,
+  ArtifactSelectField, EffectSelectField, MonsterSelectField,
   ObjectDescriptionField,
   ObjectDiceSidesField,
   ObjectNumberField, ObjectSelectField,
@@ -74,6 +74,30 @@ function ArtifactDetail(): JSX.Element {
                            e.g., 'bottle' for a potion, or 'strange rock' for a secret door" />
 
           <ObjectDescriptionField value={artifact.description} isMarkdown={artifact.is_markdown} />
+
+          <div className="row">
+            <div className="col-md-6">
+            <EffectSelectField name="effect_inline" value={artifact.effect_inline}
+                               label="Chained Effect (no line break)" allowEmpty={true}
+                               helpText="An effect that will be shown immediately after the description,
+                               without a line break. (Only for legacy EDX conversions. Do not enter
+                               new data in this field.)" />
+            </div>
+            <div className="col-md-6">
+              {artifact.effect_inline && <EffectLink id={artifact.effect_inline} />}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+          <EffectSelectField name="effect" value={artifact.effect}
+                             label="Chained Effect" allowEmpty={true}
+                             helpText="An effect that will be shown immediately after the description." />
+            </div>
+            <div className="col-md-6">
+              {artifact.effect && <EffectLink id={artifact.effect} />}
+            </div>
+          </div>
+
           <ArtifactLocation id={artifact.id} />
         </div>
 
@@ -173,6 +197,22 @@ function ArtifactDetail(): JSX.Element {
                                      Leave blank for artifacts that can't be broken open without
                                      the key."
                 />
+              </div>
+            </div>
+          )}
+
+          {(artifact.type === Artifact.TYPE_READABLE) && (
+            <div className="form-row">
+              <div className="col-sm-6">
+                <EffectSelectField name="effect_id" label="Effect shown when reading"
+                                    value={artifact.effect} allowEmpty={true}
+                                    helpText="When the player READs this artifact, it will show
+                                    this effect, plus any effects chained onto that one." />
+              </div>
+              <div className="col-sm-6">
+                <ObjectNumberField name="num_effects" label="Hit points" value={artifact.num_effects}
+                                   helpText="How many effects to show when READing the artifact,
+                                   starting with the one on the left. Usually enter 1 here." />
               </div>
             </div>
           )}

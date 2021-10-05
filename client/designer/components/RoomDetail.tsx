@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useParams} from "react-router";
 
-import { AdventureContext, FormContext, UserContext} from "../context";
+import { AdventureContext, FormContext} from "../context";
 import {ArtifactLink, EffectLink, MonsterLink, RoomLink} from "./common";
 import {ObjectDescriptionField, ObjectTextareaField, ObjectTextField} from "./fields";
 

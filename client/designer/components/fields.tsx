@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 import {AdventureContext, FormContext, UserContext} from "../context";
-import {ArtifactLink, MonsterLink} from "./common";
+import {ArtifactLink, EffectLink, MonsterLink} from "./common";
 
 interface FieldProps {
   name: string,
   label: string,
   value: string | number,
+  placeholder?: string,
   helpText?: string,
   afterText?: string,
 }
@@ -28,18 +29,14 @@ export function ObjectTextField(props: FieldProps): JSX.Element {
       <label htmlFor={props.name}>{props.label}</label>
       <input type="text" className="form-control"
              name={props.name} value={props.value || ""}
+             placeholder={props.placeholder}
              onChange={form_context.setField} onBlur={form_context.saveField} />
       <HelpText text={props.helpText} />
     </div>
   );
 }
 
-interface TextAreaFieldProps {
-  name: string,
-  label: string,
-  value: string | number,
-  helpText: string,
-  afterText?: string,
+interface TextAreaFieldProps extends FieldProps {
   rows?: number,
 }
 
@@ -69,6 +66,8 @@ export function ObjectTextareaField(props: TextAreaFieldProps): JSX.Element {
 }
 
 interface DescriptionFieldProps {
+  name?: string,
+  label?: string,
   value: string,
   isMarkdown: boolean,
   helpText?: string,
@@ -83,7 +82,10 @@ interface DescriptionFieldProps {
 export function ObjectDescriptionField(props: DescriptionFieldProps): JSX.Element {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
-  const label = 'Description';
+  const name = props.name || 'description';
+  const label = props.label || 'Description';
+  const rows = props.rows || 5;
+
   if (!user_context.username) {
     return (
       <div className="form-group">
@@ -93,7 +95,7 @@ export function ObjectDescriptionField(props: DescriptionFieldProps): JSX.Elemen
       </div>
     )
   }
-  const rows = props.rows || 5;
+
   const setAndSaveField = (ev: any) => {
     form_context.setField(ev);
     form_context.saveField(ev);
@@ -101,9 +103,9 @@ export function ObjectDescriptionField(props: DescriptionFieldProps): JSX.Elemen
 
   return (
     <div className="form-group">
-      <label htmlFor="description">{label}</label>
+      <label htmlFor={name}>{label}</label>
       <textarea className="form-control" rows={rows}
-                name="description" id="description" value={props.value}
+                name={name} id={name} value={props.value}
                 onChange={form_context.setField} onBlur={form_context.saveField}
                 disabled={!user_context.username}>
       </textarea>
@@ -199,13 +201,9 @@ export function ObjectDiceSidesField(props: DiceSidesFieldProps): JSX.Element {
   );
 }
 
-interface SelectFieldProps {
-  name: string,
-  label: string,
-  value: number | string,
+interface SelectFieldProps extends FieldProps {
   choices: Record<number | string, string>,
   allowEmpty?: boolean,
-  helpText?: string,
 }
 
 export function ObjectSelectField(props: SelectFieldProps): JSX.Element {
@@ -237,13 +235,10 @@ export function ObjectSelectField(props: SelectFieldProps): JSX.Element {
   );
 }
 
-interface GameObjectFieldProps {
-  name: string,
-  label: string,
+interface GameObjectFieldProps extends FieldProps {
   value: number,
-  allowEmpty?: boolean,
   extraOptions?: Record<number, string>,
-  helpText?: string,
+  allowEmpty?: boolean,
 }
 
 export function ArtifactSelectField(props: GameObjectFieldProps): JSX.Element {
@@ -282,6 +277,39 @@ export function ArtifactSelectField(props: GameObjectFieldProps): JSX.Element {
   );
 }
 
+export function EffectSelectField(props: GameObjectFieldProps): JSX.Element {
+  const adventure_context = React.useContext(AdventureContext);
+  const user_context = React.useContext(UserContext);
+  const form_context = React.useContext(FormContext);
+  if (!user_context.username) {
+    return (
+      <div className="form-group">
+        <label>{props.label}</label>
+        <span><EffectLink id={props.value} /></span>
+        <HelpText text={props.helpText} />
+      </div>
+    )
+  }
+  const setAndSaveField = (ev: any) => {
+    form_context.setField(ev);
+    form_context.saveField(ev);
+  };
+
+  const effect_entries = adventure_context.effects.all.map(e => [e.id, e.excerpt()]);
+
+  return (
+    <div className="form-group">
+      <label htmlFor="weapon_type">{props.label}</label>
+      <select className="custom-select" name={props.name} value={props.value || ""}
+              onChange={setAndSaveField}>
+        {props.allowEmpty && <option value="">-</option>}
+        {effect_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
+      </select>
+      <HelpText text={props.helpText} />
+    </div>
+  );
+}
+
 export function MonsterSelectField(props: GameObjectFieldProps): JSX.Element {
   const adventure_context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
@@ -300,7 +328,7 @@ export function MonsterSelectField(props: GameObjectFieldProps): JSX.Element {
     form_context.saveField(ev);
   };
 
-  const monster_entries = adventure_context.monsters.all.map(a => [a.id, a.name]);
+  const monster_entries = adventure_context.monsters.all.map(m => [m.id, m.name]);
 
   return (
     <div className="form-group">

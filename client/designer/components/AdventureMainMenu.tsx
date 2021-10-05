@@ -19,6 +19,7 @@ import MonsterDetail from "./MonsterDetail";
 import AdventureDetail from "./AdventureDetail";
 
 import update from 'immutability-helper';
+import EffectDetail from "./EffectDetail";
 
 
 function AdventureMainMenu(): JSX.Element {
@@ -193,6 +194,33 @@ function AdventureMainMenu(): JSX.Element {
       // setTimeouts(update(timeouts, timeouts_to_update));
     }
 
+    async function saveEffectField(id: number, field: string, value: string): Promise<void> {
+        const body: Record<string, string | number> = {};
+        body[field] = value;
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json'
+        }
+        const token = await user_context.getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`
+        }
+        fetch(`/api/designer/adventures/${slug}/effects/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+            headers: headers
+        }).then(response => response.json()).then(data => {
+          setEffectField(id, field, data[field]);
+        });
+    }
+
+    function setEffectField(id: number, field: string, value: string) {
+        const eff = state.effects.get(id);
+        const new_a = update(eff, {[field]: {$set: value}});
+        const idx = state.effects.getIndex(id);
+        const new_repo = update(state.effects, {'all': {[idx]: {$set: new_a}}});
+        setState(update(state, {effects: {$set: new_repo}}));
+    }
+
     async function saveMonsterField(id: number, field: string, value: string): Promise<void> {
         const body: Record<string, string | number> = {};
         body[field] = value;
@@ -249,6 +277,8 @@ function AdventureMainMenu(): JSX.Element {
       saveRoomField,
       setArtifactField,
       saveArtifactField,
+      setEffectField,
+      saveEffectField,
       setMonsterField,
       saveMonsterField,
     };
@@ -265,10 +295,10 @@ function AdventureMainMenu(): JSX.Element {
         <AdventureContext.Provider value={context_value}>
             <div className="container-fluid" id="AdventureDetail">
                 <div className="row">
-                    <div className="col-sm-2 d-none d-sm-block">
+                    <div className="col-sm-2 col-md-1 d-none d-sm-block">
                         <img src="/static/images/ravenmore/128/map.png" width="64" alt="Map"/>
                     </div>
-                    <div className="col-sm-10">
+                    <div className="col-sm-10 col-md-11">
                         <div className="float-right text-secondary d-none d-md-block adv-id">#{state.adventure.id}</div>
                         <h3><Link to={`/designer/${slug}`}>{state.adventure.name}</Link></h3>
                         <p>{state.adventure.authors_display.length ? "By: " + state.adventure.authors_display : ""}</p>
@@ -294,6 +324,9 @@ function AdventureMainMenu(): JSX.Element {
 
                 <Route exact path='/designer/:slug/effects' render={() => (
                     <EffectList/>
+                )}/>
+                <Route path='/designer/:slug/effects/:id' render={() => (
+                    <EffectDetail/>
                 )}/>
 
                 <Route exact path='/designer/:slug/monsters' render={() => (

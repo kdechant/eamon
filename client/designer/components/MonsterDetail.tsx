@@ -2,14 +2,14 @@ import * as React from 'react';
 import {useParams} from "react-router";
 
 import {AdventureContext, FormContext, UserContext} from "../context";
-import {MonsterLink, MonsterLocation, MonsterWeaponLink} from "./common";
+import {EffectLink, MonsterLink, MonsterLocation, MonsterWeaponLink} from "./common";
 import Monster, {
   MONSTER_COMBAT_CODES,
   MONSTER_FRIENDLINESS,
   MONSTER_PURSUES
 } from "../models/monster";
 import {
-  ArtifactSelectField,
+  ArtifactSelectField, EffectSelectField,
   ObjectDescriptionField,
   ObjectDiceSidesField,
   ObjectNumberField, ObjectSelectField, ObjectTextareaField,
@@ -56,16 +56,31 @@ function MonsterDetail(): JSX.Element {
 
       <div className="row">
         <div className="col-lg-8">
-          <div className="form-row">
-            <div className="col-sm-4">
-              <ObjectTextField name="article" label="Article" value={monster.article || ''}
-                               helpText="An article like 'the', 'a', or 'some'. Optional. Makes the text
-                               flow more easily but has no effect on game play." />
+          {monster.count == 1 && (
+            <div className="form-row">
+              <div className="col-sm-4">
+                <ObjectTextField name="article" label="Article" value={monster.article || ''}
+                                 helpText="An article like 'the', 'a', or 'some'. Optional. Makes the text
+                                 flow more easily but has no effect on game play." />
+              </div>
+              <div className="col-sm-8">
+                <ObjectTextField name="name" label="Name" value={monster.name} />
+              </div>
             </div>
-            <div className="col-sm-8">
-              <ObjectTextField name="name" label="Name" value={monster.name} />
+          )}
+          {monster.count > 1 && (
+            <div className="form-row">
+              <div className="col-sm-6">
+                <ObjectTextField name="name" label="Name" value={monster.name} />
+              </div>
+              <div className="col-sm-6">
+                <ObjectTextField name="name_plural" label="Name (Plural)" value={monster.name_plural}
+                                 placeholder={monster.name ? monster.name + 's' : ''}
+                                 helpText="Plural name used for groups of monsters. E.g., 1 'lizard man'
+                                 vs. 2 'lizard men'. Leave blank to use the regular name + s." />
+              </div>
             </div>
-          </div>
+          )}
           <ObjectTextField name="synonyms" label="Synonyms / Alternate names" value={monster.synonyms || ''}
                            helpText="Separate with commas. Useful for monsters with odd names, or
                            when the player should be able to target the monster with multiple
@@ -73,6 +88,30 @@ function MonsterDetail(): JSX.Element {
                            both the synonym 'orc' so the player could attack either of them by
                            typing 'attack orc'." />
           <ObjectDescriptionField value={monster.description} isMarkdown={monster.is_markdown} />
+
+          <div className="row">
+            <div className="col-md-6">
+            <EffectSelectField name="effect_inline" value={monster.effect_inline}
+                               label="Chained Effect (no line break)" allowEmpty={true}
+                               helpText="An effect that will be shown immediately after the description,
+                               without a line break. (Only for legacy EDX conversions. Do not enter
+                               new data in this field.)" />
+            </div>
+            <div className="col-md-6">
+              {monster.effect_inline && <EffectLink id={monster.effect_inline} />}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+          <EffectSelectField name="effect" value={monster.effect}
+                             label="Chained Effect" allowEmpty={true}
+                             helpText="An effect that will be shown immediately after the description." />
+            </div>
+            <div className="col-md-6">
+              {monster.effect && <EffectLink id={monster.effect} />}
+            </div>
+          </div>
+
           <p>
             Location:
             {' '}
@@ -80,6 +119,12 @@ function MonsterDetail(): JSX.Element {
           </p>
         </div>
         <div className="col-lg-4">
+          <div className="form-row">
+              <ObjectNumberField name="count" label="Count" value={monster.count}
+                                 helpText="The number of monsters in the group. Enter 1 (the
+                                 default) to make this a singular monster, and 2 or more to create
+                                 a group of identical monsters." />
+          </div>
           <div className="form-row">
             <div className="col-sm-6">
               <ObjectNumberField name="hardiness" label="Hardiness" value={monster.hardiness} />

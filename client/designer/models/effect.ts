@@ -12,4 +12,22 @@ export class Effect extends GameObject {
   next: number;  // another effect chained onto this one
   next_inline: number;  // a chained effect that is printed without a paragraph break
   replacements: Record<string, string>;  // strings that will be replaced within the effect text
+
+  public excerpt(): string {
+    if (this.text.length <= 50) {
+      return this.text;
+    }
+    return this.text.slice(0, 50) + '...';
+  }
+
+}
+
+export const TEXT_STYLES = {
+  '': 'Normal',
+  'emphasis': 'Bold',
+  'success': 'Success (green)',
+  'special': 'Special 1 (blue)',
+  'special2': 'Special 1 (purple)',
+  'warning': 'Warning (orange)',
+  'danger': 'Danger (red)',
 }

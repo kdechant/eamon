@@ -64,7 +64,7 @@ export function EffectLink(props: LinkProps): JSX.Element {
     <>
       {id ? (
         <Link to={`/designer/${slug}/effects/${id}`}>
-          #{id}: {effect ? effect.text.slice(0, 25) : 'unknown'}
+          #{id}: {effect ? effect.excerpt() : 'unknown'}
         </Link>) : (
         <span className="disabled">-</span>
         )

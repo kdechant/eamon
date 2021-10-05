@@ -19,6 +19,8 @@ interface AdventureContextInterface {
   saveRoomField: (id: number, field: string, value: string) => void,
   setArtifactField: (id: number, field: string, value: string) => void,
   saveArtifactField: (id: number, field: string, value: string) => void,
+  setEffectField: (id: number, field: string, value: string) => void,
+  saveEffectField: (id: number, field: string, value: string) => void,
   setMonsterField: (id: number, field: string, value: string) => void,
   saveMonsterField: (id: number, field: string, value: string) => void,
 }

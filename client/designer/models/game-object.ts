@@ -21,6 +21,8 @@ export default class GameObject {
   name: string;
   description: string;
   is_markdown: boolean;
+  effect: number;
+  effect_inline: number;
   synonyms: string;
 
   /**

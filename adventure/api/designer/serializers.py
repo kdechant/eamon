@@ -29,7 +29,6 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializ
         )
 
 
-
 class RoomExitSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomExit
@@ -54,6 +53,14 @@ class ArtifactSerializer(serializers.ModelSerializer):
         model = Artifact
         fields = '__all__'
 
+    def to_internal_value(self, data):
+        # Nullable integer fields
+        if 'effect' in data and data['effect'] == "":
+            data['effect'] = None
+        if 'effect_inline' in data and data['effect_inline'] == "":
+            data['effect_inline'] = None
+        return data
+
 
 class EffectSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='effect_id', read_only=True)
@@ -62,6 +69,14 @@ class EffectSerializer(serializers.ModelSerializer):
         model = Effect
         fields = '__all__'
 
+    def to_internal_value(self, data):
+        # Nullable integer fields
+        if 'next' in data and data['next'] == "":
+            data['next'] = None
+        if 'next_inline' in data and data['next_inline'] == "":
+            data['next_inline'] = None
+        return data
+
 
 class MonsterSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='monster_id', read_only=True)
@@ -69,6 +84,14 @@ class MonsterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Monster
         fields = '__all__'
+
+    def to_internal_value(self, data):
+        # Nullable integer fields
+        if 'effect' in data and data['effect'] == "":
+            data['effect'] = None
+        if 'effect_inline' in data and data['effect_inline'] == "":
+            data['effect_inline'] = None
+        return data
 
 
 class HintAnswerSerializer(serializers.ModelSerializer):
