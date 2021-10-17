@@ -255,6 +255,33 @@ Open the JavaScript debugger:
     
 This lets you inspect the current game state using your browser's developer tools. It only works if the developer panel is already open.
 
+## Exporting Adventure Data
+
+The rooms, artifacts, effects, monsters, and hints data for an adventure can be exported to a 
+JSON file. This allows it to be committed to Git, and also allows moving adventure data from one
+computer to another.
+
+To export an adventure's data, run the following command:
+
+    python manage.py dump_adventure <adventure id>
+
+Put the number of your adventure in the command in place of `<adventure id>`, e.g.,
+
+    python manage.py dump_adventure 123
+
+This will create a .json file in /adventure/data. You can then commit the file to Git, or email it
+to someone else if necessary.
+
+To load the adventure data from a .json file, run the following command:
+
+    python manage.py loaddata path/to/datafile.json
+    e.g.:
+    python manage.py loaddata adventure/data/001-the-beginners-cave.json
+
+Note: There is currently no safeguard to prevent overwriting data. If the JSON file contains objects
+with the same IDs as other new rows you created in your DB, they will be overwritten. (This is not
+likely, unless you were editing two different adventures at once.)
+
 ## Porting Adventures from Classic Eamon or Eamon Deluxe
 
 Many of the adventures in Eamon Remastered are ports of adventures from these legacy systems. There are separate instructions for porting an adventure from each of these systems:
