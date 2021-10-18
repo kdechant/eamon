@@ -7,13 +7,13 @@ import Artifact, {
   ARTIFACT_TYPES,
   ARTIFACT_WEAPON_TYPES
 } from '../models/artifact';
-import {ArtifactLink, ArtifactLocation, EffectLink} from "./common";
+import {ArtifactLink, ArtifactLocation, EffectLink, MonsterLink} from "./common";
 import {
   ArtifactSelectField, EffectSelectField, MonsterSelectField,
   ObjectDescriptionField,
   ObjectDiceSidesField,
   ObjectNumberField, ObjectSelectField,
-  ObjectTextField
+  ObjectTextField, ObjectToggleField
 } from "./fields";
 
 function ArtifactDetail(): JSX.Element {
@@ -75,30 +75,30 @@ function ArtifactDetail(): JSX.Element {
 
           <ObjectDescriptionField value={artifact.description} isMarkdown={artifact.is_markdown} />
 
-          <div className="row">
-            <div className="col-md-6">
-            <EffectSelectField name="effect_inline" value={artifact.effect_inline}
-                               label="Chained Effect (no line break)" allowEmpty={true}
-                               helpText="An effect that will be shown immediately after the description,
-                               without a line break. (Only for legacy EDX conversions. Do not enter
-                               new data in this field.)" />
-            </div>
-            <div className="col-md-6">
-              {artifact.effect_inline && <EffectLink id={artifact.effect_inline} />}
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
+          <EffectSelectField name="effect_inline" value={artifact.effect_inline}
+                             label="Chained Effect (no line break)" allowEmpty={true}
+                             helpText="An effect that will be shown immediately after the description,
+                             without a line break. (Only for legacy EDX conversions. Do not enter
+                             new data in this field.)" />
           <EffectSelectField name="effect" value={artifact.effect}
                              label="Chained Effect" allowEmpty={true}
                              helpText="An effect that will be shown immediately after the description." />
-            </div>
-            <div className="col-md-6">
-              {artifact.effect && <EffectLink id={artifact.effect} />}
-            </div>
-          </div>
 
           <ArtifactLocation id={artifact.id} />
+
+          <div className="row">
+            <div className="col-md-6">
+              <ObjectToggleField name="embedded" label="Embedded?" value={artifact.embedded}
+                                 helpText="Doesn't appear in the artifact list of the room. The player
+                                 can 'reveal' it by trying to interact with it by name."/>
+            </div>
+            <div className="col-md-6">
+              <ObjectToggleField name="hidden" label="Secret Door?" value={artifact.hidden}
+                                 helpText="If set, when the player tries to move through the door,
+                                  the game will show a message like 'You can't go that way' instead of
+                                  'the secret door blocks your way.' (For embedded secret doors only.)"/>
+            </div>
+          </div>
         </div>
 
         <div className="col-md-6">
@@ -137,13 +137,14 @@ function ArtifactDetail(): JSX.Element {
             <>
               <div className="form-row">
                 <div className="col-sm-6">
-                  <ObjectSelectField name="type" value={artifact.weapon_type}
+                  <ObjectSelectField name="weapon_type" value={artifact.weapon_type}
                                      label="Type" choices={ARTIFACT_WEAPON_TYPES} />
                 </div>
                 <div className="col-sm-6">
                   <ObjectNumberField name="hands" value={artifact.hands}
                                      label="1-handed or 2-handed weapon?"
-                                     helpText="Enter 1 or 2" />
+                                     helpText="Enter 1 or 2. A shield can't be used at the same time
+                                      as a 2-handed weapon." />
                 </div>
               </div>
               <div className="form-row">
@@ -176,6 +177,17 @@ function ArtifactDetail(): JSX.Element {
                   sidesName="sides" sidesValue={artifact.sides}
                   helpText="The item's healing roll. e.g., '1d8' or '2d6'. Many items use a 'd1'
                             value to heal an exact value, e.g., '6d1' to heal exactly 6 HP." />
+              </div>
+            </div>
+          )}
+
+          {(artifact.type === Artifact.TYPE_LIGHT_SOURCE) && (
+            <div className="form-row">
+              <div className="col-sm-12">
+                <ObjectTextField name="quantity" label="Starting Fuel Quantity"
+                                 value={artifact.quantity}
+                                 helpText="The light source will last this many turns before
+                                 going out. Enter -1 for a light source that lasts forever." />
               </div>
             </div>
           )}
@@ -290,6 +302,18 @@ function ArtifactDetail(): JSX.Element {
                                 value={artifact.guard_id} allowEmpty={true}
                                 helpText="Another monster that stops the player from picking up
                                 this artifact, if that monster is alive and in the room." />
+
+            // <div className="row">
+            //   <div className="col-md-6">
+            //     <MonsterSelectField name="guard_id" label="Guarded by"
+            //                         value={artifact.guard_id} allowEmpty={true}
+            //                         helpText="Another monster that stops the player from picking up
+            //                         this artifact, if that monster is alive and in the room." />
+            //   </div>
+            //   <div className="col-md-6">
+            //     {artifact.guard_id && <MonsterLink id={artifact.guard_id} />}
+            //   </div>
+            // </div>
           )}
         </div>
       </div>

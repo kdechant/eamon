@@ -82,7 +82,7 @@ export function MonsterLink(props: LinkProps): JSX.Element {
     <>
       {id ? (
         <Link to={`/designer/${slug}/monsters/${id}`}>
-          #{id}: {monster ? monster.name : 'unknown'}
+          #{id}: {monster ? monster.getLongName() : 'unknown'}
         </Link>) : (
         <span className="disabled">-</span>
       )

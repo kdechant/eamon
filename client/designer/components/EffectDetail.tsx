@@ -49,29 +49,15 @@ function RoomDetail(): JSX.Element {
       <ObjectSelectField name="style" value={effect.style}
                          label="Text Style" choices={TEXT_STYLES} />
 
-      <div className="row">
-        <div className="col-md-6">
-          <EffectSelectField name="next" value={effect.next}
-                             label="Chained Effect"
-                             helpText="An effect that will be shown immediately after this one." />
-        </div>
-        <div className="col-md-6">
-          {effect.next && <EffectLink id={effect.next} />}
-        </div>
-      </div>
+      <EffectSelectField name="next" value={effect.next} allowEmpty={true}
+                         label="Chained Effect"
+                         helpText="An effect that will be shown immediately after this one." />
 
-      <div className="row">
-        <div className="col-md-6">
-          <EffectSelectField name="next_inline" value={effect.next_inline}
-                             label="Chained Effect (no line break)"
-                             helpText="An effect that will be shown immediately after this one,
-                             without a line break. (Only for legacy EDX conversions. Do not enter
-                             new data in this field.)" />
-        </div>
-        <div className="col-md-6">
-          {effect.next_inline && <EffectLink id={effect.next_inline} />}
-        </div>
-      </div>
+      <EffectSelectField name="next_inline" value={effect.next_inline} allowEmpty={true}
+                         label="Chained Effect (no line break)"
+                         helpText="An effect that will be shown immediately after this one,
+                         without a line break. (Only for legacy EDX conversions. Do not enter
+                         new data in this field.)" />
 
     </FormContext.Provider>
   );

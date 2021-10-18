@@ -201,6 +201,47 @@ export function ObjectDiceSidesField(props: DiceSidesFieldProps): JSX.Element {
   );
 }
 
+interface ToggleFieldProps {
+  name?: string,
+  label: string,
+  value: boolean,
+  helpText?: string,
+}
+
+export function ObjectToggleField(props: ToggleFieldProps): JSX.Element {
+  const user_context = React.useContext(UserContext);
+  const form_context = React.useContext(FormContext);
+  if (!user_context.username) {
+    return (
+      <div className="form-group">
+        <label>{props.label}</label>
+        <span>{props.value ? 'Yes' : 'No'}</span>
+        <HelpText text={props.helpText} />
+      </div>
+    )
+  }
+  const setAndSaveField = (ev: any) => {
+    form_context.setField(ev);
+    form_context.saveField(ev);
+  };
+  return (
+    <div className="form-group">
+      <span className="mr-2">{props.label}</span>
+      <div className="form-check form-check-inline">
+        <input type="radio" className="form-check-input" name={props.name} id={props.name + "_n"} value={0}
+               checked={!props.value} onChange={setAndSaveField} />
+        <label htmlFor={props.name + "_n"} className="form-check-label">No</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input type="radio" className="form-check-input" name={props.name} id={props.name + "_y"} value={1}
+               checked={props.value} onChange={setAndSaveField} />
+        <label htmlFor={props.name + "_y"} className="form-check-label">Yes</label>
+      </div>
+      <HelpText text={props.helpText} />
+    </div>
+  );
+}
+
 interface SelectFieldProps extends FieldProps {
   choices: Record<number | string, string>,
   allowEmpty?: boolean,
@@ -224,8 +265,8 @@ export function ObjectSelectField(props: SelectFieldProps): JSX.Element {
   };
   return (
     <div className="form-group">
-      <label htmlFor="weapon_type">{props.label}</label>
-      <select className="custom-select" name={props.name} value={props.value || ""}
+      <label htmlFor={props.name}>{props.label}</label>
+      <select className="custom-select" name={props.name} id={props.name} value={props.value || ""}
               onChange={setAndSaveField}>
         {props.allowEmpty && <option value="">-</option>}
         {Object.entries(props.choices).map(v => <option value={v[0]} key={v[0]}>{v[1]}</option>)}
@@ -262,17 +303,24 @@ export function ArtifactSelectField(props: GameObjectFieldProps): JSX.Element {
   const artifact_entries = adventure_context.artifacts.all.map(a => [a.id, a.name]);
 
   return (
-    <div className="form-group">
-      <label htmlFor="weapon_type">{props.label}</label>
-      <select className="custom-select" name={props.name} value={props.value || ""}
-              onChange={setAndSaveField}>
-        {props.allowEmpty && <option value="">-</option>}
-        {props.extraOptions && Object.entries(props.extraOptions).map(opt => (
-            <option value={opt[0]} key={opt[0]}>{opt[0]}: {opt[1]}</option>
-        ))}
-        {artifact_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
-      </select>
-      <HelpText text={props.helpText} />
+    <div className="row">
+      <div className="col-md-6">
+        <div className="form-group">
+          <label htmlFor="weapon_type">{props.label}</label>
+          <select className="custom-select" name={props.name} value={props.value || ""}
+                  onChange={setAndSaveField}>
+            {props.allowEmpty && <option value="">-</option>}
+            {props.extraOptions && Object.entries(props.extraOptions).map(opt => (
+                <option value={opt[0]} key={opt[0]}>{opt[0]}: {opt[1]}</option>
+            ))}
+            {artifact_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
+          </select>
+          <HelpText text={props.helpText} />
+        </div>
+      </div>
+      <div className="col-md-6">
+        {props.value && <ArtifactLink id={props.value} />}
+      </div>
     </div>
   );
 }
@@ -298,14 +346,21 @@ export function EffectSelectField(props: GameObjectFieldProps): JSX.Element {
   const effect_entries = adventure_context.effects.all.map(e => [e.id, e.excerpt()]);
 
   return (
-    <div className="form-group">
-      <label htmlFor="weapon_type">{props.label}</label>
-      <select className="custom-select" name={props.name} value={props.value || ""}
-              onChange={setAndSaveField}>
-        {props.allowEmpty && <option value="">-</option>}
-        {effect_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
-      </select>
-      <HelpText text={props.helpText} />
+    <div className="row">
+      <div className="col-md-6">
+        <div className="form-group">
+          <label htmlFor="weapon_type">{props.label}</label>
+          <select className="custom-select" name={props.name} value={props.value || ""}
+                  onChange={setAndSaveField}>
+            {props.allowEmpty && <option value="">-</option>}
+            {effect_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
+          </select>
+          <HelpText text={props.helpText} />
+        </div>
+      </div>
+      <div className="col-md-6">
+        {props.value && <EffectLink id={props.value} />}
+      </div>
     </div>
   );
 }
@@ -331,14 +386,21 @@ export function MonsterSelectField(props: GameObjectFieldProps): JSX.Element {
   const monster_entries = adventure_context.monsters.all.map(m => [m.id, m.name]);
 
   return (
-    <div className="form-group">
-      <label htmlFor="weapon_type">{props.label}</label>
-      <select className="custom-select" name={props.name} value={props.value || ""}
-              onChange={setAndSaveField}>
-        {props.allowEmpty && <option value="">-</option>}
-        {monster_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
-      </select>
-      <HelpText text={props.helpText} />
+    <div className="row">
+      <div className="col-md-6">
+        <div className="form-group">
+          <label htmlFor="weapon_type">{props.label}</label>
+          <select className="custom-select" name={props.name} value={props.value || ""}
+                  onChange={setAndSaveField}>
+            {props.allowEmpty && <option value="">-</option>}
+            {monster_entries.map(v => <option value={v[0]} key={v[0]}>{v[0]}: {v[1]}</option>)}
+          </select>
+          <HelpText text={props.helpText} />
+        </div>
+      </div>
+      <div className="col-md-6">
+        {props.value && <MonsterLink id={props.value} />}
+      </div>
     </div>
   );
 }

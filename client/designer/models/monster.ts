@@ -86,6 +86,14 @@ export default class Monster extends GameObject {
   public getCombatCodeDisplay(): string {
     return MONSTER_COMBAT_CODES[this.combat_code];
   }
+
+  public getLongName(): string {
+    if (this.count > 1) {
+      return `${this.count} ${this.name_plural ? this.name_plural : this.name + 's'}`;
+    }
+    return this.name;
+  }
+
 }
 
 export const MONSTER_FRIENDLINESS = {

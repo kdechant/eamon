@@ -3,7 +3,12 @@ import {useParams} from "react-router";
 
 import { AdventureContext, FormContext} from "../context";
 import {ArtifactLink, EffectLink, MonsterLink, RoomLink} from "./common";
-import {ObjectDescriptionField, ObjectTextareaField, ObjectTextField} from "./fields";
+import {
+  ObjectDescriptionField,
+  ObjectTextareaField,
+  ObjectTextField,
+  ObjectToggleField
+} from "./fields";
 
 function RoomDetail(): JSX.Element {
   const { slug, id } = useParams<{ slug: string, id: string }>();
@@ -45,19 +50,9 @@ function RoomDetail(): JSX.Element {
       </div>
       <ObjectTextField name="name" label="Name" value={room.name} />
       <ObjectDescriptionField value={room.description} isMarkdown={room.is_markdown} />
-      <div className="form-group">
-        <span className="mr-2">Is Dark?</span>
-        <div className="form-check form-check-inline">
-          <input type="radio" className="form-check-input" name="is_dark" id="is_dark_n" value={0}
-                 checked={!room.is_dark} onChange={setField} />
-          <label htmlFor="is_dark_n" className="form-check-label">No</label>
-        </div>
-        <div className="form-check form-check-inline">
-          <input type="radio" className="form-check-input" name="is_dark" id="is_dark_y" value={1}
-                 checked={room.is_dark} onChange={setField} />
-          <label htmlFor="is_dark_y" className="form-check-label">Yes</label>
-        </div>
-      </div>
+      <ObjectToggleField name="is_dark" label="Is Dark?" value={room.is_dark}
+      helpText="If dark, the player will need a light source, or else they will see a message like
+                'It's too dark to see anything.' (Unless the dark name/description are provided below.)"/>
       {room.is_dark && (
         <>
           <ObjectTextField name="dark_name" label="Dark name" value={room.dark_name}
