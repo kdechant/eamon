@@ -52,7 +52,7 @@ export class Room extends Loadable {
   public init(source: roomSource): void {
     for (const prop in source) {
       if (prop === "exits") {
-        const exits = source[prop] as Record<string, string | number>;
+        const exits = source[prop] as Record<string, string | number>[];
         for (const i in exits) {
           const ex = new RoomExit();
           ex.init(source[prop][i]);

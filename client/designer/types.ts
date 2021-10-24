@@ -7,5 +7,5 @@ export type RouteParams = {
 export type roomSource = {
     id: number,
     name: string,
-    exits: Record<string, string | number>
+    exits: Record<string, string | number>[]
 }

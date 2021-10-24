@@ -13,10 +13,12 @@ const data = {
   adventure: null,
   rooms: new RoomRepository([{
     'id': 1,
-    'name': 'Entrance'
+    'name': 'Entrance',
+    'exits': []
   }, {
     'id': 2,
-    'name': 'Tunnel'
+    'name': 'Tunnel',
+    'exits': []
   }]),
   artifacts: new ArtifactRepository([{
     'id': 1,
@@ -38,6 +40,15 @@ const data = {
   }]),
   hints: new HintRepository([]),
   setAdventureField: () => {},
+  saveAdventureField: () => {},
+  setRoomField: () => {},
+  saveRoomField: () => {},
+  setArtifactField: () => {},
+  saveArtifactField: () => {},
+  setEffectField: () => {},
+  saveEffectField: () => {},
+  setMonsterField: () => {},
+  saveMonsterField: () => {},
 };
 
 const AllTheProviders = ({children}) => {

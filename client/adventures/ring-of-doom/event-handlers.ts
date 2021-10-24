@@ -116,7 +116,7 @@ export const event_handlers = {
           game.artifacts.get(1).destroy();
           game.artifacts.get(8).moveToRoom();
         } else {
-          game.history.write('Nothing happens');
+          game.history.write('Nothing happens.');
         }
         return true;
       };

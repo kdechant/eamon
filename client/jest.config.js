@@ -1,4 +1,5 @@
 const config = {
+  "maxWorkers": 1,
   "moduleFileExtensions": [
     "js",
     "jsx",

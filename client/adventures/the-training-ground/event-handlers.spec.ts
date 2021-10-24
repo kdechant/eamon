@@ -2,7 +2,7 @@
  * Unit tests for The Training Ground
  */
 import Game from "../../core/models/game";
-import {initLiveGame, expectEffectSeen, expectEffectNotSeen} from "../../core/utils/testing";
+import {initLiveGame, expectEffectSeen, expectEffectNotSeen, movePlayer} from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
 
@@ -65,7 +65,7 @@ test("say thor", () => {
   rogue.moveToRoom(28);
   const boz = game.monsters.get(20);
   const boz_initial_courage = boz.courage;
-  game.player.moveToRoom(28); game.skip_battle_actions = true; game.tick();
+  movePlayer(28);
 
   const npc_attack_miss = [
     0,  // doesn't flee
