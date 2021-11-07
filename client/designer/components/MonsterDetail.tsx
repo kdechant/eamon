@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {useParams} from "react-router";
 
-import {AdventureContext, FormContext, UserContext} from "../context";
-import {MonsterLink, MonsterLocation, MonsterWeaponLink} from "./common";
+import AdventureContext from "../contexts/adventure";
+import UserContext from "../contexts/user";
+import FormContext from "../contexts/form";import {MonsterLink, MonsterLocation, MonsterWeaponLink} from "./common";
 import Monster, {
   MONSTER_COMBAT_CODES,
   MONSTER_FRIENDLINESS,

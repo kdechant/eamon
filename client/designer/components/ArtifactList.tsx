@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from "react-router-dom";
 
 import {useParams} from "react-router";
-import {AdventureContext} from "../context";
+import AdventureContext from "../contexts/adventure";
 import {ArtifactLink, ArtifactLocation, MonsterLink, RoomLink} from "./common";
 
 function ArtifactList(): JSX.Element {

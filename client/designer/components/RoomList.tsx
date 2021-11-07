@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useParams} from "react-router";
 
-import {AdventureContext} from "../context";
+import AdventureContext from "../contexts/adventure";
 import {RoomLink} from "./common";
 
 function RoomList(): JSX.Element {

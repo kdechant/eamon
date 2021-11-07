@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState} from "react";
 
-import {UserContext} from "../context";
+import UserContext from "../contexts/user";
 import {Redirect} from "react-router";
 
 function Login(): JSX.Element {

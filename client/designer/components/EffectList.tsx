@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from "react-router-dom";
 
 import {useParams} from "react-router";
-import {AdventureContext} from "../context";
+import AdventureContext from "../contexts/adventure";
 import {TextStyleLabel} from "./common";
 
 function EffectList(): JSX.Element {

@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import {AdventureContext, FormContext, UserContext} from "../context";
+import AdventureContext from "../contexts/adventure";
+import UserContext from "../contexts/user";
+import FormContext from "../contexts/form";
 import {ArtifactLink, EffectLink, MonsterLink} from "./common";
 
 interface FieldProps {

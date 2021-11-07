@@ -2,7 +2,7 @@ import * as React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import AdventureList from "./AdventureList";
 import Login from "./Login";
-import {UserContext} from "../context";
+import UserContext from "../contexts/user";
 import {useState} from "react";
 import jwt_decode from "jwt-decode";
 import AdventureMainMenu from "./AdventureMainMenu";

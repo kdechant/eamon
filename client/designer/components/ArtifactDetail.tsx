@@ -1,7 +1,9 @@
 import * as React from 'react';
 import {useParams} from "react-router";
 
-import { AdventureContext, UserContext, FormContext} from "../context";
+import AdventureContext from "../contexts/adventure";
+import UserContext from "../contexts/user";
+import FormContext from "../contexts/form";
 import Artifact, {
   ARTIFACT_ARMOR_TYPES,
   ARTIFACT_TYPES,
