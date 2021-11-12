@@ -23,6 +23,9 @@ function MonsterDetail(): JSX.Element {
   const context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
   const { slug, id } = useParams<{ slug: string, id: string }>();
+  if (!context.monsters) {
+    return <>Loading...</>;
+  }
   const monster = context.monsters.get(id);
   if (!monster) {
     return <>Monster #${id} not found!</>;
@@ -38,6 +41,20 @@ function MonsterDetail(): JSX.Element {
 
   const prev = context.monsters.getPrev(id);
   const next = context.monsters.getNext(id);
+
+  const getToHitOdds = (defender_ag: number) => {
+    const defender = new Monster();
+    defender.agility = defender_ag;
+    defender.defense_bonus = 0;
+    return monster.getToHitOdds(defender);
+  }
+
+  const getWillBeHitOdds = (attacker_ag: number, attacker_wpn_ability: number) => {
+    const attacker = new Monster();
+    attacker.agility = attacker_ag;
+    attacker.attack_odds = 25 + attacker_wpn_ability;  // player gets default odds of 25%
+    return attacker.getToHitOdds(monster);
+  }
 
   return (
     <FormContext.Provider value={{setField, saveField}}>
@@ -143,67 +160,125 @@ function MonsterDetail(): JSX.Element {
           }
         </div>
       </div>
-      <div className="form-row">
-        <div className="col-lg-6">
-          <ObjectSelectField name="combat_code" value={monster.combat_code}
-                             label="Combat Behavior" choices={MONSTER_COMBAT_CODES} />
-        </div>
-        <div className="col-lg-3">
-          <ObjectNumberField name="attack_odds" value={monster.attack_odds}
-                             label="Odds to hit"
-                             helpText="Note: This is a base value that is adjusted by agility." />
-        </div>
-        <div className="col-lg-3">
-          <ObjectNumberField name="defense_bonus" value={monster.defense_bonus}
-                             label="Defense bonus"
-                             helpText="Extra chance to avoid being hit. Rare. Usually use agility
-                             instead." />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="col-lg-3">
-          <ObjectNumberField name="armor_class" value={monster.armor_class}
-                             label="Armor class"
-                             helpText="Typical ranges: 0: none, 1-2: light, 3-4: medium, 5+: tank" />
-        </div>
-        <div className="col-lg-3">
-          <ObjectSelectField name="pursues" value={monster.pursues ? 1 : 0}
-                             label="Pursues a fleeing player?" choices={MONSTER_PURSUES} />
-        </div>
-        <div className="col-lg-6">
-          <ObjectTextField name="combat_verbs" label="Custom Combat Verbs" value={monster.combat_verbs}
-                           helpText="Customized descriptions of how the monster attacks. e.g.,
-                             'breathes fire at', 'casts a magic missile at'. Separate multiple
-                             items with commas. One item from the set will be chosen randomly
-                             each turn." />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="col-lg-6">
-          {!user_context.username && (
-            <div className="form-group">
-              <label>Starting Weapon</label>
-              <MonsterWeaponLink id={monster.weapon_id} />
+      <div className="row">
+        <div className="col-lg-9">
+          <div className="form-row">
+            <div className="col-md-6">
+              <ObjectSelectField name="combat_code" value={monster.combat_code}
+                                 label="Combat Behavior" choices={MONSTER_COMBAT_CODES} />
             </div>
-          )}
-          {user_context.username && (
-            <ArtifactSelectField
-              name="weapon_id" label="Starting Weapon"
-              value={monster.weapon_id}
-              extraOptions={{'-1': "No weapon", 0: "Natural Weapons"}}
-            />
-          )}
+            <div className="col-md-3">
+              <ObjectNumberField name="attack_odds" value={monster.attack_odds}
+                                 label="Odds to hit"
+                                 helpText="Note: This is a base value that is adjusted by agility." />
+            </div>
+            <div className="col-md-3">
+              <ObjectNumberField name="defense_bonus" value={monster.defense_bonus}
+                                 label="Defense bonus"
+                                 helpText="Extra chance to avoid being hit. Rare. Usually use agility
+                                 instead." />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="col-md-3">
+              <ObjectNumberField name="armor_class" value={monster.armor_class}
+                                 label="Armor class"
+                                 helpText="Typical ranges: 0: none, 1-2: light, 3-4: medium, 5+: tank" />
+            </div>
+            <div className="col-md-3">
+              <ObjectSelectField name="pursues" value={monster.pursues ? 1 : 0}
+                                 label="Pursues a fleeing player?" choices={MONSTER_PURSUES} />
+            </div>
+            <div className="col-md-6">
+              <ObjectTextField name="combat_verbs" label="Custom Combat Verbs" value={monster.combat_verbs}
+                               helpText="Customized descriptions of how the monster attacks. e.g.,
+                                 'breathes fire at', 'casts a magic missile at'. Separate multiple
+                                 items with commas. One item from the set will be chosen randomly
+                                 each turn." />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="col-md-6">
+              {!user_context.username && (
+                <div className="form-group">
+                  <label>Starting Weapon</label>
+                  <MonsterWeaponLink id={monster.weapon_id} />
+                </div>
+              )}
+              {user_context.username && (
+                <ArtifactSelectField
+                  name="weapon_id" label="Starting Weapon"
+                  value={monster.weapon_id}
+                  extraOptions={{'-1': "No weapon", 0: "Natural Weapons"}}
+                />
+              )}
+            </div>
+            <div className="col-md-6">
+              {monster.combat_code} | {monster.weapon_id}
+              {(monster.combat_code === -1 || monster.weapon_id === 0) && (
+                <ObjectDiceSidesField
+                  label="Natural Weapons Damage"
+                  diceName="weapon_dice" diceValue={monster.weapon_dice}
+                  sidesName="weapon_sides" sidesValue={monster.weapon_sides}
+                  helpText="The weapon's damage roll. e.g., '1d8' or '2d6'" />
+              )}
+            </div>
+          </div>
         </div>
-        <div className="col-lg-6">
-          {(monster.combat_code === -1 || monster.weapon_id === 0) && (
-            <ObjectDiceSidesField
-              label="Natural Weapons Damage"
-              diceName="weapon_dice" diceValue={monster.weapon_dice}
-              sidesName="weapon_sides" sidesValue={monster.weapon_sides}
-              helpText="The weapon's damage roll. e.g., '1d8' or '2d6'" />
-          )}
+        <div className="col-lg-3">
+          Odds to hit:
+          <table className="table table-sm">
+            <tbody>
+              <tr>
+                <th>Target AG</th>
+                <th>% to hit</th>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>{getToHitOdds(10)}</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>{getToHitOdds(15)}</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>{getToHitOdds(20)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          Odds a player will hit this monster:
+          <table className="table table-sm">
+            <tbody>
+              <tr>
+                <th>Player AG</th>
+                <th>Wpn Ability</th>
+                <th>% to hit</th>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>0%</td>
+                <td>{getWillBeHitOdds(15, 0)}</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>25%</td>
+                <td>{getWillBeHitOdds(15, 25)}</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>25%</td>
+                <td>{getWillBeHitOdds(20, 25)}</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>50%</td>
+                <td>{getWillBeHitOdds(20, 50)}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </FormContext.Provider>

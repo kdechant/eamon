@@ -94,6 +94,19 @@ export default class Monster extends GameObject {
     return this.name;
   }
 
+  /**
+   * Gets the "to hit" percentage for a monster attacking another monster
+   */
+  public getToHitOdds(defender: Monster): number {
+    // attacker's adjusted agility
+    const attacker_ag: number = Math.min(this.agility, 30);
+    // defender's adjusted agility
+    const defender_ag: number = Math.min(defender.agility, 30);
+
+    // Base to-hit value
+    return 2 * (attacker_ag - defender_ag) + Number(this.attack_odds) - Number(defender.defense_bonus);
+  }
+
 }
 
 export const MONSTER_FRIENDLINESS = {

@@ -15,6 +15,10 @@ function RoomDetail(): JSX.Element {
   const { slug, id } = useParams<{ slug: string, id: string }>();
   const context = React.useContext(AdventureContext);
 
+  if (!context.effects) {
+    return <>Loading...</>;
+  }
+
   const effect = context.effects.get(id);
   if (!effect) {
     return <>Effect #${id} not found!</>;

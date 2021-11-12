@@ -250,7 +250,6 @@ export function AdventureContextProvider(props: AdventureContextProps): JSX.Elem
   };
 
   useEffect(() => {
-    console.log('LOADING DATA')
     loadAdventureData(slug);
   }, [slug]);
 

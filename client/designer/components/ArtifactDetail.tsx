@@ -23,6 +23,10 @@ function ArtifactDetail(): JSX.Element {
   const context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
 
+  if (!context.artifacts) {
+    return <>Loading...</>;
+  }
+
   const artifact = context.artifacts.get(id);
   if (!artifact) {
     return <>Artifact #${id} not found!</>;
