@@ -28,7 +28,7 @@ function MonsterDetail(): JSX.Element {
   }
   const monster = context.monsters.get(id);
   if (!monster) {
-    return <>Monster #${id} not found!</>;
+    return <>Monster #{id} not found!</>;
   }
 
   const setField = (ev: any) => {

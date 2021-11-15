@@ -7,7 +7,8 @@ import {ArtifactIcons} from "../constants";
 import Artifact from "../models/artifact";
 
 type LinkProps = {
-  id: number
+  id: number,
+  maxLength?: number,
 }
 
 export function RoomLink(props: LinkProps): JSX.Element {
@@ -23,9 +24,13 @@ export function RoomLink(props: LinkProps): JSX.Element {
   if (id) {
     const room = context.rooms.get(id);
     if (room) {
+      let label = room.name;
+      if (props.maxLength) {
+        label = label.substring(0, props.maxLength);
+      }
       return (
         <Link to={`/designer/${slug}/rooms/${id}`}>
-          #{id}: {room ? room.name : 'unknown'}
+          #{id}: {label}
         </Link>
       );
     }

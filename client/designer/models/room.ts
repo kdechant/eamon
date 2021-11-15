@@ -6,7 +6,9 @@ export class RoomExit extends Loadable {
   static EXIT = -999;
   static EXIT_SILENT = -998;  // same as regular exit, but without the "ride off into the sunset" message
 
+  public id: number;  // database ID
   public direction: string;
+  public room_from: number;  // adventure-scoped number of room (not DB ID)
   public room_to: number;
   public door_id: number;
   public effect_id: number;

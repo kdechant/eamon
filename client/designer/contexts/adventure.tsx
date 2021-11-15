@@ -10,6 +10,7 @@ import EffectRepository from "../repositories/effect.repo";
 import MonsterRepository from "../repositories/monster.repo";
 import HintRepository from "../repositories/hint.repo";
 import UserContext from "./user";
+import {RoomExit} from "../models/room";
 
 interface AdventureContextInterface {
   adventure: Adventure,
@@ -22,6 +23,8 @@ interface AdventureContextInterface {
   saveAdventureField: (field: string, value: string) => void,
   setRoomField: (id: number, field: string, value: string) => void,
   saveRoomField: (id: number, field: string, value: string) => void,
+  setRoomExitField: (exit: RoomExit, field: string, value: string) => void,
+  saveRoomExitField: (exit: RoomExit, field: string, value: string) => void,
   setArtifactField: (id: number, field: string, value: string) => void,
   saveArtifactField: (id: number, field: string, value: string) => void,
   setEffectField: (id: number, field: string, value: string) => void,
@@ -44,7 +47,6 @@ export function AdventureContextProvider(props: AdventureContextProps): JSX.Elem
 
   // get the adventure details from the API
   async function loadAdventureData(slug) {
-    console.log('in loadAdventureData');
     const [adv_data, rooms_data, artifacts_data, effects_data, monsters_data, hints_data] = await Promise.all([
       fetch(`/api/designer/adventures/${slug}`).then(response => response.json()),
       fetch(`/api/designer/adventures/${slug}/rooms`).then(response => response.json()),
@@ -148,6 +150,43 @@ export function AdventureContextProvider(props: AdventureContextProps): JSX.Elem
     setState(() => update(state, {rooms: {$set: new_repo}}));
   }
 
+  async function saveRoomExitField(exit: RoomExit, field: string, value: string): Promise<void> {
+    const body: Record<string, string | number> = {};
+    body[field] = value;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+    const token = await userContext.getToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+    fetch(`/api/designer/adventures/${slug}/exits/${exit.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+      headers: headers
+    }).then(response => response.json()).then(data => {
+      setRoomExitField(exit, field, data[field]);
+    });
+    // TODO: catch HTTP errors
+  }
+
+  /**
+   * Set room exit data in the state
+   * @param {RoomExit} exit
+   * @param {string} field
+   * @param {string} value
+   */
+  function setRoomExitField(exit: RoomExit, field: string, value: string) {
+    if (exit[field] === value) return;
+    const new_exit = update(exit, {[field]: {$set: value}});
+    const room_index = state.rooms.getIndex(exit.room_from);
+    const room = state.rooms.get(exit.room_from);
+    const exit_index = room.exits.findIndex(x => x.id === exit.id);
+    const new_room = update(room, {'exits': {[exit_index]: {$set: new_exit}}});
+    const new_repo = update(state.rooms, {'all': {[room_index]: {$set: new_room}}});
+    setState(() => update(state, {rooms: {$set: new_repo}}));
+  }
+
   async function saveArtifactField(id: number, field: string, value: string): Promise<void> {
     const body: Record<string, string | number> = {};
     body[field] = value;
@@ -241,6 +280,8 @@ export function AdventureContextProvider(props: AdventureContextProps): JSX.Elem
     saveAdventureField,
     setRoomField,
     saveRoomField,
+    setRoomExitField,
+    saveRoomExitField,
     setArtifactField,
     saveArtifactField,
     setEffectField,

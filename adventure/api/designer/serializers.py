@@ -30,9 +30,11 @@ class AdventureSerializer(serializers.HyperlinkedModelSerializer, TaggitSerializ
 
 
 class RoomExitSerializer(serializers.ModelSerializer):
+    room_from = serializers.IntegerField(source='room_from.room_id', read_only=True)
+
     class Meta:
         model = RoomExit
-        fields = ('direction', 'room_to', 'door_id', 'effect_id')
+        fields = ('id', 'direction', 'room_from', 'room_to', 'door_id', 'effect_id')
 
 
 class RoomSerializer(serializers.ModelSerializer):

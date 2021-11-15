@@ -169,8 +169,8 @@ class RoomExit(models.Model):
         return str(self.room_from) + " " + self.direction
 
     def save(self, **kwargs):
-        if self.room and self.adventure_id != self.room.adventure_id:
-            self.adventure_id = self.room.adventure_id
+        if self.room_from and self.adventure_id != self.room_from.adventure_id:
+            self.adventure_id = self.room_from.adventure_id
         super().save(**kwargs)
 
 

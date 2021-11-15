@@ -1,8 +1,8 @@
 import * as React from "react";
 
 interface FormContextInterface {
-  setField: (ev: Event) => void,
-  saveField: (ev: Event) => void,
+  setField: (ev: React.ChangeEvent<HTMLElement>) => void,
+  saveField: (ev: React.ChangeEvent<HTMLElement>) => void,
 }
 const FormContext = React.createContext<FormContextInterface | null>(null);
 

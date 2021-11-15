@@ -29,7 +29,7 @@ function ArtifactDetail(): JSX.Element {
 
   const artifact = context.artifacts.get(id);
   if (!artifact) {
-    return <>Artifact #${id} not found!</>;
+    return <>Artifact #{id} not found!</>;
   }
 
   let contents = [];
@@ -237,20 +237,20 @@ function ArtifactDetail(): JSX.Element {
 
           {(artifact.type === Artifact.TYPE_BOUND_MONSTER) && (
             <div className="form-row">
-              <div className="col-sm-4">
+              <div className="col-sm-6">
                 <MonsterSelectField name="monster_id" label="Monster"
                                     value={artifact.monster_id} allowEmpty={true}
                                     helpText="The monster freed when you use the FREE command on this
                                       bound monster."
                 />
               </div>
-              <div className="col-sm-4">
+              <div className="col-sm-6">
                 <ArtifactSelectField name="key_id" label="Key"
                                      value={artifact.key_id} allowEmpty={true}
                                      helpText="The player needs to have this key to free the monster"
                 />
               </div>
-              <div className="col-sm-4">
+              <div className="col-sm-6">
                 <MonsterSelectField name="guard_id" label="Guarded by"
                                     value={artifact.guard_id} allowEmpty={true}
                                     helpText="Another monster that stops the player from freeing this

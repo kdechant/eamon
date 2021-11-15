@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from django.db.models import Q
 
 from . import serializers
-from adventure.models import Adventure, Author, Room, Artifact, Effect, Monster, Hint
+from adventure.models import Adventure, Author, Room, Artifact, Effect, Monster, Hint, RoomExit
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
@@ -37,6 +37,19 @@ class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = serializers.RoomSerializer
     lookup_field = 'room_id'
+
+    def get_queryset(self):
+        adventure_id = self.kwargs['adventure_id']
+        return self.queryset.filter(adventure__slug=adventure_id)
+
+
+class RoomExitViewSet(viewsets.ModelViewSet):
+    """
+    Room exit data for an adventure.
+    """
+    queryset = RoomExit.objects.all()
+    serializer_class = serializers.RoomExitSerializer
+    lookup_field = 'id'
 
     def get_queryset(self):
         adventure_id = self.kwargs['adventure_id']

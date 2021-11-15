@@ -21,7 +21,7 @@ function RoomDetail(): JSX.Element {
 
   const effect = context.effects.get(id);
   if (!effect) {
-    return <>Effect #${id} not found!</>;
+    return <>Effect #{id} not found!</>;
   }
 
   const prev = context.effects.getPrev(id);
