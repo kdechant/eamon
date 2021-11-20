@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useState} from "react";
 
 import UserContext from "../contexts/user";
-import {Redirect} from "react-router";
+import {Navigate} from "react-router-dom";
 
 function Login(): JSX.Element {
   const context = React.useContext(UserContext);
@@ -63,7 +63,7 @@ function Login(): JSX.Element {
         <button className="btn btn-primary" onClick={submit}>Log in</button>
 
         {error && <p>{error}</p>}
-        {redirect && <Redirect to={redirect} />}
+        {redirect && <Navigate to={redirect} />}
       </div>
 
     </div>

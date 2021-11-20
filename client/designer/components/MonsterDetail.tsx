@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 
 import AdventureContext from "../contexts/adventure";
 import UserContext from "../contexts/user";
@@ -22,10 +22,12 @@ import {
 function MonsterDetail(): JSX.Element {
   const context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
-  const { slug, id } = useParams<{ slug: string, id: string }>();
+  const { id } = useParams();
+
   if (!context.monsters) {
     return <>Loading...</>;
   }
+
   const monster = context.monsters.get(id);
   if (!monster) {
     return <>Monster #{id} not found!</>;

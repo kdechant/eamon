@@ -1,11 +1,12 @@
 import {Link} from "react-router-dom";
 import * as React from "react";
 import AdventureContext from "../contexts/adventure";
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 
 function AdventureHeading(): JSX.Element {
   const adventureContext = React.useContext(AdventureContext);
-  const {slug} = useParams<{ slug: string }>();
+  const params = useParams();
+  const slug = params['*'].split('/')[0];
 
   if (!adventureContext.adventure) {
     return <p>Loading {slug}...</p>;

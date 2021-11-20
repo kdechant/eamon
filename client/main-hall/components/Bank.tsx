@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Link, Route} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 
 export default class Bank extends React.Component<any, any> {
   public state: any = {
@@ -68,49 +68,53 @@ export default class Bank extends React.Component<any, any> {
         <p>You have {this.props.player.gold} gold pieces in hand, and {this.props.player.gold_in_bank} gold pieces in
           the bank.</p>
 
-        <Route path="/main-hall/bank" exact={true} render={(props) => (
-          <p>
-            <Link to="/main-hall/bank/deposit" className="btn btn-primary">Deposit</Link>
-            <Link to="/main-hall/bank/withdraw" className="btn btn-primary">Withdrawal</Link>
-            <Link to="/main-hall/hall" className="btn btn-primary">Go back to Main Hall</Link>
-          </p>
-        )} />
+        <Routes>
 
-        <Route path="/main-hall/bank/deposit" render={(props) => (
-          <div className="bank-deposit">
-            <p>Good for you! How much would you like to deposit?</p>
-            <div className="form-row">
-              <div className="col-auto">
-                <input type="text" className="form-control" id="amount" name="amount" onChange={this.handleChange} />
-              </div>
-              <div className="col-auto">
-                <button className="btn btn-primary" onClick={this.deposit}>Deposit</button>
-              </div>
-              <div className="col-auto">
-                <Link to="/main-hall/bank" className="btn btn-primary">Done</Link>
-              </div>
-            </div>
-            <p>{this.state.message}</p>
-          </div>
-          )} />
+          <Route path="" element={
+            <p>
+              <Link to="/main-hall/bank/deposit" className="btn btn-primary">Deposit</Link>
+              <Link to="/main-hall/bank/withdraw" className="btn btn-primary">Withdrawal</Link>
+              <Link to="/main-hall/hall" className="btn btn-primary">Go back to Main Hall</Link>
+            </p>
+          } />
 
-        <Route path="/main-hall/bank/withdraw" render={(props) => (
-          <div className="bank-deposit">
-            <p>Good for you! How much would you like to withdraw?</p>
-            <div className="form-row">
-              <div className="col-auto">
-                <input type="text" className="form-control" id="amount" name="amount" onChange={this.handleChange} />
+          <Route path="deposit" element={
+            <div className="bank-deposit">
+              <p>Good for you! How much would you like to deposit?</p>
+              <div className="form-row">
+                <div className="col-auto">
+                  <input type="text" className="form-control" id="amount" name="amount" onChange={this.handleChange} />
+                </div>
+                <div className="col-auto">
+                  <button className="btn btn-primary" onClick={this.deposit}>Deposit</button>
+                </div>
+                <div className="col-auto">
+                  <Link to="/main-hall/bank" className="btn btn-primary">Done</Link>
+                </div>
               </div>
-              <div className="col-auto">
-                <button className="btn btn-primary" onClick={this.withdraw}>Withdraw</button>
-              </div>
-              <div className="col-auto">
-                <Link to="/main-hall/bank" className="btn btn-primary">Done</Link>
-              </div>
+              <p>{this.state.message}</p>
             </div>
-            <p>{this.state.message}</p>
-          </div>
-        )} />
+          } />
+
+          <Route path="withdraw" element={
+            <div className="bank-deposit">
+              <p>Good for you! How much would you like to withdraw?</p>
+              <div className="form-row">
+                <div className="col-auto">
+                  <input type="text" className="form-control" id="amount" name="amount" onChange={this.handleChange} />
+                </div>
+                <div className="col-auto">
+                  <button className="btn btn-primary" onClick={this.withdraw}>Withdraw</button>
+                </div>
+                <div className="col-auto">
+                  <Link to="/main-hall/bank" className="btn btn-primary">Done</Link>
+                </div>
+              </div>
+              <p>{this.state.message}</p>
+            </div>
+          } />
+
+        </Routes>
       </div>
     );
   }

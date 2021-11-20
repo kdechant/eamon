@@ -1,12 +1,10 @@
 import * as React from 'react';
-import {useParams} from "react-router";
 import {Link} from "react-router-dom";
 import AdventureContext from "../contexts/adventure";
 import FormContext from "../contexts/form";
 import {ObjectTextareaField, ObjectTextField} from "./fields";
 
 function AdventureDetail(): JSX.Element {
-  const { slug } = useParams<{ slug: string }>();
   const adventureContext = React.useContext(AdventureContext);
 
   const setField = (ev) => {
@@ -40,11 +38,11 @@ function AdventureDetail(): JSX.Element {
         </div>
         <div className="col-md-4">
           <div>
-            <p><Link to={`/designer/${slug}/rooms`}>{adventureContext.rooms?.all?.length} Rooms</Link></p>
-            <p><Link to={`/designer/${slug}/artifacts`}>{adventureContext.artifacts?.all.length} Artifacts</Link></p>
-            <p><Link to={`/designer/${slug}/effects`}>{adventureContext.effects?.all?.length} Effects</Link></p>
-            <p><Link to={`/designer/${slug}/monsters`}>{adventureContext.monsters?.all?.length} Monsters</Link></p>
-            <p><Link to={`/designer/${slug}/hints`}>{adventureContext.hints?.all?.length} Hints</Link></p>
+            <p><Link to={`rooms`}>{adventureContext.rooms?.all?.length} Rooms</Link></p>
+            <p><Link to={`artifacts`}>{adventureContext.artifacts?.all.length} Artifacts</Link></p>
+            <p><Link to={`effects`}>{adventureContext.effects?.all?.length} Effects</Link></p>
+            <p><Link to={`monsters`}>{adventureContext.monsters?.all?.length} Monsters</Link></p>
+            <p><Link to={`hints`}>{adventureContext.hints?.all?.length} Hints</Link></p>
           </div>
         </div>
       </div>

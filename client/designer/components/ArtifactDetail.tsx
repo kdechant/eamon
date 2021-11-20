@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 
 import AdventureContext from "../contexts/adventure";
 import UserContext from "../contexts/user";
@@ -19,7 +19,7 @@ import {
 } from "./fields";
 
 function ArtifactDetail(): JSX.Element {
-  const { slug, id } = useParams<{ slug: string, id: string }>();
+  const { id } = useParams();
   const context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
 

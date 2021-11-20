@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Route} from "react-router";
+import {Route, Routes} from "react-router";
 import axios from "axios";
 
 import PlayerMenu from "./PlayerMenu";
@@ -69,24 +69,14 @@ class PlayerDetail extends React.Component {
 
     return (
       <div className="container-fluid" id="PlayerDetail">
-        <Route path="/main-hall/hall" render={(props) => (
-          <PlayerMenu {...props} player={this.state.player}/>
-        )}/>
-        <Route path="/main-hall/adventure" render={(props) => (
-          <AdventureList {...props} player={this.state.player}/>
-        )}/>
-        <Route path="/main-hall/bank" render={(props) => (
-          <Bank {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
-        )}/>
-        <Route path="/main-hall/shop" render={(props) => (
-          <Shop {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
-        )}/>
-        <Route path="/main-hall/wizard" render={(props) => (
-          <Wizard {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
-        )}/>
-        <Route path="/main-hall/witch" render={(props) => (
-          <Witch {...props} player={this.state.player} setPlayerState={this.setPlayerState} />
-        )}/>
+        <Routes>
+          <Route path="hall" element={<PlayerMenu player={this.state.player}/>}/>
+          <Route path="adventure" element={<AdventureList player={this.state.player}/>}/>
+          <Route path="bank/*" element={<Bank player={this.state.player} setPlayerState={this.setPlayerState} />}/>
+          <Route path="shop/*" element={<Shop player={this.state.player} setPlayerState={this.setPlayerState} />}/>
+          <Route path="wizard" element={<Wizard player={this.state.player} setPlayerState={this.setPlayerState} />}/>
+          <Route path="witch" element={<Witch player={this.state.player} setPlayerState={this.setPlayerState} />}/>
+        </Routes>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 
 import AdventureContext from "../contexts/adventure";
 import FormContext from "../contexts/form";
@@ -65,7 +65,7 @@ function RoomExitDetail(props: RoomExitProps): JSX.Element {
 
 
 function RoomDetail(): JSX.Element {
-  const { slug, id } = useParams<{ slug: string, id: string }>();
+  const { id } = useParams();
   const context = React.useContext(AdventureContext);
 
   if (!context.rooms) {
@@ -205,23 +205,23 @@ function RoomDetail(): JSX.Element {
         </tbody>
       </table>
       <p>Artifacts:</p>
-      <p>
+      <div>
         {artifacts.length === 0 && <span>none</span>}
         {artifacts.map(a => (
           <div key={a.id}>
             <ArtifactLink id={a.id} />
           </div>
         ))}
-      </p>
+      </div>
       <p>Monsters:</p>
-      <p>
+      <div>
         {monsters.length === 0 && <span>none</span>}
         {monsters.map(m => (
           <div key={m.id}>
             <MonsterLink id={m.id} />
           </div>
         ))}
-      </p>
+      </div>
     </FormContext.Provider>
   );
 }

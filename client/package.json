@@ -16,7 +16,7 @@
     "react-dom": "^17.0.1",
     "react-keyboard-event-handler": "^1.5.4",
     "react-markdown": "^7.0.1",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^6.0.2",
     "react-transition-group": "^4.4.1",
     "reactstrap": "^8.8.1",
     "rehype-raw": "^6.1.0",

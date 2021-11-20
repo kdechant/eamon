@@ -1,15 +1,13 @@
 import * as React from 'react';
-import {useParams} from "react-router";
 
 import AdventureContext from "../contexts/adventure";
 import {RoomLink} from "./common";
 
 function RoomList(): JSX.Element {
-  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {
-    return <p>Loading {slug}...</p>;
+    return <p>Loading...</p>;
   }
 
   let emptyMessage = '';

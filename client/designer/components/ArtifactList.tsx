@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
 
-import {useParams} from "react-router";
 import AdventureContext from "../contexts/adventure";
 import {ArtifactLink, ArtifactLocation, MonsterLink, RoomLink} from "./common";
 
 function ArtifactList(): JSX.Element {
-  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {
-    return <p>Loading {slug}...</p>;
+    return <p>Loading...</p>;
   }
 
   let emptyMessage = '';
@@ -43,7 +41,7 @@ function ArtifactList(): JSX.Element {
                 return (
                   <tr className="room-list-item" key={art.id}>
                     <td>{art.id}</td>
-                    <td><Link to={`artifacts/${art.id}`}>{art.name}</Link></td>
+                    <td><Link to={`${art.id}`}>{art.name}</Link></td>
                     {/* TODO: show type name */}
                     <td>{art.type}</td>
                     <td><ArtifactLocation id={art.id} /></td>

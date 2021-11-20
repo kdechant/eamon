@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 
 import AdventureContext from "../contexts/adventure";
 import FormContext from "../contexts/form";
@@ -12,7 +12,7 @@ import {
 import {TEXT_STYLES} from "../models/effect";
 
 function RoomDetail(): JSX.Element {
-  const { slug, id } = useParams<{ slug: string, id: string }>();
+  const { id } = useParams();
   const context = React.useContext(AdventureContext);
 
   if (!context.effects) {

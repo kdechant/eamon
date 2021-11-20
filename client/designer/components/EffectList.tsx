@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
 
-import {useParams} from "react-router";
 import AdventureContext from "../contexts/adventure";
 import {TextStyleLabel} from "./common";
 
 function EffectList(): JSX.Element {
-  const { slug } = useParams<{ slug: string }>();
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {
-    return <p>Loading {slug}...</p>;
+    return <p>Loading...</p>;
   }
 
   let emptyMessage = '';
@@ -40,7 +38,7 @@ function EffectList(): JSX.Element {
                 return (
                   <tr className="effects-list-item" key={eff.id}>
                     <td>{eff.id}</td>
-                    <td><Link to={`effects/${eff.id}`}>{eff.text}</Link></td>
+                    <td><Link to={`${eff.id}`}>{eff.text}</Link></td>
                     <td><TextStyleLabel style={eff.style} /></td>
                   </tr>
                 );

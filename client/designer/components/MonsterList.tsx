@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import {useParams} from "react-router";
 import AdventureContext from "../contexts/adventure";
 import {ArtifactLink, MonsterLink, MonsterLocation, MonsterWeaponLink, RoomLink} from "./common";
 
 function MonsterList(): JSX.Element {
   const context = React.useContext(AdventureContext);
-  const { slug } = useParams<{ slug: string }>();
 
   if (!context.adventure) {
-    return <p>Loading {slug}...</p>;
+    return <p>Loading...</p>;
   }
 
   let emptyMessage = '';
@@ -44,7 +42,7 @@ function MonsterList(): JSX.Element {
                 return (
                   <tr className="monster-list-item" key={mon.id}>
                     <td>{mon.id}</td>
-                    <td><Link to={`monsters/${mon.id}`}>{mon.name}</Link></td>
+                    <td><Link to={`${mon.id}`}>{mon.name}</Link></td>
                     <td><MonsterLocation id={mon.id} /></td>
                     <td>{mon.count}</td>
                     <td>{mon.hardiness}</td>

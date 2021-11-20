@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 import update from 'immutability-helper';
 
 import Adventure from "../models/adventure";
@@ -43,7 +43,8 @@ export function AdventureContextProvider(props: AdventureContextProps): JSX.Elem
   const [state, setState] = useState(null);
   const [timeouts, setTimeouts] = useState({});
   const userContext = React.useContext(UserContext);
-  const {slug} = useParams<{ slug: string }>();
+  const params = useParams();
+  const slug = params['*'].split('/')[0];
 
   // get the adventure details from the API
   async function loadAdventureData(slug) {

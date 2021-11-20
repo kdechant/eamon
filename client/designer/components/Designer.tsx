@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AdventureList from "./AdventureList";
 import Login from "./Login";
 import UserContext from "../contexts/user";
@@ -75,12 +75,11 @@ const Designer = (): JSX.Element => {
               <div>Welcome, {state.username}!</div>
             )}
             <Router>
-              <Switch>
-                <Route path="/designer/" exact={true} component={AdventureList}/>
-                <Route path="/designer/login" exact={true} component={Login}/>
-                {/* non-exact route below is used so we can have child routes inside the component */}
-                <Route path="/designer/:slug" component={AdventureMainMenu}/>
-              </Switch>
+              <Routes>
+                <Route path="/designer" element={<AdventureList />}/>
+                <Route path="/designer/login" element={<Login />}/>
+                <Route path="/designer/*" element={<AdventureMainMenu />}/>
+              </Routes>
             </Router>
           </div>
         </div>

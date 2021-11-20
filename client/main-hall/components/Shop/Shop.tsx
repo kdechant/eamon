@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Link, Route} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 import ArtifactTile from "./ArtifactTile";
 import Artifact from "../../models/artifact";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -39,59 +39,60 @@ class Shop extends React.Component<any, any> {
       <div className="shop">
         <h2><img src="/static/images/ravenmore/128/axe2.png" alt="Battle axe" />Marcos Cavielli's Weapons and Armour Shoppe</h2>
 
-        <Route path="/main-hall/shop" exact={true} render={(props) => (
-          <div className="shop-home">
-            <p>As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back room and says, &quot;Well, as I live and breathe, if it isn't my old pal, {this.props.player.name}!&quot;</p>
-            <p>So, what do you need?</p>
-            <Link to="/main-hall/shop/buy" className="btn btn-primary">Buy weapons and armor</Link>
-            <Link to="/main-hall/shop/sell" className="btn btn-primary">Sell weapons and armor</Link>
-            <Link to="/main-hall/hall" className="btn btn-primary">Go back to Main Hall</Link>
-          </div>
-        )} />
-
-        <Route path="/main-hall/shop/buy" render={(props) => (
-          <div className="shop-buy">
-            <p>I just happen to have the following weapons and armor in stock:</p>
-            <p>You have {this.props.player.gold} gold pieces.</p>
-            <p className="heading">Weapons:</p>
-            <div className="container-fluid">
-              <TransitionGroup className="row">
-                {this.state.weapons.map(artifact =>
-                  <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
-                    <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} removeItem={this.removeItem} action="buy" />
-                  </CSSTransition>
-                )}
-              </TransitionGroup>
+        <Routes>
+          <Route path="" element={
+            <div className="shop-home">
+              <p>As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back room and says, &quot;Well, as I live and breathe, if it isn't my old pal, {this.props.player.name}!&quot;</p>
+              <p>So, what do you need?</p>
+              <Link to="/main-hall/shop/buy" className="btn btn-primary">Buy weapons and armor</Link>
+              <Link to="/main-hall/shop/sell" className="btn btn-primary">Sell weapons and armor</Link>
+              <Link to="/main-hall/hall" className="btn btn-primary">Go back to Main Hall</Link>
             </div>
-            <p className="heading">Armor and Shields:</p>
-            <div className="container-fluid">
-              <div className="row">{this.state.armors.map(artifact =>
-                <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
-              )}
+          } />
+
+          <Route path="buy" element={
+            <div className="shop-buy">
+              <p>I just happen to have the following weapons and armor in stock:</p>
+              <p>You have {this.props.player.gold} gold pieces.</p>
+              <p className="heading">Weapons:</p>
+              <div className="container-fluid">
+                <TransitionGroup className="row">
+                  {this.state.weapons.map(artifact =>
+                    <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
+                      <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} removeItem={this.removeItem} action="buy" />
+                    </CSSTransition>
+                  )}
+                </TransitionGroup>
               </div>
-            </div>
-            <Link to="/main-hall/shop" className="btn btn-primary">Done</Link>
-          </div>
-        )} />
-
-        <Route path="/main-hall/shop/sell" render={(props) => (
-          <div className="shop-sell">
-            <p>What do you want to sell?</p>
-            <p>You have {this.props.player.gold} gold pieces.</p>
-            <div className="container-fluid">
-              <TransitionGroup className="row">
-                {this.props.player.inventory.map(artifact =>
-                  <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
-                    <ArtifactTile player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="sell" />
-                  </CSSTransition>
+              <p className="heading">Armor and Shields:</p>
+              <div className="container-fluid">
+                <div className="row">{this.state.armors.map(artifact =>
+                  <ArtifactTile key={artifact.uuid} player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="buy" />
                 )}
-              </TransitionGroup>
+                </div>
+              </div>
+              <Link to="/main-hall/shop" className="btn btn-primary">Done</Link>
             </div>
+          } />
 
-            <Link to="/main-hall/shop" className="btn btn-primary">Done</Link>
-          </div>
-        )} />
+          <Route path="sell" element={
+            <div className="shop-sell">
+              <p>What do you want to sell?</p>
+              <p>You have {this.props.player.gold} gold pieces.</p>
+              <div className="container-fluid">
+                <TransitionGroup className="row">
+                  {this.props.player.inventory.map(artifact =>
+                    <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
+                      <ArtifactTile player={this.props.player} setPlayerState={this.props.setPlayerState} artifact={artifact} action="sell" />
+                    </CSSTransition>
+                  )}
+                </TransitionGroup>
+              </div>
 
+              <Link to="/main-hall/shop" className="btn btn-primary">Done</Link>
+            </div>
+          } />
+        </Routes>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Route} from "react-router";
+import {Route, Routes} from "react-router-dom";
 import {AdventureContextProvider} from "../contexts/adventure";
 import AdventureDetail from "./AdventureDetail";
 import AdventureHeading from "./AdventureHeading";
@@ -20,37 +20,21 @@ function AdventureMainMenu(): JSX.Element {
 
         <AdventureHeading/>
 
-        <Route exact path='/designer/:slug' render={() => (
-          <AdventureDetail/>
-        )}/>
+        <Routes>
+          <Route path=':slug' element={<AdventureDetail/>}/>
 
-        <Route exact path='/designer/:slug/rooms' render={() => (
-          <RoomList/>
-        )}/>
-        <Route path='/designer/:slug/rooms/:id' render={() => (
-          <RoomDetail/>
-        )}/>
+          <Route path=':slug/rooms' element={<RoomList/>}/>
+          <Route path=':slug/rooms/:id' element={<RoomDetail/>}/>
 
-        <Route exact path='/designer/:slug/artifacts' render={() => (
-          <ArtifactList/>
-        )}/>
-        <Route path='/designer/:slug/artifacts/:id' render={() => (
-          <ArtifactDetail/>
-        )}/>
+          <Route path=':slug/artifacts' element={<ArtifactList/>}/>
+          <Route path=':slug/artifacts/:id' element={<ArtifactDetail/>}/>
 
-        <Route exact path='/designer/:slug/effects' render={() => (
-          <EffectList/>
-        )}/>
-        <Route path='/designer/:slug/effects/:id' render={() => (
-          <EffectDetail/>
-        )}/>
+          <Route path=':slug/effects' element={<EffectList/>}/>
+          <Route path=':slug/effects/:id' element={<EffectDetail/>}/>
 
-        <Route exact path='/designer/:slug/monsters' render={() => (
-          <MonsterList/>
-        )}/>
-        <Route path='/designer/:slug/monsters/:id' render={() => (
-          <MonsterDetail/>
-        )}/>
+          <Route path=':slug/monsters' element={<MonsterList/>}/>
+          <Route path=':slug/monsters/:id' element={<MonsterDetail/>}/>
+        </Routes>
       </div>
     </AdventureContextProvider>
   );
