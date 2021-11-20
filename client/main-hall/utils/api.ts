@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosPromise} from "axios";
+import axios, {AxiosInstance, AxiosPromise, AxiosRequestHeaders} from "axios";
 import * as Cookie from 'js-cookie';
 
 /**
@@ -10,7 +10,7 @@ import * as Cookie from 'js-cookie';
  * Gets the headers we need to make API calls, including the CSRF token from Django
  * if the user is logged in to the admin
  */
-export function getHeaders(): Record<string, unknown> {
+export function getHeaders(): AxiosRequestHeaders {
   const headers = {
     'Content-Type': 'application/json',
   };

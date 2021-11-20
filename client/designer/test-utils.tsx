@@ -39,16 +39,18 @@ const data = {
     'name': 'Orc'
   }]),
   hints: new HintRepository([]),
-  setAdventureField: () => {},
-  saveAdventureField: () => {},
-  setRoomField: () => {},
-  saveRoomField: () => {},
-  setArtifactField: () => {},
-  saveArtifactField: () => {},
-  setEffectField: () => {},
-  saveEffectField: () => {},
-  setMonsterField: () => {},
-  saveMonsterField: () => {},
+  setAdventureField: () => null,
+  saveAdventureField: () => null,
+  setRoomField: () => null,
+  saveRoomField: () => null,
+  setRoomExitField: () => null,
+  saveRoomExitField: () => null,
+  setArtifactField: () => null,
+  saveArtifactField: () => null,
+  setEffectField: () => null,
+  saveEffectField: () => null,
+  setMonsterField: () => null,
+  saveMonsterField: () => null,
 };
 
 const AllTheProviders = ({children}) => {
