@@ -29,14 +29,20 @@ The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
 * Run `python manage.py runserver`
     * If you're using PyCharm, you can skip this step and set up your development server inside PyCharm itself. This provides the ability to use step debugging in the Python code.
 * Open a second command prompt and navigate to the "client" folder
-* Install React and other JS packages using `npm install` or `yarn`
-* Run `npm start` or `yarn start`
+* Install React and other JS packages using `npm install`
+* Run `npm start`
 * Open your web browser and navigate to http://localhost:8000. You should see the Eamon welcome screen. 
 
 URLs: 
 Eamon home page: http://localhost:8000
 Admin page (for building adventure data): http://localhost:8000/admin
 To log into the admin, use the username and password you used when you ran the "createsuperuser" command above.
+
+## Yarn or NPM?
+
+If you want to use Yarn instead of NPM, you can run `yarn import` then `yarn` to install packages.
+You can then use `yarn` instead of `npm` in all the `npm` commands described here. I no longer
+keep a `yarn.lock` file in the repo because it's one more thing to maintain.
 
 ## Creating and Editing Adventures
 
@@ -214,17 +220,17 @@ Eamon has a suite of tests which test both the core game logic and also the cust
 
 ```
 cd client
-yarn test
+npm run test
 ```
 
 Tests can also be run one file at a time, which is much faster than running the whole suite. To run a single test, append a filename to the command, like this:
 
 ```
-yarn test adventures/the-beginners-cave/event-handlers.spec.ts
+npm run test adventures/the-beginners-cave/event-handlers.spec.ts
 ```
 
 To keep watching and compiling the Typescript files between test runs, the easiest way is to have two terminals open.
-In the first terminal, kick off `yarn start` and leave it running. In the second terminal, run the tests via the commands
+In the first terminal, kick off `npm start` and leave it running. In the second terminal, run the tests via the commands
 above. You can then edit some code and run the tests again to see the result.
 
 ## Running your adventure
