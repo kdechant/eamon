@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosPromise, AxiosRequestHeaders} from "axios";
-import * as Cookie from 'js-cookie';
+import Cookies from 'js-cookie'
 
 /**
  * File utils/api.js
@@ -14,7 +14,7 @@ export function getHeaders(): AxiosRequestHeaders {
   const headers = {
     'Content-Type': 'application/json',
   };
-  const csrf = Cookie.get('csrftoken');
+  const csrf = Cookies.get('csrftoken');
   if (csrf) {
     headers['X-CSRFToken'] = csrf;
   }
