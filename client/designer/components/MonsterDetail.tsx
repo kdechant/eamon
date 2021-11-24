@@ -19,7 +19,8 @@ import {
   ObjectTextField
 } from "./fields";
 
-function MonsterDetail(): JSX.Element {
+
+const MonsterDetail: React.FC = () => {
   const context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
   const { id } = useParams();

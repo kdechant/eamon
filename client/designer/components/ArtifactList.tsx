@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import AdventureContext from "../contexts/adventure";
 import {ArtifactLink, ArtifactLocation, MonsterLink, RoomLink} from "./common";
 
-function ArtifactList(): JSX.Element {
+
+const ArtifactList: React.FC = () => {
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {

@@ -18,7 +18,8 @@ import {
   ObjectTextField, ObjectToggleField
 } from "./fields";
 
-function ArtifactDetail(): JSX.Element {
+
+const ArtifactDetail: React.FC = () => {
   const { id } = useParams();
   const context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);

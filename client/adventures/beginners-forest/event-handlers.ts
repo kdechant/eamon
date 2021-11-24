@@ -6,7 +6,7 @@ import {Room} from "../../core/models/room";
 
 declare let game: Game;
 
-export var event_handlers = {
+export const event_handlers = {
 
   "start": function() {
     game.data["queen effect"] = game.player.gender === "m" ? 5 : 6;

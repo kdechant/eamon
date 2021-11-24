@@ -3,7 +3,8 @@ import * as React from "react";
 import AdventureContext from "../contexts/adventure";
 import {useParams} from "react-router-dom";
 
-function AdventureHeading(): JSX.Element {
+
+const AdventureHeading: React.FC = () => {
   const adventureContext = React.useContext(AdventureContext);
   const params = useParams();
   const slug = params['*'].split('/')[0];

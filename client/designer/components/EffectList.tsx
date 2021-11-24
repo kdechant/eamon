@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import AdventureContext from "../contexts/adventure";
 import {TextStyleLabel} from "./common";
 
-function EffectList(): JSX.Element {
+
+const EffectList: React.FC = () => {
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {

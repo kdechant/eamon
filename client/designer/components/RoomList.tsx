@@ -3,7 +3,8 @@ import * as React from 'react';
 import AdventureContext from "../contexts/adventure";
 import {RoomLink} from "./common";
 
-function RoomList(): JSX.Element {
+
+const RoomList: React.FC = () => {
   const context = React.useContext(AdventureContext);
 
   if (!context.adventure) {

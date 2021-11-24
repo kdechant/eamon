@@ -14,7 +14,7 @@ interface FieldProps {
   afterText?: string | JSX.Element,
 }
 
-export function ObjectTextField(props: FieldProps): JSX.Element {
+export const ObjectTextField: React.FC<FieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   if (!user_context.username) {
@@ -42,7 +42,7 @@ interface TextAreaFieldProps extends FieldProps {
   rows?: number,
 }
 
-export function ObjectTextareaField(props: TextAreaFieldProps): JSX.Element {
+export const ObjectTextareaField: React.FC<TextAreaFieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   if (!user_context.username) {
@@ -81,7 +81,7 @@ interface DescriptionFieldProps {
  * @param props
  * @constructor
  */
-export function ObjectDescriptionField(props: DescriptionFieldProps): JSX.Element {
+export const ObjectDescriptionField: React.FC<DescriptionFieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   const name = props.name || 'description';
@@ -133,7 +133,7 @@ export function ObjectDescriptionField(props: DescriptionFieldProps): JSX.Elemen
   );
 }
 
-export function ObjectNumberField(props: FieldProps): JSX.Element {
+export const ObjectNumberField: React.FC<FieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   if (!user_context.username) {
@@ -174,7 +174,7 @@ interface DiceSidesFieldProps {
 /**
  * Grouped fields for dice and sides, inline on the same row
  */
-export function ObjectDiceSidesField(props: DiceSidesFieldProps): JSX.Element {
+export const ObjectDiceSidesField: React.FC<DiceSidesFieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   if (!user_context.username) {
@@ -210,7 +210,7 @@ interface ToggleFieldProps {
   helpText?: string,
 }
 
-export function ObjectToggleField(props: ToggleFieldProps): JSX.Element {
+export const ObjectToggleField: React.FC<ToggleFieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   if (!user_context.username) {
@@ -249,7 +249,7 @@ interface SelectFieldProps extends FieldProps {
   allowEmpty?: boolean,
 }
 
-export function ObjectSelectField(props: SelectFieldProps): JSX.Element {
+export const ObjectSelectField: React.FC<SelectFieldProps> = (props) => {
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
   if (!user_context.username) {
@@ -284,7 +284,7 @@ interface GameObjectFieldProps extends FieldProps {
   allowEmpty?: boolean,
 }
 
-export function RoomSelectField(props: GameObjectFieldProps): JSX.Element {
+export const RoomSelectField: React.FC<GameObjectFieldProps> = (props) => {
   const adventure_context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
@@ -327,7 +327,7 @@ export function RoomSelectField(props: GameObjectFieldProps): JSX.Element {
   );
 }
 
-export function ArtifactSelectField(props: GameObjectFieldProps): JSX.Element {
+export const ArtifactSelectField: React.FC<GameObjectFieldProps> = (props) => {
   const adventure_context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
@@ -368,7 +368,7 @@ export function ArtifactSelectField(props: GameObjectFieldProps): JSX.Element {
   );
 }
 
-export function EffectSelectField(props: GameObjectFieldProps): JSX.Element {
+export const EffectSelectField: React.FC<GameObjectFieldProps> = (props) => {
   const adventure_context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
@@ -406,7 +406,7 @@ export function EffectSelectField(props: GameObjectFieldProps): JSX.Element {
   );
 }
 
-export function MonsterSelectField(props: GameObjectFieldProps): JSX.Element {
+export const MonsterSelectField: React.FC<GameObjectFieldProps> = (props) => {
   const adventure_context = React.useContext(AdventureContext);
   const user_context = React.useContext(UserContext);
   const form_context = React.useContext(FormContext);
@@ -444,7 +444,10 @@ export function MonsterSelectField(props: GameObjectFieldProps): JSX.Element {
   );
 }
 
-export function HelpText(props: Record<string, string>): JSX.Element {
+type HelpTextProps = {
+  text: string
+}
+export const HelpText: React.FC<HelpTextProps> = (props) => {
   if (!props.text) {
     return <></>;
   }

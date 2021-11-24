@@ -11,7 +11,8 @@ type LinkProps = {
   maxLength?: number,
 }
 
-export function RoomLink(props: LinkProps): JSX.Element {
+
+export const RoomLink: React.FC<LinkProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
@@ -42,7 +43,8 @@ export function RoomLink(props: LinkProps): JSX.Element {
   return <span className="disabled">-</span>;
 }
 
-export function ArtifactLink(props: LinkProps): JSX.Element {
+
+export const ArtifactLink: React.FC<LinkProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
@@ -60,7 +62,8 @@ export function ArtifactLink(props: LinkProps): JSX.Element {
   );
 }
 
-export function EffectLink(props: LinkProps): JSX.Element {
+
+export const EffectLink: React.FC<LinkProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
@@ -78,7 +81,8 @@ export function EffectLink(props: LinkProps): JSX.Element {
   );
 }
 
-export function MonsterLink(props: LinkProps): JSX.Element {
+
+export const MonsterLink: React.FC<LinkProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const { slug } = useParams();
   const id = props.id;
@@ -96,7 +100,8 @@ export function MonsterLink(props: LinkProps): JSX.Element {
   );
 }
 
-export function MonsterWeaponLink(props: LinkProps): JSX.Element {
+
+export const MonsterWeaponLink: React.FC<LinkProps> = (props) => {
   const id = props.id;
   if (id === 0) {
     return <>natural weapons</>
@@ -107,7 +112,8 @@ export function MonsterWeaponLink(props: LinkProps): JSX.Element {
   return <span className="disabled">unarmed</span>
 }
 
-export function ArtifactLocation(props: LinkProps): JSX.Element {
+
+export const ArtifactLocation: React.FC<LinkProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const artifact = context.artifacts.get(props.id);
   if (artifact.room_id) {
@@ -136,7 +142,8 @@ export function ArtifactLocation(props: LinkProps): JSX.Element {
   );
 }
 
-export function MonsterLocation(props: LinkProps): JSX.Element {
+
+export const MonsterLocation: React.FC<LinkProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const monster = context.monsters.get(props.id);
   if (monster.room_id) {
@@ -196,7 +203,12 @@ export function MonsterLocation(props: LinkProps): JSX.Element {
 //   );
 // }
 
-export function TextStyleLabel(props: Record<string, string>): JSX.Element {
+
+type TextStyleProps = {
+  style: string,
+}
+
+export const TextStyleLabel: React.FC<TextStyleProps> = (props) => {
   const style = props.style || 'default';
   return (
     <span className={style}>{style}</span>

@@ -11,7 +11,8 @@ import {
 } from "./fields";
 import {TEXT_STYLES} from "../models/effect";
 
-function RoomDetail(): JSX.Element {
+
+const EffectDetail: React.FC = () => {
   const { id } = useParams();
   const context = React.useContext(AdventureContext);
 
@@ -68,4 +69,4 @@ function RoomDetail(): JSX.Element {
   );
 }
 
-export default RoomDetail;
+export default EffectDetail;

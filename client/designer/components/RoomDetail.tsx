@@ -21,7 +21,7 @@ interface RoomExitProps {
   exit: RoomExit,
 }
 
-function RoomExitDetail(props: RoomExitProps): JSX.Element {
+const RoomExitDetail: React.FC<RoomExitProps> = (props) => {
   const context = React.useContext(AdventureContext);
   const setField = (ev) => {
     context.setRoomExitField(props.exit, ev.target.name, ev.target.value);
@@ -64,7 +64,7 @@ function RoomExitDetail(props: RoomExitProps): JSX.Element {
 }
 
 
-function RoomDetail(): JSX.Element {
+const RoomDetail: React.FC = () => {
   const { id } = useParams();
   const context = React.useContext(AdventureContext);
 

@@ -7,7 +7,7 @@ import {CommandException} from "../../core/utils/command.exception";
 
 declare let game: Game;
 
-export var event_handlers = {
+export const event_handlers = {
 
   "intro": function() {
     if (game.player.gender === 'f') {

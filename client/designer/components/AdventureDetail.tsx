@@ -4,7 +4,7 @@ import AdventureContext from "../contexts/adventure";
 import FormContext from "../contexts/form";
 import {ObjectTextareaField, ObjectTextField} from "./fields";
 
-function AdventureDetail(): JSX.Element {
+const AdventureDetail: React.FC = () => {
   const adventureContext = React.useContext(AdventureContext);
 
   const setField = (ev) => {

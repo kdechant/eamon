@@ -13,7 +13,7 @@ import RoomList from "./RoomList";
 import RoomDetail from "./RoomDetail";
 
 
-function AdventureMainMenu(): JSX.Element {
+const AdventureMainMenu: React.FC = () => {
   return (
     <AdventureContextProvider>
       <div className="container-fluid" id="AdventureDetail">

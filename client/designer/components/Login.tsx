@@ -4,7 +4,8 @@ import {useState} from "react";
 import UserContext from "../contexts/user";
 import {Navigate} from "react-router-dom";
 
-function Login(): JSX.Element {
+
+const Login: React.FC = () => {
   const context = React.useContext(UserContext);
 
   const [username, setUsername] = useState("")

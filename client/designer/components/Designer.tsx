@@ -14,7 +14,7 @@ type accessToken = {
   token_type: string
 }
 
-const Designer = (): JSX.Element => {
+const Designer: React.FC = () => {
 
   const [username, setUsername] = useState(
     window.localStorage.getItem('eamon_designer_username'))
