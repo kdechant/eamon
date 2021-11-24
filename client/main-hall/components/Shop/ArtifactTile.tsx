@@ -1,92 +1,99 @@
 import * as React from 'react';
+import {useState} from "react";
 import { ucFirst } from "../../utils";
+import Player from "../../models/player";
+import Artifact from "../../models/artifact";
 
-class ArtifactTile extends React.Component<any, any> {
-  public state: any = {
-    message: "",
-  };
+type ArtifactTileProps = {
+  player: Player,
+  artifact: Artifact,
+  action: string,
+  setPlayerState: (Player) => void,
+  removeItem?: (Artifact) => void,
+}
 
-  public buy = () => {
-    this.setState({message: "Bought!"});
+const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
+  const [message, setMessage] = useState('');
+
+  const buy = () => {
+    setMessage("Bought!");
     setTimeout(() => {
-      this.setState({message: ""});
-      const player = this.props.player;
-      player.inventory.push(this.props.artifact);
-      player.gold -= this.props.artifact.value;
-      this.props.setPlayerState(player);
-      this.props.removeItem(this.props.artifact);
+      setMessage("");
+      const player = props.player;
+      player.inventory.push(props.artifact);
+      player.gold -= props.artifact.value;
+      props.setPlayerState(player);
+      props.removeItem(props.artifact);
     }, 1200);
   };
 
-  public sell = () => {
-    this.setState({message: "Sold!"});
+  const sell = () => {
+    setMessage("Sold!");
     setTimeout(() => {
-      const player = this.props.player;
-      const index = player.inventory.indexOf(this.props.artifact);
+      const player = props.player;
+      const index = player.inventory.indexOf(props.artifact);
       if (index > -1) {
         player.inventory.splice(index, 1);
       }
-      player.gold += Math.floor(this.props.artifact.value / 2);
-      this.props.setPlayerState(player);
+      player.gold += Math.floor(props.artifact.value / 2);
+      props.setPlayerState(player);
       }, 1200);
   };
 
-  public render() {
-    const icon_url = '/static/images/ravenmore/128/' + this.props.artifact.getIcon() + '.png';
+  const icon_url = '/static/images/ravenmore/128/' + props.artifact.getIcon() + '.png';
 
-    let stats = <span />;
-    if (this.props.artifact.isWeapon()) {
-      stats = (
-        <div>
-          To Hit: { this.props.artifact.weapon_odds }%<br />
-          Damage: { this.props.artifact.dice } d { this.props.artifact.sides }<br />
-        </div>
-      );
-    } else {
-      stats = (
-        <div>
-          AC: { this.props.artifact.armor_class }<br />
-          Penalty: { this.props.artifact.armor_penalty }%<br />
-        </div>
-      );
-    }
-
-    const value = this.props.action === "buy" ? this.props.artifact.value : Math.floor(this.props.artifact.value / 2);
-
-    let button = <button className="btn disabled">Not enough gold</button>;
-    if (this.props.action === "buy" && this.props.player.gold >= this.props.artifact.value) {
-      button = <button className="btn btn-primary" onClick={this.buy}>Buy</button>
-    } else if (this.props.action === 'sell') {
-      button = <button className="btn btn-primary" onClick={this.sell}>Sell</button>
-    }
-
-    const messageStyle = {
-      "opacity": this.state.message === "" ? 0 : 1
-    };
-
-    return (
-      <div className="artifact-tile col-sm-6 col-md-4 col-lg-3">
-        <div className="artifact-tile-inner">
-          <div className="artifact-icon">
-            <img src={icon_url} title={ this.props.artifact.getTypeName() } alt={ this.props.artifact.getTypeName() } />
-          </div>
-          <div className="artifact-name">
-            <strong>{ ucFirst(this.props.artifact.name) }</strong><br />
-          </div>
-          <div className="artifact-data">
-            {stats}
-            <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
-          </div>
-          <div className="artifact-buttons">
-            {button}
-          </div>
-          <div className="message" style={messageStyle}>
-            { this.state.message }
-          </div>
-        </div>
+  let stats = <span />;
+  if (props.artifact.isWeapon()) {
+    stats = (
+      <div>
+        To Hit: { props.artifact.weapon_odds }%<br />
+        Damage: { props.artifact.dice } d { props.artifact.sides }<br />
+      </div>
+    );
+  } else {
+    stats = (
+      <div>
+        AC: { props.artifact.armor_class }<br />
+        Penalty: { props.artifact.armor_penalty }%<br />
       </div>
     );
   }
+
+  const value = props.action === "buy" ? props.artifact.value : Math.floor(props.artifact.value / 2);
+
+  let button = <button className="btn disabled">Not enough gold</button>;
+  if (props.action === "buy" && props.player.gold >= props.artifact.value) {
+    button = <button className="btn btn-primary" onClick={buy}>Buy</button>
+  } else if (props.action === 'sell') {
+    button = <button className="btn btn-primary" onClick={sell}>Sell</button>
+  }
+
+  const messageStyle = {
+    "opacity": message === "" ? 0 : 1
+  };
+
+  return (
+    <div className="artifact-tile col-sm-6 col-md-4 col-lg-3">
+      <div className="artifact-tile-inner">
+        <div className="artifact-icon">
+          <img src={icon_url} title={ props.artifact.getTypeName() } alt={ props.artifact.getTypeName() } />
+        </div>
+        <div className="artifact-name">
+          <strong>{ ucFirst(props.artifact.name) }</strong><br />
+        </div>
+        <div className="artifact-data">
+          {stats}
+          <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
+        </div>
+        <div className="artifact-buttons">
+          {button}
+        </div>
+        <div className="message" style={messageStyle}>
+          { message }
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default ArtifactTile;
