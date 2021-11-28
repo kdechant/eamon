@@ -1,10 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-
 /**
  * GameObject class. Parent class for monsters and artifacts.
  */
-export default class GameObject {
-
+export default interface GameObject {
   /**
    * The "id" is the database ID. Objects will only have a value for this if
    * they were saved to the DB (e.g., adventures, rooms, player artifacts)
@@ -19,18 +16,4 @@ export default class GameObject {
   uuid: string;
   name: string;
   description: string;
-
-  /**
-   * Loads data from JSON source into the object properties.
-   * @param {Record<string, unknown>} source an object, e.g., from JSON.
-   */
-  public init(source: Record<string, unknown>): void {
-    this.uuid = uuidv4();
-    for (const prop in source) {
-      if (source.hasOwnProperty(prop)) {
-        this[prop] = source[prop];
-      }
-    }
-  }
-
 }

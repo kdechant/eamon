@@ -1,14 +1,13 @@
 import * as React from 'react';
 import {useState} from "react";
 import {Link, Route, Routes} from "react-router-dom";
-import Player from "../models/player";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {playerActions} from "../store/player";
 
-type BankProps = {
-  player: Player,
-  setPlayerState: (Player) => void,
-};
+const Bank: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const player = useAppSelector((state) => state.player);
 
-const Bank: React.FC<BankProps> = (props) => {
   const [amount, setAmount] = useState('');
   const [message, setMessage] = useState('');
 
@@ -18,7 +17,6 @@ const Bank: React.FC<BankProps> = (props) => {
 
   const deposit = () => {
     const amt = parseInt(amount, 10);
-    const player = props.player;
     if (isNaN(amt) || amt <= 0) {
       setMessage('The banker scowls at you and says, "Come, come, you\'re not making sense! Try again."');
       return false;
@@ -29,15 +27,12 @@ const Bank: React.FC<BankProps> = (props) => {
     }
 
     setMessage("Seamus takes your money, puts it in his bag, and listens to it jingle with a smile on his face.");
-    player.gold -= amt;
-    player.gold_in_bank += amt;
-    props.setPlayerState(player);
+    dispatch(playerActions.deposit(amt));
     return true;
   };
 
   const withdraw = () => {
     const amt = parseInt(amount, 10);
-    const player = props.player;
     if (isNaN(amt) || amt <= 0) {
       setMessage('The banker scowls at you and says, "Come, come, you\'re not making sense! Try again."');
       return false;
@@ -48,13 +43,11 @@ const Bank: React.FC<BankProps> = (props) => {
     }
 
     setMessage("Seamus hands you your gold and shakes your hand.");
-    player.gold += amt;
-    player.gold_in_bank -= amt;
-    props.setPlayerState(player);
+    dispatch(playerActions.withdraw(amt));
     return true;
   };
 
-  if (!props.player) {
+  if (!player) {
     return <p>Loading...</p>;
   }
 
@@ -62,9 +55,9 @@ const Bank: React.FC<BankProps> = (props) => {
     <div className="bank">
       <h2><img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" />Bank of Eamon Towne</h2>
       <p>You have no trouble spotting Seamus McFenney, the local banker, due to his large belly. You attract his attention, and he comes over to you.</p>
-      <p>&quot;Well, {props.player.name}, my dear {props.player.gender === 'm' ? 'boy' : 'lass'}, what a pleasure
+      <p>&quot;Well, {player.name}, my dear {player.gender === 'm' ? 'boy' : 'lass'}, what a pleasure
         to see you! Do you want to make a deposit or a withdrawal?&quot;</p>
-      <p>You have {props.player.gold} gold pieces in hand, and {props.player.gold_in_bank} gold pieces in
+      <p>You have {player.gold} gold pieces in hand, and {player.gold_in_bank} gold pieces in
         the bank.</p>
 
       <Routes>

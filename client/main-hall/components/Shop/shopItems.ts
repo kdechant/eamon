@@ -1,4 +1,4 @@
-import Artifact from "../../models/artifact";
+import Artifact, {ARMOR_TYPES, ARTIFACT_TYPES, getTypeName, maxDamage} from "../../models/artifact";
 import diceRoll from "../../utils/dice";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -6,16 +6,16 @@ export let weapons: Artifact[] = [];
 export const armors: Artifact[] = [];
 
 // always have some standard weapons
-let item: Artifact;
 for (let t = 1; t <= 5; t++) {
-  item = new Artifact();
-  item.uuid = uuidv4();
-  item.type = Artifact.TYPE_WEAPON;
-  item.weapon_type = t;
-  item.weapon_odds = 10;
-  item.weight = 5;
-  item.dice = 1;
-  item.name = item.weapon_type === 3 ? "mace" : item.getTypeName();
+  const item = {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    weapon_type: t,
+    weapon_odds: 10,
+    weight: 5,
+    dice: 1,
+  } as Artifact;
+  item.name = t === 3 ? "mace" : getTypeName(item);
   item.description = "You see a standard " + item.name + ".";
   switch (t) {
     case 1:
@@ -53,18 +53,18 @@ const artifact_names = {
 const magic_weapons: Artifact[] = [];
 const num_weapons = 3;
 for (let i = 0; i < num_weapons; i++) {
-  item = new Artifact();
-  item.uuid = uuidv4();
-  item.type = Artifact.TYPE_MAGIC_WEAPON;
-  item.weapon_type = diceRoll(1, 5);
-
+  const item = {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.MAGIC_WEAPON,
+    weapon_type: diceRoll(1, 5),
+  } as Artifact;
   // choose a unique name
   const name_index = diceRoll(1, artifact_names[item.weapon_type].length) - 1;
   item.name = artifact_names[item.weapon_type][name_index];
   artifact_names[item.weapon_type].splice(name_index, 1);
 
   item.description = "You see " + (item.weapon_type === 1 ? "an" : "a") +
-    " " + item.getTypeName() + " named " + item.name + ".";
+    " " + getTypeName(item) + " named " + item.name + ".";
   item.weapon_odds = diceRoll(1, 7) * 5 - 10;
   item.hands = item.weapon_type === 2 ? 2 : 1;
   // item.dice = i + 1;  // always generate 1 x 1d*, 1 x 2d*, and 1 x 3d*
@@ -72,7 +72,7 @@ for (let i = 0; i < num_weapons; i++) {
   if (i <= num_weapons * .33) { item.dice = 1; }
   if (i >= num_weapons * .66) { item.dice = 3; }
   item.sides = 8 - (item.dice * 2) + diceRoll(1, 4) * 2;
-  item.value = Math.floor(item.maxDamage() ** 1.5 + item.weapon_odds) * 5;
+  item.value = Math.floor(maxDamage(item) ** 1.5 + item.weapon_odds) * 5;
   item.weight = 3;
   magic_weapons.push(item);
 }
@@ -82,15 +82,12 @@ weapons = weapons.concat(magic_weapons);
 // some basic armor and shields
 const armor_types = ["leather", "chain", "scale", "plate"];
 for (const a of armor_types) {
-  item = new Artifact;
-  item.uuid = uuidv4();
-  item.type = Artifact.TYPE_WEARABLE;
-  item.armor_type = Artifact.ARMOR_TYPE_ARMOR;
-  if (a === 'chain') {
-    item.name = "chain mail";
-  } else {
-    item.name = a + " armor";
-  }
+  const item = {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.MAGIC_WEAPON,
+    armor_type: ARMOR_TYPES.ARMOR,
+    name: a === 'chain' ? "chain mail" : a + " armor",
+  } as Artifact;
   item.description = "You see a standard set of " + item.name + ".";
   switch (a) {
     case "leather":
@@ -120,13 +117,14 @@ for (const a of armor_types) {
   }
   armors.push(item);
 }
-item = new Artifact;
-item.uuid = uuidv4();
-item.type = Artifact.TYPE_WEARABLE;
-item.armor_type = Artifact.ARMOR_TYPE_SHIELD;
-item.name = "shield";
-item.description = "You see a standard shield.";
-item.value = 50;
-item.armor_class = 1;
-item.armor_penalty = 5;
-armors.push(item);
+const shield = {
+  uuid: uuidv4(),
+  type: ARTIFACT_TYPES.WEARABLE,
+  armor_type: ARMOR_TYPES.SHIELD,
+  name: 'shield',
+  description: "You see a standard shield.",
+  value: 50,
+  armor_class: 1,
+  armor_penalty: 5
+} as Artifact;
+armors.push(shield);

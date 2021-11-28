@@ -3,7 +3,7 @@ import GameObject from "./game-object";
 /**
  * Adventure class. Represents adventures the player can go on.
  */
-export default class Adventure extends GameObject {
+export default interface Adventure extends GameObject {
 
   name_sort: string;
   description: string;

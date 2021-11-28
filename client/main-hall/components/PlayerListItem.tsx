@@ -10,7 +10,7 @@ interface PlayerListProps {
   loadPlayers: () => void,
 }
 
-const PlayerListItem = (props: PlayerListProps): JSX.Element => {
+const PlayerListItem: React.FC<PlayerListProps> = (props) => {
   const navigate = useNavigate();
 
   const weapon_name = props.player.best_weapon ? props.player.best_weapon.name : "";
@@ -31,8 +31,8 @@ const PlayerListItem = (props: PlayerListProps): JSX.Element => {
           props.loadPlayers();
         })
         .catch(err => {
-           console.error("Error deleting player!");
-         });
+          console.error("Error deleting player!");
+        });
     }
   };
 

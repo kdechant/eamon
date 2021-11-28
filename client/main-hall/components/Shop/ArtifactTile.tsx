@@ -1,49 +1,41 @@
 import * as React from 'react';
 import {useState} from "react";
 import { ucFirst } from "../../utils";
-import Player from "../../models/player";
-import Artifact from "../../models/artifact";
+import Artifact, {getIcon, getTypeName, isWeapon} from "../../models/artifact";
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import {playerActions} from "../../store/player";
 
 type ArtifactTileProps = {
-  player: Player,
   artifact: Artifact,
   action: string,
-  setPlayerState: (Player) => void,
   removeItem?: (Artifact) => void,
 }
 
 const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
+  const dispatch = useAppDispatch();
+  const player = useAppSelector((state) => state.player);
+
   const [message, setMessage] = useState('');
 
   const buy = () => {
     setMessage("Bought!");
     setTimeout(() => {
       setMessage("");
-      const player = props.player;
-      player.inventory.push(props.artifact);
-      player.gold -= props.artifact.value;
-      props.setPlayerState(player);
+      dispatch(playerActions.buyArtifact(props.artifact));
+      // TODO: redux-ify shop inventory too
       props.removeItem(props.artifact);
     }, 1200);
   };
 
   const sell = () => {
     setMessage("Sold!");
-    setTimeout(() => {
-      const player = props.player;
-      const index = player.inventory.indexOf(props.artifact);
-      if (index > -1) {
-        player.inventory.splice(index, 1);
-      }
-      player.gold += Math.floor(props.artifact.value / 2);
-      props.setPlayerState(player);
-      }, 1200);
+    setTimeout(() => dispatch(playerActions.sellArtifact(props.artifact)), 1200);
   };
 
-  const icon_url = '/static/images/ravenmore/128/' + props.artifact.getIcon() + '.png';
+  const icon_url = '/static/images/ravenmore/128/' + getIcon(props.artifact) + '.png';
 
   let stats = <span />;
-  if (props.artifact.isWeapon()) {
+  if (isWeapon(props.artifact)) {
     stats = (
       <div>
         To Hit: { props.artifact.weapon_odds }%<br />
@@ -62,7 +54,7 @@ const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
   const value = props.action === "buy" ? props.artifact.value : Math.floor(props.artifact.value / 2);
 
   let button = <button className="btn disabled">Not enough gold</button>;
-  if (props.action === "buy" && props.player.gold >= props.artifact.value) {
+  if (props.action === "buy" && player.gold >= props.artifact.value) {
     button = <button className="btn btn-primary" onClick={buy}>Buy</button>
   } else if (props.action === 'sell') {
     button = <button className="btn btn-primary" onClick={sell}>Sell</button>
@@ -76,7 +68,7 @@ const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
     <div className="artifact-tile col-sm-6 col-md-4 col-lg-3">
       <div className="artifact-tile-inner">
         <div className="artifact-icon">
-          <img src={icon_url} title={ props.artifact.getTypeName() } alt={ props.artifact.getTypeName() } />
+          <img src={icon_url} title={ getTypeName(props.artifact) } alt={ getTypeName(props.artifact) } />
         </div>
         <div className="artifact-name">
           <strong>{ ucFirst(props.artifact.name) }</strong><br />
