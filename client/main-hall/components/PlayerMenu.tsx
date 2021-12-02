@@ -1,25 +1,19 @@
 import * as React from 'react';
-import {useState} from "react";
 import { Link } from "react-router-dom";
 import Status from "./Status";
-import {useAppSelector} from "../hooks";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {savePlayer} from "../store/player";
 
 const PlayerMenu: React.FC = () => {
   const player = useAppSelector((state) => state.player);
-  const [error, setError] = useState('');
-
-  console.log('run PlayerMenu');
+  const error = useAppSelector((state) => state.player.error);
+  const dispatch = useAppDispatch();
 
   const exit = () => {
-    player.save()
-      .then(() => {
-        window.localStorage.removeItem('player_id');
-        window.location.href = "/main-hall";
-      })
-      .catch((err) => {
-        console.error(err);
-        setError('Failed to save player: ' + err.message);
-      });
+    dispatch(savePlayer(player, () => {
+      window.localStorage.removeItem('player_id');
+      window.location.href = "/main-hall";
+    }));
   };
 
   return (

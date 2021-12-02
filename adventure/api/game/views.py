@@ -170,17 +170,19 @@ class PlayerViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         # flatten the weapon and spell abilities into the columns Django wants
-        data['wpn_axe'] = data['weapon_abilities']['1']
-        data['wpn_bow'] = data['weapon_abilities']['2']
-        data['wpn_club'] = data['weapon_abilities']['3']
-        data['wpn_spear'] = data['weapon_abilities']['4']
-        data['wpn_sword'] = data['weapon_abilities']['5']
+        if 'weapon_abilities' in data:
+            data['wpn_axe'] = data['weapon_abilities']['1']
+            data['wpn_bow'] = data['weapon_abilities']['2']
+            data['wpn_club'] = data['weapon_abilities']['3']
+            data['wpn_spear'] = data['weapon_abilities']['4']
+            data['wpn_sword'] = data['weapon_abilities']['5']
         # spell abilities. use the "original" values which include skill improvements during the adventure,
         # but don't count reduced odds due to caster fatigue.
-        data['spl_blast'] = data['spell_abilities_original']['blast']
-        data['spl_heal'] = data['spell_abilities_original']['heal']
-        data['spl_power'] = data['spell_abilities_original']['power']
-        data['spl_speed'] = data['spell_abilities_original']['speed']
+        if 'spell_abilities_original' in data:
+            data['spl_blast'] = data['spell_abilities_original']['blast']
+            data['spl_heal'] = data['spell_abilities_original']['heal']
+            data['spl_power'] = data['spell_abilities_original']['power']
+            data['spl_speed'] = data['spell_abilities_original']['speed']
 
         # to pass validation, need to fix some values on the inventory items
         for key, value in enumerate(data['inventory']):

@@ -4,10 +4,12 @@ import {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 
 import Adventure from "../models/adventure";
-import {useAppSelector} from "../hooks";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {savePlayer} from "../store/player";
 
 const AdventureList: React.FC = () => {
   const player = useAppSelector((state) => state.player);
+  const dispatch = useAppDispatch();
 
   const [adventures, setAdventures] = useState([]);
   const [tags, setTags] = useState([]);
@@ -66,12 +68,12 @@ const AdventureList: React.FC = () => {
 
     if (currentTag === 'featured') {
       filteredAdventures = filteredAdventures.filter(x => x.featured_month);
-    } else if (currentTag !== '') {
+    } else if (currentTag) {
       filteredAdventures = filteredAdventures.filter(x => x.tags.indexOf(currentTag) !== -1);
     }
 
     // filter by author
-    if (currentAuthor !== '') {
+    if (currentAuthor) {
       filteredAdventures = filteredAdventures.filter(x => x.authors.indexOf(currentAuthor) !== -1);
     }
 
@@ -125,26 +127,15 @@ const AdventureList: React.FC = () => {
    */
   const gotoAdventure = (adv: Adventure, event) => {
     event.preventDefault();
-    alert("Not implemented yet");
-    // player.save()
-    //   .then((res) => {
-    //     window.location.href = '/adventure/' + adv.slug;
-    //   })
-    //   .catch((err) => {
-    //     TODO: show error to player
-        // console.error(err);
-      // });
+    dispatch(savePlayer(player, () => {
+      window.location.href = '/adventure/' + adv.slug;
+    }));
   };
 
-  if (!player.id) {
+  if (!player.id || !adventures) {
     return (
       <p>Loading...</p>
     )
-  }
-
-  let emptyMessage = (<span />);
-  if (adventures && adventures.length === 0) {
-    emptyMessage = (<p>No adventures matched your filters. Try removing some filters.</p>)
   }
 
   let message = <span />;
@@ -171,6 +162,11 @@ const AdventureList: React.FC = () => {
 
   // filter and sort logic
   const filteredAdventures = filterAndSort();
+
+  let emptyMessage = <span />;
+  if (filteredAdventures.length === 0) {
+    emptyMessage = <p>No adventures matched your filters. Try removing some filters.</p>;
+  }
 
   const sort_options: string[] = [
     'alphabetical',

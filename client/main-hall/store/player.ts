@@ -1,7 +1,9 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import Player from "../models/player";
+import Player, {updateCachedInfo} from "../models/player";
 import Artifact from "../models/artifact";
 import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
+import {getHeaders} from "../utils/api";
 
 const initialState = {} as Player;
 
@@ -10,17 +12,12 @@ const playerSlice = createSlice({
   initialState,
   reducers: {
     setPlayer(state, action: PayloadAction<Player>) {
-      console.log('setting player store', action.payload);
-      Object.assign(state, action.payload);
-
-      // spell_abilities_original is the variable name expected by the API, because that's what the dungeon returns
-      state.spell_abilities_original = {
-        "blast": action.payload.spl_blast,
-        "heal": action.payload.spl_heal,
-        "power": action.payload.spl_power,
-        "speed": action.payload.spl_speed
-      };
-      state.inventory.forEach(item => item.uuid = uuidv4());
+      const player = action.payload;
+      player.inventory.forEach(item => item.uuid = uuidv4());
+      updateCachedInfo(player);
+      // Replacing state object with a new object breaks the app, so we use
+      // Object.assign to update all its properties.
+      Object.assign(state, player);
     },
     changeStat(player, action: PayloadAction<{name: string, amount: number}>) {
       // can be used for attributes, gold, etc.
@@ -28,7 +25,6 @@ const playerSlice = createSlice({
     },
     changeSpellAbility(player, action: PayloadAction<{spellName: string, amount: number}>) {
       player['spl_' + action.payload.spellName] += action.payload.amount;
-      player.spell_abilities_original[action.payload.spellName] += action.payload.amount;
     },
     deposit(player, action: PayloadAction<number>) {
       player.gold -= action.payload;
@@ -54,6 +50,40 @@ const playerSlice = createSlice({
     },
   },
 });
+
+export const loadPlayer = () => {
+  return async (dispatch) => {
+    const uuid = window.localStorage.getItem('eamon_uuid');
+    const player_id = window.localStorage.getItem('player_id');
+    const response = await axios.get(`/api/players/${player_id}.json?uuid=${uuid}`)
+
+    if (response.status !== 200) {
+      throw new Error("Failed to load player data");
+    }
+
+    dispatch(playerActions.setPlayer(response.data));
+  }
+}
+
+export const savePlayer = (player: Player, callback) => {
+  return async () => {
+    // Note: Logging is not done here. Main Hall logging (player creation, enter hall, exit hall)
+    // is handled in Django.
+    const uuid = window.localStorage.getItem('eamon_uuid');
+    const response = await axios.put(`/api/players/${player.id}.json?uuid=${uuid}`,
+      player, {headers: getHeaders()});
+
+    console.log('savePlayer response', response);
+
+    if (response.status !== 200) {
+      // TODO: set error in redux
+      throw new Error("Failed to save player data");
+    }
+
+    callback();
+  }
+}
+
 
 export const playerActions = playerSlice.actions;
 

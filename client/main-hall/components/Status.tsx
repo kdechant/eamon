@@ -41,10 +41,10 @@ const Status = () => {
           </div>
 
           <div className="spell-abilities row">
-            <div className="col-6 col-md">Blast:<br/>{player.spell_abilities_original.blast}%</div>
-            <div className="col-6 col-md">Heal:<br/>{player.spell_abilities_original.heal}%</div>
-            <div className="col-6 col-md">Power:<br/>{player.spell_abilities_original.power}%</div>
-            <div className="col-6 col-md">Speed:<br/>{player.spell_abilities_original.speed}%</div>
+            <div className="col-6 col-md">Blast:<br/>{player.spl_blast}%</div>
+            <div className="col-6 col-md">Heal:<br/>{player.spl_heal}%</div>
+            <div className="col-6 col-md">Power:<br/>{player.spl_power}%</div>
+            <div className="col-6 col-md">Speed:<br/>{player.spl_speed}%</div>
           </div>
 
           <div className="ae row">

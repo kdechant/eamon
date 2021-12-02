@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 // import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import Player from '../models/player';
+import Player, {updateCachedInfo} from '../models/player';
 import PlayerListItem from "./PlayerListItem";
 import { Link } from "react-router-dom";
 import {useEffect, useState} from "react";
@@ -39,10 +39,8 @@ const PlayerList: React.FC = () => {
     axios.get('/api/players.json?uuid=' + uuid)
       .then(res => {
         const players = res.data.map(pl => {
-          const p = new Player();
-          p.init(pl);
-          p.update();
-          return p;
+          updateCachedInfo(pl);
+          return pl;
         });
         setPlayers(players);
       });

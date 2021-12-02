@@ -24,7 +24,7 @@ const SpellListRow: React.FC<SpellListProps> = (props) => {
   const [messageVisible, setMessageVisible] = useState(false);
 
   const buy = (spell: Spell) => {
-    const original_ability = player.spell_abilities_original[spell.name];
+    const original_ability = player[`spl_${spell.name}`];
     const possible_increase = 100 - original_ability;
     const actual_increase = Math.floor(
       possible_increase / 4 + diceRoll(1, possible_increase / 2));
@@ -40,11 +40,11 @@ const SpellListRow: React.FC<SpellListProps> = (props) => {
 
   let button = <button className="btn bnt-light disabled align-middle">Not enough gold</button>;
   if (player.gold >= props.spell.price) {
-    if (player.spell_abilities_original[props.spell.name] > 90) {
+    if (player[`spl_${props.spell.name}`] > 90) {
       button = <button className="btn bnt-light disabled align-middle">Maxed Out!</button>;
     } else {
       button = <button className="btn btn-primary align-middle" onClick={() => buy(props.spell)}>
-        {player.spell_abilities_original[props.spell.name] > 0 ? "Upgrade" : "Learn"}
+        {player[`spl_${props.spell.name}`] > 0 ? "Upgrade" : "Learn"}
       </button>
     }
   }
@@ -56,7 +56,7 @@ const SpellListRow: React.FC<SpellListProps> = (props) => {
         <span className="small">{ props.spell.description }</span>
       </div>
       <div className="col-4 col-sm-3 col-md-2 text-center my-auto">
-        Current Ability: { percentOrNone(player.spell_abilities_original[props.spell.name]) }
+        Current Ability: { percentOrNone(player[`spl_${props.spell.name}`]) }
         <CSSTransition
           in={messageVisible}
           timeout={500}

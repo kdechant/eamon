@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Route, Routes} from "react-router";
-import axios from "axios";
 
 import PlayerMenu from "./PlayerMenu";
 import AdventureList from "./AdventureList";
@@ -11,24 +10,15 @@ import Wizard from "./Wizard/Wizard";
 import SavedGameTile from "./SavedGameTile";
 import {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import { playerActions } from '../store/player';
+import { loadPlayer } from '../store/player';
 
 const PlayerDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
   useEffect(() => {
-    const uuid = window.localStorage.getItem('eamon_uuid');
-    const player_id = window.localStorage.getItem('player_id');
-    // get the player from the API
-    axios.get(`/api/players/${player_id}.json?uuid=${uuid}`)
-      .then(res => {
-        console.log('got player data', res);
-        dispatch(playerActions.setPlayer(res.data));
-      });
+    dispatch(loadPlayer());
   }, [dispatch]);
-
-  console.log('player: ', player);
 
   if (!player.id) {
     return <p>Loading...</p>;
