@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { ucFirst } from "../utils";
-import { usePLayer } from "../hooks";
+import { usePlayer } from "../hooks";
 import {getIcon, isArmor, isWeapon} from "../models/artifact";
 
 const Status = () => {
-  // const player = useAppSelector((state) => state.player);
-  const { player, genderLabel } = usePLayer();
+  const { player, genderLabel } = usePlayer();
 
   if (!player) {
     return (

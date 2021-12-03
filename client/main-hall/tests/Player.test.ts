@@ -1,40 +1,30 @@
-import Player from "../models/player";
-import Artifact from "../models/artifact";
+import Player, {updateCachedInfo} from "../models/player";
+import Artifact, {ARMOR_TYPES, ARTIFACT_TYPES} from "../models/artifact";
 
 let player;
 
 beforeEach(() => {
-  player = new Player();
-  const artifact1 = new Artifact();
-  artifact1.init({
+  player = {} as Player;
+  const artifact1 = {
     'name': 'trollsfire',
-    'type': Artifact.TYPE_WEAPON,
+    'type': ARTIFACT_TYPES.WEAPON,
     'dice': 2,
     'sides': 10
-  });
-  const artifact2 = new Artifact();
-  artifact2.init({
+  } as Artifact;
+  const artifact2 = {
     'name': 'axe',
-    'type': Artifact.TYPE_WEAPON,
+    'type': ARTIFACT_TYPES.WEAPON,
     'dice': 1,
     'sides': 6
-  });
-  const artifact3 = new Artifact();
-  artifact3.init({
+  } as Artifact;
+  const artifact3 = {
     'name': 'leather armor',
-    'type': Artifact.TYPE_WEARABLE,
-    'armor_type': Artifact.ARMOR_TYPE_ARMOR,
+    'type': ARTIFACT_TYPES.WEARABLE,
+    'armor_type': ARMOR_TYPES.ARMOR,
     'armor_class': 1
-  });
+  } as Artifact;
   player.inventory = [artifact1, artifact2, artifact3];
-  player.update();
-});
-
-it('can describe gender', () => {
-  player.gender = 'm';
-  expect(player.getGenderLabel()).toBe('mighty');
-  player.gender = 'f';
-  expect(player.getGenderLabel()).toBe('fair');
+  updateCachedInfo(player);
 });
 
 it('can determine best weapon and armor', () => {

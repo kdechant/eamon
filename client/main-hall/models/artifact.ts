@@ -73,11 +73,7 @@ export function isArmor(artifact: Artifact): boolean {
  * Returns the maximum damage a weapon can do.
  */
 export function maxDamage(artifact: Artifact): number {
-  if (artifact.type === ARTIFACT_TYPES.WEAPON || artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON) {
-    return artifact.dice * artifact.sides;
-  } else {
-    return 0;
-  }
+  return isWeapon(artifact) ? artifact.dice * artifact.sides : 0;
 }
 
 /**

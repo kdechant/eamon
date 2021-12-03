@@ -3,7 +3,7 @@ import {useState} from "react";
 import {Link, Route, Routes} from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ArtifactTile from "./ArtifactTile";
-import Artifact from "../../models/artifact";
+import {ARTIFACT_TYPES} from "../../models/artifact";
 import {useAppSelector} from "../../hooks";
 
 // the shop inventory is kept outside the component, so it will persist
@@ -17,7 +17,7 @@ const Shop: React.FC = () => {
   const [armors] = useState(baseArmors);
 
   const removeItem = (artifact) => {
-    if (artifact.type === Artifact.TYPE_WEAPON) {
+    if (artifact.type === ARTIFACT_TYPES.WEAPON) {
       return;  // infinite supply of non-magic weapons
     }
     const index = weapons.indexOf(artifact);

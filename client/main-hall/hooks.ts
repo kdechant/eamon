@@ -5,7 +5,7 @@ import type { RootState, AppDispatch } from './store'
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-export const usePLayer = () => {
+export const usePlayer = () => {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
   const genderLabel = useAppSelector((state) => {
