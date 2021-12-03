@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from "react";
 import axios from "axios";
 import Game from "../models/game";
 import IntroText from "./IntroText";
@@ -12,39 +13,30 @@ import Status from "./Status";
 import SamSlicker from "./SamSlicker";
 import Logger from "../utils/logger";
 
-declare let game: Game;
+declare const game: Game;
+const globalGame = game;
 
-class MainProgram extends React.Component<any, any> {
 
-  public constructor(props) {
-    super(props);
-    // the game object is created globally and gets added to the props here
-    this.state = {
-      game,
-      uuid: window.localStorage.getItem('eamon_uuid'),
-      statusOpen: false,
-      menuOpen: false,
-      modals: {
-        how_to_play: false,
-        hints: false,
-        command_list: false,
-      }
-    };
-  }
+const MainProgram: React.FC = () => {
+  const [game, setGame] = useState(globalGame);
+  const [statusOpen, setStatusOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [howToPlayOpen, setHowToPlayOpen] = useState(false);
+  const [commandsOpen, setCommandsOpen] = useState(false);
+  const [hintsOpen, setHintsOpen] = useState(false);
+  const [, forceRefresh] = useState(0);  // used for forcing re-render
 
-  public componentDidMount() {
-    const game: Game = this.state.game;
+  useEffect(() => {
 
     // In a real game we want to log to the API, so pass in a live Logger class.
     // This replaces the dummy logger class which is the default in the Game object.
     game.logger = new Logger;
 
-    // pass this component's "set state" method into the game class to
+    // Pass this component's "set state" function into the game class to
     // allow the object's methods to trigger re-render of components. hacky...
-    game.refresher = this.setGameState;
+    game.refresher = () => forceRefresh(Date.now());
 
     // load game data from the API
-    // TODO: this could be refactored into a method on the Game class.
     if (game.slug === 'demo1') {
       // The "demo" adventure. Load everything from the mock data.
       const path = "/static/mock-data";
@@ -58,15 +50,17 @@ class MainProgram extends React.Component<any, any> {
       ])
        .then(responses => {
           game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, [], responses[5].data, []);
-          this.setState({game});
+          setGame(game);
+          forceRefresh(Date.now());
         });
     } else {
       // All "real" adventures. We load adventure data from the API, and the player data comes from either
       // the API (for "real" players) or from mock data (if running in "demo" mode)
       const player_id = window.localStorage.getItem('player_id');
+      const uuid = window.localStorage.getItem('eamon_uuid');
 
       // check if we're using mock or real player data
-      let player_path = "/api/players/" + player_id + '.json?uuid=' + this.state.uuid;
+      let player_path = "/api/players/" + player_id + '.json?uuid=' + uuid;
       if (game.demo) {
         // playing a normal adventure with the demo player
         player_path = "/static/mock-data/player.json";
@@ -86,180 +80,173 @@ class MainProgram extends React.Component<any, any> {
       // at the end of the callback. Just using regular callback instead.
        .then(responses => {
           game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, responses[5].data, responses[6].data, responses[7].data);
-          this.setState({game});
+          setGame(game);
+          forceRefresh(Date.now());
         });
     }
-
-  }
-
-  /**
-   * Persists the game object to the state. Pass this as a prop
-   * to a child element to allow it to alter the game state.
-   * @param {Game} game The game object
-   */
-  public setGameState = (game: Game) => {
-    this.setState({ game });
-  };
+  }, []);
 
   /**
    * Toggles whether the status window is open (for mobile)
    */
-  public toggleStatus = () => {
-    this.setState({statusOpen: !this.state.statusOpen});
+  const toggleStatus = () => {
+    setStatusOpen(statusOpen => !statusOpen);
   };
 
   /**
    * Toggles whether the menu window is open (for mobile)
    */
-  public toggleMenu = () => {
-    this.setState({menuOpen: !this.state.menuOpen});
+  const toggleMenu = () => {
+    setMenuOpen(menuOpen => !menuOpen);
   };
 
-  /**
-   * Toggles whether a modal is open
-   */
-  public toggleModal = (modal: string) => {
-    const modals = {
-      ...this.state.modals,
-    };
-    modals[modal] = !this.state.modals[modal];
-    this.setState({modals: modals});
+  const toggleHints = () => {
+    setHintsOpen(hintsOpen => !hintsOpen);
+  };
+
+  const toggleCommands = () => {
+    setCommandsOpen(commandsOpen => !commandsOpen);
+  };
+
+  const toggleHowToPlay = () => {
+    setHowToPlayOpen(howToPlayOpen => !howToPlayOpen);
   };
 
   /**
    * Closes the active modal
    */
-  public closeModal = () => {
-    const modals = {...this.state.modals};
-    for (const m in modals) {
-      modals[m] = false;
-    }
-    this.setState({modals: modals});
+  const closeModal = () => {
+    setHintsOpen(false);
+    setCommandsOpen(false);
+    setHowToPlayOpen(false);
   }
 
-  public render() {
-
-    const game = this.state.game;
-
-    if (!game || !game.player) {
-      return (
-        <div className="container-fluid" id="game">
-          <div className="main-heading">
-            <h1>{game.name}</h1>
-          </div>
-
-          <div className="parchment">
-            <div className="parchment-inner">
-              Waking up the monsters...
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // show the intro text, if the game has any, and the player hasn't seen it yet
-    if (!game.started && game.intro_text) {
-      return (
-        <div className="container-fluid" id="game">
-          <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
-
-          <div className="parchment">
-            <div className="parchment-inner">
-              <IntroText game={this.state.game} setGameState={this.setGameState}/>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (game.selling) {
-      return (
-        <div className="container-fluid" id="game">
-          <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
-
-          <div className="parchment">
-            <div className="parchment-inner">
-              <SamSlicker game={this.state.game} setGameState={this.setGameState} />
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // the regular game engine
-    const historyClass = this.state.statusOpen ? 'd-none': '';
-    const menuClass = this.state.menuOpen ? '' : 'd-none';
+  if (!game || !game.player) {
     return (
       <div className="container-fluid" id="game">
-          <GameHeading game={game} toggleStatus={this.toggleStatus} toggleMenu={this.toggleMenu} menuOpen={this.state.menuOpen} />
+        <div className="main-heading">
+          <h1>{game.name}</h1>
+        </div>
 
-        <div className="game row">
-
-          {/* history parchment and command prompt */}
-          <div className={`command col-md-7 ${historyClass}`}>
-            <div className="parchment">
-              <div className="parchment-inner">
-                <History game={this.state.game}/>
-                {!game.modal.visible && (
-                  <div>
-                    <CommandPrompt game={this.state.game} setGameState={this.setGameState}/>
-                    <div className="hints-command-list d-none d-md-block">
-                      <button type="button" className="btn btn-secondary" onClick={() => this.toggleModal('how_to_play')}>
-                        How to Play
-                      </button>
-                      <button type="button" className="btn btn-secondary" onClick={() => this.toggleModal('hints')}>
-                        Hints
-                      </button>
-                      <button type="button" className="btn btn-secondary" onClick={() => this.toggleModal('command_list')}>
-                        Command List
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {game.modal.visible && (
-                  <Question game={this.state.game} setGameState={this.setGameState}/>
-                )}
-              </div>
-            </div>
+        <div className="parchment">
+          <div className="parchment-inner">
+            Waking up the monsters...
           </div>
-
-          {/* status box (outside the parchment */}
-          <Status game={this.state.game} open={this.state.statusOpen}/>
-
-          {/* hamburger menu */}
-          <div id="menu" className={'container-fluid ' + menuClass}>
-            <div className="row">
-              <ul>
-                <li><a className="text-primary" onClick={() => this.toggleModal('how_to_play')}>How to Play</a></li>
-                <li><a className="text-primary" onClick={() => this.toggleModal('hints')}>Hints</a></li>
-                <li><a className="text-primary" onClick={() => this.toggleModal('command_list')}>Command List</a></li>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About Eamon</a></li>
-                <li><a href="/news">News</a></li>
-                <li><a href="/manual">Manual</a></li>
-                <li><a href="https://github.com/kdechant/eamon" target="_blank">Source Code</a></li>
-                <li><a href="https://github.com/kdechant/eamon/issues" target="_blank">Report a Bug</a></li>
-                <li><a href="https://www.kdechant.com/">About the Author</a></li>
-                <li><a href="/privacy">Privacy Policy</a></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* modals */}
-          <HowToPlay game={this.state.game} visible={this.state.modals.how_to_play} toggle={this.closeModal}/>
-          <Hints game={this.state.game} visible={this.state.modals.hints} toggle={this.closeModal}/>
-          <CommandList game={this.state.game} visible={this.state.modals.command_list} toggle={this.closeModal}/>
-
         </div>
       </div>
     );
   }
+
+  // show the intro text, if the game has any, and the player hasn't seen it yet
+  if (!game.started && game.intro_text) {
+    return (
+      <div className="container-fluid" id="game">
+        <GameHeading game={game} toggleStatus={toggleStatus} toggleMenu={toggleMenu} menuOpen={menuOpen} />
+
+        <div className="parchment">
+          <div className="parchment-inner">
+            <IntroText game={game} setGameState={setGame}/>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (game.selling) {
+    return (
+      <div className="container-fluid" id="game">
+        <GameHeading game={game} toggleStatus={toggleStatus} toggleMenu={toggleMenu} menuOpen={menuOpen} />
+
+        <div className="parchment">
+          <div className="parchment-inner">
+            <SamSlicker game={game} setGameState={setGame} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // the regular game engine
+  const historyClass = statusOpen ? 'd-none': '';
+  const menuClass = menuOpen ? '' : 'd-none';
+  return (
+    <div className="container-fluid" id="game">
+      <GameHeading game={game} toggleStatus={toggleStatus} toggleMenu={toggleMenu} menuOpen={menuOpen} />
+
+      <div className="game row">
+
+        {/* history parchment and command prompt */}
+        <div className={`command col-md-7 ${historyClass}`}>
+          <div className="parchment">
+            <div className="parchment-inner">
+              <History game={game}/>
+              {!game.modal.visible && (
+                <div>
+                  <CommandPrompt game={game} setGameState={setGame}/>
+                  <div className="hints-command-list d-none d-md-block">
+                    <button type="button" className="btn btn-secondary" onClick={toggleHowToPlay}>
+                      How to Play
+                    </button>
+                    <button type="button" className="btn btn-secondary" onClick={toggleHints}>
+                      Hints
+                    </button>
+                    <button type="button" className="btn btn-secondary" onClick={toggleCommands}>
+                      Command List
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {game.modal.visible && (
+                <Question game={game} setGameState={setGame}/>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* status box (outside the parchment */}
+        <Status game={game} open={statusOpen}/>
+
+        {/* hamburger menu */}
+        <div id="menu" className={'container-fluid ' + menuClass}>
+          <div className="row">
+            <ul>
+              <li><a className="text-primary" onClick={toggleHowToPlay}>How to Play</a></li>
+              <li><a className="text-primary" onClick={toggleHints}>Hints</a></li>
+              <li><a className="text-primary" onClick={toggleCommands}>Command List</a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About Eamon</a></li>
+              <li><a href="/news">News</a></li>
+              <li><a href="/manual">Manual</a></li>
+              <li><a href="https://github.com/kdechant/eamon" target="_blank">Source Code</a></li>
+              <li><a href="https://github.com/kdechant/eamon/issues" target="_blank">Report a Bug</a></li>
+              <li><a href="https://www.kdechant.com/">About the Author</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+
+        {/* modals */}
+        <HowToPlay game={game} visible={howToPlayOpen} toggle={closeModal}/>
+        <Hints game={game} visible={hintsOpen} toggle={closeModal}/>
+        <CommandList game={game} visible={commandsOpen} toggle={closeModal}/>
+
+      </div>
+    </div>
+  );
 }
 
 export default MainProgram;
 
-const GameHeading = (props) => {
+type GameHeadingProps = {
+  game: Game;
+  toggleStatus: () => void;
+  toggleMenu: () => void;
+  menuOpen: boolean
+  statusOpen?: boolean
+}
+
+const GameHeading: React.FC<GameHeadingProps> = (props) => {
   const game = props.game;
   return (
     <div className="container-fluid main-heading">

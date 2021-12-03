@@ -1,68 +1,62 @@
 import * as React from 'react';
+import {useState} from "react";
 import ReactMarkdown from "react-markdown";
 // @ts-ignore
 import rehypeRaw from "rehype-raw";
 
-import Game from "../models/game";
 import {gamevars} from "../utils";
+import {PropsWithGame} from "../types";
 
-declare let game: Game;
 
-class IntroText extends React.Component<any, any> {
-  public state = {
-    index: 0,
-    introAnswer: "",
+const IntroText: React.FC<PropsWithGame> = (props) => {
+  const [index, setIndex] = useState(0);
+  const [introAnswer, setIntroAnswer] = useState('');
+
+  const introNext = () => {
+    setIndex((index) => index + 1);
   };
 
-  public intro_next = () => {
-    this.setState({index: this.state.index + 1});
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIntroAnswer(event.target.value);
   };
 
-  public handleChange = (event) => {
-    const change = {};
-    change[event.target.name] = event.target.value;
-    this.setState(change);
-  };
-
-  public startGame = () => {
-    const game = this.props.game;
+  const startGame = () => {
+    const game = props.game;
     if (game.intro_question) {
-      game.intro_answer = this.state.introAnswer;
+      game.intro_answer = introAnswer;
     }
     game.start();
-    this.props.setGameState(game);
+    props.setGameState(game);
   };
 
-  public render(): JSX.Element {
-    const game = this.props.game;
-    return (
-      <div id="intro-text">
-        <ReactMarkdown children={gamevars(game.intro_text[this.state.index])}
-                       rehypePlugins={[rehypeRaw]} />
-        {this.state.index < game.intro_text.length - 1 && (
-        <p className="intro-next">
-          <button className="btn btn-success" id="intro-next" onClick={this.intro_next}>Next</button>
-        </p>
-        )}
-        {this.state.index === game.intro_text.length - 1 && (
-          <div className="intro-start">
+  const game = props.game;
+  return (
+    <div id="intro-text">
+      <ReactMarkdown children={gamevars(game.intro_text[index])}
+                     rehypePlugins={[rehypeRaw]} />
+      {index < game.intro_text.length - 1 && (
+      <p className="intro-next">
+        <button className="btn btn-success" id="intro-next" onClick={introNext}>Next</button>
+      </p>
+      )}
+      {index === game.intro_text.length - 1 && (
+        <div className="intro-start">
 
-            {game.intro_question && (
-              <p className="intro-question">
-                {game.intro_question}{' '}
-                <input type="text" id="introAnswer" name="introAnswer" autoFocus={true} onChange={this.handleChange} />
-              </p>
-            )}
+          {game.intro_question && (
+            <p className="intro-question">
+              {game.intro_question}{' '}
+              <input type="text" id="introAnswer" name="introAnswer" autoFocus={true} onChange={handleChange} />
+            </p>
+          )}
 
-            <div className="intro-confirm">
-              <p><button className="btn btn-success" id="return" onClick={this.startGame}>Start Adventure</button></p>
-            </div>
-
+          <div className="intro-confirm">
+            <p><button className="btn btn-success" id="return" onClick={startGame}>Start Adventure</button></p>
           </div>
-        )}
-      </div>
-    );
-  }
+
+        </div>
+      )}
+    </div>
+  );
 
 }
 

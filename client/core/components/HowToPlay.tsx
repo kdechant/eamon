@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {ModalProps} from "../types";
 
-const HowToPlay = (props) => {
+
+const HowToPlay: React.FC<ModalProps> = (props) => {
    return (
       <Modal isOpen={props.visible} toggle={props.toggle} size="xl">
         <ModalHeader toggle={props.toggle} tag="h3">

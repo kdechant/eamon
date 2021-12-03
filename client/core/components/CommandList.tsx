@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import {BaseCommand} from "../commands/base-command";
+import {ModalProps} from "../types";
 
 // TypeScript checkers to quiet the linter about the 'unknown' object type
 const baseCommandCheck = (cmd: any): cmd is BaseCommand => true;
 const baseCommandsCheck = (arr: any): arr is BaseCommand[] => true;
 
-const CommandList = (props) => {
+const CommandList: React.FC<ModalProps> = (props) => {
   const [popoverOpen, setPopoverOpen] = React.useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
 
