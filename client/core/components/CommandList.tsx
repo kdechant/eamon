@@ -3,9 +3,6 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Popover, PopoverHeader, Pop
 import {BaseCommand} from "../commands/base-command";
 import {ModalProps} from "../types";
 
-// TypeScript checkers to quiet the linter about the 'unknown' object type
-const baseCommandCheck = (cmd: any): cmd is BaseCommand => true;
-const baseCommandsCheck = (arr: any): arr is BaseCommand[] => true;
 
 const CommandList: React.FC<ModalProps> = (props) => {
   const [popoverOpen, setPopoverOpen] = React.useState(false);
@@ -14,22 +11,21 @@ const CommandList: React.FC<ModalProps> = (props) => {
   if (!props.visible) return <React.Fragment />;
 
   const game = props.game;
-  const commands = Object.values(game.command_parser.available_commands).filter((c: BaseCommand) => !c.secret);
+  const commands = Object.values(game.command_parser.available_commands)
+    .filter((c: BaseCommand) => !c.secret) as BaseCommand[];
   const category_names = ['movement', 'artifact manipulation', 'interactive', 'miscellaneous'];
   const categories = {};
   for (const c of commands) {
-    if (baseCommandCheck(c)) {
-      if (!c.category) {
-        c.category = 'special commands for this adventure';
-      }
-      if (category_names.indexOf(c.category) === -1) {
-        category_names.push(c.category);
-      }
-      if (!categories.hasOwnProperty(c.category)) {
-        categories[c.category] = [];
-      }
-      categories[c.category].push(c);
+    if (!c.category) {
+      c.category = 'special commands for this adventure';
     }
+    if (category_names.indexOf(c.category) === -1) {
+      category_names.push(c.category);
+    }
+    if (!categories.hasOwnProperty(c.category)) {
+      categories[c.category] = [];
+    }
+    categories[c.category].push(c);
   }
 
   // verbs to remove from the list
@@ -59,19 +55,17 @@ const CommandList: React.FC<ModalProps> = (props) => {
         </p>
         {category_names.map(name => {
           const commands = categories[name];
-          if (baseCommandsCheck(commands)) {
-            return (
-              <div className="command-list-category" key={name}>
-                <h4 className="mt-2 mb-0">{name.toUpperCase()}</h4>
-                <div className="row">
-                  {commands.map((c: BaseCommand) =>
-                    c.verbs.filter(v => hidden_commands.indexOf(v) === -1).map(v =>
-                      <CommandVerb key={v} verb={v} description={c.description} examples={c.examples} />
-                  ))}
-                </div>
+          return (
+            <div className="command-list-category" key={name}>
+              <h4 className="mt-2 mb-0">{name.toUpperCase()}</h4>
+              <div className="row">
+                {commands.map((c: BaseCommand) =>
+                  c.verbs.filter(v => hidden_commands.indexOf(v) === -1).map(v =>
+                    <CommandVerb key={v} verb={v} description={c.description} examples={c.examples} />
+                ))}
               </div>
-            )
-          }
+            </div>
+          )
         })}
       </ModalBody>
       <ModalFooter>

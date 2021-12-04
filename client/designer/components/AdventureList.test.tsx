@@ -3,8 +3,7 @@
  */
 import * as React from 'react';
 import {render, waitFor, within} from '@testing-library/react'
-import {Route} from "react-router";
-import {MemoryRouter} from "react-router-dom";
+import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {rest} from 'msw';
 import {setupServer} from 'msw/node';
 import AdventureList from "./AdventureList";
@@ -53,9 +52,9 @@ afterAll(() => server.close())
 test('loads and displays list in a table', async () => {
   render(
     <MemoryRouter initialEntries={["/designer/"]}>
-      <Route path="/designer/">
-        <AdventureList/>
-      </Route>
+      <Routes>
+        <Route path="/designer/" element={<AdventureList/>} />
+      </Routes>
     </MemoryRouter>
   );
 

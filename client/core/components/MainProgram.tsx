@@ -179,7 +179,7 @@ const MainProgram: React.FC = () => {
         <div className={`command col-md-7 ${historyClass}`}>
           <div className="parchment">
             <div className="parchment-inner">
-              <History game={game}/>
+              <History historyManager={game.history} />
               {!game.modal.visible && (
                 <div>
                   <CommandPrompt game={game} setGameState={setGame}/>

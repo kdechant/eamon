@@ -1,4 +1,4 @@
-import {HistoryEntry} from "../models/history-entry";
+import {HistoryEntry} from "./history-entry";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
 declare let game;
@@ -81,7 +81,7 @@ export class HistoryManager {
   /**
    * Gets the most recent command the user entered
    */
-  getLastCommand() {
+  getLastCommand(): string {
     if (this.history.length > 0) {
       return this.history[this.history.length - 1]["command"];
     } else {
@@ -93,12 +93,12 @@ export class HistoryManager {
    * Gets the next-older command in the history.
    * Used for recalling the history with the arrow keys.
    */
-  getOlderCommand() {
+  getOlderCommand(): string {
     const commands = this.getPastCommands();
     if (this.index > 0) {
       this.index--;
     }
-    if (this.index > commands.length) {
+    if (this.index >= commands.length) {
       this.index = commands.length - 1;
     }
     if (this.index >= 0 && this.index < commands.length) {
@@ -112,7 +112,7 @@ export class HistoryManager {
    * Gets the next-newer command in the history.
    * Used for recalling the history with the arrow keys.
    */
-  getNewerCommand() {
+  getNewerCommand(): string {
     const commands = this.getPastCommands();
     if (this.index <= commands.length) {
       this.index++;
@@ -187,7 +187,7 @@ export class HistoryManager {
         commands.push(e.command);
       }
     });
-    return commands.slice(0, -1);  // no need to include the latest command here
+    return commands.slice(0);  // no need to include the latest command here
   }
 
   /**

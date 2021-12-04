@@ -60,12 +60,14 @@ describe("Command history", function() {
     hist.write("blah blah");
     hist.push("get all");
     hist.write("Sword taken.");
+    expect(hist.getOlderCommand()).toEqual("get all");
     expect(hist.getOlderCommand()).toEqual("look");
     expect(hist.getOlderCommand()).toEqual("e");
     expect(hist.getOlderCommand()).toEqual("n");
     expect(hist.getOlderCommand()).toEqual("n"); // already on the first command. keep returning the first command.
     expect(hist.getNewerCommand()).toEqual("e");
     expect(hist.getNewerCommand()).toEqual("look");
+    expect(hist.getNewerCommand()).toEqual("get all");
     expect(hist.getNewerCommand()).toEqual("");
   });
 

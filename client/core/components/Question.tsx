@@ -19,7 +19,7 @@ const Question: React.FC<PropsWithGame> = (props) => {
     }
   };
 
-  const handleMultipleChoiceKeyPress = (key: string, event: any) => {
+  const handleMultipleChoiceKeyPress = (key: string) => {
     const game = props.game;
     const match = game.modal.current_question.hotkeys[key.toLowerCase()];
     if (match) {
@@ -27,7 +27,7 @@ const Question: React.FC<PropsWithGame> = (props) => {
     }
   };
 
-  const submitText = (event) => {
+  const submitText = () => {
     const game = props.game;
     game.modal.submit(modalText);
     prefillNextAnswer();

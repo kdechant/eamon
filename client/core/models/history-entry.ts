@@ -5,7 +5,11 @@
 export class HistoryEntry {
 
   public command: string;
-  public results: any[] = [];
+  public results: {
+    text: string,
+    type: string,
+    markdown: boolean
+  }[] = [];
 
   constructor(command) {
     this.command = command;

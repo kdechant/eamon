@@ -1,62 +1,75 @@
 import * as React from 'react';
+import {useEffect, useRef, useState} from "react";
+import {PropsWithGame} from "../types";
 
-class CommandPrompt extends React.Component<any, any> {
-  public state = {
-    command: '',
-    last_command: '',
-    ready: false,
-    restore: false,
-  };
 
-  public componentDidMount(): void {
+const CommandPrompt: React.FC<PropsWithGame> = (props) => {
+  const [command, setCommand] = useState('');
+  const [lastCommand, setLastCommand] = useState('');
+  const [restore, setRestore] = useState(false);
+  const [cursorMove, setCursorMove] = useState(false);
+
+  const commandInputRef = useRef(null);
+
+  const game = props.game;
+
+  useEffect(() => {
     // Key press handler for the screen pause. When the "hit any key"
     // button is visible, this will resume output.
-    // FIXME: this should ignore F keys
-    const game = this.props.game;
     document.addEventListener("keydown", (ev) => {
+      if (ev.key.match(/F\d*/) || ['Alt', 'Control', 'Shift', 'Tab', 'OS'].indexOf(ev.key) !== -1) {
+        return;
+      }
       if (game.queue.paused) {
         ev.preventDefault();
         game.history.counter = 0;
         game.queue.run();
       }
     }, false);
-  }
+  }, []);
 
-  public handleChange = (event) => {
-    const change = {};
-    change[event.target.name] = event.target.value;
-    this.setState(change);
+  useEffect(() => {
+    // Move cursor to the end of the command. Used when up/down paging through past commands.
+    if (!cursorMove) {
+      return;
+    }
+    const pos = commandInputRef.current.value.length;
+    commandInputRef.current.setSelectionRange(pos, pos);
+    setCursorMove(false);
+  }, [cursorMove]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCommand(event.target.value);
   };
 
   /**
    * Handles key presses inside the command prompt input field.
    * @param event
    */
-  public handleKeyPress = (event) => {
-    const game = this.props.game;
-
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     switch (event.key) {
       case 'Enter':
         if (!game.ready) { return; }
 
-        let command = this.state.command;
+        let new_command = command;
 
         // if the user didn't type a new command, run the last command
-        if (command.length === 0) {
-          command = game.history.getLastCommand();
+        if (new_command.length === 0) {
+          new_command = game.history.getLastCommand();
         }
 
         // start a new history entry
         game.ready = false;
 
         // run the command
-        game.command_parser.run(command);
+        game.command_parser.run(new_command);
 
         // clear the input box
-        this.setState({ command: '', last_command: command });
+        setCommand("");
+        setLastCommand(new_command);
 
         setTimeout(() => {
-          this.props.setGameState(game);
+          game.refresher();
         }, 25);
 
         break;
@@ -64,120 +77,116 @@ class CommandPrompt extends React.Component<any, any> {
         // up arrow moves back through the history
         const prev_command = game.history.getOlderCommand();
         if (prev_command !== null) {
-          this.setState({command: prev_command});
+          setCommand(prev_command);
+          setCursorMove(true);
         }
         break;
       case 'ArrowDown':
         // down arrow moves forward through the history
         const next_command = game.history.getNewerCommand();
         if (next_command !== null) {
-          this.setState({command: next_command});
+          setCommand(next_command);
+          setCursorMove(true);
         }
         break;
     }
     // other keys have no special function.
   };
 
-  public showSaves = () => {
-    this.setState({restore: true});
+  const showSaves = () => {
+    setRestore(true);
   };
 
-  public startOver = () => {
+  const startOver = () => {
     window.location.reload();
   };
 
-  public exit = () => {
-    const game = this.props.game;
+  const exit = () => {
     game.player.sellItems();
-    this.props.setGameState(game);
+    game.refresher();
   };
 
-  public restoreSavedGame = (sv) => {
+  const restoreSavedGame = (sv) => {
     const slot = parseInt(sv, 10);
-    const game = this.props.game;
     game.restore(slot);
     game.tick();
-    this.setState({restore: false});
-    this.props.setGameState({game});
+    setRestore(false);
+    game.refresher();
   };
 
-  public hideSaves = () => {
-    this.setState({restore: false});
+  const hideSaves = () => {
+    setRestore(false);
   };
 
-  public continue = () => {
-    const game = this.props.game;
+  const resume = () => {
     game.queue.resume();
     // Note: input will autofocus again as soon as it reappears.
   };
 
-  public render() {
-    const game = this.props.game;
-
-    if (game.queue.paused) {
-      return <button className="btn btn-info paused" onClick={this.continue}>
-          Hit any key to continue...
-        </button>;
-    }
-
-    if (game.active) {
-      return (
-        <div className="form-inline">
-          <div className="command-prompt form-group">
-            <span className="prompt">Your Command:</span>
-            <input name="command"
-                   id="command"
-                   type="text"
-                   value={this.state.command}
-                   onChange={this.handleChange}
-                   onKeyDown={this.handleKeyPress}
-                   className="form-control ml-2"
-                   placeholder={this.state.last_command}
-                   autoComplete="off"
-                   autoFocus={true}
-            />
-          </div>
-        </div>
-      )
-    }
-
-    if (game.won) {
-      return (
-        <div className="return-button-container">
-          <button className="btn btn-success" id="return" onClick={this.exit}>Return to Main Hall</button>
-        </div>
-      )
-    }
-
-    if (game.died && !this.state.restore) {
-      return (
-        <div className="return-button-container">
-          <button className="btn btn-success mr-2" id="start_over" onClick={this.startOver}>Start Over</button>
-          <button className="btn btn-success" id="restore" onClick={this.showSaves}>Restore a Saved Game</button>
-        </div>
-      )
-    }
-
-    if (game.died && this.state.restore) {
-      return (
-        <div className="return-button-container">
-          {game.saves.map(sv => (
-            <button key={sv.slot} className="btn btn-success" onClick={() => this.restoreSavedGame(sv)}>{sv}</button>
-          ))}
-          {game.saves.length === 0 && (
-            <span>You have no saved games.</span>
-          )}
-          <button className="btn btn-success" onClick={this.hideSaves}>Cancel</button>
-        </div>
-      )
-    }
-
-    return (
-      <div id="command-prompt">
-        Loading...
-      </div>
-    );
+  if (game.queue.paused) {
+    return <button className="btn btn-info paused" onClick={resume}>
+        Hit any key to continue...
+      </button>;
   }
+
+  if (game.active) {
+    return (
+      <div className="form-inline">
+        <div className="command-prompt form-group">
+          <span className="prompt">Your Command:</span>
+          <input name="command"
+                 id="command"
+                 ref={commandInputRef}
+                 type="text"
+                 value={command}
+                 onChange={handleChange}
+                 onKeyDown={handleKeyPress}
+                 className="form-control ml-2"
+                 placeholder={lastCommand}
+                 autoComplete="off"
+                 autoFocus={true}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  if (game.won) {
+    return (
+      <div className="return-button-container">
+        <button className="btn btn-success" id="return" onClick={exit}>Return to Main Hall</button>
+      </div>
+    )
+  }
+
+  if (game.died && !restore) {
+    return (
+      <div className="return-button-container">
+        <button className="btn btn-success mr-2" id="start_over" onClick={startOver}>Start Over</button>
+        <button className="btn btn-success" id="restore" onClick={showSaves}>Restore a Saved Game</button>
+      </div>
+    )
+  }
+
+  if (game.died && restore) {
+    return (
+      <div className="return-button-container">
+        {game.saves.map(sv => (
+          <button key={sv.slot} className="btn btn-success" onClick={() => restoreSavedGame(sv)}>{sv}</button>
+        ))}
+        {game.saves.length === 0 && (
+          <span>You have no saved games.</span>
+        )}
+        <button className="btn btn-success" onClick={hideSaves}>Cancel</button>
+      </div>
+    )
+  }
+
+  return (
+    <div id="command-prompt">
+      Loading...
+    </div>
+  );
 
 }
 
