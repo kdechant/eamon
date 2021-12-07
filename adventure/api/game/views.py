@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.db.models import Q
@@ -122,14 +122,27 @@ class PlayerProfileViewSet(viewsets.ModelViewSet):
         players = Player.objects.filter(uuid=request_uuid).exclude(uuid=db_uuid)
         print("Updating players...")
         for p in players:
-            print("Updating player: " + p.name)
-            print("Old UUID: " + p.uuid)
-            print("New UUID: " + db_uuid)
+            print("Updating player: {} - Old UUID: {} - New UUID: {}".format(p.name, p.uuid, db_uuid))
             p.uuid = db_uuid
             p.save()
 
         serializer = serializers.PlayerProfileSerializer(pl)
         return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Deletes the user's account.
+        """
+        social_id = self.request.query_params.get('social_id', '')
+        request_uuid = self.request.query_params.get('uuid', '')
+
+        try:
+            pl = PlayerProfile.objects.get(social_id=social_id, uuid=request_uuid)
+            pl.delete()
+            return Response("Deleted!", status=status.HTTP_204_NO_CONTENT)
+        except PlayerProfile.DoesNotExist as e:
+            return Response("Could not find an account with that user ID and UUID",
+                            status=status.HTTP_404_NOT_FOUND)
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
