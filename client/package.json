@@ -37,7 +37,8 @@
     "test": "jest",
     "webpack": "webpack --mode production",
     "webpack:dev": "webpack --mode development",
-    "webpack:watch": "webpack --mode development --watch"
+    "webpack:watch": "webpack --mode development --watch",
+    "cypress:open": "cypress open"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -56,7 +57,10 @@
     "babel-loader": "^8.2.3",
     "concurrently": "^6.2.0",
     "core-js": "^3.8.2",
+    "cypress": "^9.2.0",
+    "cypress-wait-until": "^1.7.2",
     "eslint": "^8.2.0",
+    "eslint-plugin-cypress": "^2.12.1",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.0.4",
     "msw": "^0.35.0",
