@@ -87,6 +87,14 @@ const MainProgram: React.FC = () => {
   }, []);
 
   /**
+   * This function is passed into child components so they can update the game data.
+   */
+  const setGameState = (game: Game) => {
+    setGame(game);
+    forceRefresh(Date.now());
+  }
+
+  /**
    * Toggles whether the status window is open (for mobile)
    */
   const toggleStatus = () => {
@@ -145,7 +153,7 @@ const MainProgram: React.FC = () => {
 
         <div className="parchment">
           <div className="parchment-inner">
-            <IntroText game={game} setGameState={setGame}/>
+            <IntroText game={game} setGameState={setGameState}/>
           </div>
         </div>
       </div>
@@ -159,7 +167,7 @@ const MainProgram: React.FC = () => {
 
         <div className="parchment">
           <div className="parchment-inner">
-            <SamSlicker game={game} setGameState={setGame} />
+            <SamSlicker game={game} setGameState={setGameState} />
           </div>
         </div>
       </div>
@@ -182,7 +190,7 @@ const MainProgram: React.FC = () => {
               <History historyManager={game.history} />
               {!game.modal.visible && (
                 <div>
-                  <CommandPrompt game={game} setGameState={setGame}/>
+                  <CommandPrompt game={game} setGameState={setGameState}/>
                   <div className="hints-command-list d-none d-md-block">
                     <button type="button" className="btn btn-secondary" onClick={toggleHowToPlay}>
                       How to Play
@@ -198,7 +206,7 @@ const MainProgram: React.FC = () => {
               )}
 
               {game.modal.visible && (
-                <Question game={game} setGameState={setGame}/>
+                <Question game={game} setGameState={setGameState}/>
               )}
             </div>
           </div>
