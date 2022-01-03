@@ -548,8 +548,10 @@ a {
   }
 }
 .adventure-list {
-  @media (min-width: 576px) {
-    column-count: 2;
+  &.columns {
+    @media (min-width: 576px) {
+      column-count: 2;
+    }
   }
   .ratings {
     img {

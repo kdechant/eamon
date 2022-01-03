@@ -186,7 +186,7 @@ const AdventureList: React.FC = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-2">
-            <div className="tags tags-vertical mb-3">
+            <div className="filter-tag tags tags-vertical mb-3">
               <div className="mb-2">Filter by tag:</div>
               <div className="tag"><a onClick={() => filterByTag('')}>all</a></div>
               {tags.map(tag =>
@@ -197,7 +197,7 @@ const AdventureList: React.FC = () => {
               )}
             </div>
 
-            <div className="tags tags-vertical mb-3">
+            <div className="filter-author tags tags-vertical mb-3">
               <div className="mb-2">Filter by author:</div>
               <div className="tag"><a onClick={(ev) => filterByAuthor('')}>all</a></div>
               {authors.map(author =>
@@ -208,7 +208,7 @@ const AdventureList: React.FC = () => {
               )}
             </div>
 
-            <div className="tags tags-vertical mb-3">
+            <div className="filter-sort tags tags-vertical mb-3">
               <div className="mb-2">Sort by:</div>
               {sort_options.map(sort =>
                 <div className="tag" key={sort}>
@@ -219,7 +219,7 @@ const AdventureList: React.FC = () => {
             </div>
           </div>
 
-          <div className="adventure-list col-md-10">
+          <div className={'adventure-list col-md-10 ' + (filteredAdventures.length > 1 ? 'columns' : '')}>
             {emptyMessage}
             {filteredAdventures.map((adv) => {
               const ratings = {

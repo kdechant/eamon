@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "rocket launcher",
+    "description": "This is a rocket launcher.",
+    "type": 3,
+    "room_id": 1,
+    "weight": 10,
+    "value": 250
+  }
+]

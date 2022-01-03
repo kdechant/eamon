@@ -1,0 +1,6 @@
+{
+  "id": 0,
+  "name": "Test Adv 1",
+  "description": "Welcome to the demo! This is a simple adventure used for development and automated tests. You will be exploring a small castle.",
+  "intro_text": "This is some intro text"
+}

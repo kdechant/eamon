@@ -1,4 +1,4 @@
-describe('Character Creation', () => {
+describe('Main Hall - Character Creation', () => {
   it('Can navigate to the form', () => {
     cy.visit('/main-hall')
     cy.contains('Create a New Adventurer').click();

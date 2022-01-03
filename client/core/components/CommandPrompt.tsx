@@ -141,7 +141,7 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
                  value={command}
                  onChange={handleChange}
                  onKeyDown={handleKeyPress}
-                 className="form-control ml-2"
+                 className={"form-control ml-2 " + (game.ready ? 'ready' : 'running')}
                  placeholder={lastCommand}
                  autoComplete="off"
                  autoFocus={true}

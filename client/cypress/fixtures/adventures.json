@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "name": "Test Adv 1",
+    "description": "This is the description",
+    "full_description": "",
+    "intro_text": "",
+    "intro_question": "",
+    "slug": "demo1",
+    "edx": "n/a",
+    "dead_body_id": 0,
+    "featured_month": "",
+    "date_published": "2021-01-01",
+    "authors": [
+      "Donald Brown"
+    ],
+    "tags": [
+      "tag1"
+    ],
+    "times_played": 100,
+    "avg_ratings": {
+      "overall__avg": 4.1,
+      "combat__avg": 3.2,
+      "puzzle__avg": 3.2
+    }
+  },
+
+  {
+    "id": 2,
+    "name": "Test Adv 2",
+    "description": "This is the description",
+    "full_description": "",
+    "intro_text": "",
+    "intro_question": "",
+    "slug": "demo2",
+    "edx": "n/a",
+    "dead_body_id": 0,
+    "featured_month": "",
+    "date_published": "2022-01-01",
+    "authors": [
+      "Tom Zuchowski"
+    ],
+    "tags": [
+      "tag2"
+    ],
+    "times_played": 200,
+    "avg_ratings": {
+      "overall__avg": 4.3,
+      "combat__avg": 3.5,
+      "puzzle__avg": 3.6
+    }
+  }
+]

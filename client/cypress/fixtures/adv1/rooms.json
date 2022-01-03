@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "name": "Entrance",
+    "description": "You are standing at the entrance.",
+    "exits": [
+      {"direction": "s", "room_to": -999}
+    ]
+  }
+]

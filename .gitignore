@@ -3,6 +3,7 @@
 /static/build/
 /client/build/
 **/**/*.js
+!/client/cypress/**/*.js
 **/**/*.js.map
 **/__pycache__/
 /.idea/
