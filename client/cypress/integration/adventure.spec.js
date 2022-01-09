@@ -1,3 +1,4 @@
+import {onMainHallPage} from "../support/page_objects/mainHallPage";
 import {onAdventurePage} from "../support/page_objects/adventurePage";
 
 describe('Adventure', () => {
@@ -16,7 +17,8 @@ describe('Adventure', () => {
 
   it('can go on an adventure and exit to main hall', () => {
     localStorage.setItem('player_id', '1');
-    cy.visit('/main-hall/adventure');
+    cy.visit('/main-hall/hall');
+    onMainHallPage.goToAdventures();
     cy.get('.adventure-list-item a').eq(0).click();
     cy.url().should('match', /adventure\/demo1\/$/);
     // TODO: interact with intro text (but it's usually turned off in debug mode). (Could fix this

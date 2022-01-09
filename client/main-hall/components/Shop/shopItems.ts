@@ -84,7 +84,7 @@ const armor_types = ["leather", "chain", "scale", "plate"];
 for (const a of armor_types) {
   const item = {
     uuid: uuidv4(),
-    type: ARTIFACT_TYPES.MAGIC_WEAPON,
+    type: ARTIFACT_TYPES.WEARABLE,
     armor_type: ARMOR_TYPES.ARMOR,
     name: a === 'chain' ? "chain mail" : a + " armor",
   } as Artifact;

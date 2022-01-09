@@ -23,7 +23,9 @@ const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
       setMessage("");
       dispatch(playerActions.buyArtifact(props.artifact));
       // TODO: redux-ify shop inventory too
-      props.removeItem(props.artifact);
+      if (props.removeItem) {
+        props.removeItem(props.artifact);
+      }
     }, 1200);
   };
 
@@ -75,7 +77,9 @@ const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
         </div>
         <div className="artifact-data">
           {stats}
-          <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
+          <span className="artifact-price">
+            <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
+          </span>
         </div>
         <div className="artifact-buttons">
           {button}

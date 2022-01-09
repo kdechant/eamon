@@ -53,9 +53,9 @@ const Shop: React.FC = () => {
         <Route path="buy" element={
           <div className="shop-buy">
             <p>I just happen to have the following weapons and armor in stock:</p>
-            <p>You have {player.gold} gold pieces.</p>
+            <p>You have <span data-qa="goldAmount">{player.gold}</span> gold pieces.</p>
             <p className="heading">Weapons:</p>
-            <div className="container-fluid">
+            <div className="container-fluid weapons">
               <TransitionGroup className="row">
                 {weapons.map(artifact =>
                   <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
@@ -65,7 +65,7 @@ const Shop: React.FC = () => {
               </TransitionGroup>
             </div>
             <p className="heading">Armor and Shields:</p>
-            <div className="container-fluid">
+            <div className="container-fluid armor">
               <div className="row">{armors.map(artifact =>
                 <ArtifactTile key={artifact.uuid} artifact={artifact} action="buy" />
               )}
@@ -78,7 +78,7 @@ const Shop: React.FC = () => {
         <Route path="sell" element={
           <div className="shop-sell">
             <p>What do you want to sell?</p>
-            <p>You have {player.gold} gold pieces.</p>
+            <p>You have <span data-qa="goldAmount">{player.gold}</span> gold pieces.</p>
             <div className="container-fluid">
               <TransitionGroup className="row">
                 {player.inventory.map(artifact =>

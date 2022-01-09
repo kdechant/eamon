@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, current, PayloadAction} from '@reduxjs/toolkit';
 import Player, {updateCachedInfo} from "../models/player";
 import Artifact from "../models/artifact";
 import { v4 as uuidv4 } from 'uuid';
@@ -39,11 +39,14 @@ const playerSlice = createSlice({
       player.gold -= action.payload.value;
     },
     sellArtifact(player, action: PayloadAction<Artifact>) {
-      const index = player.inventory.indexOf(action.payload);
+      const inv = current(player).inventory;
+      const index = inv.indexOf(action.payload);
       if (index > -1) {
-        player.inventory.splice(index, 1);
+        // Note: using Array.filter() here because immer/redux-toolkit doesn't seem to like
+        // modifying the array in place with splice().
+        player.inventory = inv.filter((item, idx) => idx !== index);
       }
-      player.gold += action.payload.value;
+      player.gold += Math.floor(action.payload.value / 2);
     },
     deleteSavedGame(player, action: PayloadAction<number>) {
       player.saved_games = player.saved_games.filter(sv => sv.id !== action.payload);
