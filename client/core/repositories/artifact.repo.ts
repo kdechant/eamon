@@ -170,6 +170,18 @@ export default class ArtifactRepository {
   }
 
   /**
+   * Determines if a group of artifacts are present
+   */
+  public allAreHere(ids: number[]) {
+    for (const id of ids) {
+      if (!this.get(id).isHere()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Serializes the repo to JSON, without some unnecessary deep-copy data like artifact contents
    */
   public serialize() {

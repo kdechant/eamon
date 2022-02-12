@@ -187,6 +187,11 @@ export default class Game {
   ss_name = 'Sam Slicker';
 
   /**
+   * A custom effect for the Sam Slicker text
+   */
+  ss_effect: number;
+
+  /**
    * Name of the money in this adventure
    */
   money_name = 'gold piece';

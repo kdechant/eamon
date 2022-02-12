@@ -189,8 +189,18 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
   const money_name = pluralize.plural(game.money_name, game.player.profit);
   return (
     <div>
-      <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>
-      <p>He pays you {profit} {money_name} total.</p>
+      {game.ss_effect && (
+        <>
+          <p>{game.effects.get(game.ss_effect).text}</p>
+          <p>You receive {profit} {money_name} total.</p>
+        </>
+      )}
+      {!game.ss_effect && (
+        <>
+          <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>
+          <p>He pays you {profit} {money_name} total.</p>
+        </>
+      )}
 
       {/* messages that appear after the sale completes, like "the rebels reward you for killing darth vader" */}
       {game.after_sell_messages.map((msg, index) =>

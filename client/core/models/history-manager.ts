@@ -134,8 +134,10 @@ export class HistoryManager {
    * Gets a line from the history for the most recent command
    * Used for unit tests. Do not use this for actual game play logic.
    * @param {number} index
-   *   The zero-based index number of the history line (default 0, which is the first line of history since the last command)
+   *   The zero-based index number of the history line (default 0, which is the first line of
+   *   history since the last command)
    *   1 is the second line, 2 the third, and so on.
+   *   Negative numbers count from the end. -1 is the last line, -2 the second last, and so on.
    */
   getOutput(index = 0) {
     if (this.history.length > 0) {

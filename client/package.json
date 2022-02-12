@@ -38,7 +38,8 @@
     "webpack": "webpack --mode production",
     "webpack:dev": "webpack --mode development",
     "webpack:watch": "webpack --mode development --watch",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

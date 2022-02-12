@@ -99,7 +99,6 @@ export const event_handlers = {
   },
 
   "use": (arg: string, artifact: Artifact): boolean => {
-    console.log('use event handler', arg, artifact, artifact.id, artifact.isHere());
     if (artifact.id === 37 && artifact.isHere()) {
       const q = new ModalQuestion;
       q.type = 'multiple_choice';
