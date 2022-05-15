@@ -18,7 +18,7 @@ django-settings-export = "==1.2.1"
 django-taggit = "~=1.3"
 django-taggit-serializer = "~=0.1"
 djangorestframework = "~=3.12.4"
-djangorestframework-simplejwt = "==4.8.0"  # pin to this version for Python 3.6
+# djangorestframework-simplejwt = "==4.8.0"  # uncomment this to install locally - doesn't install on server
 "html5lib" = "==1.1"
 # mysqlclient = "~=2.0.3"  # only used on the prod server
 regex = "~=2021.4.4"
