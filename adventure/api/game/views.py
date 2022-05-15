@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from django.db.models import Q
 
 from adventure.api.game import serializers
-from adventure.models import Adventure, Author, Room, Artifact, Effect, Monster, Player, PlayerProfile, Hint, ActivityLog
+from adventure.models import Adventure, Author, Room, Artifact, Effect, Monster, Hint, ActivityLog
+from player.models import Player, PlayerProfile
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
