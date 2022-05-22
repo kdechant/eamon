@@ -2,11 +2,21 @@ from django.db import models
 from adventure.models import Adventure
 from adventure.models import ActivityLog
 from adventure.models import WEAPON_TYPES
+from random import randint
+
+
+def generate_slug():
+    slug = ""
+    for x in range(6):
+        slug += chr(randint(65, 90))
+    # TODO: stop words
+    return slug
 
 
 class PlayerProfile(models.Model):
     social_id = models.CharField(max_length=100, null=True)
     uuid = models.CharField(max_length=255, null=True)
+    slug = models.CharField(max_length=6, null=True)
 
 
 class Player(models.Model):
@@ -41,6 +51,14 @@ class Player(models.Model):
     def log(self, type, adventure_id=None):
         l = ActivityLog(player=self, type=type, adventure_id=adventure_id)
         l.save()
+
+    def save(self, **kwargs):
+        if not PlayerProfile.objects.filter(uuid=self.uuid).exists():
+            slug = generate_slug()
+            while PlayerProfile.objects.filter(slug=slug).exists():
+                slug = generate_slug()
+            PlayerProfile.objects.create(uuid=self.uuid, slug=slug)
+        return super().save(**kwargs)
 
 
 class PlayerArtifact(models.Model):
@@ -94,6 +112,17 @@ class SavedGame(models.Model):
 
     def __str__(self):
         return "Player {}, Adventure {}, Slot {}: {}".format(self.player_id, self.adventure_id, self.slot, self.description)
+
+
+class ActivityLog(models.Model):
+    """
+    Used to track player activity (going on adventures, etc.)
+    """
+    player = models.ForeignKey(Player, null=True, blank=True, on_delete=models.CASCADE, related_name='activity_log')
+    type = models.CharField(max_length=255)
+    value = models.IntegerField(null=True, blank=True)
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='new_activity_log', null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class Rating(models.Model):
