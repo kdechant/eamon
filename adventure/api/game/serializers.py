@@ -2,8 +2,8 @@ from rest_framework import serializers
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 from adventure.models import Adventure, Author, Room, RoomExit, Artifact, Effect, Monster, \
-    Hint, HintAnswer, ActivityLog
-from player.models import Player, PlayerArtifact, PlayerProfile
+    Hint, HintAnswer
+from player.models import Player, PlayerArtifact, PlayerProfile, ActivityLog
 from player.serializers import SavedGameListSerializer
 
 
