@@ -5,11 +5,11 @@ from . import views
 
 from adventure.api.game import views as adventure_views
 from adventure.api.designer import views as designer_views
-from player.views import RatingViewSet, SavedGameViewSet
+from player import views as player_views
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'players', adventure_views.PlayerViewSet)
-router.register(r'profiles', adventure_views.PlayerProfileViewSet)
+router.register(r'players', player_views.PlayerViewSet)
+router.register(r'profiles', player_views.PlayerProfileViewSet)
 router.register(r'authors', adventure_views.AuthorViewSet)
 router.register(r'adventures', adventure_views.AdventureViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/rooms$', adventure_views.RoomViewSet)
@@ -17,9 +17,9 @@ router.register(r'adventures/(?P<adventure_id>[\w-]+)/artifacts$', adventure_vie
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/effects$', adventure_views.EffectViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/monsters$', adventure_views.MonsterViewSet)
 router.register(r'adventures/(?P<adventure_id>[\w-]+)/hints', adventure_views.HintViewSet)
-router.register(r'saves', SavedGameViewSet)
-router.register(r'ratings', RatingViewSet)
-router.register(r'log', adventure_views.LogViewSet)
+router.register(r'saves', player_views.SavedGameViewSet)
+router.register(r'ratings', player_views.RatingViewSet)
+router.register(r'log', player_views.LogViewSet)
 
 designer_router = routers.DefaultRouter(trailing_slash=False)
 designer_router.register(r'adventures', designer_views.AdventureViewSet)
@@ -43,13 +43,13 @@ urlpatterns = [
     url(r'^manual$', views.manual, name='manual'),
     url(r'^news/', include('news.urls')),
 
-    # routes into the Angular apps
+    # routes into the front end apps
 
     # The following route will match anything starting with "main-hall" with or without a trailing slash.
     # Any routes matched here will be sent to the "main hall" angular app.
     # Additional path info in the route (e.g, /main-hall/shop or /main-hall/wizard) will be handled by angular's router.
     url(r'^main-hall', views.main_hall, name='main-hall'),
 
-    # the "adventure" angular app
+    # the "adventure" app
     url(r'^adventure/(?P<slug>[\w-]+)/$', views.adventure, name='adventure'),
 ]

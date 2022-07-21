@@ -1,10 +1,9 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .models import Rating, SavedGame
-from adventure.models import Player
+from .models import Player, PlayerProfile, Rating, SavedGame, ActivityLog
 from . import serializers
 
 
@@ -67,6 +66,133 @@ class SavedGameViewSet(viewsets.ModelViewSet):
         if instance.player.uuid != uuid:
             raise PermissionDenied
         return super(SavedGameViewSet, self).destroy(instance)
+
+
+class PlayerProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoints for user data. This is read/write.
+    """
+    serializer_class = serializers.PlayerProfileSerializer
+    queryset = PlayerProfile.objects.all()
+    permission_classes = (AllowAny,)
+
+    def retrieve(self, request, *args, **kwargs):
+        pass
+
+    def create(self, request, *args, **kwargs):
+        """
+        This is actually an "upsert" for users
+        """
+        social_id = self.request.data['social_id']
+        request_uuid = self.request.data['uuid']
+
+        # create a profile if not found
+        pl, created = PlayerProfile.objects.get_or_create(social_id=social_id)
+        db_uuid = pl.uuid
+        if created:
+            pl.social_id = social_id
+            pl.uuid = request_uuid
+            pl.save()
+
+        # look for any player characters with the browser's old UUID, and update them to match the profile's UUID
+        players = Player.objects.filter(uuid=request_uuid).exclude(uuid=db_uuid)
+        print("Updating players...")
+        for p in players:
+            print("Updating player: {} - Old UUID: {} - New UUID: {}".format(p.name, p.uuid, db_uuid))
+            p.uuid = db_uuid
+            p.save()
+
+        serializer = serializers.PlayerProfileSerializer(pl)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Deletes the user's account.
+        """
+        social_id = self.request.query_params.get('social_id', '')
+        request_uuid = self.request.query_params.get('uuid', '')
+
+        try:
+            pl = PlayerProfile.objects.get(social_id=social_id, uuid=request_uuid)
+            pl.delete()
+            return Response("Deleted!", status=status.HTTP_204_NO_CONTENT)
+        except PlayerProfile.DoesNotExist as e:
+            return Response("Could not find an account with that user ID and UUID",
+                            status=status.HTTP_404_NOT_FOUND)
+
+
+class PlayerViewSet(viewsets.ModelViewSet):
+    """
+    API endpoints for player data. This is read/write.
+    """
+    queryset = Player.objects.all()
+    serializer_class = serializers.PlayerSerializer
+    permission_classes = (AllowAny,)
+
+    """
+    Override the default query set to filter by the UUID which is passed in the query string.
+    This prevents people from seeing each other's adventurers.
+    """
+    def get_queryset(self):
+        uuid = self.request.query_params.get('uuid', None)
+        if uuid is None:
+            # in a PUT request the uuid is in the body rather than the query string
+            uuid = self.request.data.get('uuid', None)
+        queryset = self.queryset
+        if uuid is not None:
+            # filter the list by the UUID provided in the query string
+            queryset = queryset.filter(uuid=uuid)
+        else:
+            # prevent showing all players if no UUID was passed
+            queryset = queryset.filter(uuid='This will match nothing')
+        return queryset.order_by('name')
+
+    """
+    API URL to update a player. Overrides the parent class.
+    """
+    def update(self, request, *args, **kwargs):
+        # uuid = self.request.query_params.get('uuid', None)
+        # if uuid is not None:
+        #     raise PermissionError
+
+        data = request.data
+        instance = self.get_object()
+
+        # flatten the weapon and spell abilities into the columns Django wants
+        if 'weapon_abilities' in data:
+            data['wpn_axe'] = data['weapon_abilities']['1']
+            data['wpn_bow'] = data['weapon_abilities']['2']
+            data['wpn_club'] = data['weapon_abilities']['3']
+            data['wpn_spear'] = data['weapon_abilities']['4']
+            data['wpn_sword'] = data['weapon_abilities']['5']
+        # spell abilities. use the "original" values which include skill improvements during the adventure,
+        # but don't count reduced odds due to caster fatigue.
+        if 'spell_abilities_original' in data:
+            data['spl_blast'] = data['spell_abilities_original']['blast']
+            data['spl_heal'] = data['spell_abilities_original']['heal']
+            data['spl_power'] = data['spell_abilities_original']['power']
+            data['spl_speed'] = data['spell_abilities_original']['speed']
+
+        # to pass validation, need to fix some values on the inventory items
+        for key, value in enumerate(data['inventory']):
+            data['inventory'][key]['type'] = int(data['inventory'][key]['type'])
+            if 'weapon_type' not in data['inventory'][key] or data['inventory'][key]['weapon_type'] == 0:
+                data['inventory'][key]['weapon_type'] = None
+            data['inventory'][key]['player'] = instance.id
+
+        serializer = self.get_serializer(instance, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+
+class LogViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    API endpoints for the logger. This is read/write.
+    """
+    queryset = ActivityLog.objects.all()
+    serializer_class = serializers.ActivityLogSerializer
+    permission_classes = (AllowAny,)
 
 
 class RatingViewSet(viewsets.ModelViewSet):
