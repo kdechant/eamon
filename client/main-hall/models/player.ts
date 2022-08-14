@@ -9,8 +9,13 @@ export interface SavedGame {
   adventure: Adventure,
 }
 
+export type PlayerProfile = {
+  uuid: string;
+  slug: string;
+}
+
 /**
- * Player type. Represents players in the main hall
+ * Player type. Represents players (adventurers) in the main hall
  */
 export default interface Player extends GameObject {
 

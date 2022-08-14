@@ -1,9 +1,10 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins, status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .models import Player, PlayerProfile, Rating, SavedGame, ActivityLog
+from .models import Player, PlayerProfile, Rating, SavedGame, ActivityLog, generate_slug
 from . import serializers
 
 
@@ -76,34 +77,73 @@ class PlayerProfileViewSet(viewsets.ModelViewSet):
     queryset = PlayerProfile.objects.all()
     permission_classes = (AllowAny,)
 
-    def retrieve(self, request, *args, **kwargs):
-        pass
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        # 'pk' here is either a slug or a uuid. We can tell by the length.
+        where = {
+            'slug': pk,
+        }
+        if len(pk) > 6:
+            where = {
+                'uuid': pk
+            }
+        print("GETTING PROFILE: {}".format(where))
+        instance = PlayerProfile.objects.get(**where)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         """
-        This is actually an "upsert" for users
+        This doesn't require any input. It just creates a new profile
+        with a randomly generated access code and returns it.
         """
-        social_id = self.request.data['social_id']
-        request_uuid = self.request.data['uuid']
-
-        # create a profile if not found
-        pl, created = PlayerProfile.objects.get_or_create(social_id=social_id)
-        db_uuid = pl.uuid
-        if created:
-            pl.social_id = social_id
-            pl.uuid = request_uuid
-            pl.save()
-
-        # look for any player characters with the browser's old UUID, and update them to match the profile's UUID
-        players = Player.objects.filter(uuid=request_uuid).exclude(uuid=db_uuid)
-        print("Updating players...")
-        for p in players:
-            print("Updating player: {} - Old UUID: {} - New UUID: {}".format(p.name, p.uuid, db_uuid))
-            p.uuid = db_uuid
-            p.save()
-
+        # TODO: generate UUID so we can match profile to players.
+        pl, created = PlayerProfile.objects.create(slug=generate_slug())
         serializer = serializers.PlayerProfileSerializer(pl)
         return Response(serializer.data)
+
+    # OLD VERSION - FOR FB LOGIN
+    # def create(self, request, *args, **kwargs):
+    #     """
+    #     This is actually an "upsert" for users
+    #     """
+    #     old_uuid = self.request.data['social_id']
+    #     new_uuid = self.request.data['uuid']
+    #
+    #     # create a profile if not found
+    #     pl, created = PlayerProfile.objects.get_or_create(social_id=social_id)
+    #     db_uuid = pl.uuid
+    #     if created:
+    #         pl.social_id = social_id
+    #         pl.uuid = request_uuid
+    #         pl.save()
+    #
+    #     # look for any player characters with the browser's old UUID, and update them to match the profile's UUID
+    #     players = Player.objects.filter(uuid=request_uuid).exclude(uuid=db_uuid)
+    #     print("Updating players...")
+    #     for p in players:
+    #         print("Updating player: {} - Old UUID: {} - New UUID: {}".format(p.name, p.uuid, db_uuid))
+    #         p.uuid = db_uuid
+    #         p.save()
+    #
+    #     serializer = serializers.PlayerProfileSerializer(pl)
+    #     return Response(serializer.data)
+
+    def merge(self, request, *args, **kwargs):
+        """
+        Merge two accounts
+        """
+        old_uuid = self.request.query_params.get('old_uuid', '')
+        new_uuid = self.request.query_params.get('new_uuid', '')
+
+        # look for any player characters with the browser's old UUID, and update them to match the profile's UUID
+        players = Player.objects.filter(uuid=old_uuid).exclude(uuid=new_uuid)
+        print("Updating players...")
+        for p in players:
+            print("Updating player: {} - Old UUID: {} - New UUID: {}".format(p.name, p.uuid, new_uuid))
+            p.uuid = new_uuid
+            p.save()
+        # TODO: update old profile with a redirect to the new one, so we know how they
+        #  were merged, and we can still load the chars if the user ever uses the old access code
 
     def destroy(self, request, *args, **kwargs):
         """
