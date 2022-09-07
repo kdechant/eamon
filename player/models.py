@@ -1,6 +1,5 @@
 from django.db import models
 from adventure.models import Adventure
-from adventure.models import ActivityLog
 from adventure.models import WEAPON_TYPES
 from random import randint
 

@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='savedgame',
-            name='player',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='saved_games', to='player.player'),
-        ),
+        # migrations.AlterField(
+        #     model_name='savedgame',
+        #     name='player',
+        #     field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='saved_games', to='player.player'),
+        # ),
     ]
