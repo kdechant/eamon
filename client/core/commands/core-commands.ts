@@ -68,6 +68,7 @@ export class MoveCommand implements BaseCommand {
       throw new CommandException("You can't go that way!");
     }
     if (!exit.room_to && exit.effect_id) {
+      game.effects.get(exit.effect_id).seen = true;
       throw new CommandException(game.effects.get(exit.effect_id).text);
     }
 

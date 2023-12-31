@@ -15,6 +15,7 @@ export const event_handlers = {
       fertilized: false,
       made_bomb: false
     }
+    game.ss_effect = 6;
   },
 
   "endTurn2": function(): void {
@@ -32,27 +33,24 @@ export const event_handlers = {
         game.player.injure(Math.floor((game.player.hardiness - game.player.damage) / 2), true);
         game.player.moveToRoom(1);
         return false;
-      case -15:
-        // window
-        game.effects.print(4);
-        game.die();
-        return false;
-      case -25:
-        // elevator shaft
-        game.effects.print(5);
-        game.die();
-        return false;
+    }
+    return true;
+  },
+
+  "beforeGet": function(arg, artifact) {
+    if (artifact && artifact.id == 20) {
+      // death ore
+      game.effects.print(7);
+      game.player.injure(Math.floor((game.player.hardiness - game.player.damage) / 2), true);
+      return false;
     }
     return true;
   },
 
   "afterGet": function(arg, artifact) {
     if (artifact && artifact.id == 25) {
+      // red crystal
       game.history.write("(The crystal feels warm.)");
-    }
-    if (artifact && artifact.id == 20) {
-      game.effects.print(7);
-      game.player.injure(Math.floor((game.player.hardiness - game.player.damage) / 2), true);
     }
   },
 
@@ -80,8 +78,10 @@ export const event_handlers = {
 
       if (game.artifacts.get(16).isHere()) {
         game.history.write("The magic word lit the fuse, which fizzled and went out.");
+        return;
       }
 
+      game.history.write('Nothing happened.');
     }
   },
 
@@ -92,21 +92,23 @@ export const event_handlers = {
           if (game.monsters.get(19).isHere()) {
             game.history.write('The hyena laughs with pleasure and becomes friendly!');
             game.monsters.get(19).reaction = Monster.RX_FRIEND;
-            return;
+            return true;
           }
           break;
         case 6:  // gum
-          if (game.player.room_id === 42 && game.artifacts.get(21).isHere()
-              && game.artifacts.get(22).room_id === null) {
+          if (canPlugDrain()) {
             game.history.write('You plug the fountain with the gum and see a key wedged in ' +
               'the drain.');
             game.artifacts.get(22).moveToRoom();
+            game.artifacts.get(6).destroy();
+            return true;
           }
           break;
         case 17:  // nitrates
           if (game.player.room_id === 37 && game.artifacts.get(15).isHere() && !game.data.fertilized) {
             game.data.fertilized = true;
             game.artifacts.get(16).moveToRoom();
+            return true;
           }
           break;
         case 25:  // red crystal
@@ -119,17 +121,25 @@ export const event_handlers = {
         case 30:
           if (game.player.room_id === 50 && game.artifacts.get(26).isHere()) {
             game.history.write('Nothing happened...');
+            return true;
           }
           break;
         case 34:  // bomb
           game.history.write("You must find a way to light the fuse first!");
-          break;
+          return true;
       }
       game.history.write("Try a different command.");
       return true;
     }
   },
 
+  "specialPut": function(arg: string, item: Artifact, container: Artifact) {
+    if (item && item.id === 6 && canPlugDrain()) {
+      game.command_parser.run('use gum', false);
+      return false;
+    }
+    return true;
+  },
 
   "power": function(roll: number): void {
     if (roll <= 10) {
@@ -146,8 +156,10 @@ export const event_handlers = {
   },
 
   "afterSell": function() {
-    game.after_sell_messages.push("The Board of Directors also gives you your reward of 5000 gold pieces!");
-    game.player.gold += 5000;
+    game.after_sell_messages.push("The Board of Directors also gives you your reward of 1000 gold pieces!");
+    game.player.gold += 1000;
   },
 
 }; // end event handlers
+
+const canPlugDrain = () => game.artifacts.get(21).isHere() && !game.artifacts.get(22).room_id;

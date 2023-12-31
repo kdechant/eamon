@@ -10,7 +10,7 @@ import {
   expectEffectNotSeen,
   playerAttackMock,
   movePlayer,
-  runCommand, expectArtifactIsNotHere, expectArtifactIsHere
+  runCommand, expectArtifactIsNotHere, expectArtifactIsHere, moveToInventory
 } from "../../core/utils/testing";
 import {event_handlers} from "./event-handlers";
 import {custom_commands} from "./commands";
@@ -31,7 +31,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
@@ -47,18 +47,11 @@ test("desert", () => {
   expect(game.player.damage).toBe(game.player.hardiness / 2);
 });
 
-test("window", () => {
-  movePlayer(34);
-  runCommand('w');
-  expectEffectSeen(4);
-  expect(game.died).toBeTruthy();
-});
-
 test("elevator shaft", () => {
   movePlayer(42);
   runCommand('s');
   expectEffectSeen(5);
-  expect(game.died).toBeTruthy();
+  expect(game.player.room_id).toBe(42);
 });
 
 test("get stuff", () => {
@@ -66,10 +59,14 @@ test("get stuff", () => {
   runCommand('get red crystal');
   expect(game.history.getOutput(1).text).toBe('(The crystal feels warm.)');
 
-  movePlayer(game.artifacts.get(20).room_id);
+  const ore = game.artifacts.get(20);
+  const room_id = ore.room_id;
+  game.monsters.get(13).destroy();
+  movePlayer(room_id);
   runCommand('get death ore');
   expectEffectSeen(7);
   expect(game.player.damage).toBe(game.player.hardiness / 2);
+  expect(ore.room_id).toBe(room_id);
 });
 
 test('use feather', () => {
@@ -85,18 +82,32 @@ test('use feather', () => {
 
 test('use gum', () => {
   game.artifacts.get(6).moveToInventory();
+  // wrong room. nothing happens.
   runCommand('use gum');
   expect(game.artifacts.get(22).room_id).toBeNull();
+  expect(game.artifacts.get(6).isHere()).toBeTruthy();
+  // correct room
   movePlayer(42);
   runCommand('use gum');
   expect(game.artifacts.get(22).isHere()).toBeTruthy();
+  expect(game.artifacts.get(6).isHere()).toBeFalsy();
+});
+
+test('use gum (alternate command)', () => {
+  game.artifacts.get(6).moveToInventory();
+  movePlayer(42);
+  runCommand('put gum into fountain');
+  expect(game.artifacts.get(22).isHere()).toBeTruthy();
+  expect(game.artifacts.get(6).isHere()).toBeFalsy();
 });
 
 test('use nitrates', () => {
   game.artifacts.get(17).moveToInventory();
+  // wrong room. nothing happens.
   runCommand('use nitrates');
   expect(game.data.fertilized).toBeFalsy();
   expect(game.artifacts.get(16).room_id).toBeNull();
+  // correct room
   movePlayer(37);
   runCommand('use nitrates');
   expect(game.data.fertilized).toBeTruthy();
@@ -163,7 +174,13 @@ test('make bomb', () => {
 
 const LETTER_ARTIFACTS = [2, 8, 9, 11, 27, 31, 32];
 
-test('no boom', () => {
+test('no boom without bomb', () => {
+  moveToInventory(LETTER_ARTIFACTS);
+  runCommand('say flaming');
+  expect(game.history.getOutput(1).text).toBe("Nothing happened.");
+});
+
+test('no boom without letters', () => {
   game.artifacts.get(34).moveToInventory();
   runCommand('say flaming');
   expect(game.history.getOutput(1).text).toBe("Nothing happened.");
@@ -171,12 +188,8 @@ test('no boom', () => {
 });
 
 test('boom', () => {
-  const bomb = game.artifacts.get(34);
   const doorway = game.artifacts.get(33);
-  bomb.moveToInventory();
-  for (const id of LETTER_ARTIFACTS) {
-    game.artifacts.get(id).moveToInventory();
-  }
+  moveToInventory([...LETTER_ARTIFACTS, 34]);
   movePlayer(doorway.room_id);
   runCommand('say flaming');
   expectEffectSeen(11);
@@ -185,11 +198,7 @@ test('boom', () => {
 });
 
 test('blow self up', () => {
-  const bomb = game.artifacts.get(34);
-  bomb.moveToInventory();
-  for (const id of LETTER_ARTIFACTS) {
-    game.artifacts.get(id).moveToInventory();
-  }
+  moveToInventory([...LETTER_ARTIFACTS, 34]);
   runCommand('say flaming');
   expectEffectSeen(10);
   expect(game.died).toBeTruthy();

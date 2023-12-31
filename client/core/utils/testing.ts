@@ -95,8 +95,8 @@ export function expectMonsterIsNotHere(id) {
 /**
  * Creates mock random numbers for the player attacking. The target is
  * specified
- * @param boolean hit  Whether or not the player should hit the target
- * @param Number damage  The amount of damage the attack should do (before armor)
+ * @param hit  Whether or not the player should hit the target
+ * @param damage  The amount of damage the attack should do (before armor)
  * @param special  Results of any dice rolls in the attackDamageAfter event handler
  */
 export function playerAttackMock(hit: boolean, damage: number, special: number[] = []) {
@@ -109,8 +109,8 @@ export function playerAttackMock(hit: boolean, damage: number, special: number[]
 
 /**
  * Player attacks a monster with automatic hit
- * @param string|Monster  The name or object for the target
- * @param Number damage  The amount of damage the attack should do (before armor)
+ * @param target  The name or object for the target
+ * @param damage  The amount of damage the attack should do (before armor)
  * @param special  Results of any dice rolls in the attackDamageAfter event handler, or NPC actions
  */
 export function playerHit(target: string|Monster, damage: number, special: number[] = []) {
@@ -136,6 +136,20 @@ export function movePlayer(room_id) {
   game.player.moveToRoom(room_id);
   game.history.push(`movePlayer: jump to room ${room_id}`);
   game.tick();
+}
+
+/**
+ * Moves one or more artifacts to a player or monster inventory.
+ * @param artifact_ids The IDs of one or more artifacts
+ * @param monster_id The ID of the monster to give them to. Omit this to give them to the player.
+ */
+export function moveToInventory(artifact_ids: number | number[], monster_id = 0) {
+  game.skip_battle_actions = true;
+  if (typeof artifact_ids === 'number') {
+    artifact_ids = [artifact_ids];
+  }
+  artifact_ids.forEach(a => game.artifacts.get(a).moveToInventory(monster_id));
+  game.history.push(`moveToInventory: monster ${monster_id} now has artifacts ${artifact_ids}`);
 }
 
 /**

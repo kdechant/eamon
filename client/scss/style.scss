@@ -49,6 +49,10 @@ a {
   cursor: pointer;
 }
 
+code {
+  color: #000;
+}
+
 .parchment {
   border: 8px double beige;
   border-image: url(/static/images/parchment/parchment-border.png) 20 20 20 20 round;
