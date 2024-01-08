@@ -127,7 +127,7 @@ const PlayerList: React.FC = () => {
               If you plan to use a different browser or computer, you will need to remember this
               Access Code. You can use it on the other computer to load your adventurers.</p>
             <p>You can bookmark this link to load your adventurers on a different computer or browser:</p>
-            <p><a href={`https://www.eamon-remastered.com/main-hall?code=${profile.slug}`}>https://www.eamon-remastered.com/main-hall?code={profile.slug}</a></p>
+            <p><a href={`https://eamon-remastered.com/main-hall?code=${profile.slug}`}>https://eamon-remastered.com/main-hall?code={profile.slug}</a></p>
             <button type="button" className="btn btn-link" onClick={toggleDataStorageModal}>
               How does Eamon store your characters?
             </button>
