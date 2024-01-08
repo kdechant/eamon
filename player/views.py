@@ -86,8 +86,7 @@ class PlayerProfileViewSet(viewsets.ModelViewSet):
             where = {
                 'uuid': pk
             }
-        print("GETTING PROFILE: {}".format(where))
-        instance = PlayerProfile.objects.get(**where)
+        instance = get_object_or_404(PlayerProfile, **where)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 

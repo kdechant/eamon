@@ -10,14 +10,11 @@ import {useEffect, useState} from "react";
 const PlayerList: React.FC = () => {
   const [searchParams, ] = useSearchParams();
   const [profile, setProfile] = useState({} as PlayerProfile);
-  const [oldProfile, setOldProfile] = useState({} as PlayerProfile);
   const [players, setPlayers] = useState([]);
-  const [oldPlayers, setOldPlayers] = useState([]);
   const [dataStorageOpen, setDataStorageOpen] = useState(false);
-  const [message, setMessage] = useState('');
   const [accessCode, setAccessCode] = useState('');
-  const [oldAccessCode, setOldAccessCode] = useState('');
   const [accessCodeField, setAccessCodeField] = useState('');
+  const [accessCodeError, setAccessCodeError] = useState('');
 
   // On page load, look for access codes in the query string and local storage.
   useEffect(() => {
@@ -34,13 +31,6 @@ const PlayerList: React.FC = () => {
     if (urlCode) {
       code = urlCode;
       window.localStorage.setItem('eamon_access_code', urlCode);
-
-      // we also load the old profile to check if there were characters in it.
-      if (lsAccessCode) {
-        setOldAccessCode(lsAccessCode);
-      } else if (lsUuid) {
-        setOldAccessCode(lsUuid);
-      }
     } else if (lsAccessCode) {
       code = lsAccessCode;
     } else if (lsUuid) {
@@ -53,10 +43,14 @@ const PlayerList: React.FC = () => {
   }, []);
 
   const loadProfile = async () => {
-    const res = await axios.get(`/api/profiles/${accessCode}`);
-    setProfile(res.data);
-    if (!window.localStorage.getItem('eamon_access_code')) {
+    try {
+      const res = await axios.get(`/api/profiles/${accessCode}`);
+      setProfile(res.data);
       window.localStorage.setItem('eamon_access_code', res.data.slug);
+      window.localStorage.setItem('eamon_uuid', res.data.uuid);
+      setAccessCodeError("")
+    } catch (e) {
+      setAccessCodeError("Invalid access code.")
     }
   };
 
@@ -64,11 +58,7 @@ const PlayerList: React.FC = () => {
     const res = await axios.post(`/api/profiles`);
     setProfile(res.data);
     window.localStorage.setItem('eamon_access_code', res.data.slug);
-  };
-
-  const loadOldProfile = async () => {
-    const res = await axios.get(`/api/profiles/${accessCode}`);
-    setOldProfile(res.data);
+    window.localStorage.setItem('eamon_uuid', res.data.uuid);
   };
 
   // Load the profile
@@ -82,16 +72,8 @@ const PlayerList: React.FC = () => {
     }
   }, [accessCode]);
 
-  // If there is an old profile, load that, too.
-  useEffect(() => {
-    if (oldAccessCode) {
-      loadOldProfile()
-        .catch(console.error);
-    }
-  }, [oldAccessCode]);
-
-  const loadPlayers = (old = false) => {
-    const uuid = old ? oldProfile.uuid : profile.uuid;
+  const loadPlayers = () => {
+    const uuid = profile.uuid;
     axios.get('/api/players.json?uuid=' + uuid)
       .then(res => {
         const players = res.data.map(pl => {
@@ -103,10 +85,6 @@ const PlayerList: React.FC = () => {
   };
 
   useEffect(loadPlayers, [profile]);
-
-  useEffect(() => {
-    loadPlayers(true);
-  }, [oldProfile]);
 
   const toggleDataStorageModal = () => {
     setDataStorageOpen(current => !current);
@@ -148,10 +126,11 @@ const PlayerList: React.FC = () => {
             <p>Your adventurers will automatically be linked to your current browser and computer.
               If you plan to use a different browser or computer, you will need to remember this
               Access Code. You can use it on the other computer to load your adventurers.</p>
-            <p>You can bookmark this link to load your adventurers on a different computer or browser:
-            <a href="https://www.eamon-remastered.com/main-hall?code={profile.slug}">https://www.eamon-remastered.com/main-hall?code={profile.slug}</a>
-            </p>
-            {/*<button type="button" className="btn btn-link" onClick={toggleDataStorageModal}>What do I use this code for?</button>*/}
+            <p>You can bookmark this link to load your adventurers on a different computer or browser:</p>
+            <p><a href={`https://www.eamon-remastered.com/main-hall?code=${profile.slug}`}>https://www.eamon-remastered.com/main-hall?code={profile.slug}</a></p>
+            <button type="button" className="btn btn-link" onClick={toggleDataStorageModal}>
+              How does Eamon store your characters?
+            </button>
           </div>
         </div>
       )}
@@ -174,16 +153,15 @@ const PlayerList: React.FC = () => {
                          onChange={handleChange} />
                 </div>
                 <div className="col">
-                  <button type="submit" className="btn btn-primary mr-2">Load Players</button>
+                  <button type="submit" className="btn btn-primary mr-2">Load Adventurers</button>
                 </div>
               </div>
             </form>
+            {accessCodeError && (
+              <p className="danger">{accessCodeError}</p>
+            )}
           </div>
         </div>
-      )}
-
-      {message && (
-        <p>{message}</p>
       )}
 
       <Modal isOpen={dataStorageOpen} toggle={toggleDataStorageModal}>
