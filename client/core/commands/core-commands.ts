@@ -304,21 +304,25 @@ export class GetCommand implements BaseCommand {
   examples: string[] = [
     'GET GOLD COINS',
     'GET GO - Same as GET GOLD COINS, with partial word matching',
-    'GET ALL - Tries to pick up everything in the room. This command will ignore some items, like dead bodies, but you can pick those up individually if you want.'
+    'GET ALL - Tries to pick up everything in the room. This command will ignore some items, like dead bodies, but you can pick those up individually if you want.',
+    'GET (no target) - same as GET ALL'
   ];
   run(verb: string, arg: string) {
 
     arg = arg.toLowerCase();
     let match = false;
 
+    // 'GET' by itself is the same as 'GET ALL'
+    const getAll = (arg === '' || arg === 'all');
+
     // the "specialGet" event handler is used for logic when getting something that wouldn't normally be gettable
     // like an artifact that's in a different room but is visible in the distance. (See Sword of Inari)
     if (game.triggerEvent('specialGet', arg)) {
 
       for (const a of game.artifacts.inRoom) {
-        if (a.match(arg) || arg === "all") {
+        if (a.match(arg) || getAll) {
           match = true;
-          if (arg === "all" && (a.get_all === false || a.embedded)) {
+          if (getAll && (a.get_all === false || a.embedded)) {
             continue;
           }
 
@@ -339,7 +343,7 @@ export class GetCommand implements BaseCommand {
             if (a.guard_id) {
               const guard = game.monsters.get(a.guard_id);
               if (guard.isHere()) {
-                if (arg === 'all') {
+                if (getAll) {
                   continue;
                 } else {
                   throw new CommandException(guard.getDisplayName() + " won't let you!");
@@ -348,7 +352,7 @@ export class GetCommand implements BaseCommand {
             }
 
             // weights of >900 and -999 indicate items that can't be gotten.
-            if (arg === "all" && (a.weight > 900 || a.weight === -999)) {
+            if (getAll && (a.weight > 900 || a.weight === -999)) {
               continue;
             }
             if (a.weight > 900) {
@@ -358,7 +362,7 @@ export class GetCommand implements BaseCommand {
               throw new CommandException("You can't get that.");
             }
             if (a.type === Artifact.TYPE_BOUND_MONSTER) {
-              if (arg === 'all') {
+              if (getAll) {
                 game.history.write(a.name + " can't be picked up.");
                 continue;
               }
@@ -367,7 +371,7 @@ export class GetCommand implements BaseCommand {
 
             if (game.player.weight_carried + a.weight <= game.player.maxWeight()) {
               game.player.pickUp(a);
-              const style = arg === 'all' ? "no-space" : '';
+              const style = getAll ? "no-space" : '';
               if (a.type === Artifact.TYPE_GOLD) {
                 game.history.write(a.name + " is added to your coin pouch.", style);
                 game.player.gold += a.value;
@@ -409,7 +413,7 @@ export class GetCommand implements BaseCommand {
       }
 
       // message if nothing was taken
-      if (!match && arg !== "all") {
+      if (!match && !getAll) {
 
         // catch user mischief
         if (game.monsters.getLocalByName(arg)) {
@@ -879,8 +883,10 @@ export class AttackCommand implements BaseCommand {
   category = "interactive";
   description = "Attacks a monster or NPC, or sometimes an artifact like a locked door or chest.";
   examples: string[] = [
-    "ATTACK DRAGON",
-    "AT DR - Shorthand for the same thing",
+    "ATTACK - Attacks whatever monster is in the room",
+    "AT, ATT, etc. - Shorthand for ATTACK",
+    "ATTACK DRAGON - Attacks a specific monster by name",
+    "AT DR - Shorthand for ATTACK DRAGON",
     "A DRAGON - Another shorthand",
     "ATTACK DOOR - Try to smash open a door",
     "ATTACK EVIL MACHINE - Try to destroy something"

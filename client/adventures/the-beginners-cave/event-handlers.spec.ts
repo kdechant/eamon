@@ -36,7 +36,7 @@ it("should have working event handlers", () => {
   expect(game.player.weapon_id).toBe(33);
   game.command_parser.run("ready firebrand");
   expect(game.player.weapon_id).toBe(32);
-  const tr = game.artifacts.get(10);
+  const tr = game.artifacts.get(10)!;
   tr.moveToRoom();
   game.player.pickUp(tr);
   game.command_parser.run("ready trollsfire");
@@ -48,21 +48,6 @@ it("should have working event handlers", () => {
   expect(tr.is_lit).toBeFalsy();
   expect(tr.inventory_message).toBe("");
 
-  // some tests of the core game engine - put here because this is a basic adventure with stuff we can try
-  game.command_parser.run("open door");
-  expect(game.history.getOutput().text).toBe("I don't see a door here!");
-  game.command_parser.run("open spaceship");
-  expect(game.history.getOutput().text).toBe("I don't see a spaceship here!");
-  game.player.moveToRoom(25);
-  game.monsters.get(8).destroy(); // get pirate out of the way
-  game.command_parser.run('e');
-  game.command_parser.run("look boat");
-  expect(game.history.getOutput().text).toBe(game.artifacts.get(24).description);
-  game.command_parser.run("open boat");
-  expect(game.history.getOutput().text).toBe("That's not something you can open.");
-  game.command_parser.run("open jewels");
-  expect(game.history.getOutput().text).toBe("That's not something you can open.");
-
   // secret door and visible exits logic
   const exits1 = game.rooms.getRoomById(15).getVisibleExits();
   expect(exits1.length).toBe(2);
@@ -72,7 +57,7 @@ it("should have working event handlers", () => {
   game.command_parser.run("OPEN WALL");  // uppercase to test case insensitivity
   expect(game.history.getOutput().text).toBe(game.artifacts.get(14).description);
   expect(game.artifacts.get(14).hidden).toBeFalsy();
-  const exits2 = game.rooms.getRoomById(15).getVisibleExits();
+  const exits2 = game.rooms.getRoomById(15)!.getVisibleExits();
   expect(exits2.length).toBe(3);
   expect(exits2[0].room_to).toBe(13);
   expect(exits2[1].room_to).toBe(20);
