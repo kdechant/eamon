@@ -5,12 +5,12 @@ So you want to build an Eamon adventure? This requires some basic knowledge of d
 Eamon is built on ReactJS and Django, but you don't need in-depth knowledge about either to contribute. You can build an entire adventure with no programming if you use the built-in features. Or, to add custom special effects, all you need to know is a bit of JavaScript. (Eamon is written in TypeScript, which is just a fancier version of JavaScript and is easy to learn if you already know JavaScript.)
 
 ## Getting started
- 
+
 ## Prerequisites
 
 For the manual install, you'll need the following:
 
-* Python v3.6.x or higher
+* Python v3.10.x or higher
 * Node.js v10.x or higher
 
 The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
@@ -19,21 +19,22 @@ The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
 
 * Open a terminal or PowerShell and navigate to the repository root
 * Copy the base database file (`db/eamon.sqlite3.dist`) to a new file named `db/eamon3.sqlite3`
-  * Best to copy this and not rename it, so Git doesn't think the file is modified 
-* Create a new file called `eamon/local_settings.py` with the following contents:
-  * `DEBUG = True`
+    * Best to copy this and not rename it, so Git doesn't think the file is modified
+* Create a "local settings" file from the base one in the repo:
+    * `cp eamon/local_settings_example.py eamon/local_settings.py`
+    * Best to copy this and not rename it, so Git doesn't think the file is modified
 * Install pipenv: `pip3 install pipenv` (or just `pip install pipenv` if your system Python is v3.x)
 * Install the packages: `pipenv install`
-* Activate the pipenv shell with `pipenv shell` 
+* Activate the pipenv shell with `pipenv shell`
 * Create a user for the admin: `python manage.py createsuperuser`
 * Run `python manage.py runserver`
     * If you're using PyCharm, you can skip this step and set up your development server inside PyCharm itself. This provides the ability to use step debugging in the Python code.
 * Open a second command prompt and navigate to the "client" folder
 * Install React and other JS packages using `npm install`
 * Run `npm start`
-* Open your web browser and navigate to http://localhost:8000. You should see the Eamon welcome screen. 
+* Open your web browser and navigate to http://localhost:8000. You should see the Eamon welcome screen.
 
-URLs: 
+URLs:
 Eamon home page: http://localhost:8000
 Admin page (for building adventure data): http://localhost:8000/admin
 To log into the admin, use the username and password you used when you ran the "createsuperuser" command above.
@@ -64,12 +65,13 @@ The adventure objects are defined in the following tables in the database:
 Most of the larger blocks of text support Markdown to allow finer control over the formatting. This uses GitHub-flavored Markdown. [See the official documentation for a syntax reference](https://guides.github.com/features/mastering-markdown/).
 
 Example:
+
 ```md
 This is regular text
 
 **This is bold**
 
-***This is italic***
+**_This is italic_**
 
 `a code block` which will be rendered in a monospaced, pinkish font (for better ways to create colors, see below.)
 
@@ -77,6 +79,7 @@ An image: ![alt text here](http://example.com/some/image/path.jpg)
 ```
 
 You can also mix in some basic HTML with the Markdown. This is mainly useful to create colored text:
+
 ```md
 <span style="color: blue;">This text is blue</span>
 ```
@@ -175,8 +178,9 @@ The following types of effects are built into the game and do not require custom
 ### Event handler examples
 
 There are dozens of different event handlers, each with its own unique implementation.
- 
+
 Examples include:
+
 * Game start and custom variable initialization
 * Movement and custom exit codes
 * Using items
@@ -184,8 +188,8 @@ Examples include:
 * Attacking monsters (and being prevented from attacking)
 * Setting off a trap when opening a container
 * Random effects of the POWER spell
- 
- See EVENT-HANDERS.md for full documentation and examples of each.
+
+See EVENT-HANDERS.md for full documentation and examples of each.
 
 ### Using custom game flags and data
 
@@ -216,7 +220,7 @@ If more than one of your event handlers use the same shared logic, you can defin
 
 Eamon has a suite of tests which test both the core game logic and also the custom logic for many of the adventures. These tests use the Jest test framework and can be called from the terminal or PowerShell.
 
-*Make sure the Django development server is running*, then run:
+_Make sure the Django development server is running_, then run:
 
 ```
 cd client
@@ -249,21 +253,21 @@ Teleport to a specific room:
 
     XGOTO {room number}
     e.g., XGOTO 1
-    
+
 Get an artifact from anywhere in the adventure:
 
     XACCIO {artifact name}
     e.g., XACCIO TROLLSFIRE
-    
+
 Open the JavaScript debugger:
 
     XDEBUGGER
-    
+
 This lets you inspect the current game state using your browser's developer tools. It only works if the developer panel is already open.
 
 ## Exporting Adventure Data
 
-The rooms, artifacts, effects, monsters, and hints data for an adventure can be exported to a 
+The rooms, artifacts, effects, monsters, and hints data for an adventure can be exported to a
 JSON file. This allows it to be committed to Git, and also allows moving adventure data from one
 computer to another.
 

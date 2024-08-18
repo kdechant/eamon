@@ -19,7 +19,7 @@ if platform.system() == 'Windows':
     }
 
 c = Connection(
-    host='kdechant.com',
+    host='eamon-remastered.com',
     user='ubuntu',
     connect_kwargs=connect_kwargs
 )

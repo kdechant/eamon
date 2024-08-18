@@ -1,5 +1,5 @@
 import * as React from "react";
-import KeyboardEventHandler from 'react-keyboard-event-handler';
+import KeyboardEventHandler from "@infinium/react-keyboard-event-handler";
 import {PropsWithGame} from "../types";
 import {useState} from "react";
 
