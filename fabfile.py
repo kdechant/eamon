@@ -209,9 +209,9 @@ def build_sqlite_db(context):
     local("python -Xutf8 manage.py loaddata --database sqlite db/dumpdata.json")
     print('-- Creating distributable copy...')
     if platform.system() == 'Windows':
-        local("del db\eamon.sqlite3.dist.old")
-        local("move db\eamon.sqlite3.dist db\eamon.sqlite3.dist.old")
-        local("copy db\eamon.sqlite3 db\eamon.sqlite3.dist")
+        local("del db\\eamon.sqlite3.dist.old")
+        local("move db\\eamon.sqlite3.dist db\\eamon.sqlite3.dist.old")
+        local("copy db\\eamon.sqlite3 db\\eamon.sqlite3.dist")
     else:
         local("rm db/eamon.sqlite3.dist.old")
         local("mv db/eamon.sqlite3.dist db/eamon/sqlite3.dist.old")

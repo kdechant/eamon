@@ -4,8 +4,9 @@
   "license": "ISC",
   "version": "2.1.0",
   "dependencies": {
+    "@infinium/react-keyboard-event-handler": "^1.5.8",
     "@reduxjs/toolkit": "^1.6.2",
-    "axios": "^0.25.0",
+    "axios": "^1.7.9",
     "ie-array-find-polyfill": "^1.1.0",
     "immutability-helper": "^3.1.1",
     "js-cookie": "^3.0.1",
@@ -14,7 +15,6 @@
     "pluralize": "^8.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "@infinium/react-keyboard-event-handler": "^1.5.8",
     "react-markdown": "^8.0.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.0.2",
@@ -25,8 +25,8 @@
     "uuid": "^8.3.2"
   },
   "engines": {
-    "node": ">=12.16",
-    "npm": ">=6.0.0 <9"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "start": "concurrently \"npm run webpack:watch\" \"npm run build-css:watch\"",

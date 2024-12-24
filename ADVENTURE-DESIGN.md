@@ -10,7 +10,7 @@ Eamon is built on ReactJS and Django, but you don't need in-depth knowledge abou
 
 For the manual install, you'll need the following:
 
-* Python v3.10.x or higher
+* Python v3.10.x-3.12.x (Python 3.13+ not supported) 
 * Node.js v10.x or higher
 
 The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
@@ -24,7 +24,11 @@ The tools required to run Eamon are compatible with Linux, Windows 10, and OSX.
     * `cp eamon/local_settings_example.py eamon/local_settings.py`
     * Best to copy this and not rename it, so Git doesn't think the file is modified
 * Install pipenv: `pip3 install pipenv` (or just `pip install pipenv` if your system Python is v3.x)
-* Install the packages: `pipenv install`
+* Install the packages:
+  * If your system Python is 3.10-3.12: `pipenv install`
+  * If your system Python is 3.13 or higher:
+    * Make sure Python 3.12 is installed on your system with `sudo apt install python3.12` or similar
+    * Then run: `pipenv install --python 3.12`  
 * Activate the pipenv shell with `pipenv shell`
 * Create a user for the admin: `python manage.py createsuperuser`
 * Run `python manage.py runserver`

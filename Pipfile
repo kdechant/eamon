@@ -20,14 +20,14 @@ django-taggit-serializer = "~=0.1"
 djangorestframework = "~=3.12.4"
 djangorestframework-simplejwt = "==4.8.0"
 "html5lib" = "==1.1"
-# mysqlclient = "~=2.1.1"  # only used on the prod server
-regex = "~=2021.4.4"
+fabric = "~=3.2.2"
+regex = "~=2024.11.6"
 requests = "~=2.26.0"
 requests-oauthlib = "~=1.3.0"
-six = "~=1.16.0"
+setuptools = "*"
+six = "~=1.17.0"
 sqlparse = "~=0.4.2"
 PyYAML = "~=6.0.2"
-fabric = "~=2.6.0"
 
 [dev-packages]
 
