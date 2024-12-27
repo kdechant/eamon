@@ -13,7 +13,7 @@ import Cookies from 'js-cookie'
 export function getHeaders(): AxiosRequestHeaders {
   const headers = {
     'Content-Type': 'application/json',
-  };
+  } as AxiosRequestHeaders;
   const csrf = Cookies.get('csrftoken');
   if (csrf) {
     headers['X-CSRFToken'] = csrf;

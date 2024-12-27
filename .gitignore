@@ -4,6 +4,7 @@
 /client/build/
 **/**/*.js
 !/client/cypress/**/*.js
+!/client/*.js
 **/**/*.js.map
 **/__pycache__/
 /.idea/

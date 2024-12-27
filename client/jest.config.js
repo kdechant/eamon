@@ -17,7 +17,12 @@ const config = {
     "/node_modules/",
     "/adventures/base-adventure/"
   ],
-  "testURL": "http://localhost:8000/"
+  "transformIgnorePatterns": [
+    "/node_modules/(?!(axios))"
+  ],
+  "testEnvironmentOptions": {
+    "url": "http://localhost:8000/"
+  }
 }
 
-module.exports = config;
+export default config;
