@@ -8,6 +8,7 @@ const config = {
   ],
   "preset": "ts-jest",
   "setupFiles": ['./jest.setup.js'],
+  "setupFilesAfterEnv": ["jest-expect-message"],
   "testEnvironment": "jsdom",
   "testMatch": [
     "**/__tests__/**/*.ts?(x)",

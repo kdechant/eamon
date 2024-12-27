@@ -69,27 +69,27 @@ export function initLiveGame(game: Game) {
 }
 
 export function expectEffectSeen(id) {
-  expect(game.effects.get(id).seen).toBeTruthy();
+  expect(game.effects.get(id).seen, `Effect #${id} should have been seen`).toBeTruthy();
 }
 
 export function expectEffectNotSeen(id) {
-  expect(game.effects.get(id).seen).toBeFalsy();
+  expect(game.effects.get(id).seen, `Effect #${id} should NOT have been seen`).toBeFalsy();
 }
 
 export function expectArtifactIsHere(id) {
-  expect(game.artifacts.get(id).isHere()).toBeTruthy();
+  expect(game.artifacts.get(id).isHere(), `Artifact #${id} should have been here`).toBeTruthy();
 }
 
 export function expectArtifactIsNotHere(id) {
-  expect(game.artifacts.get(id).isHere()).toBeFalsy();
+  expect(game.artifacts.get(id).isHere(), `Artifact #${id} should NOT have been here`).toBeFalsy();
 }
 
 export function expectMonsterIsHere(id) {
-  expect(game.monsters.get(id).isHere()).toBeTruthy();
+  expect(game.monsters.get(id).isHere(), `Monster #${id} should have been here`).toBeTruthy();
 }
 
 export function expectMonsterIsNotHere(id) {
-  expect(game.monsters.get(id).isHere()).toBeFalsy();
+  expect(game.monsters.get(id).isHere(), `Monster #${id} should NOT have been here`).toBeFalsy();
 }
 
 /**
