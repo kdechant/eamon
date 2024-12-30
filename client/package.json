@@ -3,7 +3,6 @@
   "description": "A rewrite of the classic text adventure game, The Wonderful World of Eamon.",
   "license": "ISC",
   "version": "2.1.0",
-  "type": "module",
   "dependencies": {
     "@infinium/react-keyboard-event-handler": "^1.5.8",
     "@reduxjs/toolkit": "^1.6.2",

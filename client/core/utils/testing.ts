@@ -32,23 +32,32 @@ export function initMockGame(game) {
    });
 }
 
+const gameData: Record<string, string> = {};
+
 /**
  * Init from the live game data (data gotten from database)
  */
-export function initLiveGame(game: Game) {
+export async function initLiveGame(game: Game) {
 
-  const path = "http://localhost:8000/api/adventures/" + game.slug;
-  return axios.all([
-    axios.get(path + ''),
-    axios.get(path + '/rooms'),
-    axios.get(path + '/artifacts'),
-    axios.get(path + '/effects'),
-    axios.get(path + '/monsters'),
-    axios.get(path + '/hints'),
-    axios.get('http://localhost:8000/static/mock-data/player.json'),
-  ])
-   .then(responses => {
+  let responses = [];
+  if (gameData[game.slug]) {
+    console.log('reading cached data');
+    responses = JSON.parse(gameData[game.slug]);
+  } else {
+    const path = "http://localhost:8000/api/adventures/" + game.slug;
+    responses = await axios.all([
+      axios.get(path + ''),
+      axios.get(path + '/rooms'),
+      axios.get(path + '/artifacts'),
+      axios.get(path + '/effects'),
+      axios.get(path + '/monsters'),
+      axios.get(path + '/hints'),
+      axios.get('http://localhost:8000/static/mock-data/player.json'),
+    ]);
+    gameData[game.slug] = JSON.stringify(responses);
+  }
 
+  if (responses) {
      game.init(
        responses[0].data,
        responses[1].data,
@@ -65,7 +74,7 @@ export function initLiveGame(game: Game) {
      game.died = false;
      game.won = false;
      game.start();
-   });
+   }
 }
 
 export function expectEffectSeen(id) {

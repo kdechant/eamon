@@ -212,7 +212,7 @@ export default class MonsterRepository {
   }
 
   /**
-   * Gets an artifact in the local area (current room) by name.
+   * Gets a monster in the local area (current room) by name.
    * @param {string} name
    * @return Monster
    */

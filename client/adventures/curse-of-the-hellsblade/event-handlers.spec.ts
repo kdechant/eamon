@@ -76,6 +76,7 @@ test("guardian", () => {
   movePlayer(64);
   game.artifacts.get(27).moveToRoom();
   runCommand("light torch");
+  game.modal.mock_answers = ['Yes'];
   runCommand("attack guardian");
   expect(game.history.getOutput().text).toBe("The Guardian pushes you away!");
 

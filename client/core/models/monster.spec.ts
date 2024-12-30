@@ -1,5 +1,5 @@
 import Game from "../models/game";
-import {initMockGame} from "../utils/testing";
+import {initMockGame, movePlayer} from "../utils/testing";
 import {Monster} from "../models/monster";
 
 const game = new Game();
@@ -238,5 +238,7 @@ describe("Monster", function() {
     thief.injure(100);
     expect(game.artifacts.get(24).room_id).toBe(2);
   });
+
+  // Target handling - see eamon-deluxe-50-demo-adventure
 
 });

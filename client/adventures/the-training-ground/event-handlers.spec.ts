@@ -45,6 +45,7 @@ test("buy potions", () => {
 
 test("attack boz", () => {
   game.player.moveToRoom(28); game.tick();
+  game.modal.mock_answers = ['Yes'];
   game.command_parser.run('a boz');
   expectEffectSeen(20);
   expect(game.monsters.get(20).isHere()).toBeFalsy();
@@ -53,6 +54,7 @@ test("attack boz", () => {
 test("blast boz", () => {
   game.player.moveToRoom(28); game.tick();
   game.mock_random_numbers = [1];  // spell cast successfully
+  game.modal.mock_answers = ['Yes'];
   game.command_parser.run('blast boz');
   expectEffectSeen(21);
   expect(game.monsters.get(20).isHere()).toBeFalsy();

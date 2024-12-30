@@ -102,6 +102,7 @@ test("gerschter bar", () => {
   expect(game.effects.get(10).seen).toBeTruthy();
   game.monsters.get(8).moveToRoom();
   game.monsters.get(8).courage = 999;  // prevent fleeing
+  game.modal.mock_answers = ['yes'];
   game.command_parser.run('attack ogre');
   expect(game.effects.get(9).seen).toBeTruthy();
   expect(game.player.room_id).toBe(63);

@@ -900,17 +900,30 @@ export class AttackCommand implements BaseCommand {
     const [monster_target, artifact_target] = findTarget(arg);
     if (monster_target) {
 
-      if (game.triggerEvent('attackMonster', arg, monster_target)) {
+      // if player attacked, allow other monsters to do battle actions like
+      // picking up a weapon or healing.
+      game.is_battle_turn = true;
 
-        // halve the target's friendliness and reset target's reaction.
-        // this will allow friendly/neutral monsters to fight back if you anger them.
-        monster_target.hurtFeelings();
+      if (monster_target.isEnemyOf(game.player)) {
+        if (game.triggerEvent('attackMonster', arg, monster_target)) {
+          game.player.attack(monster_target);
+        }
+      } else {
+        game.modal.confirm(`${monster_target.name} is not an enemy. Attack anyway?`, answer => {
+          if (answer.toLowerCase() === 'yes') {
+            if (game.triggerEvent('attackMonster', arg, monster_target)) {
 
-        game.player.attack(monster_target);
+              // halve the target's friendliness and reset target's reaction.
+              // this will allow friendly/neutral monsters to fight back if you anger them.
+              monster_target.hurtFeelings();
 
-        // if player attacked, allow other monsters to do battle actions like
-        // picking up a weapon or healing.
-        game.is_battle_turn = true;
+              game.player.attack(monster_target);
+            }
+          } else {
+            // NPCs should not attack if you said "no".
+            game.skip_battle_actions = true;
+          }
+        });
       }
 
     } else if (artifact_target) {
@@ -1501,35 +1514,53 @@ export class BlastCommand implements BaseCommand {
     "BLAST WOODEN CHEST - Casts a magic attack at an artifact, trying to smash it open",
   ];
   run(verb, arg) {
-    if (game.player.spellCast('blast')) {
+    const [monster_target, artifact_target] = findTarget(arg);
 
-      const [monster_target, artifact_target] = findTarget(arg);
+    if (!monster_target && !artifact_target) {
+      throw new CommandException("Blast whom or what?");
+    }
+
+    const castSpell = () => {
+
+      if (monster_target && !game.triggerEvent("blast", arg, monster_target)) return;
+      if (!monster_target && artifact_target && !game.triggerEvent('attackArtifact', arg, artifact_target)) return;
+
+      // Was spell successful?
+      if (!game.player.spellCast('blast')) return;
+
       let damage = game.diceRoll(2, 5);
+
       if (monster_target) {
-        if (game.triggerEvent("blast", arg, monster_target)) {
-          game.history.write(game.player.name + " casts a blast spell at " + monster_target.getDisplayName());
-          game.history.write("--a direct hit!", "success no-space");
-          const damage_adjusted = game.triggerEvent('blastDamage', game.player, monster_target, damage);
-          if (damage_adjusted !== true) {
-            // event handler returns boolean TRUE if no
-            // change occurred (or handler didn't exist)
-            damage = damage_adjusted;
-          }
-          monster_target.injure(damage, true);
-          monster_target.hurtFeelings();
+        game.history.write(game.player.name + " casts a blast spell at " + monster_target.getDisplayName());
+        game.history.write("--a direct hit!", "success no-space");
+        const damage_adjusted = game.triggerEvent('blastDamage', game.player, monster_target, damage);
+        if (damage_adjusted !== true) {
+          // event handler returns boolean TRUE if no
+          // change occurred (or handler didn't exist)
+          damage = damage_adjusted;
         }
+        monster_target.injure(damage, true);
+        monster_target.hurtFeelings();
       } else if (artifact_target) {
-        if (game.triggerEvent('attackArtifact', arg, artifact_target)) {
-          const damage_done = artifact_target.injure(damage, "blast");
-          if (damage_done === 0) {
-            game.history.write("Nothing happens.");
-          } else if (damage_done === -1) {
-            throw new CommandException("Why would you blast a " + artifact_target.name + "?");
-          }
+        const damage_done = artifact_target.injure(damage, "blast");
+        if (damage_done === 0) {
+          game.history.write("Nothing happens.");
+        } else if (damage_done === -1) {
+          throw new CommandException("Why would you blast a " + artifact_target.name + "?");
         }
-      } else {
-        throw new CommandException("Blast whom or what?");
       }
+    }
+
+    if (monster_target.isEnemyOf(game.player)) {
+      castSpell();
+    } else {
+      game.modal.confirm(`${monster_target.name} is not an enemy. Cast spell anyway?`, answer => {
+        if (answer.toLowerCase() === 'yes') {
+          castSpell();
+        } else {
+          game.skip_battle_actions = true;
+        }
+      });
     }
   }
 }
@@ -1810,15 +1841,12 @@ core_commands.push(new AccioCommand());
 function findTarget(arg: string) {
     let monster_target = null;
     let artifact_target = null;
-    if (arg === '') {
-      // no target specified: attack a random hostile monster
-      monster_target = game.player.chooseTarget();
-      if (!monster_target) {
-        throw new CommandException("Calm down. There are no hostile monsters here.");
-      }
-    } else {
-      monster_target = game.monsters.getLocalByName(arg);
-      artifact_target = game.artifacts.getLocalByName(arg);
+    monster_target = game.player.chooseTarget(arg);
+    // Command was "attack" or "blast" with no specified target
+    if (arg === '' && !monster_target) {
+      throw new CommandException("Calm down. There are no hostile monsters here.");
     }
+    artifact_target = game.artifacts.getLocalByName(arg);
+
     return [monster_target, artifact_target];
 }

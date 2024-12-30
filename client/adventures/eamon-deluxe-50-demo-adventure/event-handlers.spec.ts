@@ -36,7 +36,7 @@ beforeEach(() => {
 
 // TESTS
 
-it("should have working event handlers", () => {
+test("open and close", () => {
   // some tests of the core game engine - put here because this is a basic adventure with stuff we can try
   game.command_parser.run("open door");
   expect(game.history.getOutput(0)?.text).toBe(game.artifacts.get(1)?.description);
@@ -48,7 +48,10 @@ it("should have working event handlers", () => {
   expect(game.history.getOutput(0)?.text).toBe(mailbox?.description);
   expect(mailbox?.embedded).toBeFalsy();
 
-  // GET/DROP stuff
+});
+
+test("open and close", () => {
+  const mailbox = game.artifacts.get(3);
   game.command_parser.run("open mailbox");
   expect(game.history.getOutput(0)?.text).toBe("Mailbox opened.");
   expect(mailbox?.is_open).toBeTruthy();
@@ -71,17 +74,42 @@ it("should have working event handlers", () => {
   game.command_parser.run('drop knife');
   game.command_parser.run('drop sandwich');
   expect(game.player.hasArtifact(11)).toBeFalsy();
+  expectArtifactIsHere(11);
   expect(game.player.hasArtifact(12)).toBeFalsy();
+  expectArtifactIsHere(12);
 
   game.command_parser.run('get'); // 'get' with no target === 'get all'
   expect(game.player.hasArtifact(11)).toBeTruthy();
   expect(game.player.hasArtifact(12)).toBeTruthy();
   expect(game.player.hasArtifact(55)).toBeFalsy();
+});
 
-  // ATTACK
-  movePlayer(6); // bedroom
+test("combat - auto choice of target", () => {
   game.player.combat_verbs = ['attacks']; // force generic attack messages
   game.command_parser.run('attack');
-  expect(game.history.getOutput(0)?.text).toBe("Birgitte attacks Ogre");
+  expect(game.history.getOutput(0)?.text).toBe("Calm down. There are no hostile monsters here.");
 
+  // setup: Move a bunch of monsters to the bedroom where the ogre is
+  const eddie = game.monsters.get(5);
+  eddie.moveToRoom(6);
+  const newt = game.monsters.get(6);
+  newt.moveToRoom(6);
+  movePlayer(6); // bedroom
+  const ogre = game.monsters.get(1);
+
+  expect(eddie.chooseTarget().id).toBe(ogre.id);
+  expect(ogre.chooseTarget().id).toBe(eddie.id);
+  expect(newt.chooseTarget()).toBeNull();
+
+  // with synonyms
+  eddie.aliases = ['someone'];
+  newt.aliases = ['someone'];
+  ogre.aliases = ['someone'];
+  expect(game.player.chooseTarget('someone').id).toBe(ogre.id);
+  expect(eddie.chooseTarget('someone').id).toBe(ogre.id);
+  expect(ogre.chooseTarget('someone').id).toBe(eddie.id);
+  expect(newt.chooseTarget('someone')).toBeNull();
+
+  runCommand('attack someone');
+  expect(game.history.getOutput(0)?.text).toBe("Birgitte attacks ogre");
 });

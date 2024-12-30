@@ -29,6 +29,7 @@ beforeEach(() => {
 
 test("big fight", () => {
   game.player.moveToRoom(4, true);
+  game.modal.mock_answers = ['Yes'];
   game.command_parser.run("attack clone army");
   expect(game.effects.get(9).seen).toBeTruthy();
   expect(game.monsters.get(4).reaction).toBe(Monster.RX_NEUTRAL);

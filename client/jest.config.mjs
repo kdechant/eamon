@@ -19,7 +19,7 @@ const config = {
     "/adventures/base-adventure/"
   ],
   "transformIgnorePatterns": [
-    "/node_modules/(?!(axios))"
+    "/node_modules/(?!(axios|uuid))"
   ],
   "testEnvironmentOptions": {
     "url": "http://localhost:8000/"

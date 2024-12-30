@@ -68,7 +68,7 @@ test('fireball wand', () => {
   game.monsters.updateVisible();
   // attack!
   game.mock_random_numbers = [12, 1, 12, 20, 12, 1];  // == damage mon 1, saving throw roll mon 1, damage mon 2...
-  game.modal.mock_answers = ['fire'];
+  game.modal.mock_answers = ['fire', 'Yes'];
   game.command_parser.run('attack guard');
   expect(game.monsters.get(7).damage).toBe(12);
   expect(game.monsters.get(9).damage).toBe(6);

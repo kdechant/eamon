@@ -207,6 +207,16 @@ export class Monster extends GameObject {
     }
   }
 
+  public isEnemyOf(monster: Monster) {
+    if (this.reaction === Monster.RX_FRIEND) {
+      return monster.reaction === Monster.RX_HOSTILE;
+    }
+    if (this.reaction === Monster.RX_HOSTILE) {
+      return monster.reaction === Monster.RX_FRIEND;
+    }
+    return false;
+  }
+
   /**
    * Executes a courage check on this monster. Typically used to determine
    * if a monster should flee combat, or follow the player when he/she flees.
@@ -690,7 +700,7 @@ export class Monster extends GameObject {
     } else {
       // standard attack message based on type of weapon
       const attack_verbs = Monster.COMBAT_VERBS_ATTACK[weapon_type];
-      const attack_verb = attack_verbs[Math.floor(Math.random() * attack_verbs.length)];
+      const attack_verb = attack_verbs ? attack_verbs[Math.floor(Math.random() * attack_verbs.length)] : 'attacks';
       game.history.write(this.name + " " + attack_verb + " at " + target.getDisplayName());
     }
 
@@ -950,25 +960,41 @@ export class Monster extends GameObject {
   }
 
   /**
+   * Returns an array of possible targets to attack. Includes only enemy monsters.
+   * @param name
+   */
+  public getEnemyTargets(name = ''): Monster[] {
+    let monsters = [game.player];
+    if (name) {
+      monsters = monsters.concat(game.monsters.visible.filter(m => m.match(name)));
+    } else {
+      monsters = monsters.concat(game.monsters.visible);
+    }
+
+    // find possible enemy targets
+    return monsters.filter(m => m.isEnemyOf(this));
+  }
+
+  /**
    * Finds someone for the monster to attack
    * @returns Monster
    */
-  public chooseTarget(): Monster {
-    const monsters = [game.player].concat(game.monsters.visible);
-    const targets: Monster[] = [];
-    for (const m of monsters) {
-      if (this.reaction === Monster.RX_FRIEND && m.reaction === Monster.RX_HOSTILE) {
-        targets.push(m);
-      } else if (this.reaction === Monster.RX_HOSTILE && m.reaction === Monster.RX_FRIEND) {
-        targets.push(m);
-      }
-    }
+  public chooseTarget(name = ''): Monster {
+    // find possible enemy targets
+    const targets = this.getEnemyTargets(name);
+
     if (targets.length) {
       const target = game.getRandomElement(targets);
       const target_adjusted = game.triggerEvent('chooseTarget', this, target);
       // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
       return target_adjusted === true ? target : target_adjusted;
     }
+
+    // check if player is attacking a non-enemy monster by name
+    if (this.id === Monster.PLAYER && name !== '') {
+      return game.monsters.getLocalByName(name);
+    }
+
     return null;
   }
 

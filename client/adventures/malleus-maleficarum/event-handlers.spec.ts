@@ -219,6 +219,7 @@ test("busted for magic (after jailbreak)", () => {
 
 test("attack soldiers", () => {
   game.command_parser.run('n');
+  game.modal.mock_answers = ['yes'];
   game.command_parser.run('attack soldier');
   expectEffectSeen(28);
   expect(game.data.arrested).toBeTruthy();
@@ -228,6 +229,7 @@ test("attack soldiers", () => {
 
 test("attack duke", () => {
   game.player.moveToRoom(4); game.tick();
+  game.modal.mock_answers = ['yes'];
   game.command_parser.run('attack duke');
   expectEffectSeen(34);
   expect(game.data.arrested).toBeTruthy();

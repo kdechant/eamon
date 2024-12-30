@@ -31,7 +31,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+//afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
@@ -383,6 +383,7 @@ test('attack friendly npcs', () => {
   npcs.forEach(m => {
       m.moveToRoom();
       m.reaction = Monster.RX_FRIEND;
+      game.modal.mock_answers = ['Yes'];
       runCommand(`attack ${m.name}`);
       expect(game.history.getOutput().text).toBe(msg);
       expect(m.reaction).toBe(Monster.RX_FRIEND);

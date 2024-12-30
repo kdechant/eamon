@@ -224,7 +224,6 @@ export var event_handlers = {
 
     if (arg === 'quaal dracis' && game.player.isWearing(30)) {
       // ragnar/woglinde
-      console.log(game.data, ossoric.isHere(), ossogotrix.isHere());
 
       const slab = game.artifacts.get(42);
       if (slab.isHere()) {

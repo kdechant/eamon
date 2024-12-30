@@ -32,7 +32,7 @@ beforeEach(() => {
 });
 
 // uncomment the following for debugging
-afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
+// afterEach(() => { game.history.history.map((h) => console.log(h.command, h.results)); });
 
 // TESTS
 
@@ -62,6 +62,7 @@ test("tavern", () => {
   expect(game.monsters.get(2).room_id).toBeNull();
   expect(groo.room_id).toBe(1);
   expect(game.artifacts.get(8).room_id).toBe(1);
+  game.modal.mock_answers = ['yes'];
   runCommand('attack mike');
   expect(game.history.getOutput(0).text).toBe("That wouldn't be very nice!");
   expect(game.monsters.get(1).reaction).toBe(Monster.RX_NEUTRAL);
@@ -147,6 +148,7 @@ test("chichester", () => {
   const chi = game.monsters.get(16);
   movePlayer(20);
 
+  game.modal.mock_answers = ['yes'];
   runCommand('attack chichester');
   expect(game.effects.get(106).seen).toBeTruthy();
   runCommand('talk chichester');
