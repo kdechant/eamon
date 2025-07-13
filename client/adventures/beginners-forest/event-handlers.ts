@@ -118,6 +118,7 @@ export const event_handlers = {
       // some readable artifacts have their text contained in the artifact description
       if (artifact.id === 19 || artifact.id === 20) {
         game.history.write(artifact.description, "special");
+        game.player.heal(10);
         return false;
       }
     }
@@ -156,12 +157,13 @@ export const event_handlers = {
     // ghosts
     const ghosts = game.monsters.get(9);
     if (game.player.room_id > 1 && game.player.room_id <= 5) {
-      // 1 in 3 chance a ghost appears in those rooms; limit of 4 in the room
+      // 1 in 3 chance a ghost appears in those rooms; limit of 3 in the room
       if (game.diceRoll(1, 3) == 1 && ghosts.children.filter(m => m.isHere()).length < 4) {
         try {
           ghosts.children.find(m => !m.isHere() && m.status === Monster.STATUS_ALIVE).moveToRoom();
         } catch (e) {
-          // no ghosts left; do nothing
+          // No ghosts left; do nothing.
+          // Total number of ghosts is set in the group count for the monster.
         }
         ghosts.seen = false;
       }
