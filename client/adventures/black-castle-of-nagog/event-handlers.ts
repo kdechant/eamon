@@ -118,7 +118,7 @@ export var event_handlers = {
       // rovnart's tomb
       game.data['rovnart'] = true;
       game.player.charisma -= 2;
-      game.player.stats_original.charisma -= 2;
+      game.player.base_stats.charisma -= 2;
     }
   },
 
@@ -136,9 +136,9 @@ export var event_handlers = {
     // book
     if (artifact && artifact.id === 10) {
       for (const spell_name of ['blast', 'heal', 'speed', 'power']) {
-        if (game.player.spell_abilities_original[spell_name]) { // only improves spells you already know
+        if (game.player.base_spell_abilities[spell_name]) { // only improves spells you already know
           game.player.spell_abilities[spell_name] += 5;
-          game.player.spell_abilities_original[spell_name] += 5;
+          game.player.base_spell_abilities[spell_name] += 5;
         }
       }
       artifact.destroy();

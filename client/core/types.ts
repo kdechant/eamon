@@ -16,3 +16,15 @@ export type ModalProps = {
   visible: boolean;
   toggle: () => void;
 };
+
+/**
+ * Running effects like spells, conditions, etc.
+ * Not to be confused with text "effects" from the DB.
+ */
+export type TimedEffect = {
+  name: string;
+  duration: number;
+  counters: number;
+  properties: { [key: string]: number };
+  // TODO: end of timed effect handler
+};

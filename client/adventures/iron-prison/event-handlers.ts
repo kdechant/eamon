@@ -112,9 +112,9 @@ export const event_handlers = {
       // potion
       game.effects.print(6);
       game.player.hardiness += 2;
-      game.player.stats_original.hardiness += 2;
+      game.player.base_stats.hardiness += 2;
       game.player.charisma -= 1;
-      game.player.stats_original.charisma -= 1;
+      game.player.base_stats.charisma -= 1;
     }
     if (artifact.id === 55) {
       // bubbling stuff

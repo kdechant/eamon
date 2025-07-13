@@ -292,7 +292,7 @@ export var event_handlers = {
           game.player.weapon_abilities[4] -= game.diceRoll(3, 5);
           game.player.weapon_abilities[5] -= game.diceRoll(3, 5);
           game.player.charisma -= 2;
-          game.player.stats_original.charisma -= 2;
+          game.player.base_stats.charisma -= 2;
         }
         game.effects.print(30);
         game.exit();
@@ -361,8 +361,8 @@ function isInWell(monster_id) {
 }
 
 function changeSpellAbility(spell_name, amount) {
-  if (game.player.spell_abilities_original[spell_name] > 0) {
+  if (game.player.base_spell_abilities[spell_name] > 0) {
     game.player.spell_abilities[spell_name] += amount;
-    game.player.spell_abilities_original[spell_name] += amount;
+    game.player.base_spell_abilities[spell_name] += amount;
   }
 }

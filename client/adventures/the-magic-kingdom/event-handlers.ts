@@ -19,11 +19,11 @@ export var event_handlers = {
       case 4:  // coffee
         game.effects.print(7);
         game.player.hardiness++;
-        game.player.stats_original.hardiness++;
+        game.player.base_stats.hardiness++;
         game.player.agility++;
-        game.player.stats_original.agility++;
+        game.player.base_stats.agility++;
         game.player.charisma++;
-        game.player.stats_original.charisma++;
+        game.player.base_stats.charisma++;
         artifact.room_id = null;
         artifact.monster_id = null;
         game.player.updateInventory();

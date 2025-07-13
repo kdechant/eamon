@@ -121,10 +121,10 @@ test("camp", () => {
   expect(game.history.getLastOutput().text).toBe("You are getting tired. You must make camp soon.");
   runCommand('e');
   expect(game.history.getLastOutput().text).toBe("You are exhausted! Your agility is impaired until you rest.");
-  expect(game.player.agility).toBe(game.player.stats_original.agility - 1);
+  expect(game.player.agility).toBe(game.player.base_stats.agility - 1);
   runCommand('e');
   expect(game.history.getLastOutput().text).toBe("You are exhausted! Your agility is impaired until you rest.");
-  expect(game.player.agility).toBe(game.player.stats_original.agility - 2);
+  expect(game.player.agility).toBe(game.player.base_stats.agility - 2);
 
   // camp 1: player alone
   game.data.hunger = 50;
@@ -137,7 +137,7 @@ test("camp", () => {
   expect(game.history.getOutput(1).text).toBe("You awaken refreshed.");
   expect(game.history.getOutput(2).text).toBe("You eat the Moleman's Jerky.");
   expect(game.history.getOutput(3).text).toBe('You drink the canteen.');
-  expect(game.player.agility).toBe(game.player.stats_original.agility);
+  expect(game.player.agility).toBe(game.player.base_stats.agility);
   expect(game.data.hunger).toBe(0);
   expect(game.data.thirst).toBe(0);
 

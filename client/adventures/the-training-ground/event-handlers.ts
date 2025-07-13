@@ -121,7 +121,7 @@ export var event_handlers = {
     // Plain scroll increases BLAST ability
     if (artifact && artifact.id === 29) {
       game.player.spell_abilities["blast"] += 250;  // big boost to current spell ability
-      game.player.spell_abilities_original["blast"] += 10;  // smaller boost to permanent spell ability
+      game.player.base_spell_abilities["blast"] += 10;  // smaller boost to permanent spell ability
       artifact.destroy();
     }
   },
@@ -222,7 +222,7 @@ export var event_handlers = {
       game.data["charisma_boost"] = true;
       const word = game.player.gender === "m" ? "handsome" : "beautiful";
       game.player.charisma += 2;
-      game.player.stats_original.charisma += 2;
+      game.player.base_stats.charisma += 2;
       return;
     }
     // 5% Chance of being hit by lightning!

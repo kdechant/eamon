@@ -421,6 +421,7 @@ export default class Game {
 
     this.player.rechargeSpellAbilities();
 
+    // legacy timed effects
     // if speed spell (or other timed spell) is active, decrease its time remaining
     for (const spell_name in this.player.spell_counters) {
       if (this.player.spell_counters[spell_name] > 0) {
@@ -436,6 +437,28 @@ export default class Game {
         }
       }
     }
+
+    // new timed effects
+    console.log("new spells", this.player.timed_effects);
+    for (const [spell_name, effect] of Object.entries(this.player.timed_effects)) {
+      if (effect.duration > 0) {
+        effect.duration--;
+        if (effect.duration <= 0) {
+          if (spell_name === 'speed') {
+            this.history.write("Your speed spell just expired!", "success");
+            this.player.speed_multiplier = 1;
+          }
+          // other spells (typically custom spells in adventures) don't have an "expires" message.
+          // if a message is desired, print it inside the "spellExpires" event handler.
+          this.triggerEvent('spellExpires', spell_name);
+          delete this.player.timed_effects[spell_name];
+        }
+      }
+      // The actual effects of the spells is calculated in Monster.updateStats()
+    }
+    this.player.updateStats();
+
+    // TODO: update stats for other monsters in room?
 
     // check if there is a light source; decrement its fuel count
     const light = this.artifacts.isLightSource();

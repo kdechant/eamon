@@ -52,7 +52,7 @@ custom_commands.push({
     }
     game.history.write('You make camp for the night...');
     game.data.fatigue = 0;
-    game.player.agility = game.player.stats_original.agility;
+    game.player.agility = game.player.base_stats.agility;
     const watchers = game.monsters.all.filter(
       m => m.isHere() && m.reaction === Monster.RX_FRIEND);
     // if you're alone, no one can watch and the chance of monsters is higher

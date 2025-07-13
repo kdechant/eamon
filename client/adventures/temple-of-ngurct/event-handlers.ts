@@ -114,7 +114,7 @@ export var event_handlers = {
     }
 
     // sobering up
-    if (game.player.agility < game.player.stats_original.agility) {
+    if (game.player.agility < game.player.base_stats.agility) {
       game.data['sober counter']++;
       if (game.data['sober counter'] % 8 === 0) {
         game.player.agility++;
@@ -185,7 +185,7 @@ export var event_handlers = {
         // black potion
         game.history.write("A strange sensation comes over you. Your movements seem to quicken, just a little.");
         game.player.agility++;
-        game.player.stats_original.agility++;
+        game.player.base_stats.agility++;
       } else if (artifact.id === 69) {
         game.history.write("You knew the wine was strong, but you drank it anyway. Now, you're roaring drunk and in no shape for combat.", "special");
         game.player.agility = Math.floor(game.player.agility / 2);

@@ -24,11 +24,11 @@ custom_commands.push({
       game.data.worshipped_magon = true;
       game.effects.print(19);
       game.player.charisma += 60;
-      game.player.stats_original.charisma += 60;
+      game.player.base_stats.charisma += 60;
       game.player.hardiness = 5;
-      game.player.stats_original.hardiness = 5;
+      game.player.base_stats.hardiness = 5;
       game.player.agility = 5;
-      game.player.stats_original.agility = 5;
+      game.player.base_stats.agility = 5;
     } else if (arg === 'i am that i am') {
       game.history.write("You kneel and pray to I Am That I Am...");
       game.data.i_am++;
@@ -37,7 +37,7 @@ custom_commands.push({
           game.effects.print(23);
           const inc = game.player.hardiness <= 25 ? 3 : 2;
           game.player.hardiness += inc;
-          game.player.stats_original.hardiness += inc;
+          game.player.base_stats.hardiness += inc;
           break;
         case 2:
           game.effects.print(22);

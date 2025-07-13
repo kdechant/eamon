@@ -97,7 +97,7 @@ custom_commands.push({
         if (!game.player.spell_abilities.power) {
           game.effects.print(58);
           game.player.spell_abilities.power += 50;
-          game.player.spell_abilities_original.power += 50;
+          game.player.base_spell_abilities.power += 50;
         }
       }
       return;

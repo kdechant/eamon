@@ -157,7 +157,7 @@ export default class MonsterRepository {
     game.player.id = 0;
     game.player.room_id = 1;
     game.player.reaction = Monster.RX_FRIEND;
-    game.player.spell_abilities_original = {
+    game.player.base_spell_abilities = {
       power: game.player.spell_abilities.power,
       heal: game.player.spell_abilities.heal,
       blast: game.player.spell_abilities.blast,
@@ -165,7 +165,7 @@ export default class MonsterRepository {
     };
     game.player.spell_counters = { speed: 0 };
 
-    game.player.stats_original = {
+    game.player.base_stats = {
       hardiness: game.player.hardiness,
       agility: game.player.agility,
       charisma: game.player.charisma,

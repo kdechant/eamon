@@ -1,9 +1,10 @@
 import * as pluralize from "pluralize";
 import type { SavedGame } from "../../main-hall/models/player";
-import type Game from "../models/game";
-import { Artifact } from "./artifact";
-import { GameObject } from "./game-object";
-import type { RoomExit } from "./room";
+import { Artifact } from "../models/artifact";
+import Game from "../models/game";
+import { GameObject } from "../models/game-object";
+import { RoomExit } from "../models/room";
+import type { TimedEffect } from "../types";
 
 declare let game: Game;
 
@@ -84,8 +85,8 @@ export class Monster extends GameObject {
   // data properties for player only
   charisma: number;
   spell_abilities: { [key: string]: number };
-  spell_abilities_original: { [key: string]: number };
-  stats_original: { [key: string]: number };
+  base_spell_abilities: { [key: string]: number };
+  base_stats: { [key: string]: number };
   weapon_abilities: { [key: number]: number };
   armor_expertise: number;
   saved_games: SavedGame[] = [];
@@ -102,6 +103,7 @@ export class Monster extends GameObject {
   weapon: Artifact;
   inventory: Artifact[];
   spell_counters: { [key: string]: number }; // time remaining on various spells (e.g., speed)
+  timed_effects: { [key: string]: TimedEffect }; // spells or other status effects currently running
   speed_multiplier = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
 
@@ -319,21 +321,15 @@ export class Monster extends GameObject {
    */
   public updateInventory(): void {
     this.inventory = [];
-    if (this.id === Monster.PLAYER) {
-      // armor handling currently only applies to the player
-      this.armor_class = 0;
-    }
+    // if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
+    //   this.armor_class = 0;
+    // }
     this.weight_carried = 0;
     for (const a of game.artifacts.all.filter(
       (x) => x.monster_id === this.id && x.type !== Artifact.TYPE_BOUND_MONSTER,
     )) {
       this.inventory.push(a);
       this.weight_carried += a.weight;
-      if (this.id === Monster.PLAYER) {
-        if (a.is_worn && a.armor_class) {
-          this.armor_class += a.armor_class;
-        }
-      }
       a.updateContents();
     }
     // if no longer carrying its weapon, set the weapon object to null
@@ -341,6 +337,67 @@ export class Monster extends GameObject {
       this.weapon = null;
       this.weapon_id = null;
     }
+  }
+
+  public updateStats(): void {
+    const modifiers = {
+      hd_multi: 1,
+      hd: 0,
+      ag_multi: 1,
+      ag: 0,
+      ch_multi: 1,
+      ch: 0,
+      armor_class: 0,
+      damage_multi: 1,
+      damage: 0,
+    };
+
+    // Artifacts equipped
+    // Armor handling currently only applies to the player
+    // TODO: Read stat modifiers from artifacts
+    if (this.id === Monster.PLAYER) {
+      const armors = game.artifacts.all.filter((a) => game.player.hasArtifact(a.id) && a.is_worn && a.armor_class);
+      const ac = armors.reduce((ac, armor) => ac + armor.armor_class, 0);
+      this.armor_class = ac + modifiers.armor_class;
+    } else {
+      this.armor_class = this.base_stats.armor_class;
+    }
+
+    // spells running
+    for (const effect of Object.values(this.timed_effects)) {
+      if (effect.properties.hd_multi) {
+        modifiers.hd_multi *= effect.properties.hd_multi;
+      }
+      if (effect.properties.hd) {
+        modifiers.hd += effect.properties.hd;
+      }
+      if (effect.properties.ag_multi) {
+        modifiers.ag_multi *= effect.properties.ag_multi;
+      }
+      if (effect.properties.ag) {
+        modifiers.ag += effect.properties.ag;
+      }
+      if (effect.properties.ch_multi) {
+        modifiers.ch_multi *= effect.properties.ch_multi;
+      }
+      if (effect.properties.ch) {
+        modifiers.ch += effect.properties.ch;
+      }
+      if (effect.properties.armor_class) {
+        modifiers.armor_class += effect.properties.armor_class;
+      }
+      if (effect.properties.damage_multi) {
+        modifiers.damage_multi *= effect.properties.damage_multi;
+      }
+      if (effect.properties.damage) {
+        modifiers.damage += effect.properties.damage;
+      }
+    }
+
+    this.hardiness = this.base_stats.hardiness * modifiers.hd_multi + modifiers.hd;
+    this.agility = this.base_stats.agility * modifiers.ag_multi + modifiers.ag;
+    this.charisma = this.base_stats.charisma * modifiers.ch_multi + modifiers.ch;
+    // TODO: set ac/damage modifiers so we can read them elsewhere
 
     // allow event handler to adjust armor class after the standard calculation
     game.triggerEvent("armorClass", this);
@@ -1182,8 +1239,8 @@ export class Monster extends GameObject {
 
         // check for ability increase
         const inc_roll = game.diceRoll(1, 100);
-        if (inc_roll > this.spell_abilities_original[spell_name]) {
-          this.spell_abilities_original[spell_name] += 2;
+        if (inc_roll > this.base_spell_abilities[spell_name]) {
+          this.base_spell_abilities[spell_name] += 2;
           game.history.write("Spell ability increased!", "success");
         }
       } else {
@@ -1224,7 +1281,7 @@ export class Monster extends GameObject {
       // normal maximum, which doesn't get erased by this code.
       if (
         this.spell_abilities[spell_name] &&
-        this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]
+        this.spell_abilities[spell_name] < this.base_spell_abilities[spell_name]
       ) {
         let inc = recharge_amount;
         if (recharge_type === "percentage") {
@@ -1232,7 +1289,7 @@ export class Monster extends GameObject {
         }
         this.spell_abilities[spell_name] = Math.min(
           this.spell_abilities[spell_name] + inc,
-          this.spell_abilities_original[spell_name],
+          this.base_spell_abilities[spell_name],
         );
       }
     }

@@ -182,7 +182,7 @@ export var event_handlers = {
           }
           game.effects.print(31);
           game.player.hardiness += 1;
-          game.player.stats_original.hardiness += 1;
+          game.player.base_stats.hardiness += 1;
           game.history.write("The amulet suddenly vanishes!", "special2");
           artifact.destroy();
           break;
@@ -209,9 +209,9 @@ export var event_handlers = {
       game.player.heal(heal_amount);
     } else if (roll <= 80) {
       game.effects.print(26);
-      game.player.spell_abilities['blast'] = game.player.spell_abilities_original['blast'];
-      game.player.spell_abilities['heal'] = game.player.spell_abilities_original['heal'];
-      game.player.spell_abilities['speed'] = game.player.spell_abilities_original['speed'];
+      game.player.spell_abilities['blast'] = game.player.base_spell_abilities['blast'];
+      game.player.spell_abilities['heal'] = game.player.base_spell_abilities['heal'];
+      game.player.spell_abilities['speed'] = game.player.base_spell_abilities['speed'];
     } else {
       game.history.write("A sonic boom shakes the entire complex!");
     }

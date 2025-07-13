@@ -165,7 +165,7 @@ test("power spell", () => {
   game.player.spell_abilities['heal'] = 1;
   game.player.spell_abilities['speed'] = 1;
   game.triggerEvent('power', 79);
-  expect(game.player.spell_abilities['blast']).toBe(game.player.spell_abilities_original['blast']);
-  expect(game.player.spell_abilities['heal']).toBe(game.player.spell_abilities_original['heal']);
-  expect(game.player.spell_abilities['speed']).toBe(game.player.spell_abilities_original['speed']);
+  expect(game.player.spell_abilities['blast']).toBe(game.player.base_spell_abilities['blast']);
+  expect(game.player.spell_abilities['heal']).toBe(game.player.base_spell_abilities['heal']);
+  expect(game.player.spell_abilities['speed']).toBe(game.player.base_spell_abilities['speed']);
 });

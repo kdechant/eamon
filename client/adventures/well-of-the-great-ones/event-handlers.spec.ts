@@ -192,13 +192,13 @@ test("amulet 2", () => {
   game.monsters.get(1).moveToRoom(2);
   game.skip_battle_actions = true;
   game.tick();
-  const previous_blast = game.player.spell_abilities_original['blast'];
+  const previous_blast = game.player.base_spell_abilities['blast'];
   const previous_axe = game.player.weapon_abilities[1];
   const previous_ch = game.player.charisma;
   game.command_parser.run('use amulet');
   expectEffectSeen(28);
   expectEffectSeen(29);
-  expect(game.player.spell_abilities_original['blast']).toBeLessThan(previous_blast);
+  expect(game.player.base_spell_abilities['blast']).toBeLessThan(previous_blast);
   expect(game.player.weapon_abilities[1]).toBeLessThan(previous_axe);
   expect(game.player.charisma).toBeLessThan(previous_ch);
   expectEffectSeen(30);

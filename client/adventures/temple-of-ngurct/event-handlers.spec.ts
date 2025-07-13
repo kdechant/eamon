@@ -104,10 +104,10 @@ test('potion', () => {
   black_potion.moveToInventory();
   game.player.updateInventory();
   const old_ag = game.player.agility;
-  const old_original_ag = game.player.stats_original.agility;
+  const old_original_ag = game.player.base_stats.agility;
   game.command_parser.run('drink black potion');
   expect(game.player.agility).toBe(old_ag + 1);
-  expect(game.player.stats_original.agility).toBe(old_original_ag + 1);
+  expect(game.player.base_stats.agility).toBe(old_original_ag + 1);
 });
 
 test('carcass', () => {

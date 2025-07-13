@@ -113,8 +113,8 @@ export var event_handlers = {
     }
     if (game.countdown('drunk')) {
       game.effects.print(28);
-      game.player.hardiness = game.player.stats_original.hardiness;
-      game.player.agility = game.player.stats_original.agility;
+      game.player.hardiness = game.player.base_stats.hardiness;
+      game.player.agility = game.player.base_stats.agility;
       game.player.status_message = '';
     }
   },

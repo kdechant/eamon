@@ -23,19 +23,19 @@ const Status: React.FC<StatusProps> = (props) => {
   const inTheDark = game.rooms.current_room.is_dark && !game.artifacts.isLightSource();
 
   let hdClass = "hardiness col-4";
-  if (game.player.hardiness < game.player.stats_original.hardiness) {
+  if (game.player.hardiness < game.player.base_stats.hardiness) {
     hdClass += " danger";
   }
 
   let agClass = "agility col-4";
   if (game.player.speed_multiplier > 1) {
     agClass += " success";
-  } else if (game.player.agility < game.player.stats_original.agility) {
+  } else if (game.player.agility < game.player.base_stats.agility) {
     agClass += " danger";
   }
 
   let chClass = "charisma col-4";
-  if (game.player.charisma < game.player.stats_original.charisma) {
+  if (game.player.charisma < game.player.base_stats.charisma) {
     chClass += " danger";
   }
 
