@@ -1,12 +1,13 @@
+import { Fragment, useState } from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader, Popover, PopoverBody, PopoverHeader } from "reactstrap";
 import type { BaseCommand } from "../commands/base-command";
 import type { ModalProps } from "../types";
 
-const CommandList: React.FC<ModalProps> = (props) => {
-  const [popoverOpen, setPopoverOpen] = React.useState(false);
+const CommandList = (props: ModalProps) => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
 
-  if (!props.visible) return <React.Fragment />;
+  if (!props.visible) return <Fragment />;
 
   const game = props.game;
   const commands = Object.values(game.command_parser.available_commands).filter(
@@ -83,7 +84,7 @@ const CommandList: React.FC<ModalProps> = (props) => {
 };
 
 const CommandVerb = (props) => {
-  const [popoverOpen, setPopoverOpen] = React.useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   return (
     <div className="command-list-item col-4 col-sm-3">

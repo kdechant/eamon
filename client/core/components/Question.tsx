@@ -1,9 +1,7 @@
-import KeyboardEventHandler from "@infinium/react-keyboard-event-handler";
-import type * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { PropsWithGame } from "../types";
 
-const Question: React.FC<PropsWithGame> = (props) => {
+const Question = (props: PropsWithGame) => {
   const [modalText, setModalText] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,9 +16,18 @@ const Question: React.FC<PropsWithGame> = (props) => {
     }
   };
 
-  const handleMultipleChoiceKeyPress = (key: string) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Not fixing this now.
+  useEffect(() => {
+    document.addEventListener("keypress", handleMultipleChoiceKeyPress);
+    return () => {
+      document.removeEventListener("keypress", handleMultipleChoiceKeyPress);
+    };
+  }, []);
+
+  const handleMultipleChoiceKeyPress = (event) => {
+    event.preventDefault();
     const game = props.game;
-    const match = game.modal.current_question.hotkeys[key.toLowerCase()];
+    const match = game.modal.current_question.hotkeys[event.key.toLowerCase()];
     if (match) {
       submitMultipleChoice(match);
     }
@@ -63,16 +70,16 @@ const Question: React.FC<PropsWithGame> = (props) => {
             <input
               type="text"
               name="modalText"
-              id="modalText"
               value={modalText}
               className="form-control"
+              // biome-ignore lint/a11y/noAutofocus: Need to revisit autoFocus
               autoFocus={true}
               onChange={handleChange}
               onKeyDown={handleKeyPress}
             />
           </p>
           <p>
-            <button className="btn btn-success" id="return" onClick={submitText}>
+            <button type="button" className="btn btn-success return" onClick={submitText}>
               Go
             </button>
           </p>
@@ -80,15 +87,16 @@ const Question: React.FC<PropsWithGame> = (props) => {
       )}
       {game.modal.current_question.type === "multiple_choice" && (
         <div className="modal-multiple">
-          <KeyboardEventHandler
-            handleKeys={["alphanumeric"]}
-            handleEventType="keyup"
-            onKeyEvent={handleMultipleChoiceKeyPress}
-          />
           {game.modal.current_question.choices.map((choice, index) => {
             const parts = game.modal.splitByHotkey(index);
             return (
-              <button className="btn btn-primary" key={index} onClick={() => submitMultipleChoice(choice)}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                // biome-ignore lint/suspicious/noArrayIndexKey: Not important
+                key={index}
+                onClick={() => submitMultipleChoice(choice)}
+              >
                 {parts[0]}
                 <span className="hotkey">{parts[1]}</span>
                 {parts[2]}
