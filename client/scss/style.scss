@@ -604,11 +604,12 @@ code {
     padding: 10px;
     position: relative;
     text-align: center;
+
     .artifact-icon img {
       position: absolute;
       top: 0;
       right: 0;
-      width: 90px;
+      width: 80px;
     }
     .artifact-name {
       text-align: left;
@@ -616,6 +617,9 @@ code {
       min-height: 72px;
     }
     .artifact-data {
+      min-height: 50px;
+    }
+    .artifact-price {
       img {
         width: 40px;
         margin: -5px;
@@ -635,6 +639,9 @@ code {
     button {
       margin-top: 5px;
     }
+  }
+  .artifact-tile-inner-magic {
+    border: 1px solid #d59735;
   }
 }
 

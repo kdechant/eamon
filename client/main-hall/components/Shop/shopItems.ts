@@ -2,45 +2,104 @@ import Artifact, {ARMOR_TYPES, ARTIFACT_TYPES, getTypeName, maxDamage} from "../
 import diceRoll from "../../utils/dice";
 import { v4 as uuidv4 } from 'uuid';
 
-export let weapons: Artifact[] = [];
-export const armors: Artifact[] = [];
-
-// always have some standard weapons
-for (let t = 1; t <= 5; t++) {
-  const item = {
+export let weapons: Artifact[] = [
+  {
     uuid: uuidv4(),
     type: ARTIFACT_TYPES.WEAPON,
-    weapon_type: t,
+    name: 'axe',
+    description: "You see a standard axe.",
+    weapon_type: 1,
+    weapon_odds: 0,
+    weight: 5,
+    dice: 1,
+    sides: 6,
+    value: 25,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'bow',
+    description: "You see a standard bow.",
+    weapon_type: 2,
+    weapon_odds: 0,
+    weight: 5,
+    dice: 1,
+    sides: 6,
+    value: 40,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'club',
+    description: "You see a standard club.",
+    weapon_type: 3,
+    weapon_odds: 0,
+    weight: 5,
+    dice: 1,
+    sides: 4,
+    value: 15,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'mace',
+    description: "You see a standard mace.",
+    weapon_type: 3,
     weapon_odds: 10,
     weight: 5,
     dice: 1,
-  } as Artifact;
-  item.name = t === 3 ? "mace" : getTypeName(item);
-  item.description = "You see a standard " + item.name + ".";
-  switch (t) {
-    case 1:
-      item.sides = 6;
-      item.value = 25;
-      break;
-    case 2:
-      item.sides = 6;
-      item.value = 40;
-      break;
-    case 3:
-      item.sides = 4;
-      item.value = 20;
-      break;
-    case 4:
-      item.sides = 5;
-      item.value = 25;
-      break;
-    case 5:
-      item.sides = 8;
-      item.value = 30;
-      break;
-  }
-  weapons.push(item);
-}
+    sides: 5,
+    value: 40,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'spear',
+    description: "You see a standard spear.",
+    weapon_type: 4,
+    weapon_odds: 0,
+    weight: 8,
+    dice: 1,
+    sides: 5,
+    value: 25,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'halberd',
+    description: "You see a standard halberd.",
+    weapon_type: 4,
+    weapon_odds: 10,
+    weight: 10,
+    dice: 1,
+    sides: 10,
+    value: 100,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'short sword',
+    description: "You see a standard short sword.",
+    weapon_type: 5,
+    weapon_odds: 0,
+    weight: 4,
+    dice: 1,
+    sides: 6,
+    value: 30,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: 'sword',
+    description: "You see a standard sword.",
+    weapon_type: 5,
+    weapon_odds: 10,
+    weight: 8,
+    dice: 1,
+    sides: 8,
+    value: 75,
+  } as Artifact,
+];
 
 // some special weapons
 const artifact_names = {
@@ -78,6 +137,8 @@ for (let i = 0; i < num_weapons; i++) {
 }
 magic_weapons.sort((w1, w2) => w1.value - w2.value);
 weapons = weapons.concat(magic_weapons);
+
+export const armors: Artifact[] = [];
 
 // some basic armor and shields
 const armor_types = ["leather", "chain", "scale", "plate"];

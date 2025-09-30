@@ -1,17 +1,17 @@
 import * as React from 'react';
-import {useState} from "react";
+import { useState } from "react";
 import { ucFirst } from "../../utils";
-import Artifact, {getIcon, getTypeName, isWeapon} from "../../models/artifact";
-import {useAppDispatch, useAppSelector} from "../../hooks";
-import {playerActions} from "../../store/player";
+import Artifact, { ARTIFACT_TYPES, getIcon, getTypeName, isWeapon } from "../../models/artifact";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { playerActions } from "../../store/player";
 
-type ArtifactTileProps = {
+interface ArtifactTileProps {
   artifact: Artifact,
   action: string,
   removeItem?: (Artifact) => void,
 }
 
-const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
+export default function ArtifactTile(props: ArtifactTileProps) {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
@@ -36,19 +36,24 @@ const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
 
   const icon_url = '/static/images/ravenmore/128/' + getIcon(props.artifact) + '.png';
 
-  let stats = <span />;
+  let stats = <span/>;
   if (isWeapon(props.artifact)) {
     stats = (
       <div>
-        To Hit: { props.artifact.weapon_odds }%<br />
-        Damage: { props.artifact.dice } d { props.artifact.sides }<br />
+        Damage: {props.artifact.dice} d {props.artifact.sides}<br/>
+        {props.artifact.weapon_odds > 0 && (
+          <>+{props.artifact.weapon_odds}% to hit<br/></>
+        )}
+        {props.artifact.weapon_odds < 0 && (
+          <>{props.artifact.weapon_odds}% to hit<br/></>
+        )}
       </div>
     );
   } else {
     stats = (
       <div>
-        AC: { props.artifact.armor_class }<br />
-        Penalty: { props.artifact.armor_penalty }%<br />
+        AC: {props.artifact.armor_class}<br/>
+        Penalty: {props.artifact.armor_penalty}%<br/>
       </div>
     );
   }
@@ -66,30 +71,30 @@ const ArtifactTile: React.FC<ArtifactTileProps> = (props) => {
     "opacity": message === "" ? 0 : 1
   };
 
+  const className = props.artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON ? "artifact-tile-inner artifact-tile-inner-magic" : "artifact-tile-inner";
+
   return (
     <div className="artifact-tile col-sm-6 col-md-4 col-lg-3">
-      <div className="artifact-tile-inner">
+      <div className={className}>
         <div className="artifact-icon">
-          <img src={icon_url} title={ getTypeName(props.artifact) } alt={ getTypeName(props.artifact) } />
+          <img src={icon_url} title={getTypeName(props.artifact)} alt={getTypeName(props.artifact)}/>
         </div>
         <div className="artifact-name">
-          <strong>{ ucFirst(props.artifact.name) }</strong><br />
+          <strong>{ucFirst(props.artifact.name)}</strong><br/>
         </div>
         <div className="artifact-data">
           {stats}
-          <span className="artifact-price">
-            <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
-          </span>
+        </div>
+        <div className="artifact-price">
+          <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin"/> {value}
         </div>
         <div className="artifact-buttons">
           {button}
         </div>
         <div className="message" style={messageStyle}>
-          { message }
+          {message}
         </div>
       </div>
     </div>
   );
 }
-
-export default ArtifactTile;
