@@ -1,8 +1,9 @@
-import * as pluralize from 'pluralize';
-import Game from "../models/game";
-import {GameObject} from "../models/game-object";
-import {Artifact} from "../models/artifact";
-import {RoomExit} from "../models/room";
+import * as pluralize from "pluralize";
+import { SavedGame } from "../../main-hall/models/player";
+import type Game from "../models/game";
+import { Artifact } from "./artifact";
+import { GameObject } from "./game-object";
+import type { RoomExit } from "./room";
 
 declare let game: Game;
 
@@ -10,7 +11,6 @@ declare let game: Game;
  * Monster class. Represents all properties of a single monster
  */
 export class Monster extends GameObject {
-
   // constants
   static PLAYER = 0;
   static FRIEND_ALWAYS = "friend";
@@ -26,27 +26,27 @@ export class Monster extends GameObject {
   static STATUS_ALIVE = 1;
   static STATUS_DEAD = 2;
   // combat codes
-  static COMBAT_CODE_SPECIAL = 1;  // uses generic combat verbs like "attacks"
-  static COMBAT_CODE_NORMAL = 0;  // uses a weapon, or natural weapons if defined in database
-  static COMBAT_CODE_WEAPON_IF_AVAILABLE = -1;  // uses a weapon if there is one available; otherwise natural
+  static COMBAT_CODE_SPECIAL = 1; // uses generic combat verbs like "attacks"
+  static COMBAT_CODE_NORMAL = 0; // uses a weapon, or natural weapons if defined in database
+  static COMBAT_CODE_WEAPON_IF_AVAILABLE = -1; // uses a weapon if there is one available; otherwise natural
   static COMBAT_CODE_NEVER_FIGHT = -2;
   // attack verbs (indexed by weapon type, first index (0) is for natural weapons)
   static COMBAT_VERBS_ATTACK = [
-    ['lunges', 'tears', 'claws'],
-    ['swings', 'chops', 'swings'],
-    ['shoots'],
-    ['swings'],
-    ['stabs', 'lunges', 'jabs'],
-    ['swings', 'chops', 'stabs'],
+    ["lunges", "tears", "claws"],
+    ["swings", "chops", "swings"],
+    ["shoots"],
+    ["swings"],
+    ["stabs", "lunges", "jabs"],
+    ["swings", "chops", "stabs"],
   ];
   // miss verbs (indexed by weapon type, first index (0) is for natural weapons)
   static COMBAT_VERBS_MISS = [
-    ['missed', 'missed'],
-    ['dodged', 'missed'],
-    ['missed', 'missed'],
-    ['dodged', 'missed'],
-    ['dodged', 'missed'],
-    ['parried', 'missed'],
+    ["missed", "missed"],
+    ["dodged", "missed"],
+    ["missed", "missed"],
+    ["dodged", "missed"],
+    ["dodged", "missed"],
+    ["parried", "missed"],
   ];
 
   // data properties for all monsters
@@ -59,8 +59,8 @@ export class Monster extends GameObject {
   friendliness: string;
   friend_odds: number;
   combat_code: number;
-  combat_verbs: string[] = [];  // custom messages that replace the normal attack messages
-  health_messages: string[] = [];  // custom messages that replace the normal health status messages
+  combat_verbs: string[] = []; // custom messages that replace the normal attack messages
+  health_messages: string[] = []; // custom messages that replace the normal health status messages
   courage: number;
   pursues: boolean;
   gold: number;
@@ -70,10 +70,10 @@ export class Monster extends GameObject {
   attack_odds: number;
   defense_bonus: number;
   armor_class: number;
-  spells: string[] = [];  // spells that an NPC knows, e.g., ['blast', 'heal']
-  spell_points = 0;  // number of spells the monster can cast (each spell takes 1 SP)
-  spell_frequency = 33;  // percent chance the monster will cast a spell instead of other battle actions
-  special: string;  // special flags used for special effects.
+  spells: string[] = []; // spells that an NPC knows, e.g., ['blast', 'heal']
+  spell_points = 0; // number of spells the monster can cast (each spell takes 1 SP)
+  spell_frequency = 33; // percent chance the monster will cast a spell instead of other battle actions
+  special: string; // special flags used for special effects.
 
   // properties used for managing group monsters
   name_plural: string;
@@ -83,29 +83,29 @@ export class Monster extends GameObject {
 
   // data properties for player only
   charisma: number;
-  spell_abilities: { [key: string]: number; };
-  spell_abilities_original: { [key: string]: number; };
-  stats_original: { [key: string]: number; };
-  weapon_abilities: { [key: number]: number; };
+  spell_abilities: { [key: string]: number };
+  spell_abilities_original: { [key: string]: number };
+  stats_original: { [key: string]: number };
+  weapon_abilities: { [key: number]: number };
   armor_expertise: number;
-  saved_games: Object[] = [];
+  saved_games: SavedGame[] = [];
   profit = 0; // the money the player makes for selling items when they leave the adventure
 
   // game-state properties
   reaction: string = Monster.RX_UNKNOWN;
   status: number = Monster.STATUS_ALIVE;
   status_message = "";
-  turn_taken = false;  // whether monster acted this turn
+  turn_taken = false; // whether monster acted this turn
   original_group_size: number;
   damage = 0;
   weight_carried = 0;
   weapon: Artifact;
   inventory: Artifact[];
-  spell_counters: { [key: string]: number };  // time remaining on various spells (e.g., speed)
+  spell_counters: { [key: string]: number }; // time remaining on various spells (e.g., speed)
   speed_multiplier = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
 
-  constructor (){
+  constructor() {
     super();
   }
 
@@ -188,11 +188,11 @@ export class Monster extends GameObject {
       case Monster.FRIEND_NEVER:
         this.reaction = Monster.RX_HOSTILE;
         break;
-      case Monster.FRIEND_RANDOM:
+      case Monster.FRIEND_RANDOM: {
         // calculate reaction based on random odds
 
         this.reaction = Monster.RX_FRIEND;
-        const friend_odds = this.friend_odds + ((game.player.charisma - 10) * 2);
+        const friend_odds = this.friend_odds + (game.player.charisma - 10) * 2;
         // first roll determines a neutral vs. friendly monster
         const roll1 = game.diceRoll(1, 100);
         if (roll1 > friend_odds) {
@@ -204,6 +204,7 @@ export class Monster extends GameObject {
           }
         }
         break;
+      }
     }
   }
 
@@ -252,10 +253,8 @@ export class Monster extends GameObject {
    * does something nasty.
    */
   public hurtFeelings(): void {
-
     // this logic is only meaningful for neutral and friendly monsters
     if (this.reaction !== Monster.RX_HOSTILE) {
-
       // clear the automatic reactions and set a default percentage
       switch (this.friendliness) {
         case Monster.FRIEND_ALWAYS:
@@ -297,7 +296,7 @@ export class Monster extends GameObject {
   public pickUp(artifact: Artifact): void {
     artifact.room_id = null;
     artifact.monster_id = this.id;
-    game.triggerEvent('pickUpArtifact', this, artifact);
+    game.triggerEvent("pickUpArtifact", this, artifact);
     this.updateInventory();
   }
 
@@ -315,7 +314,7 @@ export class Monster extends GameObject {
       this.weapon_id = null;
       this.weapon = null;
     }
-    game.triggerEvent('dropArtifact', this, artifact);
+    game.triggerEvent("dropArtifact", this, artifact);
     this.updateInventory();
   }
 
@@ -324,11 +323,14 @@ export class Monster extends GameObject {
    */
   public updateInventory(): void {
     this.inventory = [];
-    if (this.id === Monster.PLAYER) { // armor handling currently only applies to the player
+    if (this.id === Monster.PLAYER) {
+      // armor handling currently only applies to the player
       this.armor_class = 0;
     }
     this.weight_carried = 0;
-    for (const a of game.artifacts.all.filter(x => x.monster_id === this.id && x.type !== Artifact.TYPE_BOUND_MONSTER)) {
+    for (const a of game.artifacts.all.filter(
+      (x) => x.monster_id === this.id && x.type !== Artifact.TYPE_BOUND_MONSTER,
+    )) {
       this.inventory.push(a);
       this.weight_carried += a.weight;
       if (this.id === Monster.PLAYER) {
@@ -345,7 +347,7 @@ export class Monster extends GameObject {
     }
 
     // allow event handler to adjust armor class after the standard calculation
-    game.triggerEvent('armorClass', this);
+    game.triggerEvent("armorClass", this);
   }
 
   /**
@@ -353,7 +355,7 @@ export class Monster extends GameObject {
    * @returns boolean
    */
   public isHere(): boolean {
-    return (this.room_id === game.player.room_id);
+    return this.room_id === game.player.room_id;
   }
 
   /**
@@ -362,7 +364,7 @@ export class Monster extends GameObject {
    * @return boolean
    */
   public hasArtifact(artifact_id: number): boolean {
-    return this.inventory.some(x => x.id === artifact_id);
+    return this.inventory.some((x) => x.id === artifact_id);
   }
 
   /**
@@ -370,24 +372,25 @@ export class Monster extends GameObject {
    */
   public printInventory(style = "normal"): void {
     if (this.reaction === Monster.RX_FRIEND) {
-
       // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
       let inv = this.inventory;
       if (this.id !== Monster.PLAYER) {
-        inv = inv.filter(x => x.type !== Artifact.TYPE_DEAD_BODY)
+        inv = inv.filter((x) => x.type !== Artifact.TYPE_DEAD_BODY);
       }
 
       const delay_time = game.queue.delay_time;
       game.queue.delay_time = Math.floor(game.queue.delay_time / 2);
 
-      const worn = inv.filter(x => x.is_worn === true);
+      const worn = inv.filter((x) => x.is_worn === true);
       if (worn.length) {
-        game.history.write(this.name + " is wearing:");
-        worn.forEach(a => game.history.write(" - " + a.name, "no-space"));
+        game.history.write(`${this.name} is wearing:`);
+        worn.forEach((a) => {
+          game.history.write(` - ${a.name}`, "no-space");
+        });
       }
 
-      game.history.write(this.name + " is carrying:");
-      inv = inv.filter(x => x.is_worn === false);
+      game.history.write(`${this.name} is carrying:`);
+      inv = inv.filter((x) => x.is_worn === false);
       if (inv.length === 0) {
         game.history.write(" - (nothing)", "no-space");
       }
@@ -397,17 +400,20 @@ export class Monster extends GameObject {
           notes = a.inventory_message;
         } else {
           if (a.is_lit) {
-            notes = "(lit)"
+            notes = "(lit)";
           }
           if (a.id === this.weapon_id) {
-            notes = "(ready weapon)"
+            notes = "(ready weapon)";
           }
         }
         game.history.write(` - ${a.name} ${notes}`, "no-space");
       }
       if (this.id === Monster.PLAYER) {
         game.history.write(` - ${this.getMoneyFormatted()}`, "no-space");
-        game.history.write(`Weight carried: ${ game.player.weight_carried } of ${ game.player.hardiness * 10 } gronds`, "no-space");
+        game.history.write(
+          `Weight carried: ${game.player.weight_carried} of ${game.player.hardiness * 10} gronds`,
+          "no-space",
+        );
       }
       game.queue.delay_time = delay_time;
     } else {
@@ -427,7 +433,7 @@ export class Monster extends GameObject {
    * @return boolean
    */
   public isWearing(artifact_id: number): boolean {
-    const a = this.inventory.find(x => x.id === artifact_id);
+    const a = this.inventory.find((x) => x.id === artifact_id);
     if (!a) {
       return false;
     } else {
@@ -443,12 +449,12 @@ export class Monster extends GameObject {
   public findInInventory(artifact_name): Artifact {
     // Try exact matches first, then exact match with display name, then partial match
     // TODO: improve this and ask the player to disambiguate if there are multiple matches
-    let a = this.inventory.find(x => x.name.toLowerCase() === artifact_name.toLowerCase());
+    let a = this.inventory.find((x) => x.name.toLowerCase() === artifact_name.toLowerCase());
     if (!a) {
-      a = this.inventory.find(x => x.getDisplayName().toLowerCase() === artifact_name.toLowerCase());
+      a = this.inventory.find((x) => x.getDisplayName().toLowerCase() === artifact_name.toLowerCase());
     }
     if (!a) {
-      a = this.inventory.find(x => x.match(artifact_name));
+      a = this.inventory.find((x) => x.match(artifact_name));
     }
     return a || null;
   }
@@ -466,9 +472,8 @@ export class Monster extends GameObject {
    */
   public readyBestWeapon(): void {
     this.weapon = null; // needed e.g., when restoring a saved game, because the "weapon" property won't deserialize correctly
-    for (const a of this.inventory.filter(x => x.is_weapon)) {
-      if (this.weapon === undefined || this.weapon === null ||
-        a.maxDamage() > this.weapon.maxDamage()) {
+    for (const a of this.inventory.filter((x) => x.is_weapon)) {
+      if (this.weapon === undefined || this.weapon === null || a.maxDamage() > this.weapon.maxDamage()) {
         this.ready(a);
       }
     }
@@ -489,7 +494,7 @@ export class Monster extends GameObject {
     for (const type of types) {
       best[type] = null;
     }
-    for (const art of this.inventory.filter(x => x.type === Artifact.TYPE_WEARABLE && x.armor_type !== null)) {
+    for (const art of this.inventory.filter((x) => x.type === Artifact.TYPE_WEARABLE && x.armor_type !== null)) {
       if (best[art.armor_type] === null || art.armor_class > best[art.armor_type].armor_class) {
         best[art.armor_type] = art;
       }
@@ -529,21 +534,21 @@ export class Monster extends GameObject {
    * Determines if the player is wearing armor
    */
   public isWearingArmor(): boolean {
-    return this.inventory.some(i => i.armor_type === Artifact.ARMOR_TYPE_ARMOR && i.is_worn)
+    return this.inventory.some((i) => i.armor_type === Artifact.ARMOR_TYPE_ARMOR && i.is_worn);
   }
 
   /**
    * Determines if the player is using a shield
    */
   public isUsingShield(): boolean {
-    return this.inventory.some(i => i.armor_type === Artifact.ARMOR_TYPE_SHIELD && i.is_worn)
+    return this.inventory.some((i) => i.armor_type === Artifact.ARMOR_TYPE_SHIELD && i.is_worn);
   }
 
   /**
    * Determines if the player is wearing a helmet
    */
   public isUsingHelmet(): boolean {
-    return this.inventory.some(i => i.armor_type === Artifact.ARMOR_TYPE_HELMET && i.is_worn)
+    return this.inventory.some((i) => i.armor_type === Artifact.ARMOR_TYPE_HELMET && i.is_worn);
   }
 
   /**
@@ -558,7 +563,7 @@ export class Monster extends GameObject {
     if (this.weapon_id === null || this.weapon_id < 0) {
       return true;
     }
-    return (this.weapon_id === 0 && this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
+    return this.weapon_id === 0 && this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE;
   }
 
   /**
@@ -576,7 +581,7 @@ export class Monster extends GameObject {
   public doBattleActions(): void {
     // testing helper
     if (game.mock_random_numbers.length) {
-      console.log(this.name, 'battle actions', game.mock_random_numbers);
+      console.log(this.name, "battle actions", game.mock_random_numbers);
     }
 
     // if something happened, where an event handler stopped combat, the monster should do nothing
@@ -589,11 +594,10 @@ export class Monster extends GameObject {
       return;
     }
 
-    if (game.triggerEvent('monsterAction', this)) {
-
+    if (game.triggerEvent("monsterAction", this)) {
       // see if we have a valid exit to flee to
       const room = game.rooms.get(this.room_id);
-      if (room && room.hasGoodExits()) {
+      if (room?.hasGoodExits()) {
         // check if the monster should flee (single monster only)
         if (!this.parent && !this.checkCourage()) {
           this.flee();
@@ -620,8 +624,8 @@ export class Monster extends GameObject {
         }
         // if the monster's desired weapon isn't here, or the monster doesn't care which weapon it uses,
         // pick up the first available weapon
-        const i = game.artifacts.visible.find(x => x.is_weapon);
-        if (typeof i !== 'undefined') {
+        const i = game.artifacts.visible.find((x) => x.is_weapon);
+        if (typeof i !== "undefined") {
           this.pickUpWeapon(i);
           return;
         }
@@ -630,20 +634,20 @@ export class Monster extends GameObject {
       // cast spells, if they know any
       // (to activate this, set their 'spells' and 'spell_points' values in the 'start' event handler (e.g., Ngurct)
       if (this.spells.length > 0 && this.spell_points > 0) {
-        if (game.diceRoll(1,100) <= this.spell_frequency) {
-          if (this.spells.indexOf('heal') !== -1 && this.damage > this.hardiness * 0.4) {
+        if (game.diceRoll(1, 100) <= this.spell_frequency) {
+          if (this.spells.indexOf("heal") !== -1 && this.damage > this.hardiness * 0.4) {
             // heal
-            game.history.write(this.name + " casts a heal spell!");
+            game.history.write(`${this.name} casts a heal spell!`);
             const heal_amount = game.diceRoll(2, 6);
             this.heal(heal_amount);
             this.spell_points--;
             return;
-          } else if (this.spells.indexOf('blast') !== -1) {
+          } else if (this.spells.indexOf("blast") !== -1) {
             // blast
             const target = this.chooseTarget();
             if (target) {
               const damage = game.diceRoll(2, 5);
-              game.history.write(this.name + " casts a Blast spell at " + target.name + "!");
+              game.history.write(`${this.name} casts a Blast spell at ${target.name}!`);
               game.history.write("--a direct hit!", "success");
               target.injure(damage, true);
               this.spell_points--;
@@ -673,13 +677,13 @@ export class Monster extends GameObject {
   public attack(target: Monster): void {
     // testing helper
     if (game.mock_random_numbers.length) {
-      console.log(this.name, 'attacking', target.name, game.mock_random_numbers);
+      console.log(this.name, "attacking", target.name, game.mock_random_numbers);
     }
 
     // calculate to-hit odds, and let event handler adjust the odds
     let odds = this.getToHitOdds(target);
     let can_critical = true;
-    const odds_adjusted = game.triggerEvent('attackOdds', this, target, odds);
+    const odds_adjusted = game.triggerEvent("attackOdds", this, target, odds);
     if (odds_adjusted !== true) {
       odds = odds_adjusted;
       if (odds_adjusted === 0) {
@@ -692,16 +696,16 @@ export class Monster extends GameObject {
     const weapon_type = wpn ? wpn.weapon_type : 0;
     if (this.combat_code === 1) {
       // generic "attacks" message for unusual creatures like blob monsters, etc.
-      game.history.write(this.name + " attacks " + target.getDisplayName());
-    } else if (this.combat_verbs && this.combat_verbs.length) {
+      game.history.write(`${this.name} attacks ${target.getDisplayName()}`);
+    } else if (this.combat_verbs?.length) {
       // custom combat messages for this monster. assign these in the game start event handler.
       const attack_verb = this.combat_verbs[Math.floor(Math.random() * this.combat_verbs.length)];
-      game.history.write(this.name + " " + attack_verb + " " + target.getDisplayName());
+      game.history.write(`${this.name} ${attack_verb} ${target.getDisplayName()}`);
     } else {
       // standard attack message based on type of weapon
       const attack_verbs = Monster.COMBAT_VERBS_ATTACK[weapon_type];
-      const attack_verb = attack_verbs ? attack_verbs[Math.floor(Math.random() * attack_verbs.length)] : 'attacks';
-      game.history.write(this.name + " " + attack_verb + " at " + target.getDisplayName());
+      const attack_verb = attack_verbs ? attack_verbs[Math.floor(Math.random() * attack_verbs.length)] : "attacks";
+      game.history.write(`${this.name} ${attack_verb} at ${target.getDisplayName()}`);
     }
 
     // calculate hit, miss, or fumble
@@ -719,31 +723,32 @@ export class Monster extends GameObject {
         if (critical_roll <= 50) {
           ignore_armor = true;
         } else if (critical_roll <= 85) {
-          multiplier = 1.5;		// half again damage
+          multiplier = 1.5; // half again damage
         } else if (critical_roll <= 95) {
-          multiplier = 2;		// double damage
+          multiplier = 2; // double damage
         } else if (critical_roll <= 99) {
-          multiplier = 3;		// triple damage
+          multiplier = 3; // triple damage
         } else {
-          multiplier = 1000;	// instant kill
+          multiplier = 1000; // instant kill
         }
       } else {
         game.history.write("-- a hit!", "success no-space");
       }
       // deal the damage
       damage = Math.floor(damage * multiplier);
-      const damage_adjusted = game.triggerEvent('attackDamage', this, target, damage);
-      if (damage_adjusted !== true) { // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
+      const damage_adjusted = game.triggerEvent("attackDamage", this, target, damage);
+      if (damage_adjusted !== true) {
+        // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
         damage = damage_adjusted;
       }
       const damage_dealt = target.injure(damage, ignore_armor, this);
 
       // effects that come after the damage is dealt
-      game.triggerEvent('attackDamageAfter', this, target, damage_dealt);
+      game.triggerEvent("attackDamageAfter", this, target, damage_dealt);
 
       // check for weapon ability increase
       if (this.id === Monster.PLAYER) {
-        game.statistics['damage dealt'] += damage_dealt;
+        game.statistics["damage dealt"] += damage_dealt;
 
         const inc_roll = game.diceRoll(1, 100);
         if (inc_roll > odds) {
@@ -753,7 +758,7 @@ export class Monster extends GameObject {
             // new feature (not in original) - slower ability increase above 50%
             this.weapon_abilities[wpn.weapon_type] += 1;
           }
-          game.history.write("Your " + wpn.getTypeName() + " ability increased!", "success");
+          game.history.write(`Your ${wpn.getTypeName()} ability increased!`, "success");
         }
         // check for armor expertise increase
         const af = this.getArmorFactor();
@@ -766,47 +771,36 @@ export class Monster extends GameObject {
           }
         }
       }
-
     } else {
-
       // miss or fumble
       // NOTE: monsters with natural weapons can't fumble. they just miss instead.
       if (hit_roll < 97 || this.weapon_id === 0 || this.weapon_id === null) {
-        if (game.triggerEvent('miss', this, target)) {
-          const miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type] || ['missed'];
+        if (game.triggerEvent("miss", this, target)) {
+          const miss_verbs = Monster.COMBAT_VERBS_MISS[weapon_type] || ["missed"];
           const miss_verb = miss_verbs[game.diceRoll(1, miss_verbs.length) - 1];
-          game.history.write("-- " + miss_verb + "!", "no-space");
+          game.history.write(`-- ${miss_verb}!`, "no-space");
         }
       } else {
         game.history.write("-- a fumble!", "warning no-space");
         // see whether the player recovers, drops, or breaks their weapon
         const fumble_roll = game.diceRoll(1, 100);
-        if (game.triggerEvent('fumble', this, target, fumble_roll)) {
+        if (game.triggerEvent("fumble", this, target, fumble_roll)) {
           if (fumble_roll <= 40) {
-
             game.history.write("-- fumble recovered!", "no-space");
-
           } else if (fumble_roll <= 80) {
-
             game.history.write("-- weapon dropped!", "warning no-space");
             this.drop(wpn);
-
           } else if (fumble_roll <= 85) {
-
             // not broken, user just injured self
             game.history.write("-- weapon hits user!", "danger no-space");
             this.injure(game.diceRoll(wpn.dice, wpn.sides), false, this);
-
           } else {
             // damaged or broken
 
             if (wpn.type === Artifact.TYPE_MAGIC_WEAPON) {
-
               // magic weapons don't break or get damaged
-              game.history.write("-- sparks fly from " + wpn.name + "!", "warning no-space");
-
+              game.history.write(`-- sparks fly from ${wpn.name}!`, "warning no-space");
             } else {
-
               if (fumble_roll <= 95 && wpn.sides > 2) {
                 // weapon damaged - decrease its damage potential
                 game.history.write("-- weapon damaged!", "warning no-space");
@@ -821,7 +815,7 @@ export class Monster extends GameObject {
                 if (game.diceRoll(1, 10) > 5) {
                   game.history.write("-- broken weapon hurts user!", "danger no-space");
                   let dice = wpn.dice;
-                  if (fumble_roll === 100) dice++;  // worst case - extra damage
+                  if (fumble_roll === 100) dice++; // worst case - extra damage
                   this.injure(game.diceRoll(dice, wpn.sides), false, this);
                 }
               }
@@ -829,9 +823,7 @@ export class Monster extends GameObject {
           }
         }
       }
-
     }
-
   }
 
   /**
@@ -866,12 +858,12 @@ export class Monster extends GameObject {
    */
   public getArmorFactor(): number {
     let ae_max = 0;
-    for (const i of this.inventory.filter(x => x.is_worn)) {
+    for (const i of this.inventory.filter((x) => x.is_worn)) {
       ae_max += i.armor_penalty;
     }
     ae_max -= this.armor_expertise;
     if (ae_max < 0) ae_max = 0;
-    if (isNaN(ae_max)) ae_max = 0; // in case of null armor_penalty value or other edge case
+    if (Number.isNaN(ae_max)) ae_max = 0; // in case of null armor_penalty value or other edge case
     return ae_max;
   }
 
@@ -879,13 +871,12 @@ export class Monster extends GameObject {
    * Determines if the monster can attack
    */
   public canAttack() {
-
     if (this.combat_code === Monster.COMBAT_CODE_NEVER_FIGHT) {
       return false;
     }
 
     const w = this.getWeapon();
-    return (!!w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
+    return !!w || this.weapon_id === 0 || this.combat_code === Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE;
   }
 
   /**
@@ -933,10 +924,13 @@ export class Monster extends GameObject {
     const exit = game.rooms.getRoomById(this.room_id).chooseRandomExit();
 
     if (show_message) {
-      if (exit.direction == 'u' || exit.direction == 'd') {
+      if (exit.direction === "u" || exit.direction === "d") {
         game.history.write(`${this.name} ${game.flee_verbs.singular} ${exit.getFriendlyDirection()}ward.`, "warning");
       } else {
-        game.history.write(`${this.name} ${game.flee_verbs.singular} to the ${exit.getFriendlyDirection()}.`, "warning");
+        game.history.write(
+          `${this.name} ${game.flee_verbs.singular} to the ${exit.getFriendlyDirection()}.`,
+          "warning",
+        );
       }
     }
     this.moveToRoom(exit.room_to);
@@ -956,42 +950,42 @@ export class Monster extends GameObject {
    * @returns string
    */
   public getMoneyFormatted(): string {
-    return this.gold.toLocaleString() + " " + pluralize.plural(game.money_name, this.gold);
+    return `${this.gold.toLocaleString()} ${pluralize.plural(game.money_name, this.gold)}`;
   }
 
   /**
    * Returns an array of possible targets to attack. Includes only enemy monsters.
    * @param name
    */
-  public getEnemyTargets(name = ''): Monster[] {
+  public getEnemyTargets(name = ""): Monster[] {
     let monsters = [game.player];
     if (name) {
-      monsters = monsters.concat(game.monsters.visible.filter(m => m.match(name)));
+      monsters = monsters.concat(game.monsters.visible.filter((m) => m.match(name)));
     } else {
       monsters = monsters.concat(game.monsters.visible);
     }
 
     // find possible enemy targets
-    return monsters.filter(m => m.isEnemyOf(this));
+    return monsters.filter((m) => m.isEnemyOf(this));
   }
 
   /**
    * Finds someone for the monster to attack
    * @returns Monster
    */
-  public chooseTarget(name = ''): Monster {
+  public chooseTarget(name = ""): Monster {
     // find possible enemy targets
     const targets = this.getEnemyTargets(name);
 
     if (targets.length) {
       const target = game.getRandomElement(targets);
-      const target_adjusted = game.triggerEvent('chooseTarget', this, target);
+      const target_adjusted = game.triggerEvent("chooseTarget", this, target);
       // event handler returns boolean TRUE if no change occurred (or handler didn't exist)
       return target_adjusted === true ? target : target_adjusted;
     }
 
     // check if player is attacking a non-enemy monster by name
-    if (this.id === Monster.PLAYER && name !== '') {
+    if (this.id === Monster.PLAYER && name !== "") {
       return game.monsters.getLocalByName(name);
     }
 
@@ -1006,7 +1000,6 @@ export class Monster extends GameObject {
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, ignore_armor = false, attacker: Monster = null): number {
-
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
       if (damage <= 0) {
@@ -1022,16 +1015,16 @@ export class Monster extends GameObject {
     this.showHealth();
 
     if (this.id === Monster.PLAYER) {
-      game.statistics['damage taken'] += damage;
+      game.statistics["damage taken"] += damage;
     }
 
     // handle death
     if (this.damage >= this.hardiness) {
-
       if (game.triggerEvent("death", this, attacker)) {
-
         this.status = Monster.STATUS_DEAD;
-        this.inventory.forEach(a => this.drop(a));
+        this.inventory.forEach((a) => {
+          this.drop(a);
+        });
 
         // if a member of a group, update or remove the parent
         if (this.parent) {
@@ -1039,7 +1032,7 @@ export class Monster extends GameObject {
           this.parent.updateVirtualMonster();
           // when all individuals of a monster group die, trigger afterDeath
           // handler on the parent monster
-          if (!this.parent.children.some(m => m.status === Monster.STATUS_ALIVE)) {
+          if (!this.parent.children.some((m) => m.status === Monster.STATUS_ALIVE)) {
             game.triggerEvent("afterDeath", this.parent);
           }
         } else {
@@ -1049,15 +1042,14 @@ export class Monster extends GameObject {
 
         if (this.id === Monster.PLAYER) {
           game.die(false);
-          game.skip_battle_actions = true;  // stops Diablo-style "hack the dead player" effect
+          game.skip_battle_actions = true; // stops Diablo-style "hack the dead player" effect
           if (attacker) {
-            game.logger.log('killed by', attacker.id);
+            game.logger.log("killed by", attacker.id);
           }
         }
         this.room_id = null;
         game.monsters.updateVisible();
       }
-
     }
     return damage;
   }
@@ -1138,26 +1130,26 @@ export class Monster extends GameObject {
       "is in pain.",
       "is badly injured.",
       "is at death's door!",
-      "is dead!"
+      "is dead!",
     ];
     if (this.health_messages.length === 7) {
       messages = this.health_messages;
     }
 
-    if (status > .99) {
-      game.history.write(name + " " + messages[0]);
-    } else if (status > .8) {
-      game.history.write(name + " " + messages[1]);
-    } else if (status > .6) {
-      game.history.write(name + " " + messages[2]);
-    } else if (status > .4) {
-      game.history.write(name + " " + messages[3]);
-    } else if (status > .2) {
-      game.history.write(name + " " + messages[4], "warning");
+    if (status > 0.99) {
+      game.history.write(`${name} ${messages[0]}`);
+    } else if (status > 0.8) {
+      game.history.write(`${name} ${messages[1]}`);
+    } else if (status > 0.6) {
+      game.history.write(`${name} ${messages[2]}`);
+    } else if (status > 0.4) {
+      game.history.write(`${name} ${messages[3]}`);
+    } else if (status > 0.2) {
+      game.history.write(`${name} ${messages[4]}`, "warning");
     } else if (status > 0) {
-      game.history.write(name + " " + messages[5], "warning");
+      game.history.write(`${name} ${messages[5]}`, "warning");
     } else {
-      game.history.write(name + " " + messages[6], "danger");
+      game.history.write(`${name} ${messages[6]}`, "danger");
     }
   }
 
@@ -1167,7 +1159,6 @@ export class Monster extends GameObject {
    * @returns boolean
    */
   public spellCast(spell_name: string): boolean {
-
     if (!game.player.spell_abilities[spell_name]) {
       game.history.write("You don't know that spell!");
       return;
@@ -1177,19 +1168,19 @@ export class Monster extends GameObject {
 
     // this event handler can alter any spell or prevent it from firing
     if (game.triggerEvent("beforeSpell", spell_name)) {
-
       // roll to see if the spell succeeded
       const roll = game.diceRoll(1, 100);
       if (roll === 100) {
-
-        if (game.triggerEvent('spellBacklash', spell_name)) {
-          game.history.write(`The strain of attempting to cast ${spell_name.toUpperCase()} overloads your brain and you forget it completely for the rest of this adventure.`);
+        if (game.triggerEvent("spellBacklash", spell_name)) {
+          game.history.write(
+            `The strain of attempting to cast ${spell_name.toUpperCase()} overloads your brain and you forget it completely for the rest of this adventure.`,
+          );
           game.player.spell_abilities[spell_name] = 0;
         }
         return;
 
         // always a 5% chance to work and a 5% chance to fail
-      } else if (roll <= game.player.spell_abilities[spell_name] || roll <= 5 && roll <= 95) {
+      } else if (roll <= game.player.spell_abilities[spell_name] || (roll <= 5 && roll <= 95)) {
         // success!
         success = true;
 
@@ -1199,7 +1190,6 @@ export class Monster extends GameObject {
           this.spell_abilities_original[spell_name] += 2;
           game.history.write("Spell ability increased!", "success");
         }
-
       } else {
         game.history.write("Nothing happens.");
       }
@@ -1223,28 +1213,30 @@ export class Monster extends GameObject {
    *   (e.g., add 10 points regardless of current ability)
    */
   public rechargeSpellAbilities(amount?: number, type?: string): void {
-
     let recharge_type = game.spell_recharge_rate[0];
     let recharge_amount = game.spell_recharge_rate[1];
 
-    if (typeof amount === 'number') {
+    if (typeof amount === "number") {
       recharge_amount = amount;
     }
-    if (typeof type === 'string') {
+    if (typeof type === "string") {
       recharge_type = type;
     }
 
     for (const spell_name in this.spell_abilities) {
       // Note: you can have a temporary boost to spell abilities above
       // normal maximum, which doesn't get erased by this code.
-      if (this.spell_abilities[spell_name] && this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]) {
+      if (
+        this.spell_abilities[spell_name] &&
+        this.spell_abilities[spell_name] < this.spell_abilities_original[spell_name]
+      ) {
         let inc = recharge_amount;
-        if (recharge_type === 'percentage') {
-          inc = Math.max(1, Math.floor(this.spell_abilities[spell_name] * recharge_amount / 100));
+        if (recharge_type === "percentage") {
+          inc = Math.max(1, Math.floor((this.spell_abilities[spell_name] * recharge_amount) / 100));
         }
         this.spell_abilities[spell_name] = Math.min(
-          this.spell_abilities[spell_name] += inc,
-          this.spell_abilities_original[spell_name]
+          this.spell_abilities[spell_name] + inc,
+          this.spell_abilities_original[spell_name],
         );
       }
     }
@@ -1257,21 +1249,20 @@ export class Monster extends GameObject {
     game.selling = true;
 
     // remove all items from containers
-    for (const i of game.player.inventory.filter(x => x.type === Artifact.TYPE_CONTAINER)) {
+    for (const i of game.player.inventory.filter((x) => x.type === Artifact.TYPE_CONTAINER)) {
       for (const j of i.contents) {
         j.removeFromContainer();
       }
     }
 
     // a copy of inventory, needed to prevent looping errors when we destroy artifacts
-    const treasures = this.inventory.filter(x => !x.is_weapon && !x.isArmor());
+    const treasures = this.inventory.filter((x) => !x.is_weapon && !x.isArmor());
     for (const a of treasures) {
       this.profit += a.value;
       a.destroy();
     }
 
     game.triggerEvent("afterSell");
-
   }
 
   /**
@@ -1295,7 +1286,6 @@ export class Monster extends GameObject {
   public removeChildren(num = 1) {
     console.error("Not implemented for single monsters");
   }
-
 }
 
 /**
@@ -1303,13 +1293,12 @@ export class Monster extends GameObject {
  * Note: Keeping this in the same file as the parent class to avoid nasty import problems
  */
 export class GroupMonster extends Monster {
-
   // properties used for managing group monsters
   name_plural: string;
   count: number;
   children: Monster[] = [];
 
-  constructor () {
+  constructor() {
     super();
   }
 
@@ -1340,8 +1329,10 @@ export class GroupMonster extends Monster {
 
     if (this.children.length) {
       this.children
-        .filter(c => c.room_id === from_room_id && c.status === Monster.STATUS_ALIVE)
-        .forEach(c => c.moveToRoom(room_id));
+        .filter((c) => c.room_id === from_room_id && c.status === Monster.STATUS_ALIVE)
+        .forEach((c) => {
+          c.moveToRoom(room_id);
+        });
     }
   }
 
@@ -1349,11 +1340,11 @@ export class GroupMonster extends Monster {
    * Moves the virtual "group monster" pointer to the correct place
    */
   public updateVirtualMonster() {
-    const visible_children = this.children.filter(c => c.isHere());
+    const visible_children = this.children.filter((c) => c.isHere());
     if (visible_children.length) {
-      this.room_id = game.player.room_id;  // move virtual group pointer
+      this.room_id = game.player.room_id; // move virtual group pointer
     } else {
-      const living_child = this.children.find(c => c.status === Monster.STATUS_ALIVE);
+      const living_child = this.children.find((c) => c.status === Monster.STATUS_ALIVE);
       this.room_id = living_child ? living_child.room_id : null;
     }
   }
@@ -1374,11 +1365,11 @@ export class GroupMonster extends Monster {
     // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
     const child = game.monsters.add({
       ...this,
-      id: this.id + 0.0001 * this.count,   // this can handle groups up to 9999 members
+      id: this.id + 0.0001 * this.count, // this can handle groups up to 9999 members
       parent: this,
-      description: "",  // just to save memory
+      description: "", // just to save memory
       count: 1,
-      weapon_id: 0  // when using this, the new member always gets natural weapons, even if other members have a real weapon
+      weapon_id: 0, // when using this, the new member always gets natural weapons, even if other members have a real weapon
     });
     // console.log(`New ${this.name} #${child.id}`);
     this.children.push(child);
@@ -1403,7 +1394,7 @@ export class GroupMonster extends Monster {
     super.checkReaction();
 
     // for group monsters, we also update the reactions of all the members
-    this.children.forEach(m => {
+    this.children.forEach((m) => {
       m.reaction = this.reaction;
     });
   }
@@ -1414,7 +1405,6 @@ export class GroupMonster extends Monster {
    * Battle actions the monster can do (attack, flee, pick up weapon)
    */
   public doBattleActions(): void {
-
     // if something happened, where an event handler stopped combat, the monster should do nothing
     if (game.skip_battle_actions) {
       return;
@@ -1427,27 +1417,28 @@ export class GroupMonster extends Monster {
 
     // console.log(`battle action for group monster #${this.id}: ${this.name}`);
 
-    if (game.triggerEvent('monsterAction', this)) {
-
+    if (game.triggerEvent("monsterAction", this)) {
       // see if we have a valid exit to flee to
       if (game.rooms.getRoomById(this.room_id).hasGoodExits()) {
         // group monster logic
-        const visible_children = this.children.filter(m => m.isHere());
+        const visible_children = this.children.filter((m) => m.isHere());
         // first, determine how many flee and how many stay
-        const chickens = visible_children.filter(m => !m.checkCourage());
+        const chickens = visible_children.filter((m) => !m.checkCourage());
         if (chickens.length) {
           if (chickens.length === 1) {
-            game.history.write(`${this.name} ${game.flee_verbs.singular}!`, 'warning');
+            game.history.write(`${this.name} ${game.flee_verbs.singular}!`, "warning");
           } else {
-            game.history.write(`${chickens.length} ${this.name_plural} ${game.flee_verbs.plural}!`, 'warning');
+            game.history.write(`${chickens.length} ${this.name_plural} ${game.flee_verbs.plural}!`, "warning");
           }
-          chickens.forEach(m => m.flee(false));
+          chickens.forEach((m) => {
+            m.flee(false);
+          });
         }
       }
 
       // group monsters delegate the rest of the logic to the individuals, which happens automatically
-      const visible_children = this.children.filter(m => m.isHere());
-      visible_children.slice(0,5).map(m => m.doBattleActions());
+      const visible_children = this.children.filter((m) => m.isHere());
+      visible_children.slice(0, 5).map((m) => m.doBattleActions());
       return;
     }
   }
@@ -1459,12 +1450,14 @@ export class GroupMonster extends Monster {
    *   Whether to show the flee message. Usually omitted, except for internal logic dealing with group monsters
    */
   public flee(show_message = true) {
-
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
       if (show_message) {
         if (this.children.length > 1) {
-          game.history.write(`${this.children.length} ${this.name_plural} look frantically for an exit but find nowhere to go!`, "warning");
+          game.history.write(
+            `${this.children.length} ${this.name_plural} look frantically for an exit but find nowhere to go!`,
+            "warning",
+          );
         } else {
           game.history.write(`${this.name} looks frantically for an exit but finds nowhere to go!`, "warning");
         }
@@ -1473,12 +1466,14 @@ export class GroupMonster extends Monster {
     }
 
     // group monster - all members in the current room flee, possibly in different directions
-    const visible_children = this.children.filter(m => m.isHere());
+    const visible_children = this.children.filter((m) => m.isHere());
     if (show_message) {
       game.history.write(`${visible_children.length} ${this.name_plural} ${game.flee_verbs.plural}.`, "warning");
     }
-    visible_children.forEach(m => m.flee(false));
-    this.room_id = (visible_children[0].room_id);
+    visible_children.forEach((m) => {
+      m.flee(false);
+    });
+    this.room_id = visible_children[0].room_id;
     return;
   }
 
@@ -1490,16 +1485,13 @@ export class GroupMonster extends Monster {
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, ignore_armor = false, attacker: Monster = null): number {
-
     // when attacking a group monster, we actually attack a random one of the children
-    const visible_children = this.children.filter(c => c.isHere());
+    const visible_children = this.children.filter((c) => c.isHere());
     if (!visible_children.length) {
-      return;  // currently impossible to injure members in a different room
+      return; // currently impossible to injure members in a different room
     }
     const child = game.getRandomElement(visible_children);
-    const damage_dealt = child.injure(damage, ignore_armor, attacker);
-    // if
-    return damage_dealt;
+    return child.injure(damage, ignore_armor, attacker);
   }
 
   /**
@@ -1511,7 +1503,7 @@ export class GroupMonster extends Monster {
     this.room_id = null;
 
     // for group monsters, we also destroy all members
-    this.children.forEach(m => {
+    this.children.forEach((m) => {
       m.room_id = null;
     });
 
@@ -1523,7 +1515,7 @@ export class GroupMonster extends Monster {
    * @param {number} amount - The amount of hit points to heal
    */
   public heal(amount): void {
-    const child = game.getRandomElement(this.children.filter(c => c.isHere()));
+    const child = game.getRandomElement(this.children.filter((c) => c.isHere()));
     child.heal(amount);
   }
 
@@ -1533,7 +1525,7 @@ export class GroupMonster extends Monster {
    * A group monster is active if any of its children are.
    */
   public isActive(): boolean {
-    return this.children.some(c => c.isActive());
+    return this.children.some((c) => c.isActive());
   }
 
   /**
@@ -1542,7 +1534,6 @@ export class GroupMonster extends Monster {
    * A group monster is active if any of its children are.
    */
   public isAlive(): boolean {
-    return this.children.some(c => c.isAlive());
+    return this.children.some((c) => c.isAlive());
   }
-
 }

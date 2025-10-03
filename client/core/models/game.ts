@@ -1,30 +1,26 @@
-import { compressToBase64, decompressFromBase64 } from 'lz-string';
-
-import RoomRepository from "../repositories/room.repo";
+import { compressToBase64, decompressFromBase64 } from "lz-string";
+import { getAxios } from "../../main-hall/utils/api";
+import EventHandler from "../commands/event-handler";
 import ArtifactRepository from "../repositories/artifact.repo";
 import EffectRepository from "../repositories/effect.repo";
-import MonsterRepository from "../repositories/monster.repo";
 import HintRepository from "../repositories/hint.repo";
-import {Modal} from "../models/modal";
-import {Artifact} from "../models/artifact";
-import {Monster} from "../models/monster";
-
-import {HistoryManager} from "../models/history-manager";
-import {CommandParser} from "../models/command-parser";
-import EventHandler from "../commands/event-handler";
-import {ILoggerService, DummyLoggerService} from "../utils/logger.interface";
-import {getAxios} from "../../main-hall/utils/api";
-import * as React from "react";
-import {OperationsQueue} from "./operations-queue";
+import MonsterRepository from "../repositories/monster.repo";
+import RoomRepository from "../repositories/room.repo";
+import { DummyLoggerService, type ILoggerService } from "../utils/logger.interface";
+import { Artifact } from "./artifact";
+import { CommandParser } from "./command-parser";
+import { HistoryManager } from "./history-manager";
+import { Modal } from "./modal";
+import type { Monster } from "./monster";
+import { OperationsQueue } from "./operations-queue";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare let game;
+declare let game: Game;
 
 /**
  * Game Data class. Contains game state and data like rooms, artifacts, monsters.
  */
 export default class Game {
-
   // constants
   static STATUS_ACTIVE = 0;
   static STATUS_WON = 1;
@@ -32,37 +28,37 @@ export default class Game {
   static STATUS_SELLING = 3;
 
   /**
-   * @var {number} The current adventure's id in the database
+   * @var number The current adventure's id in the database
    */
   id: number;
 
   /**
-   * @var {string} The current adventure's slug, e.g., 'the-beginners-cave'
+   * @var string The current adventure's slug, e.g., 'the-beginners-cave'
    */
   slug: string;
 
   /**
-   * @var {string} The current adventure's name
+   * @var string The current adventure's name
    */
   name: string;
 
   /**
-   * @var {string} The current adventure's description
+   * @var string The current adventure's description
    */
   description: string;
 
   /**
-   * @var {string[]} The text to display at the adventure start
+   * @var string[] The text to display at the adventure start
    */
   intro_text: string[];
 
   /**
-   * @var {number} The current index of the multi-page intro
+   * @var number The current index of the multi-page intro
    */
   intro_index: number;
 
   /**
-   * @var {string} A question to ask the player during adventure start
+   * @var string A question to ask the player during adventure start
    */
   intro_question: string;
 
@@ -110,12 +106,12 @@ export default class Game {
    * A container for custom data and game flags used by specific adventures
    * (e.g., rising water level, or whether someone has given the player an item)
    */
-  data: { [key: string]: any; } = {};
+  data: { [key: string]: any } = {};
 
   /**
    * A container for game counters. See countdown()
    */
-  counters: { [key: string]: any; } = {};
+  counters: { [key: string]: any } = {};
 
   /**
    * The game timer. Keeps track of the number of game clock ticks.
@@ -162,8 +158,8 @@ export default class Game {
    * Verbs that are displayed when monsters flee
    */
   flee_verbs: any = {
-    'singular': "flees",
-    'plural': "flee"
+    singular: "flees",
+    plural: "flee",
   };
 
   /**
@@ -179,12 +175,12 @@ export default class Game {
   /**
    * Name of the person who tells you you have too many weapons when you leave
    */
-  lwm_name = 'Lord William Missilefire';
+  lwm_name = "Lord William Missilefire";
 
   /**
    * Name of the person who buys treasure at the end
    */
-  ss_name = 'Sam Slicker';
+  ss_name = "Sam Slicker";
 
   /**
    * A custom effect for the Sam Slicker text
@@ -194,7 +190,7 @@ export default class Game {
   /**
    * Name of the money in this adventure
    */
-  money_name = 'gold piece';
+  money_name = "gold piece";
 
   /**
    * Whether to automatically show room exits next to the description in the
@@ -261,10 +257,10 @@ export default class Game {
   /**
    * Statistics for the game (damage taken, secret doors found, etc.)
    */
-  statistics: { [key: string]: number; } = {
-    'damage taken': 0,
-    'damage dealt': 0,
-    'secret doors found': 0
+  statistics: { [key: string]: number } = {
+    "damage taken": 0,
+    "damage dealt": 0,
+    "secret doors found": 0,
   };
 
   // Mock objects for testing
@@ -289,8 +285,6 @@ export default class Game {
    * (This is a function that is passed in from the React components)
    */
   public refresher: any;
-
-  constructor() { }
 
   /**
    * Re-renders the game display on the screen
@@ -325,13 +319,12 @@ export default class Game {
    * Sets up data received from the GameLoaderService.
    */
   public init(adv, rooms, artifacts, effects, monsters, hints, player, saved_games) {
-
     this.id = adv.id;
     this.name = adv.name;
     this.description = adv.description;
-    this.intro_text = adv.intro_text.split('---').map(Function.prototype.call, String.prototype.trim);
+    this.intro_text = adv.intro_text.split("---").map(Function.prototype.call, String.prototype.trim);
     if (this.data.bort) {
-      this.intro_text = [""];  // faster start, for local development
+      this.intro_text = [""]; // faster start, for local development
     }
     this.intro_question = adv.intro_question;
     this.dead_body_id = adv.dead_body_id;
@@ -342,19 +335,19 @@ export default class Game {
     this.monsters = new MonsterRepository(monsters);
     this.hints = new HintRepository(hints);
 
-    this.modal = new Modal;
+    this.modal = new Modal();
 
     this.monsters.addPlayer(player);
 
     // de-duplicate the artifact names
     this.artifacts.deduplicate();
 
-    this.history = new HistoryManager;
-    this.queue = new OperationsQueue;
+    this.history = new HistoryManager();
+    this.queue = new OperationsQueue();
 
     // for unit tests, the logger won't usually be initialized, so create a dummy logger
     if (!this.logger) {
-      this.logger = new DummyLoggerService;
+      this.logger = new DummyLoggerService();
     }
 
     this.skip_battle_actions = true; // prevent fighting when player first arrives in room 1
@@ -369,19 +362,16 @@ export default class Game {
         this.saved_games[sv.slot] = sv;
       }
       // determine if resuming a saved game
-      const saved_game_slot = window.localStorage.getItem('saved_game_slot');
+      const saved_game_slot = window.localStorage.getItem("saved_game_slot");
       if (saved_game_slot) {
-
         // loading a saved game
         this.restore(saved_game_slot);
-        window.localStorage.removeItem('saved_game_slot');
+        window.localStorage.removeItem("saved_game_slot");
       } else {
         // new game
         this.fresh_start();
       }
-
     }
-
   }
 
   /**
@@ -436,13 +426,13 @@ export default class Game {
       if (this.player.spell_counters[spell_name] > 0) {
         this.player.spell_counters[spell_name]--;
         if (this.player.spell_counters[spell_name] === 0) {
-          if (spell_name === 'speed') {
+          if (spell_name === "speed") {
             this.history.write("Your speed spell just expired!", "success");
             this.player.speed_multiplier = 1;
           }
           // other spells (typically custom spells in adventures) don't have an "expires" message.
           // if a message is desired, print it inside the "spellExpires" event handler.
-          this.triggerEvent('spellExpires', spell_name);
+          this.triggerEvent("spellExpires", spell_name);
         }
       }
     }
@@ -454,11 +444,11 @@ export default class Game {
         a.quantity--;
         if (a.quantity === 0) {
           a.is_lit = false;
-          this.history.write("Your " + a.name + " just went out!");
+          this.history.write(`Your ${a.name} just went out!`);
         } else if (a.quantity < 10) {
-          this.history.write("Your " + a.name + " is almost out!");
+          this.history.write(`Your ${a.name} is almost out!`);
         } else if (a.quantity < 20) {
-          this.history.write("Your " + a.name + " grows dim!");
+          this.history.write(`Your ${a.name} grows dim!`);
         }
       }
     }
@@ -470,7 +460,9 @@ export default class Game {
       this.is_battle_turn = true;
     }
 
-    this.monsters.visible.forEach(m => m.turn_taken = false);
+    this.monsters.visible.forEach((m) => {
+      m.turn_taken = false;
+    });
     this.queue.callback = () => this.monsterActions();
     this.queue.run();
   }
@@ -482,7 +474,7 @@ export default class Game {
       return;
     }
 
-    const actor = this.monsters.visible.find(m => !m.turn_taken && !m.parent);
+    const actor = this.monsters.visible.find((m) => !m.turn_taken && !m.parent);
     if (actor === undefined) {
       // Everyone has acted. Begin end turn phase.
       this.afterMonsterActions();
@@ -540,14 +532,17 @@ export default class Game {
         game.history.write("It's too dark to see anything.");
       }
     } else {
-      let room_name = this.rooms.current_room.name
-      if (game.data['bort']) {
+      let room_name = this.rooms.current_room.name;
+      if (game.data.bort) {
         room_name += ` (${this.rooms.current_room.id})`;
       }
       if (this.show_exits) {
-        const possible_exits = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw', 'u', 'd'];
-        const available_exits = this.rooms.current_room.getVisibleExits().map(x => x.direction);
-        const visible_exits = possible_exits.filter(x => available_exits.indexOf(x) !== -1).join('/').toUpperCase();
+        const possible_exits = ["n", "s", "e", "w", "ne", "nw", "se", "sw", "u", "d"];
+        const available_exits = this.rooms.current_room.getVisibleExits().map((x) => x.direction);
+        const visible_exits = possible_exits
+          .filter((x) => available_exits.indexOf(x) !== -1)
+          .join("/")
+          .toUpperCase();
         room_name += ` (${visible_exits})`;
       }
       this.history.write(room_name);
@@ -569,13 +564,13 @@ export default class Game {
         if (!m.seen) {
           m.showDescription();
           m.seen = true;
-          space = true;  // padding between desc and next monster
+          space = true; // padding between desc and next monster
           this.triggerEvent("seeMonster", m);
         } else {
           if (!m.children.length) {
             this.history.write(`${m.getDisplayName()} is here.`, space ? "" : "no-space");
           } else {
-            const count_here = m.children.filter(m => m.isHere()).length;
+            const count_here = m.children.filter((m) => m.isHere()).length;
             if (count_here > 1) {
               this.history.write(`${count_here} ${m.name_plural} are here.`, space ? "" : "no-space");
             } else {
@@ -590,7 +585,7 @@ export default class Game {
       for (const a of this.artifacts.visible) {
         if (!a.seen) {
           a.showDescription();
-          space = true;  // padding between desc and next monster
+          space = true; // padding between desc and next monster
           this.triggerEvent("seeArtifact", a);
           a.seen = true;
         } else {
@@ -630,7 +625,6 @@ export default class Game {
    *   The number of sides on each dice. Normally a positive integer but zero and negative numbers are also supported.
    */
   diceRoll(dice, sides) {
-
     // for unit testing, it's possible to set mock random numbers
     if (this.mock_random_numbers.length) {
       const num = this.mock_random_numbers.shift();
@@ -664,8 +658,8 @@ export default class Game {
       return array[0];
     }
     const index = this.diceRoll(1, array.length) - 1;
-    if (typeof(array[index]) === 'undefined') {
-      console.log('oops: getRandomElement rolled index: ', index, array);
+    if (typeof array[index] === "undefined") {
+      console.log("oops: getRandomElement rolled index: ", index, array);
       console.trace();
     }
     return array[index];
@@ -737,27 +731,28 @@ export default class Game {
    * Handles successful game exit.
    */
   public exit() {
-    if (this.triggerEvent('exit')) {
+    if (this.triggerEvent("exit")) {
       this.active = false;
       this.won = true;
       this.queue.run();
 
-      this.logger.log('exit adventure', this.timer);
+      this.logger.log("exit adventure", this.timer);
       for (const s in this.statistics) {
         this.logger.log(s, this.statistics[s]);
       }
 
       // delete the saved games
       const axios = getAxios();
-      for (let slot=1; slot <= 10; slot++) {
+      for (let slot = 1; slot <= 10; slot++) {
         const saved_game = this.saved_games[slot];
         if (saved_game) {
-          axios.delete("/saves/" + saved_game.id + '.json?uuid=' + window.localStorage.getItem('eamon_uuid'))
-            .then(res => {
+          axios
+            .delete(`/saves/${saved_game.id}.json?uuid=${window.localStorage.getItem("eamon_uuid")}`)
+            .then((res) => {
               delete this.saved_games[slot];
-              this.logger.log("deleted saved game #" + saved_game.id);
+              this.logger.log(`deleted saved game #${saved_game.id}`);
             })
-            .catch(err => {
+            .catch((err) => {
               console.error(err);
             });
         }
@@ -783,14 +778,14 @@ export default class Game {
       this.saves = [];
       for (let i = 1; i <= 10; i++) {
         if (this.saved_games.hasOwnProperty(i)) {
-          this.saves.push(i + ": " + this.saved_games[i].description);
+          this.saves.push(`${i}: ${this.saved_games[i].description}`);
         }
       }
 
-      this.logger.log('died on move', this.timer);
-      this.logger.log('died in room', this.player.room_id);
+      this.logger.log("died on move", this.timer);
+      this.logger.log("died in room", this.player.room_id);
       for (const s in this.statistics) {
-        if (s.indexOf('damage') !== -1) {
+        if (s.indexOf("damage") !== -1) {
           this.logger.log(s, this.statistics[s]);
         }
       }
@@ -805,10 +800,10 @@ export default class Game {
    *   The description to give the saved game (e.g., "before maze" or "after fighting dragon")
    */
   public save(slot, description) {
-    this.logger.log('save game to slot ' + slot + ': ' + description);
+    this.logger.log(`save game to slot ${slot}: ${description}`);
     const sv = {
-      player_id: window.localStorage.getItem('player_id'),
-      uuid: window.localStorage.getItem('eamon_uuid'),
+      player_id: window.localStorage.getItem("player_id"),
+      uuid: window.localStorage.getItem("eamon_uuid"),
       adventure_id: this.id,
       slot,
       description,
@@ -819,21 +814,22 @@ export default class Game {
         effects: this.effects.all,
         monsters: this.monsters.serialize(),
         timer: this.timer,
-        gamedata: this.data
+        gamedata: this.data,
       },
     };
 
     // save to the API
     const axios = getAxios();
     sv.data = compressToBase64(JSON.stringify(sv.data));
-    axios.post("/saves?uuid=" + window.localStorage.getItem('eamon_uuid'), sv)
-      .then(res => {
+    axios
+      .post(`/saves?uuid=${window.localStorage.getItem("eamon_uuid")}`, sv)
+      .then((res) => {
         this.saved_games[slot] = res.data;
-      }).catch(err => {
+      })
+      .catch((err) => {
         this.history.write("Error saving game!");
         console.error(err);
-      }
-    );
+      });
   }
 
   /**
@@ -842,7 +838,7 @@ export default class Game {
    *   The saved game slot (1-10)
    */
   public restore(slot) {
-    this.logger.log('restore game from slot ' + slot);
+    this.logger.log(`restore game from slot ${slot}`);
     const axios = getAxios();
     const save = this.saved_games[slot];
     if (!save) {
@@ -850,9 +846,9 @@ export default class Game {
       this.logger.log(`failed to restore save ${slot}. saved game might have been deleted.`);
       return;
     }
-    axios.get("/saves/" + save.id + ".json?uuid=" + window.localStorage.getItem('eamon_uuid'))
-      .then(
-      res => {
+    axios
+      .get(`/saves/${save.id}.json?uuid=${window.localStorage.getItem("eamon_uuid")}`)
+      .then((res) => {
         const data = JSON.parse(decompressFromBase64(res.data.data));
         // the serialized data looks just like the data from the API, so we just need to recreate the repositories.
         this.rooms = new RoomRepository(data.rooms);
@@ -874,20 +870,19 @@ export default class Game {
         this.started = true;
         this.ready = true;
 
-        this.history = new HistoryManager;
+        this.history = new HistoryManager();
         this.history.push("restore");
-        this.history.write("Game restored from slot " + slot + ".");
+        this.history.write(`Game restored from slot ${slot}.`);
 
         // run end turn method to show location, monsters, and artifacts
         this.endTurn();
 
         // this forces the React component to re-render
         this.refresh();
-      }
-    ).catch(error => {
-      this.history.write("Error restoring saved game! Not found.");
-      console.error(error);
-    });
+      })
+      .catch((error) => {
+        this.history.write("Error restoring saved game! Not found.");
+        console.error(error);
+      });
   }
-
 }

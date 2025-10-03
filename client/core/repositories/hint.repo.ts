@@ -1,11 +1,10 @@
-import {Hint} from "../models/hint";
+import { Hint } from "../models/hint";
 
 /**
  * Class HintRepository.
  * Storage class for all hint data.
  */
 export default class HintRepository {
-
   /**
    * An array of all the Hint objects
    */
@@ -54,9 +53,8 @@ export default class HintRepository {
    * @param {number} id
    * @return Monster
    */
-  public get(id): Hint|null {
-    const h = this.all.find(x => x.id === id);
+  public get(id): Hint | null {
+    const h = this.all.find((x) => x.id === id);
     return h || null;
   }
-
 }

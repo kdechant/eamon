@@ -1,8 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 
-import playerReducer from './player';
-// import authReducer from './auth';
-
+import playerReducer from "./player";
 
 const store = configureStore({
   reducer: { player: playerReducer },
@@ -10,9 +8,9 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['player/setPlayer'],
+        ignoredActions: ["player/setPlayer"],
         // Ignore these paths in the state
-        ignoredPaths: ['player'],
+        ignoredPaths: ["player"],
       },
     }),
 });
@@ -20,6 +18,6 @@ const store = configureStore({
 export default store;
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch;

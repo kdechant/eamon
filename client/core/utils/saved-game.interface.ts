@@ -1,5 +1,3 @@
-// import { EMPTY } from 'rxjs';
-
 export interface ISavedGameService {
   saveGame(data: any);
   listSavedGames(player_id: any, adventure_id: number);
@@ -12,9 +10,7 @@ export interface ISavedGameService {
  * Dummy service used with automated tests
  */
 export class DummySavedGameService implements ISavedGameService {
-
-  public saveGame(data: any) {
-  }
+  public saveGame(data: any) {}
 
   public listSavedGames(player_id: any, adventure_id: number) {
     // this used to return an empty Observable, but that just confused Webpack, so
@@ -23,13 +19,9 @@ export class DummySavedGameService implements ISavedGameService {
     // return EMPTY;
   }
 
-  public loadSavedGame(saved_game: any) {
-  }
+  public loadSavedGame(saved_game: any) {}
 
-  public loadSavedGameById(id: number) {
-  }
+  public loadSavedGameById(id: number) {}
 
-  public deleteSavedGame(saved_game: any) {
-  }
-
+  public deleteSavedGame(saved_game: any) {}
 }

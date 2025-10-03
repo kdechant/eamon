@@ -1,6 +1,5 @@
-import {Artifact} from "../models/artifact";
-import Game from "../models/game";
-import {Monster} from "../models/monster";
+import { Artifact } from "../models/artifact";
+import type Game from "../models/game";
 
 declare let game: Game;
 
@@ -9,7 +8,6 @@ declare let game: Game;
  * Storage class for all artifact data.
  */
 export default class ArtifactRepository {
-
   /**
    * An array of all the Artifact objects
    */
@@ -52,7 +50,7 @@ export default class ArtifactRepository {
     const a = new Artifact();
     // "synonyms" in the back end are called "aliases" here
     if (artifact_data.synonyms) {
-      artifact_data.aliases = artifact_data.synonyms.split(",").map(s => s.trim());
+      artifact_data.aliases = artifact_data.synonyms.split(",").map((s) => s.trim());
     }
     a.init(artifact_data);
 
@@ -62,18 +60,18 @@ export default class ArtifactRepository {
     }
 
     if (this.get(a.id) !== null) {
-      throw new Error("Tried to create an artifact #" + a.id + " but that ID is already taken.");
+      throw new Error(`Tried to create an artifact #${a.id} but that ID is already taken.`);
     }
 
     // set some flags based on the artifact type - for compatibility with EDX artifact types
     if ((a.type === Artifact.TYPE_DRINKABLE || a.type === Artifact.TYPE_EDIBLE) && a.dice > 0 && a.sides > 0) {
-        a.is_healing = true;
+      a.is_healing = true;
     }
     if (a.type === Artifact.TYPE_WEAPON || a.type === Artifact.TYPE_MAGIC_WEAPON) {
-        a.is_weapon = true;
+      a.is_weapon = true;
     }
     if (a.type === Artifact.TYPE_WEARABLE) {
-        a.is_wearable = true;
+      a.is_wearable = true;
     }
 
     this.all.push(a);
@@ -89,8 +87,10 @@ export default class ArtifactRepository {
    * renames weapons and armor so the names aren't duplicates of player artifacts
    */
   deduplicate() {
-    for (const item of this.all.filter(i => i.player_brought === true)) {
-      for (const item2 of this.all.filter(i => i.player_brought === false && i.name.toLowerCase() === item.name.toLowerCase())) {
+    for (const item of this.all.filter((i) => i.player_brought === true)) {
+      for (const item2 of this.all.filter(
+        (i) => i.player_brought === false && i.name.toLowerCase() === item.name.toLowerCase(),
+      )) {
         item2.name += "#";
       }
     }
@@ -102,7 +102,7 @@ export default class ArtifactRepository {
    * @return Artifact
    */
   get(id) {
-    const a = this.all.find(a => a.id === id);
+    const a = this.all.find((a) => a.id === id);
     return a || null;
   }
 
@@ -113,7 +113,7 @@ export default class ArtifactRepository {
    * @return Artifact
    */
   getByName(name: string) {
-    const a = this.all.find(a => a.match(name));
+    const a = this.all.find((a) => a.match(name));
     return a || null;
   }
 
@@ -127,12 +127,12 @@ export default class ArtifactRepository {
   getLocalByName(name: string, reveal_embedded = true) {
     // fixme: should this only return the first match? or all matches?
     // try exact match first, then fuzzy match
-    let art = this.all.find(a => a.isHere() && a.name === name);
-    if (typeof art === 'undefined') {
-      art = this.all.find(a => a.isHere() && a.match(name));
+    let art = this.all.find((a) => a.isHere() && a.name === name);
+    if (typeof art === "undefined") {
+      art = this.all.find((a) => a.isHere() && a.match(name));
     }
 
-    if (typeof art === 'undefined') {
+    if (typeof art === "undefined") {
       return null;
     } else {
       if (art.embedded && reveal_embedded) art.reveal();
@@ -147,7 +147,7 @@ export default class ArtifactRepository {
   updateVisible() {
     const visible: Artifact[] = [];
     const inRoom: Artifact[] = [];
-    for (const a of this.all.filter(a => a.room_id === game.rooms.current_room.id)) {
+    for (const a of this.all.filter((a) => a.room_id === game.rooms.current_room.id)) {
       a.updateContents();
       inRoom.push(a);
       if (!a.embedded) {
@@ -163,10 +163,7 @@ export default class ArtifactRepository {
    * @return boolean
    */
   isLightSource() {
-    if (this.all.some(a => Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.isHere())) {
-      return true;
-    }
-    return false;
+    return this.all.some((a) => Artifact.TYPE_LIGHT_SOURCE && a.is_lit && a.isHere());
   }
 
   /**
@@ -199,5 +196,4 @@ export default class ArtifactRepository {
     }
     return data;
   }
-
 }

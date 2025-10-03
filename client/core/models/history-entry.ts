@@ -3,12 +3,11 @@
  * Holds the commands and results run previously.
  */
 export class HistoryEntry {
-
   public command: string;
   public results: {
-    text: string,
-    type: string,
-    markdown: boolean
+    text: string;
+    type: string;
+    markdown: boolean;
   }[] = [];
 
   constructor(command) {

@@ -1,4 +1,4 @@
-import Game from "../models/game";
+import type Game from "../models/game";
 
 /**
  * Interface BaseCommand.
@@ -15,7 +15,7 @@ export interface BaseCommand {
    * Optional function to change what appears in the history window.
    * @param verb
    */
-  history_display? (verb: string);
+  history_display?(verb: string);
 
   /**
    * The main function that contains the command logic
@@ -36,5 +36,5 @@ export class CustomCommand implements BaseCommand {
   description?: string;
   examples?: string[];
   game: Game;
-  run(verb: string, arg: string) { }
+  run(verb: string, arg: string) {}
 }

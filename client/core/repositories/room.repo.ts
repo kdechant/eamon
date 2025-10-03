@@ -1,6 +1,6 @@
-import {Room} from "../models/room";
-import Game from "../models/game";
-import { parseJSON } from '../utils/index'
+import type Game from "../models/game";
+import { Room } from "../models/room";
+import { parseJSON } from "../utils";
 
 declare let game: Game;
 
@@ -9,7 +9,6 @@ declare let game: Game;
  * Storage class for all room data.
  */
 export default class RoomRepository {
-
   /**
    * An array of all the Room objects
    */
@@ -39,7 +38,7 @@ export default class RoomRepository {
    * @return Room
    */
   get(room_id: number) {
-    const r = this.rooms.find(x => x.id === room_id);
+    const r = this.rooms.find((x) => x.id === room_id);
     return r || null;
   }
 
@@ -54,12 +53,12 @@ export default class RoomRepository {
 
   /**
    * Gets a random room.
-   * @param (number[]) An array of rooms to exclude.
    * @return Room
+   * @param exclude
    */
   getRandom(exclude: number[] = []) {
     let roll = game.diceRoll(1, this.rooms.length) - 1;
-    while (exclude.find(x => x === roll)) {
+    while (exclude.find((x) => x === roll)) {
       roll = game.diceRoll(1, this.rooms.length) - 1;
     }
     return this.rooms[roll];

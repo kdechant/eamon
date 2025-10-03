@@ -1,9 +1,8 @@
-import Game from "../models/game";
-
-import {BaseCommand} from "../commands/base-command";
-import {CustomCommand} from "../commands/base-command";
-import {core_commands} from "../commands/core-commands";
-import {CommandException} from "../utils/command.exception";
+import type { BaseCommand } from "../commands/base-command";
+import { CustomCommand } from "../commands/base-command";
+import { core_commands } from "../commands/core-commands";
+import type Game from "../models/game";
+import { CommandException } from "../utils/command.exception";
 
 declare let game: Game;
 
@@ -12,16 +11,15 @@ declare let game: Game;
  * user input.
  */
 export class CommandParser {
-
   /**
    * A hash map of all the verbs used by the registered commands
    */
-  available_verbs: { [key: string]: string; } = {};
+  available_verbs: { [key: string]: string } = {};
 
   /**
    * A hash map containing all the registered commands, keyed by command machine name
    */
-  available_commands: { [key: string]: BaseCommand; } = {};
+  available_commands: { [key: string]: BaseCommand } = {};
 
   constructor(custom_commands) {
     for (const i in core_commands) {
@@ -33,9 +31,9 @@ export class CommandParser {
       const cmd = new CustomCommand();
       cmd.name = c.name;
       cmd.verbs = c.verbs;
-      cmd.category = c.category;  // for command list modal
-      cmd.description = c.description;  // for command list modal
-      cmd.examples = c.examples;  // for command list modal
+      cmd.category = c.category; // for command list modal
+      cmd.description = c.description; // for command list modal
+      cmd.examples = c.examples; // for command list modal
       cmd.run = c.run;
       this.register(cmd);
     }
@@ -46,14 +44,12 @@ export class CommandParser {
    * @param {BaseCommand} command The command object, a subclass of BaseCommand
    */
   public register(command: BaseCommand): void {
-
     // add to the list of verbs, used for parsing commands
     for (const i in command.verbs) {
       this.available_verbs[command.verbs[i]] = command.name;
     }
     // add to the list of all the command objects
     this.available_commands[command.name] = command;
-
   }
 
   /**
@@ -66,7 +62,6 @@ export class CommandParser {
    *   to prevent multiple game clock ticks.
    */
   public run(input: string, tick = true): void {
-
     input = input.toLowerCase().trim();
     const space_pos = input.indexOf(" ");
     let verb: string, args: string;
@@ -100,11 +95,11 @@ export class CommandParser {
       // found exactly one match. run it.
       const command = this.available_commands[this.available_verbs[command_match[0]]];
       let ct = command_match[0];
-      if (typeof command.history_display === 'function') {
+      if (typeof command.history_display === "function") {
         ct = command.history_display(verb);
       }
       if (tick) {
-        game.history.push(ct + (args.length ? " " + args : ""));
+        game.history.push(ct + (args.length ? ` ${args}` : ""));
       }
       try {
         command.run(verb, args);
@@ -117,22 +112,19 @@ export class CommandParser {
           game.history.write(ex.message);
         } else {
           // an unexpected JS error. show in console for debugging.
-          game.history.write("Error: " + ex.message);
+          game.history.write(`Error: ${ex.message}`);
           console.error(ex);
         }
         game.endTurn();
       }
-
     } else if (command_match.length > 1) {
       game.history.push(input);
-      game.history.write("Did you mean '" + command_match.join("' or '") + "'?");
+      game.history.write(`Did you mean '${command_match.join("' or '")}'?`);
       game.queue.run();
     } else {
       game.history.push(input);
-      game.history.write("I don't know the command '" + verb + "'!");
+      game.history.write(`I don't know the command '${verb}'!`);
       game.queue.run();
     }
-
   }
-
 }

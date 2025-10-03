@@ -1,5 +1,5 @@
-import { Monster, GroupMonster } from "../models/monster";
-import Game from "../models/game";
+import type Game from "../models/game";
+import { GroupMonster, Monster } from "../models/monster";
 
 declare let game: Game;
 
@@ -8,7 +8,6 @@ declare let game: Game;
  * Storage class for all monster data.
  */
 export default class MonsterRepository {
-
   /**
    * An array of all the Monster objects
    */
@@ -31,7 +30,7 @@ export default class MonsterRepository {
       // unpack group monsters
       // TODO: move this to the GroupMonster class?
       if (m.count > 1 && !restoring_save) {
-        for (let i=1; i <= m.count; i++) {
+        for (let i = 1; i <= m.count; i++) {
           // Group monsters can have artifacts as weapons. In this case, the weapon ID in the database represents the
           // first individual's weapon, with subsequent artifacts being used by subsequent individuals.
           // e.g., if the weapon_id in the DB is 11, the first individual gets weapon #11, the second gets weapon #12, etc.
@@ -43,11 +42,11 @@ export default class MonsterRepository {
           // The monster will be part of the group, but each individual maintains its own location, damage, and weapon id
           const child = this.add({
             ...m,
-            id: monster.id + 0.0001 * i,   // this can handle groups up to 9999 members
+            id: monster.id + 0.0001 * i, // this can handle groups up to 9999 members
             parent: monster,
-            description: "",  // just to save memory
+            description: "", // just to save memory
             count: 1,
-            weapon_id
+            weapon_id,
           });
           if (weapon_id > 0) {
             game.artifacts.get(weapon_id).monster_id = child.id;
@@ -56,20 +55,24 @@ export default class MonsterRepository {
         }
         // any non-weapon artifacts the group is carrying get given to the first member
         monster.updateInventory();
-        monster.inventory.forEach(a => {
-          a.monster_id = monster.children[0].id
+        monster.inventory.forEach((a) => {
+          a.monster_id = monster.children[0].id;
         });
         monster.updateInventory();
-        monster.children.forEach(c => c.updateInventory());
+        monster.children.forEach((c) => {
+          c.updateInventory();
+        });
       }
     });
 
     if (restoring_save) {
       // repair the parent-child relationships for group monsters
-      this.all.filter(m => m.id !== Math.floor(m.id)).forEach(m => {
-        m.parent = this.get(Math.floor(m.id));
-        m.parent.children.push(m);
-      });
+      this.all
+        .filter((m) => m.id !== Math.floor(m.id))
+        .forEach((m) => {
+          m.parent = this.get(Math.floor(m.id));
+          m.parent.children.push(m);
+        });
     }
   }
 
@@ -86,7 +89,7 @@ export default class MonsterRepository {
     // error if there is an ID conflict
     if (this.get(monster_data.id) !== null) {
       console.log(this.get(monster_data.id));
-      throw new Error("Tried to create a monster #" + monster_data.id + " but that ID is already taken.");
+      throw new Error(`Tried to create a monster #${monster_data.id} but that ID is already taken.`);
     }
 
     const m = monster_data.count > 1 ? new GroupMonster() : new Monster();
@@ -94,9 +97,9 @@ export default class MonsterRepository {
     if (monster_data.synonyms) {
       monster_data.aliases = monster_data.synonyms.split(",");
     }
-    if (typeof monster_data.combat_verbs === 'string') {
+    if (typeof monster_data.combat_verbs === "string") {
       if (monster_data.combat_verbs) {
-        monster_data.combat_verbs = monster_data.combat_verbs.split(",").map(v => v.trim());
+        monster_data.combat_verbs = monster_data.combat_verbs.split(",").map((v) => v.trim());
       } else {
         monster_data.combat_verbs = [];
       }
@@ -139,13 +142,13 @@ export default class MonsterRepository {
       2: player_data.wpn_bow,
       3: player_data.wpn_club,
       4: player_data.wpn_spear,
-      5: player_data.wpn_sword
+      5: player_data.wpn_sword,
     };
     player_data.spell_abilities = {
-      "power": player_data.spl_power,
-      "heal": player_data.spl_heal,
-      "blast": player_data.spl_blast,
-      "speed": player_data.spl_speed
+      power: player_data.spl_power,
+      heal: player_data.spl_heal,
+      blast: player_data.spl_blast,
+      speed: player_data.spl_speed,
     };
 
     game.player = new Monster();
@@ -156,18 +159,18 @@ export default class MonsterRepository {
     game.player.room_id = 1;
     game.player.reaction = Monster.RX_FRIEND;
     game.player.spell_abilities_original = {
-      "power": game.player.spell_abilities.power,
-      "heal": game.player.spell_abilities.heal,
-      "blast": game.player.spell_abilities.blast,
-      "speed": game.player.spell_abilities.speed
+      power: game.player.spell_abilities.power,
+      heal: game.player.spell_abilities.heal,
+      blast: game.player.spell_abilities.blast,
+      speed: game.player.spell_abilities.speed,
     };
-    game.player.spell_counters = { 'speed': 0 };
+    game.player.spell_counters = { speed: 0 };
 
     game.player.stats_original = {
       hardiness: game.player.hardiness,
       agility: game.player.agility,
       charisma: game.player.charisma,
-    }
+    };
 
     // Player has a base to-hit of 25% (in addition to weapon ability)
     // Why? Because the Classic Eamon 4.0-6.0 formula didn't account for defender's agility, and thus the
@@ -197,7 +200,7 @@ export default class MonsterRepository {
    * @return Monster|GroupMonster
    */
   public get(id) {
-    const m = this.all.find(x => x.id === id);
+    const m = this.all.find((x) => x.id === id);
     return m || null;
   }
 
@@ -207,7 +210,7 @@ export default class MonsterRepository {
    * @return Monster
    */
   public getByName(name: string) {
-    const m = this.all.find(x => x.match(name));
+    const m = this.all.find((x) => x.match(name));
     return m || null;
   }
 
@@ -217,7 +220,7 @@ export default class MonsterRepository {
    * @return Monster
    */
   getLocalByName(name: string) {
-    const mon = this.all.find(m => m.isHere() && !m.parent && m.match(name));
+    const mon = this.all.find((m) => m.isHere() && !m.parent && m.match(name));
     return mon || null;
   }
 
@@ -227,7 +230,7 @@ export default class MonsterRepository {
    * @return Monster[]
    */
   getByRoom(room_id: number) {
-    return this.all.filter(x => x.room_id === room_id);
+    return this.all.filter((x) => x.room_id === room_id);
   }
 
   /**
@@ -237,7 +240,7 @@ export default class MonsterRepository {
    * @return Monster
    */
   public getRandom(include_player = false) {
-    const mons = this.all.filter(x => x.id !== Monster.PLAYER || include_player);
+    const mons = this.all.filter((x) => x.id !== Monster.PLAYER || include_player);
     return mons[game.diceRoll(1, mons.length) - 1];
   }
 
@@ -246,11 +249,14 @@ export default class MonsterRepository {
    * @return Monster[]
    */
   public updateVisible() {
-
     // handle the virtual group monster pointers (this is a no-op for single monsters)
-    this.all.forEach(m => m.updateVirtualMonster());
+    this.all.forEach((m) => {
+      m.updateVirtualMonster();
+    });
 
-    const monsters: Monster[] = this.all.filter(x => x.id !== Monster.PLAYER && x.room_id === game.player.room_id && !x.parent);
+    const monsters: Monster[] = this.all.filter(
+      (x) => x.id !== Monster.PLAYER && x.room_id === game.player.room_id && !x.parent,
+    );
     game.in_battle = false;
     for (const m of monsters) {
       // check monster reactions
@@ -270,7 +276,6 @@ export default class MonsterRepository {
   public serialize() {
     return JSON.parse(JSON.stringify(this.all, serializeFilter));
   }
-
 }
 
 /**
@@ -281,9 +286,9 @@ export default class MonsterRepository {
 const serializeFilter = (key, value) => {
   // the filtering only applies when we serialize a Monster object, not to others
   // using duck typing to tell if it's a monster because "typeof foo" only returns "object", not the class name
-  if (value && value.hasOwnProperty('agility')) {
+  if (value?.hasOwnProperty("agility")) {
     // clone the object with only some props (using destructuring to discard the others)
-    const {inventory, parent, children, weapon, saved_games, weight_carried, profit, ...m} = value;
+    const { inventory, parent, children, weapon, saved_games, weight_carried, profit, ...m } = value;
     return m;
   } else {
     // array or some other object that's not a Monster

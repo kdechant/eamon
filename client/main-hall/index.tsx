@@ -7,7 +7,7 @@ import store from './store/index';
 
 ReactDOM.render(
   <Provider store={store}>
-    <MainHall />
+    <MainHall/>
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

@@ -1,5 +1,5 @@
-import {Effect} from "../models/effect";
-import Game from "../models/game";
+import { Effect } from "../models/effect";
+import type Game from "../models/game";
 
 declare let game: Game;
 
@@ -8,7 +8,6 @@ declare let game: Game;
  * Storage class for all effect data.
  */
 export default class EffectRepository {
-
   /**
    * An array of all the Effect objects
    */
@@ -40,7 +39,7 @@ export default class EffectRepository {
 
     if (this.get(e.id) !== null) {
       console.log(this.get(e.id));
-      throw new Error("Tried to create an effect #" + e.id + " but that ID is already taken.");
+      throw new Error(`Tried to create an effect #${e.id} but that ID is already taken.`);
     }
 
     this.all.push(e);
@@ -58,7 +57,7 @@ export default class EffectRepository {
    * @return Effect
    */
   public get(id): Effect {
-    const e = this.all.find(x => x.id === id);
+    const e = this.all.find((x) => x.id === id);
     return e || null;
   }
 
@@ -81,7 +80,7 @@ export default class EffectRepository {
       if (inline) {
         // print on the same line as the last effect
         // FIXME: This won't work with the new operations queue.
-        game.history.append(" " + text);
+        game.history.append(` ${text}`);
       } else {
         // print as a new paragraph
         const final_style = style || ef.style || "normal";
@@ -95,7 +94,7 @@ export default class EffectRepository {
       }
       ef.seen = true;
     } else {
-      game.history.write("Effect #" + id + " not found!");
+      game.history.write(`Effect #${id} not found!`);
     }
   }
 
@@ -105,7 +104,8 @@ export default class EffectRepository {
    *   The IDs of the effects to print
    */
   public printSequence(effectIds: number[]): void {
-    effectIds.forEach(id => game.effects.print(id));
+    effectIds.forEach((id) => {
+      game.effects.print(id);
+    });
   }
-
 }

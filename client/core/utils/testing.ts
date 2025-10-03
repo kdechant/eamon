@@ -2,8 +2,8 @@
  * This file contains some helper functions used during unit testing.
  */
 import axios from "axios";
-import Game from "../../core/models/game";
-import {Monster} from "../models/monster";
+import type Game from "../../core/models/game";
+import { Monster } from "../models/monster";
 
 declare let game: Game;
 
@@ -11,25 +11,33 @@ declare let game: Game;
  * Init from the mock data. Used in the unit tests.
  */
 export function initMockGame(game) {
-
-  game.slug = 'demo1';
+  game.slug = "demo1";
   const path = "http://localhost:8000/static/mock-data";
-  return axios.all([
-    axios.get(path + '/adventure.json'),
-    axios.get(path + '/rooms.json'),
-    axios.get(path + '/artifacts.json'),
-    axios.get(path + '/effects.json'),
-    axios.get(path + '/monsters.json'),
-    axios.get(path + '/player.json'),
-  ])
-   .then(responses => {
+  return axios
+    .all([
+      axios.get(path + "/adventure.json"),
+      axios.get(path + "/rooms.json"),
+      axios.get(path + "/artifacts.json"),
+      axios.get(path + "/effects.json"),
+      axios.get(path + "/monsters.json"),
+      axios.get(path + "/player.json"),
+    ])
+    .then((responses) => {
+      game.init(
+        responses[0].data,
+        responses[1].data,
+        responses[2].data,
+        responses[3].data,
+        responses[4].data,
+        [],
+        responses[5].data,
+        [],
+      );
 
-     game.init(responses[0].data, responses[1].data, responses[2].data, responses[3].data, responses[4].data, [], responses[5].data, []);
+      game.queue.delay_time = 0; // bypasses the history setTimeout() calls which break the tests
 
-     game.queue.delay_time = 0; // bypasses the history setTimeout() calls which break the tests
-
-     game.start();
-   });
+      game.start();
+    });
 }
 
 const gameData: Record<string, string> = {};
@@ -38,43 +46,42 @@ const gameData: Record<string, string> = {};
  * Init from the live game data (data gotten from database)
  */
 export async function initLiveGame(game: Game) {
-
   let responses = [];
   if (gameData[game.slug]) {
-    console.log('reading cached data');
+    console.log("reading cached data");
     responses = JSON.parse(gameData[game.slug]);
   } else {
     const path = "http://localhost:8000/api/adventures/" + game.slug;
     responses = await axios.all([
-      axios.get(path + ''),
-      axios.get(path + '/rooms'),
-      axios.get(path + '/artifacts'),
-      axios.get(path + '/effects'),
-      axios.get(path + '/monsters'),
-      axios.get(path + '/hints'),
-      axios.get('http://localhost:8000/static/mock-data/player.json'),
+      axios.get(path + ""),
+      axios.get(path + "/rooms"),
+      axios.get(path + "/artifacts"),
+      axios.get(path + "/effects"),
+      axios.get(path + "/monsters"),
+      axios.get(path + "/hints"),
+      axios.get("http://localhost:8000/static/mock-data/player.json"),
     ]);
     gameData[game.slug] = JSON.stringify(responses);
   }
 
   if (responses) {
-     game.init(
-       responses[0].data,
-       responses[1].data,
-       responses[2].data,
-       responses[3].data,
-       responses[4].data,
-       responses[5].data,
-       responses[6].data,
-       []
-     );
+    game.init(
+      responses[0].data,
+      responses[1].data,
+      responses[2].data,
+      responses[3].data,
+      responses[4].data,
+      responses[5].data,
+      responses[6].data,
+      [],
+    );
 
-     game.queue.delay_time = 0; // bypasses the setTimeout() calls which break the tests
+    game.queue.delay_time = 0; // bypasses the setTimeout() calls which break the tests
 
-     game.died = false;
-     game.won = false;
-     game.start();
-   }
+    game.died = false;
+    game.won = false;
+    game.start();
+  }
 }
 
 export function expectEffectSeen(id) {
@@ -110,10 +117,10 @@ export function expectMonsterIsNotHere(id) {
  */
 export function playerAttackMock(hit: boolean, damage: number, special: number[] = []) {
   return [
-    hit ? 6 : 96,  // 6 = non-critical hit, 96 = non-fumble miss
+    hit ? 6 : 96, // 6 = non-critical hit, 96 = non-fumble miss
     damage,
-    ...special
-  ]
+    ...special,
+  ];
 }
 
 /**
@@ -122,13 +129,13 @@ export function playerAttackMock(hit: boolean, damage: number, special: number[]
  * @param damage  The amount of damage the attack should do (before armor)
  * @param special  Results of any dice rolls in the attackDamageAfter event handler, or NPC actions
  */
-export function playerHit(target: string|Monster, damage: number, special: number[] = []) {
+export function playerHit(target: string | Monster, damage: number, special: number[] = []) {
   game.mock_random_numbers = [
-    6,  // 6 = non-critical hit
+    6, // 6 = non-critical hit
     damage,
-    0,  // skip wpn ability increase
-    0,  // skip ae increase
-    ...special
+    0, // skip wpn ability increase
+    0, // skip ae increase
+    ...special,
   ];
   if (target instanceof Monster) {
     target = target.name;
@@ -154,10 +161,12 @@ export function movePlayer(room_id) {
  */
 export function moveToInventory(artifact_ids: number | number[], monster_id = 0) {
   game.skip_battle_actions = true;
-  if (typeof artifact_ids === 'number') {
+  if (typeof artifact_ids === "number") {
     artifact_ids = [artifact_ids];
   }
-  artifact_ids.forEach(a => game.artifacts.get(a).moveToInventory(monster_id));
+  artifact_ids.forEach((a) => {
+    game.artifacts.get(a).moveToInventory(monster_id);
+  });
   game.history.push(`moveToInventory: monster ${monster_id} now has artifacts ${artifact_ids}`);
 }
 

@@ -1,7 +1,8 @@
-import {HistoryEntry} from "./history-entry";
+import type Game from "./game";
+import { HistoryEntry } from "./history-entry";
 
 // The "game" object contains the event handlers and custom commands defined for the loaded adventure.
-declare let game;
+declare let game: Game;
 
 /**
  * History manager model. Provides a container for all the history entries.
@@ -9,9 +10,9 @@ declare let game;
 export class HistoryManager {
   history: HistoryEntry[];
   current_entry: HistoryEntry;
-  index: number;  // used for the history recall
+  index: number; // used for the history recall
   page_size = 20;
-  counter = 0;  // used for display pagination
+  counter = 0; // used for display pagination
   suppressNextMessage = false;
 
   constructor() {
@@ -60,7 +61,7 @@ export class HistoryManager {
     }
     this.current_entry.push(text, type, markdown);
 
-    const no_space = type.indexOf('no-space') !== -1;
+    const no_space = type.indexOf("no-space") !== -1;
     this.counter += (no_space ? 0 : 1) + Math.floor(text.length / 75);
   }
 
@@ -141,7 +142,7 @@ export class HistoryManager {
    */
   getOutput(index = 0) {
     if (this.history.length > 0) {
-      const res = this.history[this.history.length - 1]["results"];
+      const res = this.history[this.history.length - 1].results;
       if (index < 0) {
         return res[res.length + index];
       } else if (res.length >= index + 1) {
@@ -162,7 +163,7 @@ export class HistoryManager {
    */
   getLastOutput(num = 1) {
     if (this.history.length > 0) {
-      const res = this.history[this.history.length - 1]["results"];
+      const res = this.history[this.history.length - 1].results;
       if (res.length >= num) {
         return res[res.length - num];
       } else {
@@ -184,12 +185,12 @@ export class HistoryManager {
   getPastCommands() {
     const commands = [];
 
-    this.history.forEach(e => {
-      if (e.command !== '' && commands[commands.length - 1] !== e.command) {
+    this.history.forEach((e) => {
+      if (e.command !== "" && commands[commands.length - 1] !== e.command) {
         commands.push(e.command);
       }
     });
-    return commands.slice(0);  // no need to include the latest command here
+    return commands.slice(0); // no need to include the latest command here
   }
 
   /**
@@ -206,12 +207,12 @@ export class HistoryManager {
    */
   summary() {
     const output = [];
-    this.history.forEach(
-    h => {
+    this.history.forEach((h) => {
       output.push(`-- ${h.command} --`);
-      h.results.forEach(r => output.push(r.text));
+      h.results.forEach((r) => {
+        output.push(r.text);
+      });
     });
     return output;
   }
-
 }

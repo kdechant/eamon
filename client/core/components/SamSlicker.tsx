@@ -1,10 +1,9 @@
-import * as pluralize from 'pluralize';
-import * as React from 'react';
-import {getAxios} from "../../main-hall/utils/api";
-import {PropsWithGame} from "../types";
+import * as pluralize from "pluralize";
+import type * as React from "react";
+import { getAxios } from "../../main-hall/utils/api";
+import type { PropsWithGame } from "../types";
 
 const SamSlicker: React.FC<PropsWithGame> = (props) => {
-
   // public constructor(props) {
   //   super(props);
   //   // the game object is created globally and gets added to the props here
@@ -36,13 +35,13 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
   // }
 
   const sell = (artifact) => {
-    console.log('sell', artifact);
+    console.log("sell", artifact);
     const game = props.game;
     const i = game.player.inventory.indexOf(artifact);
     game.player.inventory.splice(i, 1);
     game.player.profit += artifact.value;
     artifact.destroy();
-    console.log('done with sell');
+    console.log("done with sell");
     props.setGameState(game);
   };
 
@@ -59,22 +58,22 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
     // };
     // axios.post(`ratings.json`, rating_data)
     //   .then(res => {
-        const player_id = window.localStorage.getItem('player_id')
-        axios.put(`players/${player_id}`, game.player)
-          .then(() => {
-            window.location.href = "/main-hall/hall";
-          })
-          .catch(error => {
-            game.after_sell_messages.push("Error saving player data!");
-            props.setGameState(game);
-            console.error(error);
-          });
-      // }).catch(err => {
-      //   game.after_sell_messages.push("Error saving rating!");
-      //   console.error(err);
-      // }
+    const player_id = window.localStorage.getItem("player_id");
+    axios
+      .put(`players/${player_id}`, game.player)
+      .then(() => {
+        window.location.href = "/main-hall/hall";
+      })
+      .catch((error) => {
+        game.after_sell_messages.push("Error saving player data!");
+        props.setGameState(game);
+        console.error(error);
+      });
+    // }).catch(err => {
+    //   game.after_sell_messages.push("Error saving rating!");
+    //   console.error(err);
+    // }
     // );
-
   };
   //
   // private updateRating = (type, value) => {
@@ -85,12 +84,15 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
   // };
 
   const game = props.game;
-  const weapons = game.player.inventory.filter(x => x.is_weapon);
+  const weapons = game.player.inventory.filter((x) => x.is_weapon);
 
   if (weapons.length > 4) {
     return (
       <div className="sell-items">
-        <p>As you enter the Main Hall, {game.lwm_name} approaches you and says, &quot;You have too many weapons to keep them all. Four is the legal limit.&quot;</p>
+        <p>
+          As you enter the Main Hall, {game.lwm_name} approaches you and says, &quot;You have too many weapons to keep
+          them all. Four is the legal limit.&quot;
+        </p>
         <p>Your weapons are:</p>
         <table className="table artifacts-list">
           <thead>
@@ -103,73 +105,78 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
             </tr>
           </thead>
           <tbody>
-          {weapons.map(artifact => {
-            const icon_url = '/static/images/ravenmore/128/' + artifact.getIcon() + '.png';
-            return (
-              <tr className="artifact" key={artifact.id}>
-                <td>{ artifact.name }</td>
-                <td className="weapon-icon">
-                  <img src={icon_url} alt={ artifact.getTypeName() } title={ artifact.getTypeName() } />
-                </td>
-                <td>{ artifact.weapon_odds }%</td>
-                <td>{ artifact.dice } d { artifact.sides }</td>
-                <td>{ artifact.value } gp</td>
-                <td>
-                  <button className="btn btn-primary" onClick={() => sell(artifact)}>Sell</button>
-                </td>
-              </tr>
-            );
-          }
-          )}
+            {weapons.map((artifact) => {
+              const icon_url = "/static/images/ravenmore/128/" + artifact.getIcon() + ".png";
+              return (
+                <tr className="artifact" key={artifact.id}>
+                  <td>{artifact.name}</td>
+                  <td className="weapon-icon">
+                    <img src={icon_url} alt={artifact.getTypeName()} title={artifact.getTypeName()} />
+                  </td>
+                  <td>{artifact.weapon_odds}%</td>
+                  <td>
+                    {artifact.dice} d {artifact.sides}
+                  </td>
+                  <td>{artifact.value} gp</td>
+                  <td>
+                    <button className="btn btn-primary" onClick={() => sell(artifact)}>
+                      Sell
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-        </div>
+      </div>
     );
   }
 
-    // build the rating buttons
-    // const ratingButtons = (
-    //   <div className="container sell-items">
-    //     <div className="row">
-    //       <div className="ratings col-md-6 offset-md-3 p-2">
-    //         <h3>Rate this adventure</h3>
-    //         <p>What did you think of this adventure overall?</p>
-    //         <p>
-    //           {[1,2,3,4,5].map(i => (
-    //             <a key={i}
-    //                onClick={() => this.updateRating('overall', i)}
-    //                className={this.state.rating.overall >= i ? 'active' : 'inactive'}>
-    //               <img src="/static/images/ravenmore/128/star.png" alt={"Star " + i} />
-    //             </a>
-    //           ))}
-    //         </p>
-    //         <p>How would you rate the difficulty of combat?</p>
-    //         <p>
-    //           {[1,2,3,4,5].map(i => (
-    //             <a key={i}
-    //                onClick={() => this.updateRating('combat', i)}
-    //                className={this.state.rating.combat >= i ? 'active' : ''}>
-    //               <img src="/static/images/ravenmore/128/sword.png" alt={"Sword " + i} />
-    //             </a>
-    //           ))}
-    //         </p>
-    //         <p>How would you rate the difficulty of the puzzles?</p>
-    //           {[1,2,3,4,5].map(i => (
-    //             <a key={i}
-    //                onClick={() => this.updateRating('puzzle', i)}
-    //                className={this.state.rating.puzzle >= i ? 'active' : ''}>
-    //               <img src="/static/images/ravenmore/128/tome.png" alt={"Book " + i} />
-    //             </a>
-    //           ))}
-    //       </div>
-    //     </div>
-    //   </div>
-    // );
+  // build the rating buttons
+  // const ratingButtons = (
+  //   <div className="container sell-items">
+  //     <div className="row">
+  //       <div className="ratings col-md-6 offset-md-3 p-2">
+  //         <h3>Rate this adventure</h3>
+  //         <p>What did you think of this adventure overall?</p>
+  //         <p>
+  //           {[1,2,3,4,5].map(i => (
+  //             <a key={i}
+  //                onClick={() => this.updateRating('overall', i)}
+  //                className={this.state.rating.overall >= i ? 'active' : 'inactive'}>
+  //               <img src="/static/images/ravenmore/128/star.png" alt={"Star " + i} />
+  //             </a>
+  //           ))}
+  //         </p>
+  //         <p>How would you rate the difficulty of combat?</p>
+  //         <p>
+  //           {[1,2,3,4,5].map(i => (
+  //             <a key={i}
+  //                onClick={() => this.updateRating('combat', i)}
+  //                className={this.state.rating.combat >= i ? 'active' : ''}>
+  //               <img src="/static/images/ravenmore/128/sword.png" alt={"Sword " + i} />
+  //             </a>
+  //           ))}
+  //         </p>
+  //         <p>How would you rate the difficulty of the puzzles?</p>
+  //           {[1,2,3,4,5].map(i => (
+  //             <a key={i}
+  //                onClick={() => this.updateRating('puzzle', i)}
+  //                className={this.state.rating.puzzle >= i ? 'active' : ''}>
+  //               <img src="/static/images/ravenmore/128/tome.png" alt={"Book " + i} />
+  //             </a>
+  //           ))}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   let exitButtons = (
     <div>
       {/*{ratingButtons}*/}
-      <button className="btn btn-primary" onClick={savePlayer}>Save and go to main hall</button>
+      <button className="btn btn-primary" onClick={savePlayer}>
+        Save and go to main hall
+      </button>
     </div>
   );
   if (game.demo) {
@@ -178,11 +185,25 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
         {/*{ratingButtons}*/}
         <p>You have completed the adventure with the demo character. The demo character cannot be saved.</p>
         <p>
-          <button className="btn btn-primary mr-2" onClick={() => { window.location.href = "/main-hall" }}>Create your own character</button>
-          <button className="btn btn-primary" onClick={() => { window.location.href = "/adventure-list" }}>Back to adventure list</button>
+          <button
+            className="btn btn-primary mr-2"
+            onClick={() => {
+              window.location.href = "/main-hall";
+            }}
+          >
+            Create your own character
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              window.location.href = "/adventure-list";
+            }}
+          >
+            Back to adventure list
+          </button>
         </p>
       </div>
-    )
+    );
   }
 
   const profit = game.player.profit.toLocaleString();
@@ -192,25 +213,31 @@ const SamSlicker: React.FC<PropsWithGame> = (props) => {
       {game.ss_effect && (
         <>
           <p>{game.effects.get(game.ss_effect).text}</p>
-          <p>You receive {profit} {money_name} total.</p>
+          <p>
+            You receive {profit} {money_name} total.
+          </p>
         </>
       )}
       {!game.ss_effect && (
         <>
-          <p>When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He examines your items and pays you what they are worth...</p>
-          <p>He pays you {profit} {money_name} total.</p>
+          <p>
+            When you reach the main hall, you deliver your goods to {game.ss_name}, the local buyer for such things. He
+            examines your items and pays you what they are worth...
+          </p>
+          <p>
+            He pays you {profit} {money_name} total.
+          </p>
         </>
       )}
 
       {/* messages that appear after the sale completes, like "the rebels reward you for killing darth vader" */}
-      {game.after_sell_messages.map((msg, index) =>
+      {game.after_sell_messages.map((msg, index) => (
         <p key={index}>{msg}</p>
-      )}
+      ))}
 
       {exitButtons}
     </div>
   );
-
-}
+};
 
 export default SamSlicker;

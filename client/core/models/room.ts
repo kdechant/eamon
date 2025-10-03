@@ -1,29 +1,28 @@
-import {Loadable} from "./loadable";
-import Game from "./game";
+import type Game from "./game";
+import { Loadable } from "./loadable";
 
 declare let game: Game;
 
 export class RoomExit extends Loadable {
-
   static EXIT = -999;
-  static EXIT_SILENT = -998;  // same as regular exit, but without the "ride off into the sunset" message
+  static EXIT_SILENT = -998; // same as regular exit, but without the "ride off into the sunset" message
 
   public direction: string;
   public room_to: number;
   public door_id: number;
   public effect_id: number;
 
-  private directions: { [key: string]: string; } = {
-    "n": "north",
-    "ne": "northeast",
-    "e": "east",
-    "se": "southeast",
-    "s": "south",
-    "sw": "southwest",
-    "w": "west",
-    "nw": "northwest",
-    "u": "up",
-    "d": "down"
+  private directions: { [key: string]: string } = {
+    n: "north",
+    ne: "northeast",
+    e: "east",
+    se: "southeast",
+    s: "south",
+    sw: "southwest",
+    w: "west",
+    nw: "northwest",
+    u: "up",
+    d: "down",
   };
 
   /**
@@ -48,11 +47,9 @@ export class RoomExit extends Loadable {
     }
     return this.direction;
   }
-
 }
 
 export class Room extends Loadable {
-
   public id: number;
   public name: string;
   public description: string;
@@ -69,7 +66,7 @@ export class Room extends Loadable {
   /**
    * A container for custom data used by specific adventures
    */
-  public data: { [key: string]: any; } = {};
+  public data: { [key: string]: any } = {};
 
   /**
    * Loads data from JSON source into the object properties.
@@ -94,7 +91,7 @@ export class Room extends Loadable {
    * Shows the room description and any built-in effects.
    */
   public show_description() {
-    game.history.write(this.description,"normal", this.is_markdown);
+    game.history.write(this.description, "normal", this.is_markdown);
     if (this.effect != null) {
       game.effects.print(this.effect);
     }
@@ -116,9 +113,7 @@ export class Room extends Loadable {
    * Excludes zero-connection exits and exits with hidden secret doors.
    */
   public getVisibleExits(): RoomExit[] {
-    return this.exits.filter(r => r.room_to !== 0 &&
-      (!r.door_id || !game.artifacts.get(r.door_id).hidden)
-    );
+    return this.exits.filter((r) => r.room_to !== 0 && (!r.door_id || !game.artifacts.get(r.door_id).hidden));
   }
 
   /**
@@ -139,7 +134,7 @@ export class Room extends Loadable {
    * Excludes any locked/hidden exits and the game exit.
    */
   public getGoodExits(): RoomExit[] {
-    return this.exits.filter(x => x.room_to !== RoomExit.EXIT && x.room_to > 0 && x.isOpen());
+    return this.exits.filter((x) => x.room_to !== RoomExit.EXIT && x.room_to > 0 && x.isOpen());
   }
 
   /**
@@ -186,7 +181,7 @@ export class Room extends Loadable {
    * Removes the exit in a given direction
    */
   public removeExit(direction: string): void {
-    this.exits = this.exits.filter(x => x.direction !== direction);
+    this.exits = this.exits.filter((x) => x.direction !== direction);
   }
 
   /**
@@ -196,6 +191,6 @@ export class Room extends Loadable {
     str = str.toLowerCase();
     const name = this.name.toLowerCase();
     const desc = this.description.toLowerCase();
-    return (name.indexOf(str) !== -1 || desc.indexOf(str) !== -1);
+    return name.indexOf(str) !== -1 || desc.indexOf(str) !== -1;
   }
 }

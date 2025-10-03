@@ -1,14 +1,12 @@
-import * as React from 'react';
-import ReactMarkdown from 'react-markdown';
+import type * as React from "react";
+import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import {useEffect, useRef, useState} from "react";
-import {HistoryManager} from "../models/history-manager";
-
+import type { HistoryManager } from "../models/history-manager";
 
 type HistoryProps = {
   historyManager: HistoryManager;
-}
-
+};
 
 const History: React.FC<HistoryProps> = (props) => {
   const [scrollTimeout, setScrollTimeout] = useState<number | null>(null);
@@ -22,7 +20,7 @@ const History: React.FC<HistoryProps> = (props) => {
       // Large screen. History has its own scroll bar.
       historyDiv.current.scrollTop = historyDiv.current.scrollHeight;
     }
-  }
+  };
 
   useEffect(() => {
     if (document.documentElement.clientWidth < 768) {
@@ -45,18 +43,21 @@ const History: React.FC<HistoryProps> = (props) => {
             if (line.markdown) {
               return (
                 <div className={className} key={index}>
-                  <ReactMarkdown children={line.text} rehypePlugins={[rehypeRaw]}/>
+                  <ReactMarkdown children={line.text} rehypePlugins={[rehypeRaw]} />
                 </div>
               );
             }
             // plain text formatting is the default
-            return <p className={className} key={index}>{line.text}</p>
-          }
-          )}
+            return (
+              <p className={className} key={index}>
+                {line.text}
+              </p>
+            );
+          })}
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default History;

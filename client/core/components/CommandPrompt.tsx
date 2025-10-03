@@ -1,11 +1,9 @@
-import * as React from 'react';
-import {useEffect, useRef, useState} from "react";
-import {PropsWithGame} from "../types";
+import { useEffect, useRef, useState } from "react";
+import type { PropsWithGame } from "../types";
 
-
-const CommandPrompt: React.FC<PropsWithGame> = (props) => {
-  const [command, setCommand] = useState('');
-  const [lastCommand, setLastCommand] = useState('');
+const CommandPrompt = (props: PropsWithGame) => {
+  const [command, setCommand] = useState("");
+  const [lastCommand, setLastCommand] = useState("");
   const [restore, setRestore] = useState(false);
   const [cursorMove, setCursorMove] = useState(false);
 
@@ -13,19 +11,24 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
 
   const game = props.game;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Depending on game object might cause issues.
   useEffect(() => {
     // Key press handler for the screen pause. When the "hit any key"
     // button is visible, this will resume output.
-    document.addEventListener("keydown", (ev) => {
-      if (ev.key.match(/F\d*/) || ['Alt', 'Control', 'Shift', 'Tab', 'OS'].indexOf(ev.key) !== -1) {
-        return;
-      }
-      if (game.queue.paused) {
-        ev.preventDefault();
-        game.history.counter = 0;
-        game.queue.run();
-      }
-    }, false);
+    document.addEventListener(
+      "keydown",
+      (ev) => {
+        if (ev.key.match(/F\d*/) || ["Alt", "Control", "Shift", "Tab", "OS"].indexOf(ev.key) !== -1) {
+          return;
+        }
+        if (game.queue.paused) {
+          ev.preventDefault();
+          game.history.counter = 0;
+          game.queue.run();
+        }
+      },
+      false,
+    );
   }, []);
 
   useEffect(() => {
@@ -48,8 +51,10 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
    */
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     switch (event.key) {
-      case 'Enter':
-        if (!game.ready) { return; }
+      case "Enter": {
+        if (!game.ready) {
+          return;
+        }
 
         let new_command = command;
 
@@ -73,7 +78,8 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
         }, 25);
 
         break;
-      case 'ArrowUp':
+      }
+      case "ArrowUp": {
         // up arrow moves back through the history
         const prev_command = game.history.getOlderCommand();
         if (prev_command !== null) {
@@ -81,7 +87,8 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
           setCursorMove(true);
         }
         break;
-      case 'ArrowDown':
+      }
+      case "ArrowDown": {
         // down arrow moves forward through the history
         const next_command = game.history.getNewerCommand();
         if (next_command !== null) {
@@ -89,6 +96,7 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
           setCursorMove(true);
         }
         break;
+      }
     }
     // other keys have no special function.
   };
@@ -124,9 +132,11 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
   };
 
   if (game.queue.paused) {
-    return <button className="btn btn-info paused" onClick={resume}>
+    return (
+      <button type="button" className="btn btn-info paused" onClick={resume}>
         Hit any key to continue...
-      </button>;
+      </button>
+    );
   }
 
   if (game.active) {
@@ -134,60 +144,64 @@ const CommandPrompt: React.FC<PropsWithGame> = (props) => {
       <div className="form-inline">
         <div className="command-prompt form-group">
           <span className="prompt">Your Command:</span>
-          <input name="command"
-                 id="command"
-                 ref={commandInputRef}
-                 type="text"
-                 value={command}
-                 onChange={handleChange}
-                 onKeyDown={handleKeyPress}
-                 className={"form-control ml-2 " + (game.ready ? 'ready' : 'running')}
-                 placeholder={lastCommand}
-                 autoComplete="off"
-                 autoFocus={true}
+          <input
+            name="command"
+            ref={commandInputRef}
+            type="text"
+            value={command}
+            onChange={handleChange}
+            onKeyDown={handleKeyPress}
+            className={`form-control ml-2 ${game.ready ? "ready" : "running"}`}
+            placeholder={lastCommand}
+            autoComplete="off"
+            // biome-ignore lint/a11y/noAutofocus: TODO: look at this later
+            autoFocus={true}
           />
         </div>
       </div>
-    )
+    );
   }
 
   if (game.won) {
     return (
       <div className="return-button-container">
-        <button className="btn btn-success" id="return" onClick={exit}>Return to Main Hall</button>
+        <button type="button" className="btn btn-success return" onClick={exit}>
+          Return to Main Hall
+        </button>
       </div>
-    )
+    );
   }
 
   if (game.died && !restore) {
     return (
       <div className="return-button-container">
-        <button className="btn btn-success mr-2" id="start_over" onClick={startOver}>Start Over</button>
-        <button className="btn btn-success" id="restore" onClick={showSaves}>Restore a Saved Game</button>
+        <button type="button" className="btn btn-success mr-2 start_over" onClick={startOver}>
+          Start Over
+        </button>
+        <button type="button" className="btn btn-success restore" onClick={showSaves}>
+          Restore a Saved Game
+        </button>
       </div>
-    )
+    );
   }
 
   if (game.died && restore) {
     return (
       <div className="return-button-container">
-        {game.saves.map(sv => (
-          <button key={sv.slot} className="btn btn-success" onClick={() => restoreSavedGame(sv)}>{sv}</button>
+        {game.saves.map((sv) => (
+          <button type="button" key={sv.slot} className="btn btn-success" onClick={() => restoreSavedGame(sv)}>
+            {sv}
+          </button>
         ))}
-        {game.saves.length === 0 && (
-          <span>You have no saved games.</span>
-        )}
-        <button className="btn btn-success" onClick={hideSaves}>Cancel</button>
+        {game.saves.length === 0 && <span>You have no saved games.</span>}
+        <button type="button" className="btn btn-success" onClick={hideSaves}>
+          Cancel
+        </button>
       </div>
-    )
+    );
   }
 
-  return (
-    <div id="command-prompt">
-      Loading...
-    </div>
-  );
-
-}
+  return <div className="command-prompt">Loading...</div>;
+};
 
 export default CommandPrompt;

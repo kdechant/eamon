@@ -1,6 +1,6 @@
-import * as pluralize from 'pluralize';
-import Game from "./game";
-import { parseJSON } from '../utils/index'
+import * as pluralize from "pluralize";
+import { parseJSON } from "../utils";
+import type Game from "./game";
 
 declare let game: Game;
 
@@ -8,21 +8,20 @@ declare let game: Game;
  * GameObject class. Parent class for monsters and artifacts.
  */
 export class GameObject {
-
   id: number;
   article: string;
   name: string;
   description: string;
-  is_markdown: boolean;  // does the description use markdown formatting?
+  is_markdown: boolean; // does the description use markdown formatting?
   aliases: string[];
-  effect: number;  // for extended descriptions
-  effect_inline: number;  // for extended descriptions
+  effect: number; // for extended descriptions
+  effect_inline: number; // for extended descriptions
   seen = false;
 
   /**
    * A container for custom data used by specific adventures
    */
-  data: { [key: string]: any; } = {};
+  data: { [key: string]: any } = {};
 
   /**
    * Loads data from JSON source into the object properties.
@@ -45,13 +44,16 @@ export class GameObject {
    * a name "healing potion" and alias "bottle"
    */
   public match(str: string): boolean {
-    const names: string[] = [  // all iterations of the monster's name
+    const names: string[] = [
+      // all iterations of the monster's name
       this.name.toLocaleLowerCase(),
       this.getDisplayName().toLocaleLowerCase(),
       pluralize.plural(this.name).toLocaleLowerCase(),
     ];
     if (this.aliases) {
-      this.aliases.forEach(a => names.push(a));
+      this.aliases.forEach((a) => {
+        names.push(a);
+      });
     }
     str = str.toLocaleLowerCase();
     // attempt exact match by name
@@ -77,9 +79,12 @@ export class GameObject {
   public showDescription() {
     // Check for whether the game is running. This prevents the following JS error in the main hall:
     // "TypeError: Object.setPrototypeOf: expected an object or null, got undefined"
-    if (typeof game !== 'undefined') {
-      game.history.write(this.description + " ",  // pad with space in case of chained effects
-        "normal", this.is_markdown);
+    if (typeof game !== "undefined") {
+      game.history.write(
+        this.description + " ", // pad with space in case of chained effects
+        "normal",
+        this.is_markdown,
+      );
       if (this.effect) {
         game.effects.print(this.effect);
       }
@@ -88,5 +93,4 @@ export class GameObject {
       }
     }
   }
-
 }

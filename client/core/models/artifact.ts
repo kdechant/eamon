@@ -1,16 +1,15 @@
-import {GameObject} from "./game-object";
-import Game from "./game";
-import {Monster} from "./monster";
-import {CommandException} from "../utils/command.exception";
-import ArtifactRepository from "../repositories/artifact.repo";
+import type Game from "../models/game";
+import type ArtifactRepository from "../repositories/artifact.repo";
+import { CommandException } from "../utils/command.exception";
+import { GameObject } from "./game-object";
+import { Monster } from "./monster";
 
-declare let game;
+declare let game: Game;
 
 /**
  * Artifact class. Represents all properties of a single artifact
  */
 export class Artifact extends GameObject {
-
   // constants
   static TYPE_GOLD = 0;
   static TYPE_TREASURE = 1;
@@ -46,10 +45,10 @@ export class Artifact extends GameObject {
   value: number;
   type: number;
   is_open: boolean;
-  hardiness: number;  // for doors/containers that must be smashed open - how much damage is required to open it
+  hardiness: number; // for doors/containers that must be smashed open - how much damage is required to open it
   is_healing: boolean; // for simple healing potions, etc. - healing amount based on dice and sides
   is_weapon: boolean;
-  hands: number;  // 1 or 2 = one-handed or two-handed weapon
+  hands: number; // 1 or 2 = one-handed or two-handed weapon
   weapon_type: number;
   weapon_odds: number;
   dice: number;
@@ -59,20 +58,20 @@ export class Artifact extends GameObject {
   armor_class: number;
   armor_penalty: number; // the amount of armor expertise needed to avoid to-hit penalty
   get_all: boolean;
-  embedded: boolean;  // does not appear in the artifacts list until the player finds it
-  hidden: boolean;  // for secret doors - don't explain why you can't go that way until the player reveals the secret
+  embedded: boolean; // does not appear in the artifacts list until the player finds it
+  hidden: boolean; // for secret doors - don't explain why you can't go that way until the player reveals the secret
   quantity: number;
   effect_id: number; // for readable artifacts, the ID of the marking in the effects table
   num_effects: number; // for readable artifacts, the number of markings in the effects table
-  markings: string[];  // phrases that appear when you read the item
+  markings: string[]; // phrases that appear when you read the item
 
   // game-state properties
-  contents: Artifact[] = [];  // the Artifact objects for the things inside a container
+  contents: Artifact[] = []; // the Artifact objects for the things inside a container
   is_lit = false;
-  inventory_message = "";  // replaces the "lit" or "wearing" message if set
+  inventory_message = ""; // replaces the "lit" or "wearing" message if set
   markings_index = 0; // counter used to keep track of the next marking to read
   is_worn = false; // if the monster is wearing it
-  is_broken = false;  // for a doors/containers that has been smashed open
+  is_broken = false; // for a doors/containers that has been smashed open
   player_brought = false; // flag to indicate which items the player brought with them
 
   // used in Marcos' shop in Main Hall
@@ -85,8 +84,7 @@ export class Artifact extends GameObject {
    */
   public moveToRoom(room_id: number = null): void {
     this.room_id = room_id || game.player.room_id;
-    if (this.type !== Artifact.TYPE_BOUND_MONSTER)
-      this.monster_id = null;
+    if (this.type !== Artifact.TYPE_BOUND_MONSTER) this.monster_id = null;
     this.container_id = null;
     this.is_worn = false;
   }
@@ -103,10 +101,10 @@ export class Artifact extends GameObject {
         this.is_worn = false;
         game.monsters.get(this.monster_id).updateInventory();
       } else {
-        throw new CommandException("Monster # " + monster_id + " does not exist.")
+        throw new CommandException(`Monster # ${monster_id} does not exist.`);
       }
     } else {
-      throw new CommandException("moveToInventory() can't be used on bound monster artifacts.")
+      throw new CommandException("moveToInventory() can't be used on bound monster artifacts.");
     }
   }
 
@@ -117,7 +115,7 @@ export class Artifact extends GameObject {
    * @returns boolean
    */
   public isHere(): boolean {
-    return (this.room_id === game.player.room_id || this.monster_id === Monster.PLAYER);
+    return this.room_id === game.player.room_id || this.monster_id === Monster.PLAYER;
   }
 
   /**
@@ -137,8 +135,8 @@ export class Artifact extends GameObject {
    *   The ID of the artifact, or an array of IDs to check multiple artifacts.
    * @return {boolean}
    */
-  public contains(ids: number|number[]) {
-    if (typeof ids === 'number') ids = [ids];
+  public contains(ids: number | number[]) {
+    if (typeof ids === "number") ids = [ids];
     for (const id of ids) {
       if (game.artifacts.get(id).container_id !== this.id) {
         return false;
@@ -166,7 +164,7 @@ export class Artifact extends GameObject {
   public isInLocalContainer(): boolean {
     if (!this.container_id) return false;
     const container = game.artifacts.get(this.container_id);
-    return (container.isHere() && container.is_open);
+    return container.isHere() && container.is_open;
   }
 
   /**
@@ -179,7 +177,7 @@ export class Artifact extends GameObject {
       this.container_id = null;
       if (container.room_id !== null) {
         this.monster_id = null;
-        if (this.weight == 999 || this.weight === -999) {
+        if (this.weight === 999 || this.weight === -999) {
           // not something player can carry. put it in the room
           this.moveToRoom();
         } else {
@@ -201,9 +199,9 @@ export class Artifact extends GameObject {
   /**
    * Puts an artifact into a container
    */
-  public putIntoContainer(container: Artifact|number): void {
+  public putIntoContainer(container: Artifact | number): void {
     if (this.type === Artifact.TYPE_BOUND_MONSTER) {
-      throw new CommandException("putIntoContainer() can't be used on bound monster artifacts.")
+      throw new CommandException("putIntoContainer() can't be used on bound monster artifacts.");
     }
     const c = typeof container === "number" ? game.artifacts.get(container) : container;
     if (!c) {
@@ -222,7 +220,6 @@ export class Artifact extends GameObject {
    * If the artifact is a container, build the list of contents
    */
   public updateContents(override = false): void {
-
     this.contents = [];
     if (this.type === Artifact.TYPE_CONTAINER || override) {
       const artifacts_repo: ArtifactRepository = game.artifacts;
@@ -232,7 +229,6 @@ export class Artifact extends GameObject {
         }
       }
     }
-
   }
 
   /**
@@ -242,22 +238,22 @@ export class Artifact extends GameObject {
     game.history.write("It contains:");
 
     // find monsters inside the container
-    const monsters = game.monsters.all.filter(x => x.container_id === this.id);
+    const monsters = game.monsters.all.filter((x) => x.container_id === this.id);
     if (this.contents.length === 0 && monsters.length === 0) {
       game.history.write(" - (nothing)", "no-space");
     }
     // monsters get moved into the room automatically
     // (the monster-in-container ability is only meant for surprises, e.g., the vampire who awakens when you open his coffin)
     for (const m of monsters) {
-      game.history.write(" - " + m.getDisplayName(), "no-space");
+      game.history.write(` - ${m.getDisplayName()}`, "no-space");
       m.moveToRoom();
       m.showDescription();
       m.seen = true;
-      game.skip_battle_actions = true;  // technically not necessary, but it's confusing to see fighting before the monster desc
+      game.skip_battle_actions = true; // technically not necessary, but it's confusing to see fighting before the monster desc
     }
     // artifacts stay in the container and just get listed
     for (const a of this.contents) {
-      game.history.write(" - " + a.getDisplayName(), "no-space");
+      game.history.write(` - ${a.getDisplayName()}`, "no-space");
     }
   }
 
@@ -297,7 +293,7 @@ export class Artifact extends GameObject {
       if (owner) {
         if (this.dice > 0) {
           const heal_amount = game.diceRoll(this.dice, this.sides);
-          game.history.write("It heals " + owner.name + " " + heal_amount + " hit points.");
+          game.history.write(`It heals ${owner.name} ${heal_amount} hit points.`);
           owner.heal(heal_amount);
         } else if (this.dice < 0) {
           // poison - negative dice was a common way to make poison in EDX adventures
@@ -319,7 +315,7 @@ export class Artifact extends GameObject {
         this.quantity--;
       }
       if (this.quantity <= 0) {
-        game.history.write("The " + this.name + " is all gone!");
+        game.history.write(`The ${this.name} is all gone!`);
         this.destroy();
       }
     }
@@ -366,7 +362,6 @@ export class Artifact extends GameObject {
         linked_door.is_open = false;
       }
     }
-
   }
 
   /**
@@ -374,7 +369,7 @@ export class Artifact extends GameObject {
    */
   public reveal(): void {
     if (this.hidden) {
-      game.statistics['secret doors found']++;
+      game.statistics["secret doors found"]++;
     }
     this.embedded = false;
     this.hidden = false; // display
@@ -437,25 +432,21 @@ export class Artifact extends GameObject {
    * @returns number The amount of actual damage done
    */
   public injure(damage: number, source = "attack"): number {
-
     if (this.type === Artifact.TYPE_DEAD_BODY) {
       // if it's a dead body, hack it to bits
-      game.history.write("You " + (source === "attack" ? "hack" : "blast") + " it to bits.");
+      game.history.write(`You ${source === "attack" ? "hack" : "blast"} it to bits.`);
       this.destroy();
-
     } else if (this.type === Artifact.TYPE_CONTAINER || this.type === Artifact.TYPE_DOOR) {
       // if it's a door or container, try to break it open.
       if (this.hardiness !== null) {
         const damage = game.player.rollAttackDamage();
-        if (source === "attack")
-          game.history.write("Wham! You hit the " + this.name + "!");
-        else
-          game.history.write("Zap! You blast the " + this.name + "!");
+        if (source === "attack") game.history.write(`Wham! You hit the ${this.name}!`);
+        else game.history.write(`Zap! You blast the ${this.name}!`);
         this.hardiness -= damage;
         if (this.hardiness <= 0) {
           this.is_broken = true;
           this.is_open = true;
-          game.history.write("The " + this.name + " breaks open!");
+          game.history.write(`The ${this.name} breaks open!`);
           if (this.type === Artifact.TYPE_CONTAINER) {
             for (const item of this.contents) {
               item.moveToRoom();
@@ -476,7 +467,6 @@ export class Artifact extends GameObject {
       } else {
         return 0; // indicates a container that can't be smashed open
       }
-
     } else {
       return -1; // indicates something that makes no sense to attack
     }
@@ -540,22 +530,23 @@ export class Artifact extends GameObject {
   public getIcon(): string {
     switch (this.type) {
       case Artifact.TYPE_WEAPON:
-      case Artifact.TYPE_MAGIC_WEAPON:
+      case Artifact.TYPE_MAGIC_WEAPON: {
         let t = "";
         switch (this.weapon_type) {
           case 3:
             t = "hammer";
             break;
           case 4:
-            t = "upg_spear";  // there is no default spear in the icon set
+            t = "upg_spear"; // there is no default spear in the icon set
             break;
           default:
             t = this.getTypeName();
         }
         if (this.type === Artifact.TYPE_MAGIC_WEAPON && this.weapon_type !== 4) {
-          t = t + '2';
+          t = `${t}2`;
         }
         return t;
+      }
       case Artifact.TYPE_WEARABLE:
         if (this.armor_type === Artifact.ARMOR_TYPE_ARMOR) {
           return this.armor_class < 3 ? "leather" : "armor";
@@ -579,7 +570,6 @@ export class Artifact extends GameObject {
    * Returns whether the artifact is armor
    */
   public isArmor(): boolean {
-    return (this.type === Artifact.TYPE_WEARABLE && (this.armor_type !== null));
+    return this.type === Artifact.TYPE_WEARABLE && this.armor_type !== null;
   }
-
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ucFirst } from "../utils";
 import { usePlayer } from "../hooks";
-import {getIcon, isArmor, isWeapon} from "../models/artifact";
+import { getIcon, isArmor, isWeapon } from "../models/artifact";
 
 const Status = () => {
   const { player, genderLabel } = usePlayer();
@@ -66,46 +66,47 @@ const Status = () => {
           {artifacts.length === 0 && <div className="row">No items</div>}
 
           {artifacts.map(artifact => {
-            const icon_url = '/static/images/ravenmore/128/' + getIcon(artifact) + '.png';
+              const icon_url = '/static/images/ravenmore/128/' + getIcon(artifact) + '.png';
 
-            if (isWeapon(artifact)) {
-              const odds = (artifact.weapon_odds > 0 ? "+" : "") + artifact.weapon_odds;
+              if (isWeapon(artifact)) {
+                const odds = (artifact.weapon_odds > 0 ? "+" : "") + artifact.weapon_odds;
+                return (
+                  <div key={artifact.uuid} className="row">
+                    <div className="icon col-3 col-sm-2 px-0 px-sm-2"><img src={icon_url} width="48" height="48"/></div>
+                    <div className="col-9 col-sm-9 px-0 px-sm-2">
+                      <span className="artifact-name">{ucFirst(artifact.name)}</span><br/>
+                      <span className="artifact-info mr-4">{artifact.dice}d{artifact.sides}</span>
+                      {artifact.weapon_odds !== 0 && (
+                        <span className="artifact-info mr-4">{odds}% to hit</span>
+                      )}
+                      <span className="artifact-info mr-4">Weight: {artifact.weight}</span>
+                    </div>
+                  </div>
+                )
+              }
+
+              // otherwise, it's armor
+              const adjustedPenalty = Math.max(0, artifact.armor_penalty - player.armor_expertise);
               return (
                 <div key={artifact.uuid} className="row">
                   <div className="icon col-3 col-sm-2 px-0 px-sm-2"><img src={icon_url} width="48" height="48"/></div>
-                  <div className="col-9 col-sm-9 px-0 px-sm-2">
-                    <span className="artifact-name">{ucFirst(artifact.name)}</span><br />
-                    <span className="artifact-info mr-4">{artifact.dice}d{artifact.sides}</span>
-                    {artifact.weapon_odds !== 0 && (
-                      <span className="artifact-info mr-4">{odds}% to hit</span>
+                  <div className="col-9 col-sm-10 px-0 px-sm-2">
+                    <span className="artifact-name">{ucFirst(artifact.name)}</span><br/>
+                    <span className="artifact-info mr-4">AC: {artifact.armor_class}</span>
+                    {player.armor_expertise === 0 && (
+                      <span className="artifact-info mr-4">Penalty: {artifact.armor_penalty}%</span>
+                    )}
+                    {player.armor_expertise > 0 && (
+                      <span className="artifact-info mr-4">Penalty:{' '}
+                        <span
+                          style={{ textDecoration: "line-through" }}>{artifact.armor_penalty}%</span> {adjustedPenalty}%
+                    </span>
                     )}
                     <span className="artifact-info mr-4">Weight: {artifact.weight}</span>
                   </div>
                 </div>
-              )
+              );
             }
-
-            // otherwise, it's armor
-            const adjustedPenalty = Math.max(0, artifact.armor_penalty - player.armor_expertise);
-            return (
-              <div key={artifact.uuid} className="row">
-                <div className="icon col-3 col-sm-2 px-0 px-sm-2"><img src={icon_url} width="48" height="48"/></div>
-                <div className="col-9 col-sm-10 px-0 px-sm-2">
-                  <span className="artifact-name">{ucFirst(artifact.name)}</span><br />
-                  <span className="artifact-info mr-4">AC: {artifact.armor_class}</span>
-                  {player.armor_expertise === 0 && (
-                    <span className="artifact-info mr-4">Penalty: {artifact.armor_penalty}%</span>
-                  )}
-                  {player.armor_expertise > 0 && (
-                    <span className="artifact-info mr-4">Penalty:{' '}
-                      <span style={{textDecoration: "line-through"}}>{artifact.armor_penalty}%</span> {adjustedPenalty}%
-                    </span>
-                  )}
-                  <span className="artifact-info mr-4">Weight: {artifact.weight}</span>
-                </div>
-              </div>
-            );
-          }
           )}
         </div>
 

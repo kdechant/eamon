@@ -1,12 +1,11 @@
-export declare class Error {
+export declare class GameError {
   public name: string;
   public message: string;
   public stack: string;
   constructor(message?: string);
 }
 
-export class CommandException extends Error {
-
+export class CommandException extends GameError {
   constructor(m: string) {
     super(m);
     this.name = "Exception";
@@ -16,6 +15,6 @@ export class CommandException extends Error {
   }
 
   toString() {
-    return this.name + ": " + this.message;
+    return `${this.name}: ${this.message}`;
   }
 }

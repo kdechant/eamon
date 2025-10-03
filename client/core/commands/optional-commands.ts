@@ -1,6 +1,6 @@
-import {BaseCommand} from "./base-command";
-import Game from "../models/game";
-import {CommandException} from "../utils/command.exception";
+import type Game from "../models/game";
+import { CommandException } from "../utils/command.exception";
+import type { BaseCommand } from "./base-command";
 
 declare let game: Game;
 
@@ -22,24 +22,24 @@ export class BuyCommand implements BaseCommand {
   verbs: string[] = ["buy"];
   category = "interactive";
   description = "Buys an item from a merchant. Items that are for sale will be listed in the game window.";
-  examples: string[] = ['BUY BEER'];
+  examples: string[] = ["BUY BEER"];
   run(verb: string, arg: string): void {
     arg = arg.toLowerCase();
     // is anyone here carrying the item? (we check if it's for sale later)
-    const monster_ids = game.monsters.visible.map(m => m.id);
-    const artifacts = game.artifacts.all.filter(
-      a => monster_ids.indexOf(a.monster_id) !== -1 && a.match(arg));
+    const monster_ids = game.monsters.visible.map((m) => m.id);
+    const artifacts = game.artifacts.all.filter((a) => monster_ids.indexOf(a.monster_id) !== -1 && a.match(arg));
 
     if (artifacts.length === 0) {
       // see if anyone here previously sold this item, so we can show "out of stock" message
-      const previous_seller = game.monsters.visible.find(m => m.data.sold_items && m.data.sold_items.some(id => game.artifacts.get(id).match(arg)));
+      const previous_seller = game.monsters.visible.find((m) =>
+        m.data.sold_items?.some((id) => game.artifacts.get(id).match(arg)),
+      );
       if (previous_seller) {
         throw new CommandException(`The ${previous_seller.name} says, "Looks like I'm fresh outta stock. Sorry!"`);
       }
       throw new CommandException("No one here has that for sale.");
     } else if (artifacts.length > 1) {
-      throw new CommandException(
-        "Did you mean '" + artifacts.map(a => a.name).join("' or '") + "'?");
+      throw new CommandException(`Did you mean '${artifacts.map((a) => a.name).join("' or '")}'?`);
     }
     const artifact = artifacts[0];
     if (!artifact.data.for_sale) {
@@ -53,9 +53,9 @@ export class BuyCommand implements BaseCommand {
       throw new CommandException(`That costs ${price} gold pieces and you only have ${game.player.gold}.`);
     }
 
-    game.modal.confirm(`That costs ${price} gold pieces. Do you want to buy it?`, answer => {
-      if (answer === 'Yes') {
-        if (game.triggerEvent('beforeBuy', artifact, seller)) {
+    game.modal.confirm(`That costs ${price} gold pieces. Do you want to buy it?`, (answer) => {
+      if (answer === "Yes") {
+        if (game.triggerEvent("beforeBuy", artifact, seller)) {
           game.history.write(`You buy the ${artifact.name}.`);
           if (!artifact.seen) {
             artifact.showDescription();
@@ -65,12 +65,12 @@ export class BuyCommand implements BaseCommand {
           game.player.gold -= price;
           game.player.updateInventory();
           artifact.data.for_sale = false;
-          if (!seller.data.hasOwnProperty('sold_items')) {
+          if (!seller.data.hasOwnProperty("sold_items")) {
             seller.data.sold_items = [];
           }
           seller.data.sold_items.push(artifact.id);
           seller.updateInventory();
-          game.triggerEvent('afterBuy', artifact, seller);
+          game.triggerEvent("afterBuy", artifact, seller);
         }
       } else {
         game.history.write(`"Maybe next time."`);
