@@ -1,17 +1,19 @@
 {
-    "compilerOptions": {
-        "esModuleInterop": true,
-        "jsx": "react-jsx",
-        "lib": ["es5", "es6", "dom"],
-        "module": "commonjs",
-        "noImplicitAny": false,
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "target": "es5",
-    },
-    "include": [
-        "./main-hall/**/*",
-        "./core/**/*"
-    ],
-    "files": ["node_modules/jest-expect-message/types/index.d.ts"]
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["./main-hall/**/*", "./core/**/*"],
+  "files": ["node_modules/jest-expect-message/types/index.d.ts"]
 }
