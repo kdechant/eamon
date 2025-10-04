@@ -777,7 +777,7 @@ export default class Game {
       // saved games needs to be an array for rendering in browser
       this.saves = [];
       for (let i = 1; i <= 10; i++) {
-        if (this.saved_games.hasOwnProperty(i)) {
+        if (Object.hasOwn(this.saved_games, i)) {
           this.saves.push(`${i}: ${this.saved_games[i].description}`);
         }
       }

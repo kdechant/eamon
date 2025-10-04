@@ -18,7 +18,7 @@ export default class EffectRepository {
    */
   index = 0;
 
-  constructor(effect_data: Array<Object>) {
+  constructor(effect_data: Partial<Effect>[]) {
     for (const e of effect_data) {
       this.add(e);
     }
@@ -26,9 +26,9 @@ export default class EffectRepository {
 
   /**
    * Adds a monster.
-   * @param {Object} effect_data - The raw data from the back end
+   * @param effect_data - The raw data from the back end
    */
-  public add(effect_data) {
+  public add(effect_data: Partial<Effect>) {
     const e = new Effect();
     e.init(effect_data);
 
@@ -56,7 +56,7 @@ export default class EffectRepository {
    * @param {number} id
    * @return Effect
    */
-  public get(id): Effect {
+  public get(id: number): Effect {
     const e = this.all.find((x) => x.id === id);
     return e || null;
   }
@@ -68,7 +68,7 @@ export default class EffectRepository {
    * to use the style specified in the effect object
    * @param {boolean} inline Whether to display the effect on the previous line or on a new line.
    */
-  public print(id: number, style: string = null, inline = false): void {
+  public print(id: number, style: string = null, inline: boolean = false): void {
     const ef = this.get(id);
     if (ef) {
       let text = ef.text;

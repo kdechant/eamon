@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type ChangeEvent, type KeyboardEvent, useEffect, useRef, useState } from "react";
 import type { PropsWithGame } from "../types";
 
 const CommandPrompt = (props: PropsWithGame) => {
@@ -41,7 +41,7 @@ const CommandPrompt = (props: PropsWithGame) => {
     setCursorMove(false);
   }, [cursorMove]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCommand(event.target.value);
   };
 
@@ -49,7 +49,7 @@ const CommandPrompt = (props: PropsWithGame) => {
    * Handles key presses inside the command prompt input field.
    * @param event
    */
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (event: KeyboardEvent) => {
     switch (event.key) {
       case "Enter": {
         if (!game.ready) {

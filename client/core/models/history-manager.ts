@@ -47,7 +47,7 @@ export class HistoryManager {
    * @param {boolean} markdown
    *   Whether to use the Markdown formatter (true) or the plain text formatter (false)
    */
-  write(text: string, type = "normal", markdown = false): void {
+  write(text: string, type: string = "normal", markdown: boolean = false): void {
     if (!this.suppressNextMessage) {
       game.queue.push(() => this._print(text, type, markdown));
     }
@@ -84,7 +84,7 @@ export class HistoryManager {
    */
   getLastCommand(): string {
     if (this.history.length > 0) {
-      return this.history[this.history.length - 1]["command"];
+      return this.history[this.history.length - 1].command;
     } else {
       return "";
     }
@@ -140,7 +140,7 @@ export class HistoryManager {
    *   1 is the second line, 2 the third, and so on.
    *   Negative numbers count from the end. -1 is the last line, -2 the second last, and so on.
    */
-  getOutput(index = 0) {
+  getOutput(index: number = 0) {
     if (this.history.length > 0) {
       const res = this.history[this.history.length - 1].results;
       if (index < 0) {
@@ -161,7 +161,7 @@ export class HistoryManager {
    * @param {number} num
    *   The number of history entries to go back (default 1)
    */
-  getLastOutput(num = 1) {
+  getLastOutput(num: number = 1) {
     if (this.history.length > 0) {
       const res = this.history[this.history.length - 1].results;
       if (res.length >= num) {

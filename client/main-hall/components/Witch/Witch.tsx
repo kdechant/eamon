@@ -30,9 +30,8 @@ const Witch: React.FC = () => {
         The Witch's Shop
       </h2>
       <p>
-        A lovely young woman dressed in black says, &quot;Good day, {player.name}! Ah, I see you're
-        surprised I know your name? I also know that your Hardiness is {player.hardiness} your
-        Agility is
+        A lovely young woman dressed in black says, &quot;Good day, {player.name}! Ah, I see you're surprised I know
+        your name? I also know that your Hardiness is {player.hardiness}, your Agility is
         {player.agility}, and your Charisma is {player.charisma}.&quot;
       </p>
 

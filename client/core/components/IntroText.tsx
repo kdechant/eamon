@@ -1,12 +1,11 @@
 import type * as React from "react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-// @ts-expect-error
 import rehypeRaw from "rehype-raw";
 import type { PropsWithGame } from "../types";
 import { gamevars } from "../utils";
 
-const IntroText: React.FC<PropsWithGame> = (props) => {
+const IntroText = (props: PropsWithGame) => {
   const [index, setIndex] = useState(0);
   const [introAnswer, setIntroAnswer] = useState("");
 
@@ -29,11 +28,11 @@ const IntroText: React.FC<PropsWithGame> = (props) => {
 
   const game = props.game;
   return (
-    <div id="intro-text">
+    <div className="intro-text">
       <ReactMarkdown children={gamevars(game.intro_text[index])} rehypePlugins={[rehypeRaw]} />
       {index < game.intro_text.length - 1 && (
         <p className="intro-next">
-          <button className="btn btn-success" id="intro-next" onClick={introNext}>
+          <button type="button" className="btn btn-success intro-next" onClick={introNext}>
             Next
           </button>
         </p>
@@ -42,14 +41,13 @@ const IntroText: React.FC<PropsWithGame> = (props) => {
         <div className="intro-start">
           {game.intro_question && (
             <p className="intro-question">
-              {game.intro_question}{" "}
-              <input type="text" id="introAnswer" name="introAnswer" autoFocus={true} onChange={handleChange} />
+              {game.intro_question} <input type="text" name="introAnswer" autoFocus={true} onChange={handleChange} />
             </p>
           )}
 
           <div className="intro-confirm">
             <p>
-              <button className="btn btn-success" id="return" onClick={startGame}>
+              <button type="button" className="btn btn-success" onClick={startGame}>
                 Start Adventure
               </button>
             </p>

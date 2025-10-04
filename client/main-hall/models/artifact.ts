@@ -1,4 +1,4 @@
-import GameObject from "./game-object";
+import type GameObject from "./game-object";
 
 export const ARTIFACT_TYPES = {
   GOLD: 0,
@@ -18,7 +18,7 @@ export const ARTIFACT_TYPES = {
   USER_1: 14,
   USER_2: 15,
   USER_3: 16,
-}
+};
 
 export const ARMOR_TYPES = {
   ARMOR: 0,
@@ -26,7 +26,7 @@ export const ARMOR_TYPES = {
   HELMET: 2,
   GLOVES: 3,
   RING: 4,
-}
+};
 
 /**
  * Artifact class. Represents all properties of a single artifact
@@ -36,10 +36,10 @@ export default interface Artifact extends GameObject {
   value: number;
   type: number;
   is_open: boolean;
-  hardiness: number;  // for doors/containers that must be smashed open - how much damage is required to open it
+  hardiness: number; // for doors/containers that must be smashed open - how much damage is required to open it
   is_healing: boolean; // for simple healing potions, etc. - healing amount based on dice and sides
   is_weapon: boolean;
-  hands: number;  // 1 or 2 = one-handed or two-handed weapon
+  hands: number; // 1 or 2 = one-handed or two-handed weapon
   weapon_type: number;
   weapon_odds: number;
   dice: number;
@@ -54,19 +54,18 @@ export default interface Artifact extends GameObject {
   num_effects: number; // for readable artifacts, the number of markings in the effects table
 }
 
-
 /**
  * Returns whether the artifact is armor
  */
 export function isWeapon(artifact: Artifact): boolean {
-  return (artifact.type === ARTIFACT_TYPES.WEAPON || artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON);
+  return artifact.type === ARTIFACT_TYPES.WEAPON || artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON;
 }
 
 /**
  * Returns whether the artifact is armor
  */
 export function isArmor(artifact: Artifact): boolean {
-  return (artifact.type === ARTIFACT_TYPES.WEARABLE && (artifact.armor_type !== null));
+  return artifact.type === ARTIFACT_TYPES.WEARABLE && artifact.armor_type !== null;
 }
 
 /**
@@ -129,7 +128,7 @@ export function getIcon(artifact: Artifact): string {
           t = "hammer";
           break;
         case 4:
-          t = "upg_spear";  // there is no default spear in the icon set
+          t = "upg_spear"; // there is no default spear in the icon set
           break;
         case 5:
           t = "sword";
@@ -137,7 +136,7 @@ export function getIcon(artifact: Artifact): string {
       }
 
       if (artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON && artifact.weapon_type !== 4) {
-        t = t + '2';
+        t = `${t}2`;
       }
       return t;
     case ARTIFACT_TYPES.WEARABLE:
@@ -158,4 +157,3 @@ export function getIcon(artifact: Artifact): string {
       return "tools";
   }
 }
-

@@ -65,7 +65,7 @@ export class BuyCommand implements BaseCommand {
           game.player.gold -= price;
           game.player.updateInventory();
           artifact.data.for_sale = false;
-          if (!seller.data.hasOwnProperty("sold_items")) {
+          if (!Object.hasOwn(seller.data, "sold_items")) {
             seller.data.sold_items = [];
           }
           seller.data.sold_items.push(artifact.id);

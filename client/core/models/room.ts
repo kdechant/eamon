@@ -42,7 +42,7 @@ export class RoomExit extends Loadable {
   }
 
   public getFriendlyDirection(): string {
-    if (this.directions.hasOwnProperty(this.direction)) {
+    if (Object.hasOwn(this.directions, this.direction)) {
       return this.directions[this.direction];
     }
     return this.direction;

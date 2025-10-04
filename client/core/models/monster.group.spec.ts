@@ -1,14 +1,17 @@
 import Game from "../models/game";
-import {initMockGame} from "../utils/testing";
-import { Monster, GroupMonster } from "./monster";
+import { initMockGame } from "../utils/testing";
+import { type GroupMonster, Monster } from "./monster";
 
 const game = new Game();
 
-describe("Group monster handling", function() {
-
+describe("Group monster handling", function () {
   // global handling
-  beforeAll(() => { global['game'] = game; });
-  afterAll(() => { delete global['game']; });
+  beforeAll(() => {
+    global["game"] = game;
+  });
+  afterAll(() => {
+    delete global["game"];
+  });
 
   // initialize the test with the full mock game data
   beforeEach(() => {
@@ -58,7 +61,7 @@ describe("Group monster handling", function() {
     game.player.moveToRoom(7);
     const kobolds = game.monsters.get(5);
     game.mock_random_numbers = [1, 3, 2];
-    for (let i=1; i<=3; i++) {
+    for (let i = 1; i <= 3; i++) {
       kobolds.injure(i);
     }
     expect(kobolds.children[0].damage).toBe(1);
@@ -73,9 +76,9 @@ describe("Group monster handling", function() {
     expect(game.artifacts.get(23).room_id).toBe(7);
   });
 
-  it ("should flee to different rooms when using flee()", () => {
+  it("should flee to different rooms when using flee()", () => {
     const kobolds = game.monsters.get(5);
-    kobolds.moveToRoom(1);  // this room has multiple exits, so it makes a better test
+    kobolds.moveToRoom(1); // this room has multiple exits, so it makes a better test
     game.mock_random_numbers = [2, 2, 1];
     kobolds.flee();
     expect(kobolds.children[0].room_id).toBe(7);
@@ -84,12 +87,16 @@ describe("Group monster handling", function() {
     expect(kobolds.room_id).toBe(7);
   });
 
-  it ("should flee to different rooms during combat", () => {
+  it("should flee to different rooms during combat", () => {
     const kobolds = game.monsters.get(5);
-    kobolds.moveToRoom(1);  // this room has multiple exits, so it makes a better test
+    kobolds.moveToRoom(1); // this room has multiple exits, so it makes a better test
     game.mock_random_numbers = [
-      100, 100, 100,  // this will cause all three to flee (fear = 100)
-      2, 2, 1  // this determines the rooms they go to
+      100,
+      100,
+      100, // this will cause all three to flee (fear = 100)
+      2,
+      2,
+      1, // this determines the rooms they go to
     ];
     kobolds.doBattleActions();
     game.monsters.updateVisible();
@@ -99,7 +106,7 @@ describe("Group monster handling", function() {
     expect(kobolds.room_id).toBe(7);
   });
 
-  it ("should add and remove members", () => {
+  it("should add and remove members", () => {
     const kobolds: GroupMonster = game.monsters.get(5);
     kobolds.spawnChild();
     expect(kobolds.children.length).toBe(4);
@@ -111,7 +118,7 @@ describe("Group monster handling", function() {
     expect(kobolds.count).toBe(2);
   });
 
-  it ("should move with the player if friendly", () => {
+  it("should move with the player if friendly", () => {
     const prisoners = game.monsters.get(6);
     prisoners.moveToRoom(1);
     game.monsters.updateVisible();
@@ -125,7 +132,7 @@ describe("Group monster handling", function() {
     }
   });
 
-  it ("should handle reaction checks", () => {
+  it("should handle reaction checks", () => {
     const prisoners = game.monsters.get(6);
     prisoners.moveToRoom(1);
     game.monsters.updateVisible();
@@ -133,14 +140,14 @@ describe("Group monster handling", function() {
 
     // There are 2 checks for friendliness when monster's friendliness is random, so 2 mock random numbers.
     // (see Monster.checkReaction)
-    game.mock_random_numbers = [99, 1];  // this will make it neutral
+    game.mock_random_numbers = [99, 1]; // this will make it neutral
     prisoners.hurtFeelings();
     expect(prisoners.reaction).toBe(Monster.RX_NEUTRAL);
     for (const c of prisoners.children) {
       expect(c.reaction).toBe(Monster.RX_NEUTRAL);
     }
 
-    game.mock_random_numbers = [99, 99];  // this will make it hostile
+    game.mock_random_numbers = [99, 99]; // this will make it hostile
     prisoners.hurtFeelings();
     expect(prisoners.reaction).toBe(Monster.RX_HOSTILE);
     for (const c of prisoners.children) {
@@ -156,32 +163,30 @@ describe("Group monster handling", function() {
 
     // combat code 1 (attacks if it has a weapon, special attack message)
     kobolds.combat_code = Monster.COMBAT_CODE_SPECIAL;
-    kobolds.children.forEach(c => c.combat_code = Monster.COMBAT_CODE_SPECIAL);
+    kobolds.children.forEach((c) => (c.combat_code = Monster.COMBAT_CODE_SPECIAL));
     expect(kobolds.children[0].canAttack()).toBe(true);
-    expect(kobolds.children[1].canAttack()).toBe(false);  // this one dropped his weapon
+    expect(kobolds.children[1].canAttack()).toBe(false); // this one dropped his weapon
     expect(kobolds.children[2].canAttack()).toBe(true);
 
     // combat code 0 (attacks if it has a weapon, or if it was set to use natural weapons in the database)
     kobolds.combat_code = Monster.COMBAT_CODE_NORMAL;
-    kobolds.children.forEach(c => c.combat_code = Monster.COMBAT_CODE_NORMAL);
+    kobolds.children.forEach((c) => (c.combat_code = Monster.COMBAT_CODE_NORMAL));
     expect(kobolds.children[0].canAttack()).toBe(true);
-    expect(kobolds.children[1].canAttack()).toBe(false);  // this one dropped his weapon
+    expect(kobolds.children[1].canAttack()).toBe(false); // this one dropped his weapon
     expect(kobolds.children[2].canAttack()).toBe(true);
 
     // combat code -1 (weapon or natural weapons if no weapon is available)
     kobolds.combat_code = Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE;
-    kobolds.children.forEach(c => c.combat_code = Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE);
+    kobolds.children.forEach((c) => (c.combat_code = Monster.COMBAT_CODE_WEAPON_IF_AVAILABLE));
     expect(kobolds.children[0].canAttack()).toBe(true);
-    expect(kobolds.children[1].canAttack()).toBe(true);  // this one dropped his weapon. with this combat code, he attacks anyway.
+    expect(kobolds.children[1].canAttack()).toBe(true); // this one dropped his weapon. with this combat code, he attacks anyway.
     expect(kobolds.children[2].canAttack()).toBe(true);
 
     // combat code -2 (never fights)
-    kobolds.children.forEach(c => c.combat_code = Monster.COMBAT_CODE_NEVER_FIGHT);
+    kobolds.children.forEach((c) => (c.combat_code = Monster.COMBAT_CODE_NEVER_FIGHT));
     kobolds.combat_code = Monster.COMBAT_CODE_NEVER_FIGHT;
     expect(kobolds.children[0].canAttack()).toBe(false);
-    expect(kobolds.children[1].canAttack()).toBe(false);  // this one dropped his weapon
+    expect(kobolds.children[1].canAttack()).toBe(false); // this one dropped his weapon
     expect(kobolds.children[2].canAttack()).toBe(false);
-
   });
-
 });

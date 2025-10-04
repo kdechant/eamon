@@ -35,7 +35,7 @@ export default class ArtifactRepository {
    */
   index = 0;
 
-  constructor(artifact_data: Array<Object>) {
+  constructor(artifact_data: Record<string, any>[]) {
     for (const i in artifact_data) {
       this.add(artifact_data[i]);
     }
@@ -44,9 +44,8 @@ export default class ArtifactRepository {
 
   /**
    * Adds an artifact to the system.
-   * @param {object} artifact_data
    */
-  add(artifact_data) {
+  add(artifact_data: Record<string, any>) {
     const a = new Artifact();
     // "synonyms" in the back end are called "aliases" here
     if (artifact_data.synonyms) {

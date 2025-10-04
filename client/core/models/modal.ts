@@ -122,7 +122,7 @@ export class Modal {
     this.current_question.choices.forEach((c, index) => {
       for (let i = 0; i < c.length; i++) {
         const letter = c[i].toLowerCase();
-        if (!this.current_question.hotkeys.hasOwnProperty(letter)) {
+        if (!Object.hasOwn(this.current_question.hotkeys, letter)) {
           this.current_question.hotkeys[letter] = c;
           this.current_question.hotkey_positions[index] = i;
           break;

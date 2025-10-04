@@ -48,7 +48,7 @@ const AttributeRow = (props: AttributeRowProps) => {
 
   const getPrice = () => {
     const base = player[props.attribute.name];
-    return Math.round(Math.pow(base, 3) / 100) * 100;
+    return Math.round(base ** 3 / 100) * 100;
   };
 
   let button = (
@@ -72,12 +72,7 @@ const AttributeRow = (props: AttributeRowProps) => {
       </div>
       <div className="attribute-cell col-4 col-sm-3 col-md-2 col-xl-2 text-center my-auto">
         Current: {player[props.attribute.name]}
-        <CSSTransition
-          in={messageVisible}
-          timeout={300}
-          classNames={"message"}
-          unmountOnExit={true}
-        >
+        <CSSTransition in={messageVisible} timeout={300} classNames={"message"} unmountOnExit={true}>
           {() => <div className="message-inner">+{increased}</div>}
         </CSSTransition>
       </div>

@@ -44,9 +44,8 @@ const Shop = () => {
           element={
             <div className="shop-home">
               <p>
-                As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back
-                room and says, &quot;Well, as I live and breathe, if it isn't my old pal,{" "}
-                {player.name}!&quot;
+                As you enter the weapon shop, Marcos Cavielli (the owner) comes from out of the back room and says,
+                &quot;Well, as I live and breathe, if it isn't my old pal, {player.name}!&quot;
               </p>
               <p>So, what do you need?</p>
               <Link to="/main-hall/shop/buy" className="btn btn-primary">

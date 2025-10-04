@@ -1,5 +1,5 @@
-import axios, {AxiosInstance, AxiosPromise, AxiosRequestHeaders} from "axios";
-import Cookies from 'js-cookie'
+import axios, { type AxiosInstance, type AxiosPromise, type AxiosRequestHeaders } from "axios";
+import Cookies from "js-cookie";
 
 /**
  * File utils/api.js
@@ -12,11 +12,11 @@ import Cookies from 'js-cookie'
  */
 export function getHeaders(): AxiosRequestHeaders {
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   } as AxiosRequestHeaders;
-  const csrf = Cookies.get('csrftoken');
+  const csrf = Cookies.get("csrftoken");
   if (csrf) {
-    headers['X-CSRFToken'] = csrf;
+    headers["X-CSRFToken"] = csrf;
   }
   return headers;
 }
@@ -40,14 +40,13 @@ export function getAxios(): AxiosInstance {
  *   or other numeric data like move count)
  * @return {AxiosPromise} the promise from the API call
  */
-export function log(type = "", value: number|null = null): AxiosPromise {
-
+export function log(type = "", value: number | null = null): AxiosPromise {
   // using player ID from local storage to avoid race condition if this.player isn't loaded yet
   const body = {
-    'player': window.localStorage.getItem('player_id'),
-    'adventure': null,
-    'type': type,
-    'value': value
+    player: window.localStorage.getItem("player_id"),
+    adventure: null,
+    type: type,
+    value: value,
   };
 
   return getAxios().post("/log", body);

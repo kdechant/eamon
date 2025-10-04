@@ -18,9 +18,9 @@
  */
 export function titleCase(input: string): string {
   if (!input) {
-    return '';
+    return "";
   } else {
-    return input.replace(/\w\S*/g, (txt => txt[0].toUpperCase() + txt.substr(1).toLowerCase() ));
+    return input.replace(/\w\S*/g, (txt) => txt[0].toUpperCase() + txt.substr(1).toLowerCase());
   }
 }
 
@@ -31,7 +31,7 @@ export function titleCase(input: string): string {
  * @param {string} str
  */
 export function ucFirst(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**
@@ -44,7 +44,7 @@ export function ucFirst(str: string): string {
 export function percentOrNone(input: string): string {
   const n = parseFloat(input);
   if (n === 0 || isNaN(n)) {
-    return 'none';
+    return "none";
   } else {
     return n + "%";
   }

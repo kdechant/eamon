@@ -1,5 +1,4 @@
-import type * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import type { HistoryManager } from "../models/history-manager";
@@ -8,11 +7,11 @@ type HistoryProps = {
   historyManager: HistoryManager;
 };
 
-const History: React.FC<HistoryProps> = (props) => {
+const History = (props: HistoryProps) => {
   const [scrollTimeout, setScrollTimeout] = useState<number | null>(null);
   const historyDiv = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (document.documentElement.clientWidth < 768) {
       // Mobile screen. History scrolls with the main window.
       document.documentElement.scrollTop = document.documentElement.scrollHeight;
@@ -20,7 +19,7 @@ const History: React.FC<HistoryProps> = (props) => {
       // Large screen. History has its own scroll bar.
       historyDiv.current.scrollTop = historyDiv.current.scrollHeight;
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (document.documentElement.clientWidth < 768) {
@@ -31,7 +30,7 @@ const History: React.FC<HistoryProps> = (props) => {
       scrollToBottom();
       setScrollTimeout(null);
     }
-  }, [props.historyManager.current_entry.results.length]);
+  }, [props.historyManager.current_entry.results.length, scrollTimeout, scrollToBottom]);
 
   return (
     <div className="history" ref={historyDiv}>

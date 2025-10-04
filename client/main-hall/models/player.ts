@@ -1,24 +1,24 @@
-import Artifact, {ARMOR_TYPES, getIcon, isWeapon, maxDamage} from "./artifact";
-import GameObject from "./game-object";
-import Adventure from "./adventure";
+import type Adventure from "./adventure";
+import type Artifact from "./artifact";
+import { ARMOR_TYPES, getIcon, isWeapon, maxDamage } from "./artifact";
+import type GameObject from "./game-object";
 
 export interface SavedGame {
-  id: number,
-  slot: string,
-  description: string,
-  adventure: Adventure,
+  id: number;
+  slot: string;
+  description: string;
+  adventure: Adventure;
 }
 
 export type PlayerProfile = {
   uuid: string;
   slug: string;
-}
+};
 
 /**
  * Player type. Represents players (adventurers) in the main hall
  */
 export default interface Player extends GameObject {
-
   gender: string;
   hardiness: number;
   agility: number;
@@ -46,7 +46,7 @@ export default interface Player extends GameObject {
   icon: string;
   armor_class: number;
   armor_penalty: number;
-  armor_factor: number;  // total armor penalty - armor expertise
+  armor_factor: number; // total armor penalty - armor expertise
 
   uuid: string;
   saved_games: SavedGame[];
@@ -74,7 +74,7 @@ export function updateCachedInfo(player) {
   }
 
   // set an icon based on the best weapon the player has
-  player.icon = 'helmet';
+  player.icon = "helmet";
   if (player.best_weapon) {
     player.icon = getIcon(player.best_weapon);
   }

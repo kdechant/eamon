@@ -1,28 +1,29 @@
-import {HistoryManager} from "./history-manager";
 import Game from "./game";
-import {OperationsQueue} from "./operations-queue";
+import { HistoryManager } from "./history-manager";
+import { OperationsQueue } from "./operations-queue";
 
 const game = new Game();
 
-describe("Command history", function() {
-
+describe("Command history", function () {
   // global handling
   beforeAll(() => {
-    game.queue = new OperationsQueue;
-    global['game'] = game;
+    game.queue = new OperationsQueue();
+    global["game"] = game;
   });
-  afterAll(() => { delete global['game']; });
+  afterAll(() => {
+    delete global["game"];
+  });
 
   let hist: HistoryManager;
   beforeEach(() => {
     hist = new HistoryManager();
   });
 
-  it("should start with empty history", function() {
+  it("should start with empty history", function () {
     expect(hist.history.length).toEqual(0);
   });
 
-  it("should add entries to the history", function() {
+  it("should add entries to the history", function () {
     // to fix a bug, reset the history before running this.
     hist.history = [];
 
@@ -37,7 +38,7 @@ describe("Command history", function() {
     expect(hist.history.length).toEqual(3);
   });
 
-  it("should get the most recent command", function() {
+  it("should get the most recent command", function () {
     // to fix a bug, reset the history before running this.
     hist.history = [];
 
@@ -46,7 +47,7 @@ describe("Command history", function() {
     expect(hist.getLastCommand()).toEqual("get all");
   });
 
-  it("should scroll through the commands", function() {
+  it("should scroll through the commands", function () {
     // to fix a bug, reset the history before running this.
     hist.history = [];
 
@@ -70,5 +71,4 @@ describe("Command history", function() {
     expect(hist.getNewerCommand()).toEqual("get all");
     expect(hist.getNewerCommand()).toEqual("");
   });
-
 });

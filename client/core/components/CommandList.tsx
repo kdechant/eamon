@@ -22,7 +22,7 @@ const CommandList = (props: ModalProps) => {
     if (category_names.indexOf(c.category) === -1) {
       category_names.push(c.category);
     }
-    if (!categories.hasOwnProperty(c.category)) {
+    if (!Object.hasOwn(categories, c.category)) {
       categories[c.category] = [];
     }
     categories[c.category].push(c);

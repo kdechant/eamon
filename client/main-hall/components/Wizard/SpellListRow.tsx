@@ -50,11 +50,7 @@ const SpellListRow = (props: SpellListProps) => {
       );
     } else {
       button = (
-        <button
-          type="button"
-          className="btn btn-primary align-middle"
-          onClick={() => buy(props.spell)}
-        >
+        <button type="button" className="btn btn-primary align-middle" onClick={() => buy(props.spell)}>
           {player[`spl_${props.spell.name}`] > 0 ? "Upgrade" : "Learn"}
         </button>
       );
@@ -69,18 +65,12 @@ const SpellListRow = (props: SpellListProps) => {
       </div>
       <div className="col-4 col-sm-3 col-md-2 text-center my-auto">
         Current Ability: {percentOrNone(player[`spl_${props.spell.name}`])}
-        <CSSTransition
-          in={messageVisible}
-          timeout={500}
-          classNames={"message"}
-          unmountOnExit={true}
-        >
+        <CSSTransition in={messageVisible} timeout={500} classNames={"message"} unmountOnExit={true}>
           {() => <div className="message-inner">{message}</div>}
         </CSSTransition>
       </div>
       <div className="col-4 col-sm-3 col-md-2 text-center my-auto">
-        <img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" className="icon-md" />{" "}
-        {props.spell.price}
+        <img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" className="icon-md" /> {props.spell.price}
       </div>
       <div className="col-4 col-sm-2 col-md-2 text-center my-auto">{button}</div>
     </div>

@@ -2,8 +2,7 @@ import Game from "./game";
 
 const game = new Game();
 
-describe("Game class", function() {
-
+describe("Game class", function () {
   test("should roll some dice", () => {
     let roll: number;
     // using sides = 1 to avoid having to worry about random numbers
@@ -27,7 +26,5 @@ describe("Game class", function() {
     expect(game.diceRoll(1, 100)).toBe(42);
     expect(game.diceRoll(1, 100)).toBe(5);
     expect(game.diceRoll(1, 100)).toBe(99);
-
   });
-
 });

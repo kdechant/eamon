@@ -23,7 +23,7 @@ export default class MonsterRepository {
    */
   index = 0;
 
-  constructor(monster_data: Array<Object>, restoring_save = false) {
+  constructor(monster_data: Record<string, any>[], restoring_save = false) {
     monster_data.forEach((m: any) => {
       const monster = this.add(m);
 
@@ -78,9 +78,8 @@ export default class MonsterRepository {
 
   /**
    * Adds a monster.
-   * @param {Object} monster_data
    */
-  public add(monster_data): Monster {
+  public add(monster_data: Record<string, any>): Monster {
     // autonumber the ID if not provided
     if (monster_data.id === undefined) {
       monster_data.id = this.index + 1;
@@ -286,7 +285,7 @@ export default class MonsterRepository {
 const serializeFilter = (key, value) => {
   // the filtering only applies when we serialize a Monster object, not to others
   // using duck typing to tell if it's a monster because "typeof foo" only returns "object", not the class name
-  if (value?.hasOwnProperty("agility")) {
+  if (value && Object.hasOwn(value, "agility")) {
     // clone the object with only some props (using destructuring to discard the others)
     const { inventory, parent, children, weapon, saved_games, weight_carried, profit, ...m } = value;
     return m;

@@ -1,63 +1,64 @@
 import Game from "../models/game";
-import {initMockGame} from "../utils/testing";
-import {Monster} from "../models/monster";
+import { Monster } from "../models/monster";
+import { initMockGame } from "../utils/testing";
 
 const game = new Game();
 
-describe("Monster", function() {
-
-  beforeAll(() => { global['game'] = game; });
-  afterAll(() => { delete global['game']; });
+describe("Monster", function () {
+  beforeAll(() => {
+    global["game"] = game;
+  });
+  afterAll(() => {
+    delete global["game"];
+  });
 
   // initialize the test with the full mock game data
   beforeEach(() => {
     return initMockGame(game);
   });
 
-  it("should know if an artifact is within reach of the player", function() {
-
+  it("should know if an artifact is within reach of the player", function () {
     // something the player is carrying
-    const torch = game.artifacts.getLocalByName('torch');
+    const torch = game.artifacts.getLocalByName("torch");
     expect(torch).not.toBeNull();
     expect(torch.id).toBe(9);
 
     // something in the room
-    const bread = game.artifacts.getLocalByName('bread');
+    const bread = game.artifacts.getLocalByName("bread");
     expect(bread).not.toBeNull();
     expect(bread.id).toBe(7);
 
     // an embedded artifact
     bread.embedded = true;
-    const bread2 = game.artifacts.getLocalByName('bread', false);  // not revealing
+    const bread2 = game.artifacts.getLocalByName("bread", false); // not revealing
     expect(bread2).not.toBeNull();
     expect(bread2.id).toBe(7);
     expect(bread2.embedded).toBe(true);
-    const bread3 = game.artifacts.getLocalByName('bread');  // revealing
+    const bread3 = game.artifacts.getLocalByName("bread"); // revealing
     expect(bread3).not.toBeNull();
     expect(bread3.id).toBe(7);
     expect(bread3.embedded).toBe(false);
 
     // something that is elsewhere
-    const chest = game.artifacts.getLocalByName('chest');
+    const chest = game.artifacts.getLocalByName("chest");
     expect(chest).toBeNull();
 
     // something that doesn't match any artifact in the game
-    const spaceship = game.artifacts.getLocalByName('spaceship');
+    const spaceship = game.artifacts.getLocalByName("spaceship");
     expect(spaceship).toBeNull();
-
   });
 
-  it("should match by exact name", function() {
+  it("should match by exact name", function () {
     game.artifacts.get(3).moveToRoom(); // magic sword
     game.artifacts.get(8).moveToRoom(); // sword
     // if two artifacts are here and one's name is contained in the other's
     // name, it should give preference to the exact match
-    const a = game.artifacts.getLocalByName('sword');
+    const a = game.artifacts.getLocalByName("sword");
     // expect(a.id).toBe(8, "Fail: 'sword' matched 'magic sword' instead of the exact match 'sword'");
   });
 
-  it("should de-duplicate artifact names on game start", function() {
-    expect(game.artifacts.get(19).name).toBe("mace#");  // duplicate name of a player weapon
-    expect(game.artifacts.get(21).name).toBe("dagger");  // not a duplicate
+  it("should de-duplicate artifact names on game start", function () {
+    expect(game.artifacts.get(19).name).toBe("mace#"); // duplicate name of a player weapon
+    expect(game.artifacts.get(21).name).toBe("dagger"); // not a duplicate
   });
 });

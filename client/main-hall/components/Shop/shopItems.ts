@@ -106,33 +106,9 @@ export let weapons: Artifact[] = [
 const artifact_names = {
   1: ["Slaymor", "Falcoor", "Ironheart", "Blood Claw", "Orenmir", "Shadowfury", "Mooncleaver"],
   2: ["Stinger", "Meteor", "Featherdraw", "Heartpiercer", "Quintain", "Ashwood", "Arrowsong"],
-  3: [
-    "Scrunch",
-    "Warmace",
-    "Earthshatter",
-    "Spinefall",
-    "Justifier",
-    "Haunted Hammer",
-    "Guiding Star",
-  ],
-  4: [
-    "Centuri",
-    "Shiverspine",
-    "Twisted Spike",
-    "Mithril Lance",
-    "Blinkstrike",
-    "Nightbane",
-    "Ebon Halberd",
-  ],
-  5: [
-    "Slasher",
-    "Freedom",
-    "Ghost Reaver",
-    "Doombringer",
-    "Malevolent Crusader",
-    "Swiftblade",
-    "Oathkeeper",
-  ],
+  3: ["Scrunch", "Warmace", "Earthshatter", "Spinefall", "Justifier", "Haunted Hammer", "Guiding Star"],
+  4: ["Centuri", "Shiverspine", "Twisted Spike", "Mithril Lance", "Blinkstrike", "Nightbane", "Ebon Halberd"],
+  5: ["Slasher", "Freedom", "Ghost Reaver", "Doombringer", "Malevolent Crusader", "Swiftblade", "Oathkeeper"],
 };
 const magic_weapons: Artifact[] = [];
 const num_weapons = 3;
@@ -147,14 +123,7 @@ for (let i = 0; i < num_weapons; i++) {
   item.name = artifact_names[item.weapon_type][name_index];
   artifact_names[item.weapon_type].splice(name_index, 1);
 
-  item.description =
-    "You see " +
-    (item.weapon_type === 1 ? "an" : "a") +
-    " " +
-    getTypeName(item) +
-    " named " +
-    item.name +
-    ".";
+  item.description = `You see ${item.weapon_type === 1 ? "an" : "a"} ${getTypeName(item)} named ${item.name}.`;
   item.weapon_odds = diceRoll(1, 7) * 5 - 10;
   item.hands = item.weapon_type === 2 ? 2 : 1;
   // item.dice = i + 1;  // always generate 1 x 1d*, 1 x 2d*, and 1 x 3d*
@@ -182,9 +151,9 @@ for (const a of armor_types) {
     uuid: uuidv4(),
     type: ARTIFACT_TYPES.WEARABLE,
     armor_type: ARMOR_TYPES.ARMOR,
-    name: a === "chain" ? "chain mail" : a + " armor",
+    name: a === "chain" ? "chain mail" : `${a} armor`,
   } as Artifact;
-  item.description = "You see a standard set of " + item.name + ".";
+  item.description = `You see a standard set of ${item.name}.`;
   switch (a) {
     case "leather":
       item.value = 100;

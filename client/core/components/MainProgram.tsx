@@ -25,6 +25,7 @@ const MainProgram: React.FC = () => {
   const [hintsOpen, setHintsOpen] = useState(false);
   const [, forceRefresh] = useState(0); // used for forcing re-render
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Fix dependencies when installing RQ
   useEffect(() => {
     // In a real game we want to log to the API, so pass in a live Logger class.
     // This replaces the dummy logger class which is the default in the Game object.
@@ -149,6 +150,7 @@ const MainProgram: React.FC = () => {
 
   if (!game || !game.player) {
     return (
+      // biome-ignore lint/correctness/useUniqueElementIds: Needed for CSS
       <div className="container-fluid" id="game">
         <div className="main-heading">
           <h1>{game.name}</h1>
@@ -164,6 +166,7 @@ const MainProgram: React.FC = () => {
   // show the intro text, if the game has any, and the player hasn't seen it yet
   if (!game.started && game.intro_text) {
     return (
+      // biome-ignore lint/correctness/useUniqueElementIds: needed for CSS
       <div className="container-fluid" id="game">
         <GameHeading game={game} toggleStatus={toggleStatus} toggleMenu={toggleMenu} menuOpen={menuOpen} />
 
@@ -178,6 +181,7 @@ const MainProgram: React.FC = () => {
 
   if (game.selling) {
     return (
+      // biome-ignore lint/correctness/useUniqueElementIds: needed for CSS
       <div className="container-fluid" id="game">
         <GameHeading game={game} toggleStatus={toggleStatus} toggleMenu={toggleMenu} menuOpen={menuOpen} />
 
@@ -194,6 +198,7 @@ const MainProgram: React.FC = () => {
   const historyClass = statusOpen ? "d-none" : "";
   const menuClass = menuOpen ? "" : "d-none";
   return (
+    // biome-ignore lint/correctness/useUniqueElementIds: needed for CSS
     <div className="container-fluid" id="game">
       <GameHeading game={game} toggleStatus={toggleStatus} toggleMenu={toggleMenu} menuOpen={menuOpen} />
 
@@ -229,6 +234,7 @@ const MainProgram: React.FC = () => {
         <Status game={game} open={statusOpen} />
 
         {/* hamburger menu */}
+        {/** biome-ignore lint/correctness/useUniqueElementIds: needed for CSS */}
         <div id="menu" className={"container-fluid " + menuClass}>
           <div className="row">
             <ul>
@@ -298,7 +304,7 @@ type GameHeadingProps = {
   statusOpen?: boolean;
 };
 
-const GameHeading: React.FC<GameHeadingProps> = (props) => {
+const GameHeading = (props: GameHeadingProps) => {
   const game = props.game;
   return (
     <div className="container-fluid main-heading">
@@ -313,7 +319,7 @@ const GameHeading: React.FC<GameHeadingProps> = (props) => {
           </span>
         </div>
         <div className="player-menu col-1">
-          <button aria-haspopup={true} aria-expanded={props.statusOpen} onClick={props.toggleStatus}>
+          <button type="button" aria-haspopup={true} aria-expanded={props.statusOpen} onClick={props.toggleStatus}>
             {props.statusOpen ? (
               <img
                 src="/static/images/ravenmore/128/backpack.png"
@@ -331,7 +337,8 @@ const GameHeading: React.FC<GameHeadingProps> = (props) => {
         </div>
         <div className="player-menu col-1">
           <button
-            className={"sidebarIconToggle" + (props.menuOpen ? " open" : " closed")}
+            type="button"
+            className={`sidebarIconToggle${props.menuOpen ? " open" : " closed"}`}
             aria-haspopup={true}
             aria-expanded={props.menuOpen}
             onClick={props.toggleMenu}

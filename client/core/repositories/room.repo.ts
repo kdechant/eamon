@@ -19,7 +19,7 @@ export default class RoomRepository {
    */
   current_room: Room;
 
-  constructor(room_data) {
+  constructor(room_data: Record<string, any>[]) {
     for (const i of room_data) {
       const r = new Room();
       if (i.data) {

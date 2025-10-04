@@ -1,5 +1,5 @@
 import * as pluralize from "pluralize";
-import { SavedGame } from "../../main-hall/models/player";
+import type { SavedGame } from "../../main-hall/models/player";
 import type Game from "../models/game";
 import { Artifact } from "./artifact";
 import { GameObject } from "./game-object";
@@ -105,10 +105,6 @@ export class Monster extends GameObject {
   speed_multiplier = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
 
-  constructor() {
-    super();
-  }
-
   /**
    * Shows the description, including any chained effects
    */
@@ -124,7 +120,7 @@ export class Monster extends GameObject {
    * @param {Number} room_id  The ID of the room to move to. If null or zero, this moves the monster to the player's current room
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
-  public moveToRoom(room_id: number = null, monsters_follow = true): void {
+  public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
     this.room_id = room_id || game.player.room_id;
     this.container_id = null;
 
@@ -225,7 +221,7 @@ export class Monster extends GameObject {
    *   Whether the monster is fleeing (false) or deciding to follow a fleeing player (true)
    * @returns {boolean}
    */
-  public checkCourage(following = false): boolean {
+  public checkCourage(following: boolean = false): boolean {
     const fear = game.diceRoll(1, 100);
     let effective_courage = this.courage;
     if (this.damage > this.hardiness * 0.2) {
@@ -370,7 +366,7 @@ export class Monster extends GameObject {
   /**
    * Prints the artifacts the monster is carrying
    */
-  public printInventory(style = "normal"): void {
+  public printInventory(): void {
     if (this.reaction === Monster.RX_FRIEND) {
       // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
       let inv = this.inventory;
@@ -418,11 +414,11 @@ export class Monster extends GameObject {
       game.queue.delay_time = delay_time;
     } else {
       if (this.weapon) {
-        game.history.write(this.name + " is armed with: " + this.weapon.name);
+        game.history.write(`${this.name} is armed with: ${this.weapon.name}`);
       } else if (this.weapon_id === 0) {
-        game.history.write(this.name + " is armed with natural weapons.");
+        game.history.write(`${this.name} is armed with natural weapons.`);
       } else {
-        game.history.write(this.name + " is unarmed.");
+        game.history.write(`${this.name} is unarmed.`);
       }
     }
   }
@@ -446,7 +442,7 @@ export class Monster extends GameObject {
    * @param {string} artifact_name
    * @returns Artifact
    */
-  public findInInventory(artifact_name): Artifact {
+  public findInInventory(artifact_name: string): Artifact {
     // Try exact matches first, then exact match with display name, then partial match
     // TODO: improve this and ask the player to disambiguate if there are multiple matches
     let a = this.inventory.find((x) => x.name.toLowerCase() === artifact_name.toLowerCase());
@@ -570,7 +566,7 @@ export class Monster extends GameObject {
    * Picks up a weapon during combat
    */
   public pickUpWeapon(wpn: Artifact): void {
-    game.history.write(this.name + " picks up " + wpn.name + ".");
+    game.history.write(`${this.name} picks up ${wpn.name}.`);
     this.pickUp(wpn);
     this.ready(wpn);
   }
@@ -901,7 +897,7 @@ export class Monster extends GameObject {
    * @param {number} difficulty
    *   The number that must be rolled for the throw to succeed
    */
-  public rollSavingThrow(stat, difficulty) {
+  public rollSavingThrow(stat: string, difficulty: number) {
     const roll = game.diceRoll(1, 20);
     return roll + Math.floor((this[stat] - 10) / 2) >= difficulty;
   }
@@ -912,7 +908,7 @@ export class Monster extends GameObject {
    * @param {boolean} show_message
    *   Whether to show the flee message. Usually omitted, except for internal logic dealing with group monsters
    */
-  public flee(show_message = true) {
+  public flee(show_message: boolean = true) {
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
       if (show_message) {
@@ -999,7 +995,7 @@ export class Monster extends GameObject {
    * @param {Monster} attacker - Reference to the attacking monster, if in combat
    * @returns number The amount of actual damage done
    */
-  public injure(damage: number, ignore_armor = false, attacker: Monster = null): number {
+  public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
     if (this.armor_class && !ignore_armor) {
       damage -= this.armor_class;
       if (damage <= 0) {
@@ -1094,7 +1090,7 @@ export class Monster extends GameObject {
    * Heals a monster
    * @param {number} amount - The amount of hit points to heal
    */
-  public heal(amount): void {
+  public heal(amount: number): void {
     this.damage -= amount;
     if (this.damage < 0) {
       this.damage = 0;
@@ -1283,7 +1279,7 @@ export class Monster extends GameObject {
    * Reduces the size of the group by removing some children
    * @param {number} num The number of children to remove
    */
-  public removeChildren(num = 1) {
+  public removeChildren(num: number = 1) {
     console.error("Not implemented for single monsters");
   }
 }
@@ -1293,20 +1289,13 @@ export class Monster extends GameObject {
  * Note: Keeping this in the same file as the parent class to avoid nasty import problems
  */
 export class GroupMonster extends Monster {
-  // properties used for managing group monsters
-  name_plural: string;
-  count: number;
   children: Monster[] = [];
-
-  constructor() {
-    super();
-  }
 
   /**
    * Loads data from JSON source into the object properties.
    * @param {Object} source an object, e.g., from JSON.
    */
-  public init(source): void {
+  public init(source: object): void {
     super.init(source);
 
     // default plural name for group monsters. if you want a better name, enter it in the database.
@@ -1322,7 +1311,7 @@ export class GroupMonster extends Monster {
    * @param {Number} room_id  The ID of the room to move to. If null or zero, this moves the monster to the player's current room
    * @param {boolean} monsters_follow  If the player is moving, should other monsters follow? True = yes, false = no
    */
-  public moveToRoom(room_id: number = null, monsters_follow = true): void {
+  public moveToRoom(room_id: number = null, monsters_follow: boolean = true): void {
     const from_room_id = this.room_id;
 
     super.moveToRoom(room_id, monsters_follow);
@@ -1379,7 +1368,7 @@ export class GroupMonster extends Monster {
    * Reduces the size of the group by removing some children
    * @param {number} num The number of children to remove
    */
-  public removeChildren(num = 1) {
+  public removeChildren(num: number = 1) {
     this.children = this.children.slice(0, -num);
     if (!this.children.length) {
       this.destroy();
@@ -1449,7 +1438,7 @@ export class GroupMonster extends Monster {
    * @param {boolean} show_message
    *   Whether to show the flee message. Usually omitted, except for internal logic dealing with group monsters
    */
-  public flee(show_message = true) {
+  public flee(show_message: boolean = true) {
     // check if there is somewhere to flee to
     if (!game.rooms.getRoomById(this.room_id).hasGoodExits()) {
       if (show_message) {
@@ -1484,7 +1473,7 @@ export class GroupMonster extends Monster {
    * @param {Monster} attacker - Reference to the attacking monster, if in combat
    * @returns number The amount of actual damage done
    */
-  public injure(damage: number, ignore_armor = false, attacker: Monster = null): number {
+  public injure(damage: number, ignore_armor: boolean = false, attacker: Monster = null): number {
     // when attacking a group monster, we actually attack a random one of the children
     const visible_children = this.children.filter((c) => c.isHere());
     if (!visible_children.length) {
@@ -1514,7 +1503,7 @@ export class GroupMonster extends Monster {
    * Heals a monster
    * @param {number} amount - The amount of hit points to heal
    */
-  public heal(amount): void {
+  public heal(amount: number): void {
     const child = game.getRandomElement(this.children.filter((c) => c.isHere()));
     child.heal(amount);
   }

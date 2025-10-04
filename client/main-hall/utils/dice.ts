@@ -1,4 +1,3 @@
-
 /**
  * Rolls a set of dice
  */

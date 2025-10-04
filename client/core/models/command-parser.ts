@@ -78,7 +78,7 @@ export class CommandParser {
     // look up the command in the list of available verbs
     const command_match: string[] = [];
     // first, match by the exact string
-    if (this.available_verbs.hasOwnProperty(verb)) {
+    if (Object.hasOwn(this.available_verbs, verb)) {
       command_match.push(verb);
     }
     // if no direct match, try the fuzzy matching

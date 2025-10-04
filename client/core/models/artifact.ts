@@ -135,7 +135,7 @@ export class Artifact extends GameObject {
    *   The ID of the artifact, or an array of IDs to check multiple artifacts.
    * @return {boolean}
    */
-  public contains(ids: number | number[]) {
+  public contains(ids: number | number[]): boolean {
     if (typeof ids === "number") ids = [ids];
     for (const id of ids) {
       if (game.artifacts.get(id).container_id !== this.id) {
@@ -234,7 +234,7 @@ export class Artifact extends GameObject {
   /**
    * Prints the artifacts inside a container
    */
-  public printContents(style = "normal"): void {
+  public printContents(): void {
     game.history.write("It contains:");
 
     // find monsters inside the container

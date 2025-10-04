@@ -1,10 +1,9 @@
-import GameObject from "./game-object";
+import type GameObject from "./game-object";
 
 /**
  * Adventure class. Represents adventures the player can go on.
  */
 export default interface Adventure extends GameObject {
-
   name_sort: string;
   description: string;
   full_description: string;
@@ -15,5 +14,4 @@ export default interface Adventure extends GameObject {
   authors: string[];
   authors_display: string;
   tags: string[];
-
 }

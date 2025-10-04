@@ -40,9 +40,9 @@ const Wizard: React.FC = () => {
         Hokas Tokas' School of Magick
       </h2>
       <p>
-        After a few minutes of diligent searching, you find Hokas Tokas, the old Mage. He looks at
-        you and says, &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you.
-        Here are the spells I teach. Which will it be?&quot;
+        After a few minutes of diligent searching, you find Hokas Tokas, the old Mage. He looks at you and says,
+        &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you. Here are the spells I teach.
+        Which will it be?&quot;
       </p>
       <div className="spells-list">
         {spells.map((spell) => (

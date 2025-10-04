@@ -1,15 +1,18 @@
+import { Artifact } from "../models/artifact";
 import Game from "../models/game";
-import {initMockGame} from "../utils/testing";
-import {Artifact} from "../models/artifact";
-import {Monster} from "../models/monster";
+import { Monster } from "../models/monster";
+import { initMockGame } from "../utils/testing";
 
 const game = new Game();
 
-describe("Monster Combat", function() {
-
+describe("Monster Combat", function () {
   // global handling
-  beforeAll(() => { global['game'] = game; });
-  afterAll(() => { delete global['game']; });
+  beforeAll(() => {
+    global["game"] = game;
+  });
+  afterAll(() => {
+    delete global["game"];
+  });
 
   // initialize the test with the full mock game data
   beforeEach(() => {
@@ -27,7 +30,7 @@ describe("Monster Combat", function() {
     guard.pickUpWeapon(spear);
     guard.ready(spear);
     expect(guard.canAttack()).toBe(true);
-    guard.weapon_id = 0;  // specifically has natural weapons
+    guard.weapon_id = 0; // specifically has natural weapons
     expect(guard.canAttack()).toBe(true);
     guard.weapon_id = null;
     expect(guard.canAttack()).toBe(false);
@@ -37,7 +40,7 @@ describe("Monster Combat", function() {
     guard.pickUpWeapon(spear);
     guard.ready(spear);
     expect(guard.canAttack()).toBe(true);
-    guard.weapon_id = 0;  // specifically has natural weapons
+    guard.weapon_id = 0; // specifically has natural weapons
     expect(guard.canAttack()).toBe(true);
     guard.weapon_id = null;
     expect(guard.canAttack()).toBe(false);
@@ -47,7 +50,7 @@ describe("Monster Combat", function() {
     guard.pickUpWeapon(spear);
     guard.ready(spear);
     expect(guard.canAttack()).toBe(true);
-    guard.weapon_id = 0;  // specifically has natural weapons
+    guard.weapon_id = 0; // specifically has natural weapons
     expect(guard.canAttack()).toBe(true);
     guard.weapon_id = null;
     expect(guard.canAttack()).toBe(true);
@@ -61,12 +64,11 @@ describe("Monster Combat", function() {
     expect(guard.canAttack()).toBe(false);
     guard.weapon_id = null;
     expect(guard.canAttack()).toBe(false);
-
   });
 
   it("should swing and miss", function () {
-    const alfred = game.monsters.get(3);  // has a weapon
-    const thief = game.monsters.get(4);   // no weapon
+    const alfred = game.monsters.get(3); // has a weapon
+    const thief = game.monsters.get(4); // no weapon
 
     game.mock_random_numbers = [96, 1];
     alfred.attack(thief);
@@ -77,13 +79,12 @@ describe("Monster Combat", function() {
     thief.attack(alfred);
     game.queue.run();
     expect(game.history.getLastOutput().text).toBe("-- missed!");
-
   });
 
   it("should fumble", function () {
-    const alfred = game.monsters.get(3);  // has a weapon
-    const sword = game.artifacts.get(8);  // alfred's weapon
-    const thief = game.monsters.get(4);   // no weapon
+    const alfred = game.monsters.get(3); // has a weapon
+    const sword = game.artifacts.get(8); // alfred's weapon
+    const thief = game.monsters.get(4); // no weapon
 
     // fumble recovered
     game.mock_random_numbers = [98, 1];
@@ -116,7 +117,7 @@ describe("Monster Combat", function() {
     alfred.attack(thief);
     game.queue.run();
     expect(game.history.getLastOutput().text).toBe("-- weapon damaged!");
-    game.mock_random_numbers = [98, 99, 1];  // fumble, damage, no hit self
+    game.mock_random_numbers = [98, 99, 1]; // fumble, damage, no hit self
     alfred.attack(thief);
     game.queue.run();
     expect(game.history.getLastOutput().text).toBe("-- weapon broken!");
@@ -124,5 +125,4 @@ describe("Monster Combat", function() {
     expect(sword.monster_id).toBeNull();
     expect(sword.room_id).toBeNull();
   });
-
 });

@@ -58,9 +58,8 @@ export class MoveCommand implements BaseCommand {
 
   /**
    * Alters the display in the history window
-   * @param {string} verb
    */
-  history_display(verb) {
+  history_display(verb: string) {
     // turn short words ("n") into long ("north")
     for (const d in this.directions) {
       if (this.directions[d] === verb) {
@@ -70,15 +69,14 @@ export class MoveCommand implements BaseCommand {
     return verb;
   }
 
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     // turn long words ("north") into short ("n")
-    if (this.directions.hasOwnProperty(verb)) {
+    if (Object.hasOwn(this.directions, verb)) {
       verb = this.directions[verb];
     }
 
     const room_from = game.rooms.current_room;
     const exit = game.rooms.current_room.getExit(verb);
-    let msg: string;
 
     if (!game.triggerEvent("specialMove", arg, exit)) return;
 
@@ -114,12 +112,12 @@ export class MoveCommand implements BaseCommand {
         // try to unlock the door using a key the player is carrying
         if (!door.is_open && door.key_id && game.player.hasArtifact(door.key_id)) {
           const key = game.artifacts.get(door.key_id);
-          game.history.write("You unlock the " + door.name + " using the " + key.name + ".");
+          game.history.write(`You unlock the ${door.name} using the ${key.name}.`);
           door.open();
         }
 
         if (!door.is_open) {
-          throw new CommandException("The " + door.name + " blocks your way!");
+          throw new CommandException(`The ${door.name} blocks your way!`);
         }
       }
     }
@@ -131,7 +129,7 @@ export class MoveCommand implements BaseCommand {
       if (exit.room_to === RoomExit.EXIT || exit.room_to === RoomExit.EXIT_SILENT) {
         if (game.exit_prompt) {
           // leaving the adventure
-          game.modal.confirm("Leave this adventure?", (answer) => {
+          game.modal.confirm("Leave this adventure?", (answer: string) => {
             if (answer === "Yes") {
               if (exit.room_to === RoomExit.EXIT) {
                 game.history.write(game.exit_message);
@@ -157,7 +155,7 @@ export class MoveCommand implements BaseCommand {
           game.triggerEvent("afterMove", arg, room_from, room_to);
         } else {
           // oops, broken connection
-          console.error("Tried to move to non-existent room #" + exit.room_to);
+          console.error(`Tried to move to non-existent room #${exit.room_to}`);
           game.history.write("You can't go that way!");
         }
       }
@@ -177,7 +175,7 @@ export class LookCommand implements BaseCommand {
     "LOOK WALL - If the room description mentions something odd about a wall (or a rock, tapestry, throne, etc.) and you think there might be a secret item or door, this might find it.",
     "LOOK EDDIE - Shows the description of a monster or NPC named Eddie, and his health status.",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     // look event. can be used to reveal secret doors, etc.
     if (!game.triggerEvent("look", arg)) {
       return;
@@ -226,13 +224,12 @@ export class LookCommand implements BaseCommand {
         // display quantity for food, drinks, and light sources
         if (a.type === Artifact.TYPE_EDIBLE || a.type === Artifact.TYPE_DRINKABLE) {
           let noun = a.type === Artifact.TYPE_EDIBLE ? "bite" : "swallow";
-          if (a.quantity === 1) {
-            verb = "is";
-          } else {
-            verb = "are";
+          let is_are = "is";
+          if (a.quantity !== 1) {
+            is_are = "are";
             noun += "s";
           }
-          game.history.write("There " + verb + " " + a.quantity + " " + noun + " remaining.");
+          game.history.write(`There ${is_are} ${a.quantity} ${noun} remaining.`);
         }
         if (a.type === Artifact.TYPE_LIGHT_SOURCE) {
           if (a.quantity >= 25 || a.quantity === -1) {
@@ -269,7 +266,7 @@ export class LookCommand implements BaseCommand {
         } else if (common_stuff.indexOf(arg) !== -1 || game.rooms.current_room.textMatch(arg)) {
           game.history.write("You see nothing special.");
         } else {
-          throw new CommandException("I see no " + arg + " here!");
+          throw new CommandException(`I see no ${arg} here!`);
         }
       }
     }
@@ -283,7 +280,7 @@ export class SayCommand implements BaseCommand {
   category = "interactive";
   description = "Allows you to say a word or phrase, like a magic word or something you might say to an NPC.";
   examples: string[] = ["SAY OPEN SESAME"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (arg !== "") {
       if (game.triggerEvent("beforeSay", arg)) {
         game.history.write(`Ok... "${arg}"`);
@@ -297,7 +294,7 @@ export class SayCommand implements BaseCommand {
 
       game.triggerEvent("say", arg);
     } else {
-      game.modal.show("Say what?", (value) => {
+      game.modal.show("Say what?", (value: string) => {
         game.command_parser.run(`say ${value}`);
       });
     }
@@ -642,7 +639,7 @@ export class ReadyCommand implements BaseCommand {
   examples: string[] = [
     "READY TROLLSFIRE - Put your current weapon into your pack and hold the Trollsfire sword in your hand.",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     const old_wpn = game.player.weapon;
     const wpn = game.player.findInInventory(arg);
     if (wpn) {
@@ -727,7 +724,7 @@ export class FleeCommand implements BaseCommand {
     "FLEE - If no direction is given, you will run in a random direction.",
     "FLEE N - Try to flee to the north. This might not always work. If a dragon is guarding a cave entrance in that direction, you might need to try to flee in a different direction.",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (!game.in_battle) {
       throw new CommandException("Calm down. There is no danger here.");
     }
@@ -761,7 +758,7 @@ export class DrinkCommand implements BaseCommand {
   category = "artifact manipulation";
   description = "Take a drink from a drinkable artifact.";
   examples: string[] = ["DRINK HEALING POTION"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     const item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("drink", arg, item) !== false) {
       if (item) {
@@ -802,13 +799,13 @@ export class EatCommand implements BaseCommand {
   category = "artifact manipulation";
   description = "Eats an edible item.";
   examples: string[] = ["EAT SANDWICH"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     const item = game.artifacts.getLocalByName(arg);
     if (game.triggerEvent("eat", arg, item) !== false) {
       if (item) {
         if (item.type === Artifact.TYPE_EDIBLE) {
           if (item.quantity > 0) {
-            game.history.write("You eat the " + item.name + ".");
+            game.history.write(`You eat the ${item.name}.`);
             item.use();
           } else {
             throw new CommandException("There's none left!");
@@ -840,7 +837,7 @@ export class UseCommand implements BaseCommand {
     "USE ROPE - If you're carrying a rope, this might attach it to the wall or ceiling so you can climb.",
     "USE LEVER - A lever in a room might open a nearby door. This command will activate it.",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.triggerEvent("beforeUse", arg)) {
       const item: Artifact = game.artifacts.getLocalByName(arg);
       if (item) {
@@ -871,7 +868,7 @@ export class AttackCommand implements BaseCommand {
     "ATTACK DOOR - Try to smash open a door",
     "ATTACK EVIL MACHINE - Try to destroy something",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (!game.player.weapon_id) {
       throw new CommandException("You don't have a weapon ready!");
     }
@@ -887,7 +884,7 @@ export class AttackCommand implements BaseCommand {
           game.player.attack(monster_target);
         }
       } else {
-        game.modal.confirm(`${monster_target.name} is not an enemy. Attack anyway?`, (answer) => {
+        game.modal.confirm(`${monster_target.name} is not an enemy. Attack anyway?`, (answer: string) => {
           if (answer.toLowerCase() === "yes") {
             if (game.triggerEvent("attackMonster", arg, monster_target)) {
               // halve the target's friendliness and reset target's reaction.
@@ -932,7 +929,7 @@ export class LightCommand implements BaseCommand {
   category = "artifact manipulation";
   description = "Ignites or turns on a light source, or puts it out if it's already lit.";
   examples: string[] = ["LIGHT TORCH"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (arg === "") {
       throw new CommandException("Light what?");
     }
@@ -970,7 +967,7 @@ export class ReadCommand implements BaseCommand {
   category = "artifact manipulation";
   description = "Reads an item like a book, scroll, sign, or inscription.";
   examples: string[] = ["READ BOOK"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     // can't read anything if it's dark
     if (game.rooms.current_room.is_dark && !game.artifacts.isLightSource()) {
       throw new CommandException("You can't read in the dark!");
@@ -1004,7 +1001,7 @@ export class ReadCommand implements BaseCommand {
             a.showDescription();
           }
         } else {
-          game.history.write(a.name + " has no markings to read!");
+          game.history.write(`${a.name} has no markings to read!`);
         }
         game.triggerEvent("afterRead", arg, a);
       } else {
@@ -1015,7 +1012,7 @@ export class ReadCommand implements BaseCommand {
           // generic sign which is not really readable. we can pretend.
           game.rooms.current_room.show_description();
         } else {
-          game.history.write("There is no " + arg + " here!");
+          game.history.write(`There is no ${arg} here!`);
         }
       }
     }
@@ -1029,7 +1026,7 @@ export class OpenCommand implements BaseCommand {
   category = "artifact manipulation";
   description = "Tries to open a closed door, gate, or container.";
   examples: string[] = ["OPEN DOUBLE DOORS", "OPEN WOODEN CHEST"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (arg === "") {
       throw new CommandException("Open what?");
     }
@@ -1128,7 +1125,7 @@ export class CloseCommand implements BaseCommand {
   category = "artifact manipulation";
   description = "Tries to close an open door, gate, or container.";
   examples: string[] = ["CLOSE DOUBLE DOORS", "CLOSE WOODEN CHEST"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (arg === "") {
       throw new CommandException("Close what?");
     }
@@ -1185,8 +1182,6 @@ export class GiveCommand implements BaseCommand {
     "GIVE 100 TO EDDIE - Gives an NPC named Eddie 100 gold pieces",
   ];
   run(verb: string, arg: string) {
-    const match = false;
-
     const regex_result = /(.+) to (.*)/.exec(arg);
     if (regex_result === null) {
       throw new CommandException("Try giving (something) to (someone).");
@@ -1202,14 +1197,14 @@ export class GiveCommand implements BaseCommand {
 
     // check if we're giving money (GIVE 123 TO NPC or GIVE 123 GOLD TO NPC)
     let gold_amount = Number(item_name);
-    if (isNaN(gold_amount)) {
+    if (Number.isNaN(gold_amount)) {
       const plural = pluralize.plural(game.money_name);
       const regex_result = new RegExp(`([0-9,.]+) (gold|${game.money_name}|${plural})`).exec(item_name);
       if (regex_result) {
         gold_amount = Number(regex_result[1]);
       }
     }
-    if (!isNaN(gold_amount)) {
+    if (!Number.isNaN(gold_amount)) {
       // giving money
 
       if (gold_amount > game.player.gold) {
@@ -1312,9 +1307,8 @@ export class TakeCommand implements BaseCommand {
         }
         if (item.id === ready_weapon_id) {
           // took NPC's ready weapon. NPC should ready another weapon if they have one
-          monster.weapon = null;
           monster.readyBestWeapon();
-          if (monster.weapon_id) {
+          if (monster.weapon) {
             game.history.write(`${monster.name} readies the ${monster.weapon.name}.`);
           }
         }
@@ -1390,7 +1384,7 @@ export class PowerCommand implements BaseCommand {
   description =
     "Casts the POWER spell. This spell has different effects in every adventure, and may be necessary to complete certain quests.";
   examples: string[] = ["POWER"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.player.spellCast("power")) {
       //  this spell has no effect except what is defined in the adventure
       const roll = game.diceRoll(1, 100);
@@ -1409,9 +1403,9 @@ export class HealCommand implements BaseCommand {
     "HEAL - With no target, this will heal your character.",
     "HEAL EDDIE - With a target, this will heal someone else.",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.triggerEvent("heal", arg)) {
-      let target = null;
+      let target: Monster;
 
       // determine the target
       if (arg !== "") {
@@ -1449,7 +1443,7 @@ export class BlastCommand implements BaseCommand {
     "BLAST ORC - Casts a magic attack at a monster",
     "BLAST WOODEN CHEST - Casts a magic attack at an artifact, trying to smash it open",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     const [monster_target, artifact_target] = findTarget(arg);
 
     if (!monster_target && !artifact_target) {
@@ -1489,7 +1483,7 @@ export class BlastCommand implements BaseCommand {
     if (monster_target.isEnemyOf(game.player)) {
       castSpell();
     } else {
-      game.modal.confirm(`${monster_target.name} is not an enemy. Cast spell anyway?`, (answer) => {
+      game.modal.confirm(`${monster_target.name} is not an enemy. Cast spell anyway?`, (answer: string) => {
         if (answer.toLowerCase() === "yes") {
           castSpell();
         } else {
@@ -1508,7 +1502,7 @@ export class SpeedCommand implements BaseCommand {
   description =
     "Casts the SPEED spell. This increases your agility for a short time, making you a better fighter. Useful just before a tough combat.";
   examples: string[] = ["SPEED"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.player.spellCast("speed")) {
       game.triggerEvent("speed", arg);
       // double player's agility
@@ -1528,7 +1522,7 @@ export class SaveCommand implements BaseCommand {
   category = "miscellaneous";
   description = "Saves your game.";
   examples: string[] = ["SAVE"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.demo) {
       throw new CommandException("Saved games are not available when playing as the demo character.");
     }
@@ -1538,7 +1532,7 @@ export class SaveCommand implements BaseCommand {
     q1.question = "Please choose a saved game slot:";
     q1.choices = [];
     for (let slot = 1; slot <= 10; slot++) {
-      if (game.saved_games.hasOwnProperty(slot.toString())) {
+      if (Object.hasOwn(game.saved_games, slot.toString())) {
         q1.choices.push(
           `${slot}: ${game.saved_games[slot].description ? game.saved_games[slot].description : "no description"}`,
         );
@@ -1547,12 +1541,12 @@ export class SaveCommand implements BaseCommand {
       }
     }
     q1.choices.push("Cancel");
-    q1.callback = (answer) => {
+    q1.callback = (answer: string) => {
       if (answer.toLowerCase() === "cancel") {
         return false;
       }
       const slot = parseInt(answer, 10);
-      if (game.saved_games.hasOwnProperty(slot.toString())) {
+      if (Object.hasOwn(game.saved_games, slot.toString())) {
         q2.answer = game.saved_games[slot].description;
       }
       return true;
@@ -1561,7 +1555,7 @@ export class SaveCommand implements BaseCommand {
     const q2 = new ModalQuestion();
     q2.type = "text";
     q2.question = "Enter a description for the saved game:";
-    q2.callback = (answer) => {
+    q2.callback = (answer: string) => {
       const slot = parseInt(game.modal.questions[0].answer, 10);
       game.save(slot, answer);
       game.history.write(`Game saved to slot ${slot}.`);
@@ -1579,7 +1573,7 @@ export class RestoreCommand implements BaseCommand {
   category = "miscellaneous";
   description = "Restores from a saved game.";
   examples: string[] = ["RESTORE"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.demo) {
       throw new CommandException("Saved games are not available when playing as the demo character.");
     }
@@ -1589,14 +1583,14 @@ export class RestoreCommand implements BaseCommand {
     q1.question = "Please choose a saved game to restore:";
     q1.choices = [];
     for (let i = 1; i <= 10; i++) {
-      if (game.saved_games.hasOwnProperty(i)) {
+      if (Object.hasOwn(game.saved_games, i)) {
         q1.choices.push(
           `${i}: ${game.saved_games[i].description ? game.saved_games[i].description : "no description"}`,
         );
       }
     }
     q1.choices.push("Cancel");
-    q1.callback = (answer) => {
+    q1.callback = (answer: string) => {
       if (answer.toLowerCase() === "cancel") {
         return false;
       }
@@ -1616,7 +1610,7 @@ export class SmileCommand implements BaseCommand {
   category = "interactive";
   description = "Greets monsters to see if they are friendly or not.";
   examples: string[] = ["SMILE"];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (game.monsters.visible.length === 0) {
       game.history.write("Ok. 😃");
       game.history.write("You know... you look a bit dim, smiling like that, when no one's around.");
@@ -1671,7 +1665,7 @@ export class InventoryCommand implements BaseCommand {
     "INVENTORY (or INV for short) - Shows what you are carrying",
     "INV EDDIE - Shows what an NPC named Eddie is carrying. If Eddie is not friendly, this command will only show you his ready weapon.",
   ];
-  run(verb, arg) {
+  run(verb: string, arg: string) {
     if (arg === "") {
       // player
       game.player.printInventory();
@@ -1695,11 +1689,11 @@ export class GotoCommand implements BaseCommand {
   name = "goto";
   verbs: string[] = ["xgoto"];
   secret = true;
-  run(verb, arg) {
-    if (!game.data["bort"]) {
+  run(verb: string, arg: string) {
+    if (!game.data.bort) {
       throw new CommandException(`I don't know the command '${verb}'!`);
     }
-    const room_to = game.rooms.getRoomById(parseInt(arg));
+    const room_to = game.rooms.getRoomById(parseInt(arg, 10));
     if (!room_to) {
       throw new CommandException(`There is no room ${arg}`);
     }
@@ -1716,8 +1710,8 @@ export class DebuggerCommand implements BaseCommand {
   name = "debugger";
   verbs: string[] = ["xdebugger"];
   secret = true;
-  run(verb, arg) {
-    if (!game.data["bort"]) {
+  run(verb: string, arg: string) {
+    if (!game.data.bort) {
       throw new CommandException(`I don't know the command '${verb}'!`);
     }
     // biome-ignore lint/suspicious/noDebugger: This command is supposed to run the debugger
@@ -1731,8 +1725,8 @@ export class AccioCommand implements BaseCommand {
   name = "accio";
   verbs: string[] = ["xaccio"];
   secret = true;
-  run(verb, arg) {
-    if (!game.data["bort"]) {
+  run(verb: string, arg: string) {
+    if (!game.data.bort) {
       throw new CommandException(`I don't know the command '${verb}'!`);
     }
     let a = game.artifacts.getByName(arg);
@@ -1764,7 +1758,7 @@ core_commands.push(new AccioCommand());
  * @param arg
  */
 function findTarget(arg: string) {
-  let monster_target = null;
+  let monster_target: Monster = null;
   let artifact_target = null;
   monster_target = game.player.chooseTarget(arg);
   // Command was "attack" or "blast" with no specified target

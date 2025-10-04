@@ -1,13 +1,16 @@
 import Game from "../models/game";
-import {initMockGame, movePlayer} from "../utils/testing";
-import {Monster} from "../models/monster";
+import { Monster } from "../models/monster";
+import { initMockGame, movePlayer } from "../utils/testing";
 
 const game = new Game();
 
-describe("Monster", function() {
-
-  beforeAll(() => { global['game'] = game; });
-  afterAll(() => { delete global['game']; });
+describe("Monster", function () {
+  beforeAll(() => {
+    global["game"] = game;
+  });
+  afterAll(() => {
+    delete global["game"];
+  });
 
   // initialize the test with the full mock game data
   beforeEach(() => {
@@ -23,20 +26,20 @@ describe("Monster", function() {
   });
 
   it("should match synonyms and partial names", () => {
-    expect(game.monsters.get(3).match('alfred')).toBeTruthy(); // real name, but lowercase
-    expect(game.monsters.get(3).match('al')).toBeTruthy(); // partial match
-    expect(game.monsters.get(3).match('fred')).toBeTruthy(); // partial match
-    expect(game.monsters.get(3).match('freddy')).toBeTruthy(); // alias
-    expect(game.monsters.get(3).match('albert')).toBeFalsy(); // alias
+    expect(game.monsters.get(3).match("alfred")).toBeTruthy(); // real name, but lowercase
+    expect(game.monsters.get(3).match("al")).toBeTruthy(); // partial match
+    expect(game.monsters.get(3).match("fred")).toBeTruthy(); // partial match
+    expect(game.monsters.get(3).match("freddy")).toBeTruthy(); // alias
+    expect(game.monsters.get(3).match("albert")).toBeFalsy(); // alias
 
     // a multi-word alias
-    expect(game.monsters.get(4).match('bandit')).toBeTruthy(); // alias
-    expect(game.monsters.get(4).match('bad guy')).toBeTruthy(); // alias
+    expect(game.monsters.get(4).match("bandit")).toBeTruthy(); // alias
+    expect(game.monsters.get(4).match("bad guy")).toBeTruthy(); // alias
 
     // monster with no aliases
     const king = game.monsters.get(2);
-    expect(king.match('king')).toBeTruthy();
-    expect(king.match('grand duke')).toBeFalsy();
+    expect(king.match("king")).toBeTruthy();
+    expect(king.match("grand duke")).toBeFalsy();
   });
 
   it("should know if it is in the same room as the player", () => {
@@ -89,7 +92,6 @@ describe("Monster", function() {
     expect(m.wantsToPickUpWeapon()).toBe(false);
     m.weapon_id = -1;
     expect(m.wantsToPickUpWeapon()).toBe(true);
-
   });
 
   it("should know how to pick up and ready a weapon", () => {
@@ -107,8 +109,8 @@ describe("Monster", function() {
     m.weapon_id = null;
     m.readyBestWeapon();
     expect(m.weapon_id).toBe(4);
-    expect(m.weapon.name).toBe('spear');
-    game.artifacts.get(4).monster_id = null;  // no longer carrying spear
+    expect(m.weapon.name).toBe("spear");
+    game.artifacts.get(4).monster_id = null; // no longer carrying spear
     m.updateInventory();
     expect(m.weapon_id).toBe(null);
     expect(m.weapon).toBe(null);
@@ -117,13 +119,12 @@ describe("Monster", function() {
     expect(m.weapon).toBe(null);
   });
 
-
   it("should get its current weapon (single monster)", () => {
     const guard = game.monsters.get(1);
     let w = guard.getWeapon();
     expect(w.id).toBe(4);
 
-    game.artifacts.get(4).monster_id = null;  // no longer carrying spear
+    game.artifacts.get(4).monster_id = null; // no longer carrying spear
     guard.updateInventory();
     w = game.monsters.get(1).getWeapon();
     expect(w).toBeNull();
@@ -139,7 +140,7 @@ describe("Monster", function() {
     expect(w.id).toBe(16);
   });
 
-  it("should calculate its armor factor", function() {
+  it("should calculate its armor factor", function () {
     expect(game.player.getArmorFactor()).toBe(2);
     // with lower ae
     game.player.armor_expertise = 0;
@@ -151,11 +152,11 @@ describe("Monster", function() {
     game.player.armor_expertise = 20;
     game.player.ready(game.artifacts.get(22)); // one handed weapon
     game.player.pickUp(game.artifacts.get(17));
-    game.player.wear(game.artifacts.get(17));  // magic shield, penalty of 2
+    game.player.wear(game.artifacts.get(17)); // magic shield, penalty of 2
     expect(game.player.getArmorFactor()).toBe(2);
   });
 
-  it("should know its attack odds", function() {
+  it("should know its attack odds", function () {
     const guard = game.monsters.get(1);
     const thief = game.monsters.get(4);
 
@@ -184,24 +185,32 @@ describe("Monster", function() {
     expect(game.player.getToHitOdds(thief)).toBe(29);
   });
 
-  it("should move", function() {
+  it("should move", function () {
     const alfred = game.monsters.get(3);
     const guard = game.monsters.get(1);
     expect(alfred.room_id).toBe(1);
     game.player.moveToRoom(2);
     expect(alfred.room_id).toBe(2);
-    expect(guard.room_id).toBe(1);  // neutral; does not follow
+    expect(guard.room_id).toBe(1); // neutral; does not follow
     game.player.moveToRoom(3, false);
-    expect(alfred.room_id).toBe(2);  // follow flag not set
+    expect(alfred.room_id).toBe(2); // follow flag not set
   });
 
-  it("should show its health status", function() {
+  it("should show its health status", function () {
     const alfred = game.monsters.get(3);
     alfred.damage = 5;
     alfred.showHealth();
     game.queue.run();
     expect(game.history.getLastOutput().text).toBe("Alfred is hurting.");
-    alfred.health_messages = ["is fine", "says he's ok", "is a bit banged up", "is bleeding a little", "screams in pain", "is barely conscious", "breathes his last"];
+    alfred.health_messages = [
+      "is fine",
+      "says he's ok",
+      "is a bit banged up",
+      "is bleeding a little",
+      "screams in pain",
+      "is barely conscious",
+      "breathes his last",
+    ];
     alfred.showHealth();
     game.queue.run();
     expect(game.history.getLastOutput().text).toBe("Alfred is a bit banged up");
@@ -215,7 +224,7 @@ describe("Monster", function() {
     expect(game.history.getLastOutput().text).toBe("Alfred is barely conscious");
   });
 
-  it("should handle its dead body artifact", function() {
+  it("should handle its dead body artifact", function () {
     const thief = game.monsters.get(4);
 
     // without dead body id
@@ -240,5 +249,4 @@ describe("Monster", function() {
   });
 
   // Target handling - see eamon-deluxe-50-demo-adventure
-
 });
