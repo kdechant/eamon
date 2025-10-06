@@ -1,9 +1,61 @@
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import type Adventure from "../models/adventure";
 import { savePlayer } from "../store/player";
+
+const FilterList = styled.div`
+  margin-top: 2px;
+  line-height: 0.9;
+`;
+
+const FilterButton = styled.button`
+  border: 1px solid #b97;
+  border-radius: 2px;
+  color: inherit;
+  margin: 0;
+  border-left: 3px solid #841;
+  background: #dc9;
+  padding: 0 2px 2px 5px;
+  font-size: 80%;
+  text-align: left;
+  width: 100%;
+
+  &.current-tag {
+    font-weight: bold;
+  }
+
+  &:hover {
+    color: inherit;
+  }
+`;
+
+const AdventureNameButton = styled.a`
+  color: black;
+  padding: 0;
+  font-size: 24px;
+  font-weight: bold;
+  height: 28px;
+  display: inline;
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+`;
+
+const AdventureTag = styled.div`
+  background: #dc9;
+  border: 1px solid #b97;
+  border-left: 3px solid #841;
+  border-radius: 2px;
+  float: left;
+  font-size: 80%;
+  margin-right: 5px;
+  padding: 0 5px 2px 5px;
+`;
 
 const AdventureList: React.FC = () => {
   const player = useAppSelector((state) => state.player);
@@ -197,64 +249,57 @@ const AdventureList: React.FC = () => {
 
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-2">
-            <div className="filter-tag tags tags-vertical mb-3">
+          <div className="col-md-3 col-lg-2">
+            <FilterList className="filter-tag mb-3">
               <div className="mb-2">Filter by tag:</div>
-              <div className="tag">
-                <button type="button" className={"btn btn-link"} onClick={() => filterByTag("")}>
-                  all
-                </button>
-              </div>
+              <FilterButton type="button" className={"btn btn-link"} onClick={() => filterByTag("")}>
+                all
+              </FilterButton>
               {tags.map((tag) => (
-                <div className="tag" key={tag}>
-                  <button
-                    type="button"
-                    className={`btn btn-link {currentTag === tag ? "font-weight-bold" : ""}`}
-                    onClick={() => filterByTag(tag)}
-                  >
-                    {tag}
-                  </button>
-                </div>
+                <FilterButton
+                  key={tag}
+                  type="button"
+                  className={`btn btn-link ${currentTag === tag ? "current-tag" : ""}`}
+                  onClick={() => filterByTag(tag)}
+                >
+                  {tag}
+                </FilterButton>
               ))}
-            </div>
+            </FilterList>
 
-            <div className="filter-author tags tags-vertical mb-3">
+            <FilterList className="filter-author mb-3">
               <div className="mb-2">Filter by author:</div>
-              <div className="tag">
-                <button type="button" className={"btn btn-link"} onClick={() => filterByAuthor("")}>
-                  all
-                </button>
-              </div>
+              <FilterButton type="button" className={"btn btn-link"} onClick={() => filterByAuthor("")}>
+                all
+              </FilterButton>
               {authors.map((author) => (
-                <div className="tag" key={author}>
-                  <button
-                    type="button"
-                    className={"btn btn-link " + currentAuthor === author ? "font-weight-bold" : ""}
-                    onClick={() => filterByAuthor(author)}
-                  >
-                    {author}
-                  </button>
-                </div>
+                <FilterButton
+                  key={author}
+                  type="button"
+                  className={`btn btn-link ${currentAuthor === author ? "current-tag" : ""}`}
+                  onClick={() => filterByAuthor(author)}
+                >
+                  {author}
+                </FilterButton>
               ))}
-            </div>
+            </FilterList>
 
-            <div className="filter-sort tags tags-vertical mb-3">
+            <FilterList className="filter-sort mb-3">
               <div className="mb-2">Sort by:</div>
               {sort_options.map((sort) => (
-                <div className="tag" key={sort}>
-                  <button
-                    type="button"
-                    className={"btn btn-link " + currentSort === sort ? "font-weight-bold" : ""}
-                    onClick={() => sortAdventures(sort)}
-                  >
-                    {sort}
-                  </button>
-                </div>
+                <FilterButton
+                  key={sort}
+                  type="button"
+                  className={`btn btn-link ${currentSort === sort ? "current-tag" : ""}`}
+                  onClick={() => sortAdventures(sort)}
+                >
+                  {sort}
+                </FilterButton>
               ))}
-            </div>
+            </FilterList>
           </div>
 
-          <div className={"adventure-list col-md-10 " + (filteredAdventures.length > 1 ? "columns" : "")}>
+          <div className={`adventure-list col-md-9 col-lg-10 ${filteredAdventures.length > 1 ? "columns" : ""}`}>
             {emptyMessage}
             {filteredAdventures.map((adv) => {
               const ratings = {
@@ -266,27 +311,29 @@ const AdventureList: React.FC = () => {
               };
               return (
                 <div className="adventure-list-item" key={adv.id}>
-                  <div className="row">
-                    <div className="col-sm-2 d-none d-sm-block">
+                  <div style={{ display: "flex" }}>
+                    <div style={{ flexGrow: 0 }}>
                       <img src="/static/images/ravenmore/128/map.png" width="64" alt="Map" />
                     </div>
-                    <div className="col-sm-10">
-                      <div className="float-right text-secondary d-none d-md-block adv-id">#{adv.id}</div>
+                    <div style={{ flexGrow: 1 }}>
                       <h3>
-                        <button type="button" className="btn btn-link" onClick={(ev) => gotoAdventure(adv, ev)}>
+                        <AdventureNameButton
+                          type="button"
+                          className="btn btn-link"
+                          onClick={(ev) => gotoAdventure(adv, ev)}
+                        >
                           {adv.name}
-                        </button>
+                        </AdventureNameButton>
                       </h3>
-                      <p>{adv.authors_display.length ? "By: " + adv.authors_display : ""}</p>
+                      <p>{adv.authors_display.length ? `By: ${adv.authors_display}` : ""}</p>
                     </div>
-                    <div className="col-12">
-                      <p className="desc">{adv.description}</p>
-                    </div>
-                    <div className="tags col-12 col-md-6">
+                    <div style={{ flexGrow: 0 }}>#{adv.id}</div>
+                  </div>
+                  <p className="desc">{adv.description}</p>
+                  <div className="row">
+                    <div className="col-12 col-md-6">
                       {adv.tags.map((tag) => (
-                        <div className="tag" key={tag}>
-                          {tag}
-                        </div>
+                        <AdventureTag key={tag}>{tag}</AdventureTag>
                       ))}
                     </div>
                     <div className="ratings col-12 col-md-6">
