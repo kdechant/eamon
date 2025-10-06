@@ -1,14 +1,11 @@
-import type * as React from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import Modal from "react-bootstrap/Modal";
 import type { ModalProps } from "../types";
 
-const HowToPlay: React.FC<ModalProps> = (props) => {
+const HowToPlay = (props: ModalProps) => {
   return (
-    <Modal isOpen={props.visible} toggle={props.toggle} size="xl">
-      <ModalHeader toggle={props.toggle} tag="h3">
-        Welcome to Eamon!
-      </ModalHeader>
-      <ModalBody>
+    <Modal show={props.visible} onHide={() => props.toggle()} size="xl">
+      <Modal.Header closeButton>Welcome to Eamon!</Modal.Header>
+      <Modal.Body>
         {props.game.demo && (
           <div className="alert alert-info" role="alert">
             <p>
@@ -75,12 +72,12 @@ const HowToPlay: React.FC<ModalProps> = (props) => {
         </ul>
         <p>Eamon also supports partial word matches to save typing. e.g., 'at dra' is the same as 'attack dragon'.</p>
         <p>Hit enter to repeat the last command, or use the up and down arrows to recall previous commands.</p>
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <button type="button" className="btn btn-primary" onClick={props.toggle}>
           Close
         </button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   );
 };

@@ -20,6 +20,10 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "a11y": {
+        "useValidAnchor": "warn",
+        "useSemanticElements": "warn"
+      },
       "complexity": {
         "useArrowFunction": "off"
       },
@@ -27,6 +31,7 @@
         "noUnusedFunctionParameters": "info"
       },
       "suspicious": {
+        "noArrayIndexKey": "warn",
         "useIterableCallbackReturn": "warn"
       }
     }

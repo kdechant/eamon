@@ -1,12 +1,12 @@
-import { Fragment, useState } from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader, Popover, PopoverBody, PopoverHeader } from "reactstrap";
+import { Fragment } from "react";
+import Modal from "react-bootstrap/Modal";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
+import LinkButton from "../../common/LinkButton.tsx";
 import type { BaseCommand } from "../commands/base-command";
 import type { ModalProps } from "../types";
 
 const CommandList = (props: ModalProps) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const toggle = () => setPopoverOpen(!popoverOpen);
-
   if (!props.visible) return <Fragment />;
 
   const game = props.game;
@@ -32,32 +32,41 @@ const CommandList = (props: ModalProps) => {
   const hidden_commands = ["n", "s", "e", "w", "u", "d", "ne", "se", "sw", "nw"];
 
   return (
-    <Modal isOpen={props.visible} toggle={props.toggle} size="xl">
-      <ModalHeader toggle={props.toggle} tag="h3">
-        Available Commands
-      </ModalHeader>
-      <ModalBody className="command-list">
-        <p>
-          <h3 className="how-to-type-commands">How to type commands</h3>
-          <Popover placement="bottom" isOpen={popoverOpen} target="how-to-type-commands" toggle={toggle}>
-            <PopoverHeader>Tips for typing commands</PopoverHeader>
-            <PopoverBody>
-              <p>
-                Eamon uses a two-word parser to parse commands. Most commands take a very simple syntax, like GET GOLD
-                or OPEN CHEST. Some commands are one word (e.g., N for NORTH, or LOOK). A few take more words, e.g.,
-                REMOVE JEWEL FROM CHEST or GIVE SWORD TO EDDIE.
-              </p>
-              <p>
-                Most commands can be abbreviated by typing the first few letters or the last few letters of the command.
-                This also works with the object of the command. E.g., AT DR or A DRAGON are shorthand for ATTACK DRAGON.
-              </p>
-              <p>
-                Commands are shown in uppercase for examples, but you don't need to type in uppercase. All commands are
-                case insensitive.
-              </p>
-            </PopoverBody>
-          </Popover>
-        </p>
+    <Modal show={props.visible} onHide={() => props.toggle()} size="xl">
+      <Modal.Header closeButton>
+        <h3>Available Commands</h3>
+      </Modal.Header>
+      <Modal.Body className="command-list">
+        <OverlayTrigger
+          placement="bottom"
+          delay={{ show: 250, hide: 400 }}
+          overlay={
+            <Popover placement="bottom">
+              <Popover.Header>Tips for typing commands</Popover.Header>
+              <Popover.Body>
+                <p>
+                  Eamon uses a two-word parser to parse commands. Most commands take a very simple syntax, like GET GOLD
+                  or OPEN CHEST. Some commands are one word (e.g., N for NORTH, or LOOK). A few take more words, e.g.,
+                  REMOVE JEWEL FROM CHEST or GIVE SWORD TO EDDIE.
+                </p>
+                <p>
+                  Most commands can be abbreviated by typing the first few letters or the last few letters of the
+                  command. This also works with the object of the command. E.g., AT DR or A DRAGON are shorthand for
+                  ATTACK DRAGON.
+                </p>
+                <p>
+                  Commands are shown in uppercase for examples, but you don't need to type in uppercase. All commands
+                  are case insensitive.
+                </p>
+              </Popover.Body>
+            </Popover>
+          }
+        >
+          <LinkButton type="button" className="btn btn-link how-to-type-commands">
+            How to type commands
+          </LinkButton>
+        </OverlayTrigger>
+
         {category_names.map((name) => {
           const commands = categories[name];
           return (
@@ -73,48 +82,51 @@ const CommandList = (props: ModalProps) => {
             </div>
           );
         })}
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <button type="button" className="btn btn-primary" onClick={props.toggle} tabIndex={0}>
           Close
         </button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   );
 };
 
 const CommandVerb = (props) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const toggle = () => setPopoverOpen(!popoverOpen);
+  const hasDescription = props.description || props.examples;
+
+  const popover = hasDescription ? (
+    <Popover placement="bottom">
+      <Popover.Header>{props.description}</Popover.Header>
+      <Popover.Body>
+        <div>Examples:</div>
+        {props.examples?.map((e) => (
+          <span key={e}>
+            {e}
+            <br />
+          </span>
+        ))}
+      </Popover.Body>
+    </Popover>
+  ) : (
+    <Popover placement="bottom">
+      <Popover.Header>Custom Command</Popover.Header>
+      <Popover.Body>
+        <p>
+          Some adventures have custom commands that only work in that adventure. This one hasn't been documented yet.
+          Try it and see.
+        </p>
+      </Popover.Body>
+    </Popover>
+  );
+
   return (
     <div className="command-list-item col-4 col-sm-3">
-      <button type="button" className={`btn btn-link command-${props.verb}`} tabIndex={0} onKeyPress={toggle}>
-        {props.verb.toUpperCase()}
-      </button>
-      <br />
-      {(props.description || props.examples) && (
-        <Popover placement="bottom" isOpen={popoverOpen} target={`command-${props.verb}`} toggle={toggle}>
-          <PopoverHeader>{props.description}</PopoverHeader>
-          <PopoverBody>
-            <div>Examples:</div>
-            {props.examples?.map((e) => (
-              <span key={e}>
-                {e}
-                <br />
-              </span>
-            ))}
-          </PopoverBody>
-        </Popover>
-      )}
-      {!props.description && !props.examples && (
-        <Popover placement="bottom" isOpen={popoverOpen} target={`command-${props.verb}`} toggle={toggle}>
-          <PopoverHeader>Custom Command</PopoverHeader>
-          <PopoverBody>
-            Some adventures have custom commands that only work in that adventure. This one hasn't been documented yet.
-            Try it and see.
-          </PopoverBody>
-        </Popover>
-      )}
+      <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={popover}>
+        <LinkButton type="button" className={`btn btn-link command-${props.verb}`} tabIndex={0}>
+          {props.verb.toUpperCase()}
+        </LinkButton>
+      </OverlayTrigger>
     </div>
   );
 };

@@ -1,11 +1,4 @@
-export declare class GameError {
-  public name: string;
-  public message: string;
-  public stack: string;
-  constructor(message?: string);
-}
-
-export class CommandException extends GameError {
+export class CommandException extends Error {
   constructor(m: string) {
     super(m);
     this.name = "Exception";

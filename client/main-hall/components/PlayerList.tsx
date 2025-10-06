@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Modal from "react-bootstrap/Modal";
 import { Link, useSearchParams } from "react-router-dom";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { type PlayerProfile, updateCachedInfo } from "../models/player";
 import PlayerListItem from "./PlayerListItem";
 
@@ -182,9 +182,9 @@ const PlayerList = () => {
         </div>
       )}
 
-      <Modal isOpen={dataStorageOpen} toggle={toggleDataStorageModal}>
-        <ModalHeader toggle={toggleDataStorageModal}>How Eamon Stores Your Characters</ModalHeader>
-        <ModalBody>
+      <Modal show={dataStorageOpen} onHide={() => setDataStorageOpen(false)}>
+        <Modal.Header closeButton>How Eamon Stores Your Characters NEW</Modal.Header>
+        <Modal.Body>
           <div className="row">
             <div className="col-12">
               <p>
@@ -214,12 +214,12 @@ const PlayerList = () => {
               </p>
             </div>
           </div>
-        </ModalBody>
-        <ModalFooter>
+        </Modal.Body>
+        <Modal.Footer>
           <button type="button" className="btn btn-primary" onClick={toggleDataStorageModal}>
             Close
           </button>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     </div>
   );
