@@ -172,11 +172,9 @@ const Status: React.FC<StatusProps> = (props) => {
             <p className="room-name">{game.rooms.current_room.name}</p>
 
             {/*   [class.hidden]="hiddenDesc" */}
-            <ReactMarkdown
-              className="room-description"
-              children={game.rooms.current_room.description}
-              rehypePlugins={[rehypeRaw]}
-            />
+            <ReactMarkdown className="room-description" rehypePlugins={[rehypeRaw]}>
+              {game.rooms.current_room.description}
+            </ReactMarkdown>
             <div className="room-exits">
               Visible Exits:&nbsp;
               {visible_exits.map((exit, index) => (
@@ -195,11 +193,9 @@ const Status: React.FC<StatusProps> = (props) => {
               <p className="room-name">Current Location: in the dark</p>
             )}
             {game.rooms.current_room.dark_description && (
-              <ReactMarkdown
-                className="room-description"
-                children={game.rooms.current_room.dark_description}
-                rehypePlugins={[rehypeRaw]}
-              />
+              <ReactMarkdown className="room-description" rehypePlugins={[rehypeRaw]}>
+                {game.rooms.current_room.dark_description}
+              </ReactMarkdown>
             )}
           </div>
         )}
@@ -321,7 +317,7 @@ const StatusArtifact: React.FC<StatusArtifactProps> = (props) => {
     <div className="artifact">
       {artifact_name}&nbsp;
       <span className="artifact-status">
-        {(artifact.type == 4 || artifact.type == 8) && (
+        {(artifact.type === 4 || artifact.type === 8) && (
           <span className="container-status">
             {artifact.is_open && <span className="open">(open)</span>}
             {!artifact.is_open && <span className="closed">(closed)</span>}
@@ -329,9 +325,9 @@ const StatusArtifact: React.FC<StatusArtifactProps> = (props) => {
         )}
       </span>
       {artifact.inventory_message && <span className="custom">({artifact.inventory_message})</span>}
-      {artifact.is_lit && artifact.inventory_message == "" && <span className="lit">(lit)</span>}
-      {artifact.is_worn && artifact.inventory_message == "" && <span className="worn">(wearing)</span>}
-      {artifact.id == props.game.player.weapon_id && <span className="ready">(ready weapon)</span>}
+      {artifact.is_lit && artifact.inventory_message === "" && <span className="lit">(lit)</span>}
+      {artifact.is_worn && artifact.inventory_message === "" && <span className="worn">(wearing)</span>}
+      {artifact.id === props.game.player.weapon_id && <span className="ready">(ready weapon)</span>}
       {artifact.is_open && (
         <div>
           {artifact.contents.map((item) => (

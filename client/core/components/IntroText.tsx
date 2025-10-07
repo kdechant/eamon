@@ -29,7 +29,7 @@ const IntroText = (props: PropsWithGame) => {
   const game = props.game;
   return (
     <div className="intro-text">
-      <ReactMarkdown children={gamevars(game.intro_text[index])} rehypePlugins={[rehypeRaw]} />
+      <ReactMarkdown rehypePlugins={[rehypeRaw]}>{gamevars(game.intro_text[index])}</ReactMarkdown>
       {index < game.intro_text.length - 1 && (
         <p className="intro-next">
           <button type="button" className="btn btn-success intro-next" onClick={introNext}>

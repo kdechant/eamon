@@ -42,7 +42,7 @@ const History = (props: HistoryProps) => {
             if (line.markdown) {
               return (
                 <div className={className} key={index}>
-                  <ReactMarkdown children={line.text} rehypePlugins={[rehypeRaw]} />
+                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{line.text}</ReactMarkdown>
                 </div>
               );
             }

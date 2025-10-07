@@ -21,6 +21,7 @@
     "rules": {
       "recommended": true,
       "a11y": {
+        "noAutofocus": "warn",
         "useValidAnchor": "warn",
         "useSemanticElements": "warn"
       },

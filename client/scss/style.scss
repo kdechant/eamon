@@ -216,30 +216,6 @@ code {
   // end hamburger menu button
 }
 
-// hamburger menu
-#menu {
-  background-color: $status-bg;
-  position: fixed;
-  top: 76px;
-  right: 0;
-  width: 60%;
-  z-index: 1;
-  ul {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    li {
-      border: 1px solid $status-border;
-      list-style-type: none;
-      padding: 0.25rem 0 0.375rem;
-      text-align: center;
-    }
-  }
-  @media (min-width: 768px) {
-    display: none;
-  }
-}
-
 .status {
   background: $status-bg;
   padding-top: 5px;
@@ -657,7 +633,7 @@ code {
 
 .adventure-list-item {
 
-  padding-top: 5px;
+  padding-top: 10px;
   padding-bottom: 10px;
 
   -webkit-column-break-inside: avoid;

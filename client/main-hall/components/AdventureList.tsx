@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import colors from "../../common/colors.ts";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import type Adventure from "../models/adventure";
 import { savePlayer } from "../store/player";
@@ -12,12 +13,12 @@ const FilterList = styled.div`
 `;
 
 const FilterButton = styled.button`
-  border: 1px solid #b97;
+  border: 1px solid ${colors.statusBorder};
   border-radius: 2px;
   color: inherit;
   margin: 0;
   border-left: 3px solid #841;
-  background: #dc9;
+  background: ${colors.statusBg};
   padding: 0 2px 2px 5px;
   font-size: 80%;
   text-align: left;
@@ -32,13 +33,14 @@ const FilterButton = styled.button`
   }
 `;
 
-const AdventureNameButton = styled.a`
-  color: black;
+const AdventureNameButton = styled.button`
+  align-self: start;
+  color: ${colors.bodyText};
   padding: 0;
   font-size: 24px;
   font-weight: bold;
-  height: 28px;
-  display: inline;
+  line-height: 1;
+  text-align: left;
 
   &:hover {
     text-decoration: underline !important;
@@ -53,6 +55,7 @@ const AdventureTag = styled.div`
   float: left;
   font-size: 80%;
   margin-right: 5px;
+  margin-bottom: 5px;
   padding: 0 5px 2px 5px;
 `;
 

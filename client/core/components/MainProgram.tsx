@@ -1,6 +1,9 @@
+import styled from "@emotion/styled";
 import axios from "axios";
 import type * as React from "react";
 import { useEffect, useState } from "react";
+import colors from "../../common/colors.ts";
+import LinkButton from "../../common/LinkButton.tsx";
 import type Game from "../models/game";
 import Logger from "../utils/logger";
 import CommandList from "./CommandList";
@@ -234,24 +237,23 @@ const MainProgram: React.FC = () => {
         <Status game={game} open={statusOpen} />
 
         {/* hamburger menu */}
-        {/** biome-ignore lint/correctness/useUniqueElementIds: needed for CSS */}
-        <div id="menu" className={"container-fluid " + menuClass}>
+        <DrawerMenu className={`container-fluid ${menuClass}`}>
           <div className="row">
             <ul>
               <li>
-                <a className="text-primary" onClick={toggleHowToPlay}>
+                <DrawerLinkButton type="button" className="btn btn-link" onClick={toggleHowToPlay}>
                   How to Play
-                </a>
+                </DrawerLinkButton>
               </li>
               <li>
-                <a className="text-primary" onClick={toggleHints}>
+                <DrawerLinkButton type="button" className="btn btn-link" onClick={toggleHints}>
                   Hints
-                </a>
+                </DrawerLinkButton>
               </li>
               <li>
-                <a className="text-primary" onClick={toggleCommands}>
+                <DrawerLinkButton type="button" className="btn btn-link" onClick={toggleCommands}>
                   Command List
-                </a>
+                </DrawerLinkButton>
               </li>
               <li>
                 <a href="/">Home</a>
@@ -283,7 +285,7 @@ const MainProgram: React.FC = () => {
               </li>
             </ul>
           </div>
-        </div>
+        </DrawerMenu>
 
         {/* modals */}
         <HowToPlay game={game} visible={howToPlayOpen} toggle={closeModal} />
@@ -352,3 +354,32 @@ const GameHeading = (props: GameHeadingProps) => {
     </div>
   );
 };
+
+const DrawerMenu = styled.div`
+  background-color: ${colors.statusBg};
+  position: fixed;
+  top: 76px;
+  right: 0;
+  width: 60%;
+  z-index: 1;
+  ul {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    li {
+      border: 1px solid ${colors.statusBorder};
+      list-style-type: none;
+      padding: 0.25rem 0 0.375rem;
+      text-align: center;
+    }
+  }
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
+const DrawerLinkButton = styled(LinkButton)`
+  font-weight: normal;
+  margin-bottom: 0;
+  text-decoration: underline;
+`;
