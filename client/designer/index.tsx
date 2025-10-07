@@ -1,8 +1,9 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import Designer from './components/Designer';
 
-ReactDOM.render(
-  <Designer />,
-  document.getElementById('root') as HTMLElement
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <Designer />
+  </StrictMode>,
 );
