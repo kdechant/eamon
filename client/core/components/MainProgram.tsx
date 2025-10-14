@@ -19,6 +19,14 @@ import Status from "./Status";
 declare const game: Game;
 const globalGame = game;
 
+const beforeUnloadHandler = (event) => {
+  // Recommended
+  event.preventDefault();
+
+  // Included for legacy support, e.g. Chrome/Edge < 119
+  event.returnValue = true;
+};
+
 const MainProgram: React.FC = () => {
   const [game, setGame] = useState(globalGame);
   const [statusOpen, setStatusOpen] = useState(false);
@@ -107,6 +115,17 @@ const MainProgram: React.FC = () => {
         });
     }
   }, []);
+
+  // Use a beforeunload handler to stop the user from accidentally navigating mid-adventure.
+  // TODO: Look at React Router's useBlocker hook, which might allow more customization,
+  //  but might also only work within one router.
+  useEffect(() => {
+    if (game?.active && game?.history?.index > 1) {
+      window.addEventListener("beforeunload", beforeUnloadHandler);
+    } else {
+      window.removeEventListener("beforeunload", beforeUnloadHandler);
+    }
+  }, [game.active, game?.history?.index]);
 
   /**
    * This function is passed into child components so they can update the game data.
