@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { playerActions } from "../store/player";
 

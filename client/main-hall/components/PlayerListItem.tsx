@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import type Player from "../models/player";
 import { ucFirst } from "../utils";
 import { getAxios } from "../utils/api";

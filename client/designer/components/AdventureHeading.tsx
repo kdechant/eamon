@@ -1,7 +1,7 @@
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import * as React from "react";
 import AdventureContext from "../contexts/adventure";
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 
 
 const AdventureHeading: React.FC = () => {

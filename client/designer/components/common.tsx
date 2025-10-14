@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import AdventureContext from "../contexts/adventure";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import {useParams} from "react-router";
 import {ArtifactIcons} from "../constants";
 import Artifact from "../models/artifact";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router";
 import {AdventureContextProvider} from "../contexts/adventure";
 import AdventureDetail from "./AdventureDetail";
 import AdventureHeading from "./AdventureHeading";

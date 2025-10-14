@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {render, RenderResult} from '@testing-library/react'
-import {Router, Route, Routes} from "react-router-dom";
+import {Router, Route, Routes} from "react-router";
 import { createMemoryHistory } from "history";
 
 import AdventureContext from "./contexts/adventure";

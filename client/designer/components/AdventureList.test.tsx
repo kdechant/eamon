@@ -3,7 +3,7 @@
  */
 import * as React from 'react';
 import {render, waitFor, within} from '@testing-library/react'
-import {MemoryRouter, Route, Routes} from "react-router-dom";
+import {MemoryRouter, Route, Routes} from "react-router";
 import {rest} from 'msw';
 import {setupServer} from 'msw/node';
 import AdventureList from "./AdventureList";

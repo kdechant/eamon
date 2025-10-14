@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router";
 import { type PlayerProfile, updateCachedInfo } from "../models/player";
 import PlayerListItem from "./PlayerListItem";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { useAppSelector } from "../../hooks";
 import { ARTIFACT_TYPES } from "../../models/artifact";

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import colors from "../../common/colors.ts";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import type Adventure from "../models/adventure";

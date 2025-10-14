@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useAppSelector } from "../../hooks";
 import AttributeRow from "./AttributeRow";
 

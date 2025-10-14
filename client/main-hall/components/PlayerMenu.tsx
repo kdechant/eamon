@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { savePlayer } from "../store/player";
 import Status from "./Status";

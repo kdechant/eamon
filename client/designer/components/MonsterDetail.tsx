@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 
 import AdventureContext from "../contexts/adventure";
 import UserContext from "../contexts/user";

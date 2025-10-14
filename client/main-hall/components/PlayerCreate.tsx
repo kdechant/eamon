@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import { getHeaders } from "../utils/api";
 import diceRoll from "../utils/dice";
