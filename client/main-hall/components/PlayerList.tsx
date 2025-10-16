@@ -171,7 +171,7 @@ const PlayerList = () => {
                   />
                 </div>
                 <div className="col">
-                  <button type="submit" className="btn btn-primary mr-2">
+                  <button type="submit" className="btn btn-primary me-2">
                     Load Adventurers
                   </button>
                 </div>

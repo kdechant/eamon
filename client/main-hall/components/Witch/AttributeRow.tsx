@@ -1,5 +1,6 @@
+import styled from "@emotion/styled";
 import { useState } from "react";
-import { CSSTransition } from "react-transition-group";
+import { useTransitionState } from "react-transition-state";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { playerActions } from "../../store/player";
 import { titleCase } from "../../utils";
@@ -11,16 +12,41 @@ type AttributeRowProps = {
   };
 };
 
+const animationTime = 300;
+
+const MessageBox = styled.div`
+  transition: all ${animationTime}ms ease-in;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+
+  &.animating {
+    opacity: 0;
+  }
+`;
+
+const Message = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+`;
+
 const AttributeRow = (props: AttributeRowProps) => {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
-  // whether the success message is visible or hidden
-  const [messageVisible, setMessageVisible] = useState(false);
   // count of how much the stat was increased
   const [increased, setIncreased] = useState(1);
   // a reference to the timer object, in case the user clicks repeatedly
   const [timer, setTimer] = useState(null);
+
+  const [{ status, isMounted }, toggle] = useTransitionState({
+    timeout: animationTime,
+    mountOnEnter: true,
+    unmountOnExit: true,
+    preEnter: true,
+  });
 
   const buy = () => {
     dispatch(playerActions.changeStat({ name: props.attribute.name, amount: 1 }));
@@ -33,16 +59,18 @@ const AttributeRow = (props: AttributeRowProps) => {
       clearTimeout(timer);
     }
     const newTimer = setTimeout(() => {
-      setMessageVisible(false);
-      setIncreased(1);
+      toggle(false);
+      // setIncreased(1);
       setTimer(null);
     }, 2000);
     // this is the number of times they have clicked in a row (e.g., +1, +2, etc.)
     // (it resets once the message banner disappears)
-    if (messageVisible) {
+    if (isMounted) {
       setIncreased((prev) => prev + 1);
+    } else {
+      setIncreased(1);
     }
-    setMessageVisible(true);
+    toggle(true);
     setTimer(newTimer);
   };
 
@@ -65,21 +93,23 @@ const AttributeRow = (props: AttributeRowProps) => {
   }
 
   return (
-    <div className="spell-list-row row h-100" key={props.attribute.name}>
-      <div className="col-12 col-sm-4 col-md-6 col-xl-8 my-auto">
+    <div className="spell-list-row row h-100 align-items-center" key={props.attribute.name}>
+      <div className="col-12 col-md-6">
         <h3>{titleCase(props.attribute.name)}</h3>
         <span className="small">{props.attribute.description}</span>
       </div>
-      <div className="attribute-cell col-4 col-sm-3 col-md-2 col-xl-2 text-center my-auto">
+      <div className="attribute-cell col-4 col-md-2 text-center position-relative">
         Current: {player[props.attribute.name]}
-        <CSSTransition in={messageVisible} timeout={300} classNames={"message"} unmountOnExit={true}>
-          {() => <div className="message-inner">+{increased}</div>}
-        </CSSTransition>
+        {isMounted && (
+          <MessageBox className={`message ${status === "preEnter" || status === "exiting" ? "animating" : ""}`}>
+            <Message className="message-inner">+{increased}</Message>
+          </MessageBox>
+        )}
       </div>
-      <div className="col-4 col-sm-3 col-md-2 col-xl-1 text-center my-auto">
+      <div className="col-4 col-md-2 text-center">
         <img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" /> {getPrice()}
       </div>
-      <div className="col-4 col-sm-2 col-md-2 col-xl-1 text-right my-auto">{button}</div>
+      <div className="col-4 col-md-2 text-end">{button}</div>
     </div>
   );
 };

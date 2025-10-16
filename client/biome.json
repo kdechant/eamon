@@ -29,7 +29,8 @@
         "useArrowFunction": "off"
       },
       "correctness": {
-        "noUnusedFunctionParameters": "info"
+        "noUnusedFunctionParameters": "info",
+        "useUniqueElementIds": "warn"
       },
       "suspicious": {
         "noArrayIndexKey": "warn",

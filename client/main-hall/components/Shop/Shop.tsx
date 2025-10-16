@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, Route, Routes } from "react-router";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { useAppSelector } from "../../hooks";
 import { ARTIFACT_TYPES } from "../../models/artifact";
 import ArtifactTile from "./ArtifactTile";
@@ -70,14 +69,10 @@ const Shop = () => {
                 You have <span data-qa="goldAmount">{player.gold}</span> gold pieces.
               </p>
               <p className="heading">Weapons:</p>
-              <div className="container-fluid weapons">
-                <TransitionGroup className="row">
-                  {weapons.map((artifact) => (
-                    <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
-                      <ArtifactTile artifact={artifact} removeItem={removeItem} action="buy" />
-                    </CSSTransition>
-                  ))}
-                </TransitionGroup>
+              <div className="container-fluid weapons row">
+                {weapons.map((artifact) => (
+                  <ArtifactTile key={artifact.uuid} artifact={artifact} removeItem={removeItem} action="buy" />
+                ))}
               </div>
               <p className="heading">Armor and Shields:</p>
               <div className="container-fluid armor">
@@ -102,14 +97,10 @@ const Shop = () => {
               <p>
                 You have <span data-qa="goldAmount">{player.gold}</span> gold pieces.
               </p>
-              <div className="container-fluid">
-                <TransitionGroup className="row">
-                  {player.inventory.map((artifact) => (
-                    <CSSTransition key={artifact.uuid} timeout={500} classNames="fade">
-                      <ArtifactTile artifact={artifact} action="sell" />
-                    </CSSTransition>
-                  ))}
-                </TransitionGroup>
+              <div className="container-fluid row">
+                {player.inventory.map((artifact) => (
+                  <ArtifactTile key={artifact.uuid} artifact={artifact} action="sell" />
+                ))}
               </div>
 
               <Link to="/main-hall/shop" className="btn btn-primary">

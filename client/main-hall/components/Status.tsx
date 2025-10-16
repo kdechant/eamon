@@ -113,11 +113,11 @@ const Status = () => {
                   <div className="col-9 col-sm-9 px-0 px-sm-2">
                     <span className="artifact-name">{ucFirst(artifact.name)}</span>
                     <br />
-                    <span className="artifact-info mr-4">
+                    <span className="artifact-info me-4">
                       {artifact.dice}d{artifact.sides}
                     </span>
-                    {artifact.weapon_odds !== 0 && <span className="artifact-info mr-4">{odds}% to hit</span>}
-                    <span className="artifact-info mr-4">Weight: {artifact.weight}</span>
+                    {artifact.weapon_odds !== 0 && <span className="artifact-info me-4">{odds}% to hit</span>}
+                    <span className="artifact-info me-4">Weight: {artifact.weight}</span>
                   </div>
                 </div>
               );
@@ -133,17 +133,17 @@ const Status = () => {
                 <div className="col-9 col-sm-10 px-0 px-sm-2">
                   <span className="artifact-name">{ucFirst(artifact.name)}</span>
                   <br />
-                  <span className="artifact-info mr-4">AC: {artifact.armor_class}</span>
+                  <span className="artifact-info me-4">AC: {artifact.armor_class}</span>
                   {player.armor_expertise === 0 && (
-                    <span className="artifact-info mr-4">Penalty: {artifact.armor_penalty}%</span>
+                    <span className="artifact-info me-4">Penalty: {artifact.armor_penalty}%</span>
                   )}
                   {player.armor_expertise > 0 && (
-                    <span className="artifact-info mr-4">
+                    <span className="artifact-info me-4">
                       Penalty: <span style={{ textDecoration: "line-through" }}>{artifact.armor_penalty}%</span>{" "}
                       {adjustedPenalty}%
                     </span>
                   )}
-                  <span className="artifact-info mr-4">Weight: {artifact.weight}</span>
+                  <span className="artifact-info me-4">Weight: {artifact.weight}</span>
                 </div>
               </div>
             );

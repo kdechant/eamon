@@ -155,10 +155,10 @@ const PlayerCreate: React.FC = (): JSX.Element => {
           </div>
         </div>
         <div className="buttons">
-          <button type="button" className="btn btn-secondary mr-2" onClick={rollStats}>
+          <button type="button" className="btn btn-secondary me-2" onClick={rollStats}>
             Reroll
           </button>
-          <button type="submit" className="btn btn-primary mr-2">
+          <button type="submit" className="btn btn-primary me-2">
             Begin Your Adventuring Career
           </button>
           <Link to="/main-hall" className="btn btn-secondary">

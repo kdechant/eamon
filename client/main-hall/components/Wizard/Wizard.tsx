@@ -44,7 +44,7 @@ const Wizard: React.FC = () => {
         &quot;So you want old Hokey to teach you some magic, eh? Well, it'll cost you. Here are the spells I teach.
         Which will it be?&quot;
       </p>
-      <div className="spells-list">
+      <div className="spells-list mb-3">
         {spells.map((spell) => (
           <SpellListRow key={spell.name} spell={spell} />
         ))}

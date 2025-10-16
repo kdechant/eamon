@@ -1,5 +1,6 @@
+import styled from "@emotion/styled";
 import { useState } from "react";
-import { CSSTransition } from "react-transition-group";
+import { useTransitionState } from "react-transition-state";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { playerActions } from "../../store/player";
 import { percentOrNone, titleCase } from "../../utils";
@@ -15,12 +16,38 @@ type SpellListProps = {
   spell: Spell;
 };
 
+const animationTime = 300;
+
+const MessageBox = styled.div`
+  transition: all ${animationTime}ms ease-in;
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translate(0, -50%);
+
+  &.animating {
+    opacity: 0;
+  }
+`;
+
+const Message = styled.div`
+  height: 36px;
+  min-width: 64px;
+  border-radius: 18px;
+`;
+
 const SpellListRow = (props: SpellListProps) => {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
   const [message, setMessage] = useState("");
-  const [messageVisible, setMessageVisible] = useState(false);
+
+  const [{ status, isMounted }, toggle] = useTransitionState({
+    timeout: animationTime,
+    mountOnEnter: true,
+    unmountOnExit: true,
+    preEnter: true,
+  });
 
   const buy = (spell: Spell) => {
     const original_ability = player[`spl_${spell.name}`];
@@ -30,10 +57,10 @@ const SpellListRow = (props: SpellListProps) => {
     dispatch(playerActions.changeStat({ name: "gold", amount: -spell.price }));
 
     setTimeout(() => {
-      setMessageVisible(false);
+      toggle(false);
     }, 2000);
-    setMessage(original_ability === 0 ? "Learned" : "Increased!");
-    setMessageVisible(true);
+    setMessage(original_ability === 0 ? "Learned" : `+${actual_increase}%`);
+    toggle(true);
   };
 
   let button = (
@@ -50,7 +77,12 @@ const SpellListRow = (props: SpellListProps) => {
       );
     } else {
       button = (
-        <button type="button" className="btn btn-primary align-middle" onClick={() => buy(props.spell)}>
+        <button
+          type="button"
+          className="btn btn-primary align-middle"
+          style={{ minWidth: 100 }}
+          onClick={() => buy(props.spell)}
+        >
           {player[`spl_${props.spell.name}`] > 0 ? "Upgrade" : "Learn"}
         </button>
       );
@@ -58,21 +90,23 @@ const SpellListRow = (props: SpellListProps) => {
   }
 
   return (
-    <div className="spell-list-row row h-100" key={props.spell.name}>
-      <div className="col-12 col-sm-4 col-md-6 mb-2">
+    <div className="spell-list-row row h-100 align-items-center" key={props.spell.name}>
+      <div className="col-12 col-md-5 mb-2">
         <h3>{titleCase(props.spell.name)}</h3>
         <span className="small">{props.spell.description}</span>
       </div>
-      <div className="col-4 col-sm-3 col-md-2 text-center my-auto">
+      <div className="col-4 col-md-3 position-relative">
         Current Ability: {percentOrNone(player[`spl_${props.spell.name}`])}
-        <CSSTransition in={messageVisible} timeout={500} classNames={"message"} unmountOnExit={true}>
-          {() => <div className="message-inner">{message}</div>}
-        </CSSTransition>
+        {isMounted && (
+          <MessageBox className={`message ${status === "preEnter" || status === "exiting" ? "animating" : ""}`}>
+            <Message className="message-inner">{message}</Message>
+          </MessageBox>
+        )}
       </div>
-      <div className="col-4 col-sm-3 col-md-2 text-center my-auto">
+      <div className="col-4 col-md-2 text-center">
         <img src="/static/images/ravenmore/128/coin.png" alt="Gold coin" className="icon-md" /> {props.spell.price}
       </div>
-      <div className="col-4 col-sm-2 col-md-2 text-center my-auto">{button}</div>
+      <div className="col-4 col-md-2 text-end">{button}</div>
     </div>
   );
 };

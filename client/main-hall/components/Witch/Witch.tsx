@@ -31,13 +31,13 @@ const Witch: React.FC = () => {
       </h2>
       <p>
         A lovely young woman dressed in black says, &quot;Good day, {player.name}! Ah, I see you're surprised I know
-        your name? I also know that your Hardiness is {player.hardiness}, your Agility is
-        {player.agility}, and your Charisma is {player.charisma}.&quot;
+        your name? I also know that your Hardiness is {player.hardiness}, your Agility is {player.agility}, and your
+        Charisma is {player.charisma}.&quot;
       </p>
 
       <p>&quot;My magic potions can increase one of your attributes. My prices are:&quot;</p>
 
-      <div className="spells-list">
+      <div className="spells-list mb-3">
         {attributes.map((attribute) => (
           <AttributeRow key={attribute.name} attribute={attribute} />
         ))}

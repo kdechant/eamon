@@ -1,4 +1,6 @@
+import styled from "@emotion/styled";
 import { useState } from "react";
+import { useTransitionState } from "react-transition-state";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import type Artifact from "../../models/artifact";
 import { ARTIFACT_TYPES, getIcon, getTypeName, isWeapon } from "../../models/artifact";
@@ -11,11 +13,24 @@ interface ArtifactTileProps {
   removeItem?: (Artifact) => void;
 }
 
+const animationTime = 600;
+
+const TransitionStateBox = styled.div`
+  transition: all ${animationTime}ms ease-in;
+`;
+
 export default function ArtifactTile(props: ArtifactTileProps) {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
   const [message, setMessage] = useState("");
+
+  const [{ status }, toggle] = useTransitionState({
+    timeout: animationTime,
+    initialEntered: true,
+    unmountOnExit: true,
+    preEnter: true,
+  });
 
   const buy = () => {
     setMessage("Bought!");
@@ -23,18 +38,23 @@ export default function ArtifactTile(props: ArtifactTileProps) {
       setMessage("");
       dispatch(playerActions.buyArtifact(props.artifact));
       // TODO: redux-ify shop inventory too
-      if (props.removeItem) {
-        props.removeItem(props.artifact);
+      if (props.artifact.type !== ARTIFACT_TYPES.WEAPON) {
+        toggle(false);
+        setTimeout(() => props.removeItem(props.artifact), animationTime);
       }
     }, 1200);
   };
 
   const sell = () => {
     setMessage("Sold!");
-    setTimeout(() => dispatch(playerActions.sellArtifact(props.artifact)), 1200);
+    setTimeout(() => {
+      toggle(false);
+      setTimeout(() => dispatch(playerActions.sellArtifact(props.artifact)), animationTime);
+      // dispatch(playerActions.sellArtifact(props.artifact));
+    }, 1200);
   };
 
-  const icon_url = "/static/images/ravenmore/128/" + getIcon(props.artifact) + ".png";
+  const icon_url = `/static/images/ravenmore/128/${getIcon(props.artifact)}.png`;
 
   let stats = <span />;
   if (isWeapon(props.artifact)) {
@@ -97,7 +117,9 @@ export default function ArtifactTile(props: ArtifactTileProps) {
       : "artifact-tile-inner";
 
   return (
-    <div className="artifact-tile col-sm-6 col-md-4 col-lg-3">
+    <TransitionStateBox
+      className={`artifact-tile col-sm-6 col-md-4 col-lg-3 ${status === "exiting" ? "animate-zoom-fade" : ""}`}
+    >
       <div className={className}>
         <div className="artifact-icon">
           <img src={icon_url} title={getTypeName(props.artifact)} alt={getTypeName(props.artifact)} />
@@ -115,6 +137,6 @@ export default function ArtifactTile(props: ArtifactTileProps) {
           {message}
         </div>
       </div>
-    </div>
+    </TransitionStateBox>
   );
 }
