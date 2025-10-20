@@ -19,7 +19,7 @@ const TransitionStateBox = styled.div`
   transition: all ${animationTime}ms ease-in;
 `;
 
-export default function ArtifactTile(props: ArtifactTileProps) {
+export default function ArtifactTile({ artifact, action, removeItem }: ArtifactTileProps) {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
@@ -36,11 +36,11 @@ export default function ArtifactTile(props: ArtifactTileProps) {
     setMessage("Bought!");
     setTimeout(() => {
       setMessage("");
-      dispatch(playerActions.buyArtifact(props.artifact));
+      dispatch(playerActions.buyArtifact(artifact));
       // TODO: redux-ify shop inventory too
-      if (props.artifact.type !== ARTIFACT_TYPES.WEAPON) {
+      if (artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON) {
         toggle(false);
-        setTimeout(() => props.removeItem(props.artifact), animationTime);
+        setTimeout(() => removeItem(artifact), animationTime);
       }
     }, 1200);
   };
@@ -49,57 +49,47 @@ export default function ArtifactTile(props: ArtifactTileProps) {
     setMessage("Sold!");
     setTimeout(() => {
       toggle(false);
-      setTimeout(() => dispatch(playerActions.sellArtifact(props.artifact)), animationTime);
-      // dispatch(playerActions.sellArtifact(props.artifact));
+      setTimeout(() => dispatch(playerActions.sellArtifact(artifact)), animationTime);
+      // dispatch(playerActions.sellArtifact(artifact));
     }, 1200);
   };
 
-  const icon_url = `/static/images/ravenmore/128/${getIcon(props.artifact)}.png`;
+  const icon_url = `/static/images/ravenmore/128/${getIcon(artifact)}.png`;
 
-  let stats = <span />;
-  if (isWeapon(props.artifact)) {
-    stats = (
-      <div>
-        Damage: {props.artifact.dice} d {props.artifact.sides}
-        <br />
-        {props.artifact.weapon_odds > 0 && (
-          <>
-            +{props.artifact.weapon_odds}% to hit
-            <br />
-          </>
-        )}
-        {props.artifact.weapon_odds < 0 && (
-          <>
-            {props.artifact.weapon_odds}% to hit
-            <br />
-          </>
-        )}
-      </div>
-    );
+  const stats = [];
+  if (isWeapon(artifact)) {
+    stats.push(`Damage: ${artifact.dice} d ${artifact.sides}`);
+    if (artifact.hands === 2) {
+      stats.push("Two-handed");
+    }
+    if (artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON) {
+      stats.push("Magic weapon");
+    }
+    if (artifact.weapon_odds > 0) {
+      stats.push(`+${artifact.weapon_odds}% to hit`);
+    }
+    if (artifact.weapon_odds < 0) {
+      stats.push(`${artifact.weapon_odds}% to hit`);
+    }
   } else {
-    stats = (
-      <div>
-        AC: {props.artifact.armor_class}
-        <br />
-        Penalty: {props.artifact.armor_penalty}%<br />
-      </div>
-    );
+    stats.push(`AC: ${artifact.armor_class}`);
+    stats.push(`Penalty: ${artifact.armor_penalty}%`);
   }
 
-  const value = props.action === "buy" ? props.artifact.value : Math.floor(props.artifact.value / 2);
+  const value = action === "buy" ? artifact.value : Math.floor(artifact.value / 2);
 
   let button = (
     <button type="button" className="btn disabled">
       Not enough gold
     </button>
   );
-  if (props.action === "buy" && player.gold >= props.artifact.value) {
+  if (action === "buy" && player.gold >= artifact.value) {
     button = (
       <button type="button" className="btn btn-primary" onClick={buy}>
         Buy
       </button>
     );
-  } else if (props.action === "sell") {
+  } else if (action === "sell") {
     button = (
       <button type="button" className="btn btn-primary" onClick={sell}>
         Sell
@@ -112,27 +102,33 @@ export default function ArtifactTile(props: ArtifactTileProps) {
   };
 
   const className =
-    props.artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON
+    artifact.type === ARTIFACT_TYPES.MAGIC_WEAPON
       ? "artifact-tile-inner artifact-tile-inner-magic"
       : "artifact-tile-inner";
 
   return (
     <TransitionStateBox
-      className={`artifact-tile col-sm-6 col-md-4 col-lg-3 ${status === "exiting" ? "animate-zoom-fade" : ""}`}
+      className={`artifact-tile col-sm-6 col-md-4 col-lg-3 ${status === "exiting" ? "animating" : ""}`}
     >
       <div className={className}>
         <div className="artifact-icon">
-          <img src={icon_url} title={getTypeName(props.artifact)} alt={getTypeName(props.artifact)} />
+          <img src={icon_url} title={getTypeName(artifact)} alt={getTypeName(artifact)} />
         </div>
         <div className="artifact-name">
-          <strong>{ucFirst(props.artifact.name)}</strong>
+          <strong>{ucFirst(artifact.name)}</strong>
           <br />
         </div>
-        <div className="artifact-data">{stats}</div>
-        <div className="artifact-price">
-          <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
+        <div className="artifact-data">
+          {stats.map((stat) => (
+            <div key={stat}>{stat}</div>
+          ))}
         </div>
-        <div className="artifact-buttons">{button}</div>
+        <div className="d-flex flex-row justify-content-between">
+          <div className="artifact-price pt-2">
+            <img src="/static/images/ravenmore/128/coin.png" title="gold coin" alt="gold coin" /> {value}
+          </div>
+          <div className="artifact-buttons">{button}</div>
+        </div>
         <div className="message" style={messageStyle}>
           {message}
         </div>

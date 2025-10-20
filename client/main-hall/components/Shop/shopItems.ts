@@ -12,6 +12,7 @@ export let weapons: Artifact[] = [
     weapon_type: 1,
     weapon_odds: 0,
     weight: 5,
+    hands: 1,
     dice: 1,
     sides: 6,
     value: 25,
@@ -24,6 +25,7 @@ export let weapons: Artifact[] = [
     weapon_type: 2,
     weapon_odds: 0,
     weight: 5,
+    hands: 2,
     dice: 1,
     sides: 6,
     value: 40,
@@ -36,6 +38,7 @@ export let weapons: Artifact[] = [
     weapon_type: 3,
     weapon_odds: 0,
     weight: 5,
+    hands: 1,
     dice: 1,
     sides: 4,
     value: 15,
@@ -48,6 +51,7 @@ export let weapons: Artifact[] = [
     weapon_type: 3,
     weapon_odds: 10,
     weight: 5,
+    hands: 1,
     dice: 1,
     sides: 5,
     value: 40,
@@ -60,6 +64,7 @@ export let weapons: Artifact[] = [
     weapon_type: 4,
     weapon_odds: 0,
     weight: 8,
+    hands: 1,
     dice: 1,
     sides: 5,
     value: 25,
@@ -71,10 +76,11 @@ export let weapons: Artifact[] = [
     description: "You see a standard halberd.",
     weapon_type: 4,
     weapon_odds: 10,
-    weight: 10,
+    weight: 15,
+    hands: 2,
     dice: 1,
     sides: 10,
-    value: 100,
+    value: 120,
   } as Artifact,
   {
     uuid: uuidv4(),
@@ -84,6 +90,7 @@ export let weapons: Artifact[] = [
     weapon_type: 5,
     weapon_odds: 0,
     weight: 4,
+    hands: 1,
     dice: 1,
     sides: 6,
     value: 30,
@@ -96,9 +103,23 @@ export let weapons: Artifact[] = [
     weapon_type: 5,
     weapon_odds: 10,
     weight: 8,
+    hands: 1,
     dice: 1,
     sides: 8,
     value: 75,
+  } as Artifact,
+  {
+    uuid: uuidv4(),
+    type: ARTIFACT_TYPES.WEAPON,
+    name: "two-handed sword",
+    description: "You see a standard two-handed sword.",
+    weapon_type: 5,
+    weapon_odds: 10,
+    weight: 10,
+    hands: 2,
+    dice: 1,
+    sides: 10,
+    value: 150,
   } as Artifact,
 ];
 
@@ -125,7 +146,7 @@ for (let i = 0; i < num_weapons; i++) {
 
   item.description = `You see ${item.weapon_type === 1 ? "an" : "a"} ${getTypeName(item)} named ${item.name}.`;
   item.weapon_odds = diceRoll(1, 7) * 5 - 10;
-  item.hands = item.weapon_type === 2 ? 2 : 1;
+  item.hands = item.weapon_type === 2 ? 2 : diceRoll(1, 2);
   // item.dice = i + 1;  // always generate 1 x 1d*, 1 x 2d*, and 1 x 3d*
   item.dice = 2; // always generate 2 2d* weapons and 1 3d* weapon
   if (i <= num_weapons * 0.33) {

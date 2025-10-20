@@ -68,19 +68,17 @@ const Shop = () => {
               <p>
                 You have <span data-qa="goldAmount">{player.gold}</span> gold pieces.
               </p>
-              <p className="heading">Weapons:</p>
-              <div className="container-fluid weapons row">
+              <h3>Weapons:</h3>
+              <div className="container-fluid weapons row pb-3">
                 {weapons.map((artifact) => (
                   <ArtifactTile key={artifact.uuid} artifact={artifact} removeItem={removeItem} action="buy" />
                 ))}
               </div>
-              <p className="heading">Armor and Shields:</p>
-              <div className="container-fluid armor">
-                <div className="row">
-                  {armors.map((artifact) => (
-                    <ArtifactTile key={artifact.uuid} artifact={artifact} action="buy" />
-                  ))}
-                </div>
+              <h3>Armor and Shields:</h3>
+              <div className="container-fluid armor row pb-3">
+                {armors.map((artifact) => (
+                  <ArtifactTile key={artifact.uuid} artifact={artifact} action="buy" />
+                ))}
               </div>
               <Link to="/main-hall/shop" className="btn btn-primary">
                 Done
