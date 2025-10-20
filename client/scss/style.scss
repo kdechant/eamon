@@ -477,24 +477,6 @@ code {
   }
 }
 
-.icon-nav {
-  p {
-    text-align: center;
-    a {
-      // bootstrap removes color from links without href. this puts it back.
-      &.link {
-        color: #007bff;
-        &:hover {
-          color: #0056b3;
-        }
-      }
-      img {
-        width: 96px;
-      }
-    }
-  }
-}
-
 .adventure-list {
   &.columns {
     @media (min-width: 950px) {

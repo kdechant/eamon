@@ -79,7 +79,7 @@ export default function ArtifactTile({ artifact, action, removeItem }: ArtifactT
   const value = action === "buy" ? artifact.value : Math.floor(artifact.value / 2);
 
   let button = (
-    <button type="button" className="btn disabled">
+    <button type="button" className="btn btn-primary disabled" disabled aria-disabled="true">
       Not enough gold
     </button>
   );

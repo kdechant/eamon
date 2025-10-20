@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Link } from "react-router";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { savePlayer } from "../store/player";
@@ -22,7 +23,7 @@ const PlayerMenu: React.FC = () => {
       <div className="col-sm">
         <h2>Main Hall</h2>
         <p>You are in the main hall of the Guild of Free Adventurers. You can do the following:</p>
-        <nav className="row icon-nav">
+        <MenuNav className="row">
           <p className="col-6 col-lg-4">
             <Link to="/main-hall/adventure">
               <img src="/static/images/ravenmore/128/map.png" aria-hidden="true" alt="" />
@@ -59,13 +60,13 @@ const PlayerMenu: React.FC = () => {
             </Link>
           </p>
           <p className="col-6 col-lg-4">
-            <button type="button" className="btn btn-link link" onClick={exit}>
+            <ExitButton type="button" className="btn btn-link link" onClick={exit}>
               <img src="/static/images/ravenmore/128/x.png" aria-hidden="true" alt="" />
               <br />
               Temporarily leave the universe
-            </button>
+            </ExitButton>
           </p>
-        </nav>
+        </MenuNav>
         {error && <div className="warning">{error}</div>}
       </div>
       <div className="col-sm">
@@ -74,5 +75,27 @@ const PlayerMenu: React.FC = () => {
     </div>
   );
 };
+
+const MenuNav = styled.nav`
+  p {
+    text-align: center;
+    a {
+      img {
+        width: 96px;
+        margin-bottom: 6px;
+      }
+    }
+  }
+`;
+
+const ExitButton = styled.button`
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+
+  img {
+    width: 96px;
+  }
+`;
 
 export default PlayerMenu;
