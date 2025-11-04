@@ -1,92 +1,111 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Link, useSearchParams } from "react-router";
+import type Player from "../models/player";
 import { type PlayerProfile, updateCachedInfo } from "../models/player";
+import { getAxios } from "../utils/api.ts";
 import PlayerListItem from "./PlayerListItem";
 
 const PlayerList = () => {
   const [searchParams] = useSearchParams();
-  const [profile, setProfile] = useState({} as PlayerProfile);
-  const [players, setPlayers] = useState([]);
   const [dataStorageOpen, setDataStorageOpen] = useState(false);
   const [accessCode, setAccessCode] = useState("");
   const [accessCodeField, setAccessCodeField] = useState("");
   const [accessCodeError, setAccessCodeError] = useState("");
+  const queryClient = useQueryClient();
+
+  // old local storage key: eamon_uuid
+  const lsUuid = window.localStorage.getItem("eamon_uuid");
+  // new local storage key: eamon_access_code
+  const lsAccessCode = window.localStorage.getItem("eamon_access_code");
+  // code from URL
+  const urlCode = searchParams.get("code");
+
+  // If code was present in query string, it replaces any stored code
+  useEffect(() => {
+    if (urlCode) {
+      window.localStorage.setItem("eamon_access_code", urlCode);
+    }
+  }, [urlCode]);
+
+  const createProfileMutation = useMutation({
+    mutationFn: async (data) => axios.post("/api/profiles"),
+    onSuccess: async (res) => {
+      window.localStorage.setItem("eamon_access_code", res.data.slug);
+      window.localStorage.setItem("eamon_uuid", res.data.uuid);
+      setAccessCode(res.data.slug);
+    },
+  });
 
   // On page load, look for access codes in the query string and local storage.
   useEffect(() => {
-    // old local storage key: eamon_uuid
-    const lsUuid = window.localStorage.getItem("eamon_uuid");
-    // new local storage key: eamon_access_code
-    const lsAccessCode = window.localStorage.getItem("eamon_access_code");
-    // code from URL
-    const urlCode = searchParams.get("code");
-
     let code = "";
 
     // if we got a code from the URL, save it in local storage.
     if (urlCode) {
       code = urlCode;
-      window.localStorage.setItem("eamon_access_code", urlCode);
     } else if (lsAccessCode) {
       code = lsAccessCode;
     } else if (lsUuid) {
       code = lsUuid;
     }
     if (!code) {
-      code = "new";
+      createProfileMutation.mutate();
     }
     setAccessCode(code);
-  }, [searchParams.get]);
+  }, [lsUuid, lsAccessCode, urlCode, createProfileMutation.mutate]);
 
-  const loadProfile = async () => {
-    try {
+  const { data: profile, ...profileQuery } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async (): Promise<PlayerProfile> => {
       const res = await axios.get(`/api/profiles/${accessCode}`);
-      setProfile(res.data);
       window.localStorage.setItem("eamon_access_code", res.data.slug);
       window.localStorage.setItem("eamon_uuid", res.data.uuid);
       setAccessCodeError("");
-    } catch (e) {
-      setAccessCodeError("Invalid access code.");
-    }
-  };
+      return res.data;
+    },
+    enabled: !!accessCode,
+  });
 
-  const createProfile = async () => {
-    const res = await axios.post(`/api/profiles`);
-    setProfile(res.data);
-    window.localStorage.setItem("eamon_access_code", res.data.slug);
-    window.localStorage.setItem("eamon_uuid", res.data.uuid);
-  };
-
-  // Load the profile
-  useEffect(() => {
-    if (accessCode === "new") {
-      createProfile().catch(console.error); // TODO: show error message to user
-    } else if (accessCode) {
-      loadProfile().catch(console.error); // TODO: show error message to user
-    }
-  }, [accessCode]);
-
-  const loadPlayers = () => {
-    const uuid = profile.uuid;
-    axios.get("/api/players.json?uuid=" + uuid).then((res) => {
-      const players = res.data.map((pl) => {
+  const { data: players, ...playersQuery } = useQuery({
+    queryKey: ["players"],
+    queryFn: async () => {
+      const uuid = profile.uuid;
+      const res = await axios.get(`/api/players.json?uuid=${uuid}`);
+      res.data.forEach((pl) => {
         updateCachedInfo(pl);
-        return pl;
       });
-      setPlayers(players);
-    });
+      return res.data;
+    },
+    enabled: !!profile,
+  });
+
+  const handleDelete = (player: Player) => {
+    deletePlayerMutation.mutate(player.id);
   };
 
-  useEffect(loadPlayers, [profile]);
+  const deletePlayerMutation = useMutation({
+    mutationFn: async (player_id: number) => {
+      const uuid = window.localStorage.getItem("eamon_uuid");
+      const axios = getAxios();
+      await axios.delete(`/players/${player_id}.json?uuid=${uuid}`);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["players"] });
+    },
+    onError: () => {
+      alert("Error deleting player!");
+    },
+  });
 
   const toggleDataStorageModal = () => {
     setDataStorageOpen((current) => !current);
   };
 
   let empty_message = <span />;
-  if (players.length === 0) {
+  if (players?.length === 0) {
     empty_message = <p>There are no adventurers in the guest book.</p>;
   }
 
@@ -100,7 +119,15 @@ const PlayerList = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setAccessCode(accessCodeField);
+    window.localStorage.setItem("eamon_access_code", accessCodeField);
+    window.localStorage.removeItem("eamon_uuid");
   };
+
+  const isLoading = !accessCode || profileQuery.isLoading || playersQuery.isLoading;
+
+  if (isLoading) {
+    return <div className="PlayerList">Loading players...</div>;
+  }
 
   return (
     <div className="PlayerList">
@@ -115,8 +142,8 @@ const PlayerList = () => {
       <p>Behind the desk is a burly Irishman who looks at you with a scowl and asks, &quot;What's your name?&quot;</p>
       <p>The guest book on the desk lists the following adventurers:</p>
       <div className="row">
-        {players.map((player) => (
-          <PlayerListItem key={player.id} player={player} loadPlayers={loadPlayers} />
+        {players.map((player: Player) => (
+          <PlayerListItem key={player.id} player={player} handleDelete={handleDelete} />
         ))}
       </div>
       {empty_message}

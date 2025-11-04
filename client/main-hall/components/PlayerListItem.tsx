@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { useNavigate } from "react-router";
 import type Player from "../models/player";
 import { ucFirst } from "../utils";
-import { getAxios } from "../utils/api";
 
 const PlayerCard = styled.div`
   display: flex;
@@ -44,7 +43,7 @@ const DeleteButton = styled.a`
 
 interface PlayerListProps {
   player: Player;
-  loadPlayers: () => void;
+  handleDelete: (player: Player) => void;
 }
 
 const PlayerListItem: React.FC<PlayerListProps> = (props) => {
@@ -61,16 +60,7 @@ const PlayerListItem: React.FC<PlayerListProps> = (props) => {
   const deletePlayer = () => {
     if (confirm(`Are you sure you want to delete ${props.player.name}?`)) {
       window.localStorage.setItem("player_id", null);
-      const uuid = window.localStorage.getItem("eamon_uuid");
-      const axios = getAxios();
-      axios
-        .delete(`/players/${props.player.id}.json?uuid=${uuid}`)
-        .then((res) => {
-          props.loadPlayers();
-        })
-        .catch((err) => {
-          console.error("Error deleting player!");
-        });
+      props.handleDelete(props.player);
     }
   };
 

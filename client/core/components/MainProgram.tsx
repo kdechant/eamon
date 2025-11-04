@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import type * as React from "react";
 import { useEffect, useState } from "react";
@@ -36,8 +37,79 @@ const MainProgram: React.FC = () => {
   const [hintsOpen, setHintsOpen] = useState(false);
   const [, forceRefresh] = useState(0); // used for forcing re-render
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Fix dependencies when installing RQ
+  // TODO: Move this to a new Context and make game and forceRefresh available with useContext, instead
+  //  of prop drilling
+  const loadAdventure = async () => {
+    if (game.slug === "demo1") {
+      // The "demo" adventure. Load everything from the mock data.
+      const path = "/static/mock-data";
+      const data = await axios.all([
+        axios.get(`${path}/adventure.json`),
+        axios.get(`${path}/rooms.json`),
+        axios.get(`${path}/artifacts.json`),
+        axios.get(`${path}/effects.json`),
+        axios.get(`${path}/monsters.json`),
+        axios.get(`${path}/player.json`),
+      ]);
+
+      return {
+        adventure: data[0].data,
+        rooms: data[1].data,
+        artifacts: data[2].data,
+        effects: data[3].data,
+        monsters: data[4].data,
+        hints: [],
+        player: data[5].data,
+        saves: [],
+      };
+    } else {
+      // All "real" adventures. We load adventure data from the API, and the player data comes from either
+      // the API (for "real" players) or from mock data (if running in "demo" mode)
+      const player_id = window.localStorage.getItem("player_id");
+      const uuid = window.localStorage.getItem("eamon_uuid");
+
+      // check if we're using mock or real player data
+      let player_path = `/api/players/${player_id}.json?uuid=${uuid}`;
+      if (game.demo) {
+        // playing a normal adventure with the demo player
+        player_path = "/static/mock-data/player.json";
+      }
+
+      const data = await axios.all([
+        axios.get(`/api/adventures/${game.slug}`),
+        axios.get(`/api/adventures/${game.slug}/rooms`),
+        axios.get(`/api/adventures/${game.slug}/artifacts`),
+        axios.get(`/api/adventures/${game.slug}/effects`),
+        axios.get(`/api/adventures/${game.slug}/monsters`),
+        axios.get(`/api/adventures/${game.slug}/hints`),
+        axios.get(player_path),
+        axios.get(`/api/saves.json?player_id=${game.demo ? 0 : player_id}&slug=${game.slug}`),
+      ]);
+
+      return {
+        adventure: data[0].data,
+        rooms: data[1].data,
+        artifacts: data[2].data,
+        effects: data[3].data,
+        monsters: data[4].data,
+        hints: data[5].data,
+        player: data[6].data,
+        saves: data[7].data,
+      };
+    }
+  };
+
+  const { data, ...adventureQuery } = useQuery({
+    queryKey: ["adventure"],
+    queryFn: loadAdventure,
+  });
+
   useEffect(() => {
+    if (!data) {
+      return;
+    }
+    console.log("init game", data);
+
     // In a real game we want to log to the API, so pass in a live Logger class.
     // This replaces the dummy logger class which is the default in the Game object.
     game.logger = new Logger();
@@ -46,75 +118,19 @@ const MainProgram: React.FC = () => {
     // allow the object's methods to trigger re-render of components. hacky...
     game.refresher = () => forceRefresh(Date.now());
 
-    // load game data from the API
-    if (game.slug === "demo1") {
-      // The "demo" adventure. Load everything from the mock data.
-      const path = "/static/mock-data";
-      axios
-        .all([
-          axios.get(path + "/adventure.json"),
-          axios.get(path + "/rooms.json"),
-          axios.get(path + "/artifacts.json"),
-          axios.get(path + "/effects.json"),
-          axios.get(path + "/monsters.json"),
-          axios.get(path + "/player.json"),
-        ])
-        .then((responses) => {
-          game.init(
-            responses[0].data,
-            responses[1].data,
-            responses[2].data,
-            responses[3].data,
-            responses[4].data,
-            [],
-            responses[5].data,
-            [],
-          );
-          setGame(game);
-          forceRefresh(Date.now());
-        });
-    } else {
-      // All "real" adventures. We load adventure data from the API, and the player data comes from either
-      // the API (for "real" players) or from mock data (if running in "demo" mode)
-      const player_id = window.localStorage.getItem("player_id");
-      const uuid = window.localStorage.getItem("eamon_uuid");
-
-      // check if we're using mock or real player data
-      let player_path = "/api/players/" + player_id + ".json?uuid=" + uuid;
-      if (game.demo) {
-        // playing a normal adventure with the demo player
-        player_path = "/static/mock-data/player.json";
-      }
-
-      axios
-        .all([
-          axios.get("/api/adventures/" + game.slug),
-          axios.get("/api/adventures/" + game.slug + "/rooms"),
-          axios.get("/api/adventures/" + game.slug + "/artifacts"),
-          axios.get("/api/adventures/" + game.slug + "/effects"),
-          axios.get("/api/adventures/" + game.slug + "/monsters"),
-          axios.get("/api/adventures/" + game.slug + "/hints"),
-          axios.get(player_path),
-          axios.get("/api/saves.json?player_id=" + (game.demo ? 0 : player_id) + "&slug=" + game.slug),
-        ])
-        // Note: I tried using axios.spread as shown in the axios documentation but it seemed to hang
-        // at the end of the callback. Just using regular callback instead.
-        .then((responses) => {
-          game.init(
-            responses[0].data,
-            responses[1].data,
-            responses[2].data,
-            responses[3].data,
-            responses[4].data,
-            responses[5].data,
-            responses[6].data,
-            responses[7].data,
-          );
-          setGame(game);
-          forceRefresh(Date.now());
-        });
-    }
-  }, []);
+    game.init(
+      data.adventure,
+      data.rooms,
+      data.artifacts,
+      data.effects,
+      data.monsters,
+      data.hints,
+      data.player,
+      data.saves,
+    );
+    setGame(game);
+    forceRefresh(Date.now());
+  }, [game, data]);
 
   // Use a beforeunload handler to stop the user from accidentally navigating mid-adventure.
   // TODO: Look at React Router's useBlocker hook, which might allow more customization,
@@ -170,7 +186,7 @@ const MainProgram: React.FC = () => {
     setHowToPlayOpen(false);
   };
 
-  if (!game || !game.player) {
+  if (!game || adventureQuery.isLoading || !game.player) {
     return (
       // biome-ignore lint/correctness/useUniqueElementIds: Needed for CSS
       <div className="container-fluid" id="game">

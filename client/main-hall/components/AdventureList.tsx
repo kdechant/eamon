@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import colors from "../../common/colors.ts";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -63,43 +64,52 @@ const AdventureList: React.FC = () => {
   const player = useAppSelector((state) => state.player);
   const dispatch = useAppDispatch();
 
-  const [adventures, setAdventures] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [authors, setAuthors] = useState([]);
-  const [currentTag, setCurrentTag] = useState(null);
-  const [currentAuthor, setCurrentAuthor] = useState(null);
-  const [currentSort, setCurrentSort] = useState(null);
+  const [currentTag, setCurrentTag] = useState<string | null>(null);
+  const [currentAuthor, setCurrentAuthor] = useState<string | null>(null);
+  const [currentSort, setCurrentSort] = useState<string | null>(null);
 
-  useEffect(() => {
-    // todo: check if player_id is set, and redirect to player list if not
-    axios.get("/api/adventures.json").then((res) => {
-      const all_adventures: Adventure[] = [];
-      let tags: string[] = [];
-      let authors: string[] = [];
-      for (const adv of res.data) {
+  const { data: adventures, ...adventuresQuery } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const res = await axios.get("/api/adventures.json");
+      const adventures = res.data;
+      adventures.forEach((adv) => {
         adv.authors_display = adv.authors.join(" and ");
         adv.name_sort = adv.name.slice(0, 4) === "The " ? adv.name.slice(4) : adv.name;
-        all_adventures.push(adv);
+      });
+      return adventures;
+    },
+  });
 
-        for (const tag of adv.tags) {
-          if (tags.indexOf(tag) === -1) {
-            tags.push(tag);
-          }
-        }
-
-        for (const author of adv.authors) {
-          if (authors.indexOf(author) === -1) {
-            authors.push(author);
-          }
+  const tags = useMemo(() => {
+    if (!adventures) {
+      return [];
+    }
+    const tags: string[] = [];
+    for (const adv of adventures) {
+      for (const tag of adv.tags) {
+        if (tags.indexOf(tag) === -1) {
+          tags.push(tag);
         }
       }
-      tags = tags.sort();
-      authors = authors.sort();
-      setAdventures(all_adventures);
-      setTags(tags);
-      setAuthors(authors);
-    });
-  }, []);
+    }
+    return tags.sort();
+  }, [adventures]);
+
+  const authors = useMemo(() => {
+    if (!adventures) {
+      return [];
+    }
+    const authors: string[] = [];
+    for (const adv of adventures) {
+      for (const author of adv.authors) {
+        if (authors.indexOf(author) === -1) {
+          authors.push(author);
+        }
+      }
+    }
+    return authors.sort();
+  }, [adventures]);
 
   const filterByTag = (tag: string) => {
     setCurrentTag((state) => (state === tag ? "" : tag));
