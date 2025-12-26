@@ -69,7 +69,7 @@ const AdventureList: React.FC = () => {
   const [currentSort, setCurrentSort] = useState<string | null>(null);
 
   const { data: adventures, ...adventuresQuery } = useQuery({
-    queryKey: ["profile"],
+    queryKey: ["adventures"],
     queryFn: async () => {
       const res = await axios.get("/api/adventures.json");
       const adventures = res.data;

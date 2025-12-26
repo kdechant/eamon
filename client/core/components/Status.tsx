@@ -58,6 +58,10 @@ const Status: React.FC<StatusProps> = (props) => {
     hp_class = "danger";
   }
 
+  // const special_artifacts = game.triggerEvent("specialWhatsHere") || [];
+
+  // const special_inven = game.triggerEvent("specialInventory", game.player) || [];
+
   return (
     <div className={`status ${statusClass} d-md-block col-md-5`}>
       <div className="status-widget player-stats">
@@ -230,6 +234,9 @@ const Status: React.FC<StatusProps> = (props) => {
             {game.artifacts.visible.map((artifact) => (
               <StatusArtifact key={artifact.id} game={props.game} artifact={artifact} showArticle={true} />
             ))}
+            {/*{special_artifacts.map((artifact) => (*/}
+            {/*  <StatusArtifact key={artifact.id} game={props.game} artifact={artifact} showArticle={true} />*/}
+            {/*))}*/}
             {game.artifacts.visible.length === 0 && (
               <span className="artifact none">
                 nothing
@@ -253,6 +260,9 @@ const Status: React.FC<StatusProps> = (props) => {
           {game.player.inventory.map((artifact) => (
             <StatusArtifact key={artifact.id} game={props.game} artifact={artifact} />
           ))}
+          {/*{special_inven.map((artifact) => (*/}
+          {/*  <StatusArtifact key={artifact.id} game={props.game} artifact={artifact} />*/}
+          {/*))}*/}
           {game.player.inventory.length === 0 && (
             <span className="artifact none">
               nothing
@@ -306,12 +316,18 @@ const StatusMonster: React.FC<StatusMonsterProps> = (props) => {
 
 type StatusArtifactProps = {
   game: Game;
-  artifact: Artifact;
+  artifact: Artifact | string;
   showArticle?: boolean;
 };
 
 const StatusArtifact: React.FC<StatusArtifactProps> = (props) => {
   const artifact = props.artifact;
+
+  if (typeof artifact === "string") {
+    // special stuff added by event handler
+    return <div className="artifact">{artifact}</div>;
+  }
+
   const artifact_name = props.showArticle ? artifact.getDisplayName() : artifact.name;
   return (
     <div className="artifact">

@@ -368,8 +368,8 @@ export class Monster extends GameObject {
    */
   public printInventory(): void {
     if (this.reaction === Monster.RX_FRIEND) {
-      // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
       let inv = this.inventory;
+      // some EDX adventures put the dead bodies into the monster's inventory. Don't show them here.
       if (this.id !== Monster.PLAYER) {
         inv = inv.filter((x) => x.type !== Artifact.TYPE_DEAD_BODY);
       }

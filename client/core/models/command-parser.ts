@@ -75,6 +75,11 @@ export class CommandParser {
       args = input.slice(space_pos).trim();
     }
 
+    // check for special logic that doesn't fit into a standard command
+    if (!game.triggerEvent("specialCommand", verb, args)) {
+      return;
+    }
+
     // look up the command in the list of available verbs
     const command_match: string[] = [];
     // first, match by the exact string

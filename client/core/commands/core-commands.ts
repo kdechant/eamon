@@ -608,6 +608,12 @@ export class DropCommand implements BaseCommand {
 
     let match = false;
 
+    // the "specialDrop" event handler is used for logic when getting something that wouldn't normally be droppable
+    // like a virtual artifact. (See Death Star)
+    if (!game.triggerEvent("specialDrop", arg)) {
+      return;
+    }
+
     const inventory = game.player.inventory;
     for (const i in inventory) {
       if (inventory[i].match(arg) || arg === "all") {
@@ -640,6 +646,12 @@ export class ReadyCommand implements BaseCommand {
     "READY TROLLSFIRE - Put your current weapon into your pack and hold the Trollsfire sword in your hand.",
   ];
   run(verb: string, arg: string) {
+    // the "specialReady" event handler is used for logic when getting something that wouldn't normally be droppable
+    // like a virtual artifact. (See Death Star)
+    // if (!game.triggerEvent("specialReady", arg)) {
+    //   return;
+    // }
+
     const old_wpn = game.player.weapon;
     const wpn = game.player.findInInventory(arg);
     if (wpn) {
