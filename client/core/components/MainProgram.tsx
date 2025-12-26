@@ -102,6 +102,7 @@ const MainProgram: React.FC = () => {
   const { data, ...adventureQuery } = useQuery({
     queryKey: ["adventure"],
     queryFn: loadAdventure,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

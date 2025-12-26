@@ -1,0 +1,5354 @@
+[
+{
+  "model": "adventure.adventure",
+  "pk": 6,
+  "fields": {
+    "name": "The Death Star",
+    "description": "In a universe far, far distant, fight the evil Empire to rescue your friends and save the universe!",
+    "full_description": "",
+    "intro_text": "As you left the Main Hall, you suddenly felt a queer wrench in your stomach, as if you had been turned inside-out, then right again.  When things became clear again, you found yourself at the helm of a spaceship!  You realize you have gone through a reality-shift!\r\n\r\nYou are in a parallel universe.  You must stay in this universe until you fulfill some quest.  Although you have no access to your old gear, your body is the same.  However, none of your old spells will work.\r\n\r\nBy searching new \"memories\", you find out your situation, which isn't good!\r\n\r\nYou are aboard the Millennium Falcon, which has just been dragged into the Empire's evil machine of destruction, the Death Star!  To escape, you will have to find and destroy the equipment in either the power machinery room or the tractor beam machinery section.\r\n\r\nYou are equipped with a light-sabre.\r\n\r\nGood luck!",
+    "intro_question": "",
+    "slug": "death-star",
+    "edx": "E002",
+    "edx_version": 1.0,
+    "edx_room_offset": 161,
+    "edx_artifact_offset": 103,
+    "edx_effect_offset": 21,
+    "edx_monster_offset": 40,
+    "edx_program_file": "DEATHSTR.BAS",
+    "directions": 6,
+    "dead_body_id": 0,
+    "active": true,
+    "first_hint": 6,
+    "last_hint": 7,
+    "date_published": "2025-12-28",
+    "featured_month": null,
+    "authors": [
+      1
+    ]
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 2,
+  "fields": {
+    "name": "quest",
+    "slug": "quest"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 6,
+  "fields": {
+    "name": "classic",
+    "slug": "classic"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 14,
+  "fields": {
+    "name": "hack-n-slash",
+    "slug": "hack-n-slash_1"
+  }
+},
+{
+  "model": "taggit.taggeditem",
+  "pk": 80,
+  "fields": {
+    "tag": 2,
+    "content_type": [
+      "adventure",
+      "adventure"
+    ],
+    "object_id": 6
+  }
+},
+{
+  "model": "taggit.taggeditem",
+  "pk": 81,
+  "fields": {
+    "tag": 6,
+    "content_type": [
+      "adventure",
+      "adventure"
+    ],
+    "object_id": 6
+  }
+},
+{
+  "model": "taggit.taggeditem",
+  "pk": 82,
+  "fields": {
+    "tag": 14,
+    "content_type": [
+      "adventure",
+      "adventure"
+    ],
+    "object_id": 6
+  }
+},
+{
+  "model": "adventure.author",
+  "pk": 1,
+  "fields": {
+    "name": "Donald Brown"
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 392,
+  "fields": {
+    "adventure": 6,
+    "room_id": 1,
+    "name": "in the Millennium Falcon. (D)",
+    "is_markdown": false,
+    "description": "You are on board the Millenium Falcon, which is parked in the Death Star's hangar bay. There is a ramp in the bottom of the ship that is the exit into the Death Star.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 393,
+  "fields": {
+    "adventure": 6,
+    "room_id": 2,
+    "name": "in the main hanger deck. (N/E/U)",
+    "is_markdown": false,
+    "description": "Exits lead north and east, or you may re-enter the Millennium Falcon by climbing up into it.  There are very harsh lights in the area, and the decor is very stark and utilitarian.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 394,
+  "fields": {
+    "adventure": 6,
+    "room_id": 3,
+    "name": "in an east/west corridor with a bounce tube south.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.  To the south is a door labeled \"Bounce Tube 1\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 395,
+  "fields": {
+    "adventure": 6,
+    "room_id": 4,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.  The corridor appears to intersect a north/south corridor to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 396,
+  "fields": {
+    "adventure": 6,
+    "room_id": 5,
+    "name": "at a four-way intersection.",
+    "is_markdown": false,
+    "description": "You are at a intersection of plain corridors.  Exits go off in all directions.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 397,
+  "fields": {
+    "adventure": 6,
+    "room_id": 6,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 398,
+  "fields": {
+    "adventure": 6,
+    "room_id": 7,
+    "name": "at the east end of a corridor. (E/W)",
+    "is_markdown": false,
+    "description": "The corridor stretches back to the west.  There is a door in the east wall, with a large sign beside it that says, \"ST QUARTERS\" (Star Trek?).",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 399,
+  "fields": {
+    "adventure": 6,
+    "room_id": 8,
+    "name": "in the Storm Troopers' quarters!",
+    "is_markdown": false,
+    "description": "As you enter the room, it becomes obvious that the sign meant \"Storm Troopers' Quarters\".  You see a few bunks around.  The only exit is back through a door to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 400,
+  "fields": {
+    "adventure": 6,
+    "room_id": 9,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, just south of a four-way intersection.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 401,
+  "fields": {
+    "adventure": 6,
+    "room_id": 10,
+    "name": "at the south end of a corridor. (N/S)",
+    "is_markdown": false,
+    "description": "In the south wall, there is a door.  You see a sign there which says, \"Briefing Room\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 402,
+  "fields": {
+    "adventure": 6,
+    "room_id": 11,
+    "name": "in the briefing room. (N)",
+    "is_markdown": false,
+    "description": "There is a table with about a dozen chairs around it here.  The only exit is back to the north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 403,
+  "fields": {
+    "adventure": 6,
+    "room_id": 12,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, just north of a four-way intersection.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 404,
+  "fields": {
+    "adventure": 6,
+    "room_id": 13,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 405,
+  "fields": {
+    "adventure": 6,
+    "room_id": 14,
+    "name": "at the north end of a corridor. (N/S)",
+    "is_markdown": false,
+    "description": "In the north wall is a sign which reads, \"Tie-Fighter Hanger Deck\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 406,
+  "fields": {
+    "adventure": 6,
+    "room_id": 15,
+    "name": "in the Tie Fighter hanger deck. (S/E/U)",
+    "is_markdown": false,
+    "description": "There is a Tie-Fighter ready to launch here that you can climb up into.  There is a door south, and a hole marked \"Launch Tube\" to the east that you can climb into.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 407,
+  "fields": {
+    "adventure": 6,
+    "room_id": 16,
+    "name": "in the Tie-Fighter. (D)",
+    "is_markdown": false,
+    "description": "You are at the controls of a Tie-Fighter.  You can either climb down, back into the hanger deck, or you can attempt to launch the foolish thing.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 408,
+  "fields": {
+    "adventure": 6,
+    "room_id": 17,
+    "name": "in the launch tube. (E/W)",
+    "is_markdown": false,
+    "description": "You had to push your way through a light force-field to get in. Too late you learn that the force-field is what holds the air in, and that you are now in a vacuum. You can't hold your breath for long. Better get back inside.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": "",
+    "data": ""
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 409,
+  "fields": {
+    "adventure": 6,
+    "room_id": 18,
+    "name": "in the middle of bounce tube 1. (N/U/D)",
+    "is_markdown": false,
+    "description": "You are in a spot where gravity has been neutralized.  You can either float up, down, or exit to normal corridors by going north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 410,
+  "fields": {
+    "adventure": 6,
+    "room_id": 19,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, just north of the main hanger deck.  It is becoming slightly darker in here.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 411,
+  "fields": {
+    "adventure": 6,
+    "room_id": 20,
+    "name": "at a T-intersection; N/S and east.",
+    "is_markdown": false,
+    "description": "You are at a T-intersection of plain corridors.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 412,
+  "fields": {
+    "adventure": 6,
+    "room_id": 21,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 413,
+  "fields": {
+    "adventure": 6,
+    "room_id": 22,
+    "name": "at a T-intersection; N/S and west.",
+    "is_markdown": false,
+    "description": "You are at a T-intersection of plain corridors.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 414,
+  "fields": {
+    "adventure": 6,
+    "room_id": 23,
+    "name": "at the south end of a corridor. (N/S)",
+    "is_markdown": false,
+    "description": "In the south wall, there is a door with a sign that says, \"Garbage Compactor\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 415,
+  "fields": {
+    "adventure": 6,
+    "room_id": 24,
+    "name": "in the garbage compactor. (N)",
+    "is_markdown": false,
+    "description": "The floor is covered with disgusting water, and there are piles of smelly garbage all around you. Far above you (too high to climb) there is a hole in the ceiling. There is a door in the north wall, that is currently closed.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": "",
+    "data": ""
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 416,
+  "fields": {
+    "adventure": 6,
+    "room_id": 25,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 417,
+  "fields": {
+    "adventure": 6,
+    "room_id": 26,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 418,
+  "fields": {
+    "adventure": 6,
+    "room_id": 27,
+    "name": "at a south/east bend in the corridor. (N/S/E)",
+    "is_markdown": false,
+    "description": "To the north is a door with the sign, \"Bounce Tube 2\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 419,
+  "fields": {
+    "adventure": 6,
+    "room_id": 28,
+    "name": "at the bottom of bounce tube 2. (S/U)",
+    "is_markdown": false,
+    "description": "You are in a vertical shaft where gravity has been neutralized.  You can either float up, or exit to normal corridors by going south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 420,
+  "fields": {
+    "adventure": 6,
+    "room_id": 29,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 421,
+  "fields": {
+    "adventure": 6,
+    "room_id": 30,
+    "name": "at a T-intersection; E/W and south.",
+    "is_markdown": false,
+    "description": "You are at a T-intersection of plain corridors.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 422,
+  "fields": {
+    "adventure": 6,
+    "room_id": 31,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 423,
+  "fields": {
+    "adventure": 6,
+    "room_id": 32,
+    "name": "at a north/west bend in the corridor.",
+    "is_markdown": false,
+    "description": "You are at a bend in the corridor, with exits going north and west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 424,
+  "fields": {
+    "adventure": 6,
+    "room_id": 33,
+    "name": "at the north end of a corridor. (N/S)",
+    "is_markdown": false,
+    "description": "In the north wall is a door with a sign which reads, \"Cafe\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 425,
+  "fields": {
+    "adventure": 6,
+    "room_id": 34,
+    "name": "in the Cafe. (S)",
+    "is_markdown": false,
+    "description": "You are in an automated cafe.  Since you carry no money, you cannot use any of the machines.  There are a few tables in the room.  The only exit is through the door to the south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 426,
+  "fields": {
+    "adventure": 6,
+    "room_id": 35,
+    "name": "at the bottom of bounce tube 1. (N/U)",
+    "is_markdown": false,
+    "description": "You are in a vertical shaft where gravity has been neutralized.  You can either float up, or exit to normal corridors by going north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 427,
+  "fields": {
+    "adventure": 6,
+    "room_id": 36,
+    "name": "in the weapon control room. (E)",
+    "is_markdown": false,
+    "description": "Long panels of flashing lights fill the walls.  There is a viewport to the west, and the only exit is east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 428,
+  "fields": {
+    "adventure": 6,
+    "room_id": 37,
+    "name": "at the west end of a corridor. (E/W)",
+    "is_markdown": false,
+    "description": "In the west wall, there is a door with a sign that says, \"Weaponry Control Room.  Keep Out.  This Means You!\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 429,
+  "fields": {
+    "adventure": 6,
+    "room_id": 38,
+    "name": "in an east/west corridor with a bounce tube south.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.  To the south is a door labeled \"Bounce Tube 1\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 430,
+  "fields": {
+    "adventure": 6,
+    "room_id": 39,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 431,
+  "fields": {
+    "adventure": 6,
+    "room_id": 40,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 432,
+  "fields": {
+    "adventure": 6,
+    "room_id": 41,
+    "name": "at a T-intersection; N/S and west.",
+    "is_markdown": false,
+    "description": "You are at a T-intersection of plain corridors.  There is a sign which points south that says, \"Tractor Beam This Way\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 433,
+  "fields": {
+    "adventure": 6,
+    "room_id": 42,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 434,
+  "fields": {
+    "adventure": 6,
+    "room_id": 43,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 435,
+  "fields": {
+    "adventure": 6,
+    "room_id": 44,
+    "name": "at the north end of a corridor. (N/S)",
+    "is_markdown": false,
+    "description": "In the north wall is a door with a sign that reads, \"Warning!  High Energy Fields\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 436,
+  "fields": {
+    "adventure": 6,
+    "room_id": 45,
+    "name": "in the power machinery room. (S)",
+    "is_markdown": false,
+    "description": "It is very dark here, with strange humming noises coming from the very walls.  The only exit is south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 437,
+  "fields": {
+    "adventure": 6,
+    "room_id": 46,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 438,
+  "fields": {
+    "adventure": 6,
+    "room_id": 47,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 439,
+  "fields": {
+    "adventure": 6,
+    "room_id": 48,
+    "name": "on the bridge near the tractor beam. (N/S/W)",
+    "is_markdown": false,
+    "description": "You are on a small bridge going across a huge chasm.  To the west is a small ledge that appears to hold tractor beam equipment.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 440,
+  "fields": {
+    "adventure": 6,
+    "room_id": 49,
+    "name": "on the tractor beam ledge. (E)",
+    "is_markdown": false,
+    "description": "You are on a small ledge off of the bridge to the east.  This is where all of the equipment is that holds your ship in place.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 441,
+  "fields": {
+    "adventure": 6,
+    "room_id": 50,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 442,
+  "fields": {
+    "adventure": 6,
+    "room_id": 51,
+    "name": "at the south end of a corridor.",
+    "is_markdown": false,
+    "description": "There is no door in the south wall, instead there is a sign which says, \"Dead End\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 443,
+  "fields": {
+    "adventure": 6,
+    "room_id": 52,
+    "name": "at the top of bounce tube 1. (N/D)",
+    "is_markdown": false,
+    "description": "You are in a vertical shaft where gravity has been neutralized.  You can either float down, or exit to normal corridors by going north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 444,
+  "fields": {
+    "adventure": 6,
+    "room_id": 53,
+    "name": "in the hanger control room.  (E)",
+    "is_markdown": false,
+    "description": "There is a window that overlooks the main hanger deck, but it has been polarized and you cannot see through it.  The only exit is east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 445,
+  "fields": {
+    "adventure": 6,
+    "room_id": 54,
+    "name": "in an east/west corridor with a bounce tube south.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.  To the south is a door labeled \"Bounce Tube 1\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 446,
+  "fields": {
+    "adventure": 6,
+    "room_id": 55,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 447,
+  "fields": {
+    "adventure": 6,
+    "room_id": 56,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 448,
+  "fields": {
+    "adventure": 6,
+    "room_id": 57,
+    "name": "at a north/west bend in the corridor.",
+    "is_markdown": false,
+    "description": "You are at a bend in the corridor, with exits going north and west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 449,
+  "fields": {
+    "adventure": 6,
+    "room_id": 58,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 450,
+  "fields": {
+    "adventure": 6,
+    "room_id": 59,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 451,
+  "fields": {
+    "adventure": 6,
+    "room_id": 60,
+    "name": "in a north/south corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 452,
+  "fields": {
+    "adventure": 6,
+    "room_id": 61,
+    "name": "at a south/west bend in the corridor.",
+    "is_markdown": false,
+    "description": "You are at a bend in the corridor, with exits going south and west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 453,
+  "fields": {
+    "adventure": 6,
+    "room_id": 62,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 454,
+  "fields": {
+    "adventure": 6,
+    "room_id": 63,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 455,
+  "fields": {
+    "adventure": 6,
+    "room_id": 64,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 456,
+  "fields": {
+    "adventure": 6,
+    "room_id": 65,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 457,
+  "fields": {
+    "adventure": 6,
+    "room_id": 66,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 458,
+  "fields": {
+    "adventure": 6,
+    "room_id": 67,
+    "name": "in an east/west corridor with a bounce tube north.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.  To the north is a door labeled \"Bounce Tube 2\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 459,
+  "fields": {
+    "adventure": 6,
+    "room_id": 68,
+    "name": "in the middle of bounce tube 2. (S/U/D)",
+    "is_markdown": false,
+    "description": "You are in a spot where gravity has been neutralized.  You can either float up, down, or exit to normal corridors by going south.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 460,
+  "fields": {
+    "adventure": 6,
+    "room_id": 69,
+    "name": "in an east/west corridor.",
+    "is_markdown": false,
+    "description": "You are in a plain east/west corridor.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 461,
+  "fields": {
+    "adventure": 6,
+    "room_id": 70,
+    "name": "at the west end of a corridor.",
+    "is_markdown": false,
+    "description": "There are no doors here at all, you can only go back the corridor to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 462,
+  "fields": {
+    "adventure": 6,
+    "room_id": 71,
+    "name": "at the top of bounce tube 2. (N/D)",
+    "is_markdown": false,
+    "description": "You are in a vertical shaft where gravity has been neutralized.  You can either float down, or exit to normal corridors by going north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 463,
+  "fields": {
+    "adventure": 6,
+    "room_id": 72,
+    "name": "in the detention control room. (N/S)",
+    "is_markdown": false,
+    "description": "There are several strange machines around but you do not know how to use them.  To the south is a bounce tube, and a long corridor stretches north.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 464,
+  "fields": {
+    "adventure": 6,
+    "room_id": 73,
+    "name": "in a north/south corridor. (N/S/E/W)",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, with doors to either side of you labeled \"1\" and \"2\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 465,
+  "fields": {
+    "adventure": 6,
+    "room_id": 74,
+    "name": "in a north/south corridor. (N/S/E/W/D)",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, with doors to either side of you labeled \"3\" and \"4\". There is a garbage chute in the wall, leading down into stygian darkness. It looks just big enough to fit into, but it sure smells bad down there.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": "",
+    "data": ""
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 466,
+  "fields": {
+    "adventure": 6,
+    "room_id": 75,
+    "name": "in a north/south corridor. (N/S/E/W)",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, with doors to either side of you labeled \"5\" and \"6\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 467,
+  "fields": {
+    "adventure": 6,
+    "room_id": 76,
+    "name": "in a north/south corridor. (N/S/E/W)",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, with doors to either side of you labeled \"7\" and \"8\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 468,
+  "fields": {
+    "adventure": 6,
+    "room_id": 77,
+    "name": "in a north/south corridor. (N/S/E/W)",
+    "is_markdown": false,
+    "description": "You are in a plain north/south corridor, with doors to either side of you labeled \"9\" and \"10\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 469,
+  "fields": {
+    "adventure": 6,
+    "room_id": 78,
+    "name": "at the north end of a corridor. (S/E/W)",
+    "is_markdown": false,
+    "description": "There are doors to either side of you labeled \"11\" and \"12\".",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 470,
+  "fields": {
+    "adventure": 6,
+    "room_id": 79,
+    "name": "in detention cell 2. (E)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 471,
+  "fields": {
+    "adventure": 6,
+    "room_id": 80,
+    "name": "in detention cell 4. (E)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 472,
+  "fields": {
+    "adventure": 6,
+    "room_id": 81,
+    "name": "in detention cell 6. (E)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 473,
+  "fields": {
+    "adventure": 6,
+    "room_id": 82,
+    "name": "in detention cell 8. (E)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 474,
+  "fields": {
+    "adventure": 6,
+    "room_id": 83,
+    "name": "in detention cell 10. (E)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 475,
+  "fields": {
+    "adventure": 6,
+    "room_id": 84,
+    "name": "in detention cell 12. (E)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the east.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 476,
+  "fields": {
+    "adventure": 6,
+    "room_id": 85,
+    "name": "in detention cell 11. (W)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 477,
+  "fields": {
+    "adventure": 6,
+    "room_id": 86,
+    "name": "in detention cell 9. (W)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 478,
+  "fields": {
+    "adventure": 6,
+    "room_id": 87,
+    "name": "in detention cell 7. (W)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 479,
+  "fields": {
+    "adventure": 6,
+    "room_id": 88,
+    "name": "in detention cell 5. (W)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 480,
+  "fields": {
+    "adventure": 6,
+    "room_id": 89,
+    "name": "in detention cell 3. (W)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 481,
+  "fields": {
+    "adventure": 6,
+    "room_id": 90,
+    "name": "in detention cell 1. (W)",
+    "is_markdown": false,
+    "description": "You are in a small, stark detention cell.  The only furnishing is a shelf that might act as a bunk.  The only exit is to the west.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.room",
+  "pk": 11448,
+  "fields": {
+    "adventure": 6,
+    "room_id": 91,
+    "name": "floating in space",
+    "is_markdown": false,
+    "description": "You were sucked out of the launch tube and are floating in space. You die within seconds.",
+    "effect": null,
+    "effect_inline": null,
+    "is_dark": false,
+    "dark_name": null,
+    "dark_description": "",
+    "data": ""
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4281,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 393,
+    "room_to": 19,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4283,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 393,
+    "room_to": 3,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4293,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 394,
+    "room_to": 4,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4304,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 395,
+    "room_to": 3,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4312,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 396,
+    "room_to": 9,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4314,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 396,
+    "room_to": 4,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4344,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 399,
+    "room_to": 7,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4361,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 401,
+    "room_to": 9,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4392,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 404,
+    "room_to": 12,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4402,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 405,
+    "room_to": 13,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4412,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 406,
+    "room_to": 14,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4413,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 406,
+    "room_to": 17,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4441,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 409,
+    "room_to": 3,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4451,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 410,
+    "room_to": 20,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4452,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 410,
+    "room_to": 2,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4461,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 411,
+    "room_to": 26,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4463,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 411,
+    "room_to": 21,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4473,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 412,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4481,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 413,
+    "room_to": 25,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4482,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 413,
+    "room_to": 23,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4484,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 413,
+    "room_to": 21,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4492,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 414,
+    "room_to": 24,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4501,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 415,
+    "room_to": 23,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4511,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 416,
+    "room_to": 30,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 4512,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 416,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9919,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 392,
+    "room_to": 2,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9924,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 393,
+    "room_to": 1,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9930,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 394,
+    "room_to": 18,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9931,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 394,
+    "room_to": 2,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9939,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 395,
+    "room_to": 5,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9946,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 396,
+    "room_to": 12,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9947,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 396,
+    "room_to": 6,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9955,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 397,
+    "room_to": 7,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9956,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 397,
+    "room_to": 5,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9963,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 398,
+    "room_to": 8,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9964,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 398,
+    "room_to": 6,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9977,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 400,
+    "room_to": 5,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9978,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 400,
+    "room_to": 10,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9986,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 401,
+    "room_to": 11,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 9994,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 402,
+    "room_to": 10,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10002,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 403,
+    "room_to": 13,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10003,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 403,
+    "room_to": 5,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10011,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 404,
+    "room_to": 14,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10019,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 405,
+    "room_to": 15,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10027,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 406,
+    "room_to": 16,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10037,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 407,
+    "room_to": 15,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10053,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 409,
+    "room_to": 52,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10054,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 409,
+    "room_to": 35,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10067,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 411,
+    "room_to": 19,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10076,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 412,
+    "room_to": 20,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10090,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 414,
+    "room_to": 22,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10115,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 417,
+    "room_to": 27,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10116,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 417,
+    "room_to": 20,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10125,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 418,
+    "room_to": 28,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10126,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 418,
+    "room_to": 26,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10127,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 418,
+    "room_to": 29,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10136,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 419,
+    "room_to": 27,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10139,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 419,
+    "room_to": 68,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10147,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 420,
+    "room_to": 30,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10148,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 420,
+    "room_to": 27,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10156,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 421,
+    "room_to": 25,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10157,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 421,
+    "room_to": 31,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10158,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 421,
+    "room_to": 29,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10167,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 422,
+    "room_to": 32,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10168,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 422,
+    "room_to": 30,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10175,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 423,
+    "room_to": 33,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10178,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 423,
+    "room_to": 31,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10185,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 424,
+    "room_to": 34,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10186,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 424,
+    "room_to": 32,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10196,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 425,
+    "room_to": 33,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10205,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 426,
+    "room_to": 38,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10209,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 426,
+    "room_to": 18,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10217,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 427,
+    "room_to": 37,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10227,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 428,
+    "room_to": 38,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10228,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 428,
+    "room_to": 36,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10236,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 429,
+    "room_to": 35,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10237,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 429,
+    "room_to": 39,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10238,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 429,
+    "room_to": 37,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10247,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 430,
+    "room_to": 40,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10248,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 430,
+    "room_to": 38,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10257,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 431,
+    "room_to": 41,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10258,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 431,
+    "room_to": 39,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10265,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 432,
+    "room_to": 42,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10266,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 432,
+    "room_to": 46,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10268,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 432,
+    "room_to": 40,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10275,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 433,
+    "room_to": 43,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10276,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 433,
+    "room_to": 41,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10285,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 434,
+    "room_to": 44,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10286,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 434,
+    "room_to": 42,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10295,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 435,
+    "room_to": 45,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10296,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 435,
+    "room_to": 43,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10306,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 436,
+    "room_to": 44,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10315,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 437,
+    "room_to": 41,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10316,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 437,
+    "room_to": 47,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10325,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 438,
+    "room_to": 46,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10326,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 438,
+    "room_to": 48,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10335,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 439,
+    "room_to": 47,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10336,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 439,
+    "room_to": 50,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10338,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 439,
+    "room_to": 49,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10347,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 440,
+    "room_to": 48,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10355,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 441,
+    "room_to": 48,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10356,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 441,
+    "room_to": 51,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10365,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 442,
+    "room_to": 50,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10375,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 443,
+    "room_to": 54,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10379,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 443,
+    "room_to": 18,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10380,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 443,
+    "room_to": 18,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10387,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 444,
+    "room_to": 54,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10396,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 445,
+    "room_to": 52,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10397,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 445,
+    "room_to": 55,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10398,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 445,
+    "room_to": 53,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10407,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 446,
+    "room_to": 56,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10408,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 446,
+    "room_to": 54,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10417,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 447,
+    "room_to": 57,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10418,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 447,
+    "room_to": 55,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10425,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 448,
+    "room_to": 58,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10428,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 448,
+    "room_to": 56,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10435,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 449,
+    "room_to": 59,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10436,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 449,
+    "room_to": 57,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10445,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 450,
+    "room_to": 60,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10446,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 450,
+    "room_to": 58,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10455,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 451,
+    "room_to": 61,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10456,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 451,
+    "room_to": 59,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10466,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 452,
+    "room_to": 60,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10468,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 452,
+    "room_to": 62,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10477,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 453,
+    "room_to": 61,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10478,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 453,
+    "room_to": 63,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10487,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 454,
+    "room_to": 62,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10488,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 454,
+    "room_to": 64,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10497,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 455,
+    "room_to": 63,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10498,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 455,
+    "room_to": 65,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10507,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 456,
+    "room_to": 64,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10508,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 456,
+    "room_to": 66,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10517,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 457,
+    "room_to": 65,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10518,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 457,
+    "room_to": 67,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10525,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 458,
+    "room_to": 68,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10527,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 458,
+    "room_to": 66,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10528,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 458,
+    "room_to": 69,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10536,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 459,
+    "room_to": 67,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10539,
+  "fields": {
+    "adventure": 6,
+    "direction": "u",
+    "room_from": 459,
+    "room_to": 71,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10540,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 459,
+    "room_to": 28,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10547,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 460,
+    "room_to": 67,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10548,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 460,
+    "room_to": 70,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10557,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 461,
+    "room_to": 69,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10565,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 462,
+    "room_to": 72,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10570,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 462,
+    "room_to": 68,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10575,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 463,
+    "room_to": 73,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10576,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 463,
+    "room_to": 71,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10585,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 464,
+    "room_to": 74,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10586,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 464,
+    "room_to": 72,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10587,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 464,
+    "room_to": 90,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10588,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 464,
+    "room_to": 79,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10595,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 465,
+    "room_to": 75,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10596,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 465,
+    "room_to": 73,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10597,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 465,
+    "room_to": 89,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10598,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 465,
+    "room_to": 80,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10600,
+  "fields": {
+    "adventure": 6,
+    "direction": "d",
+    "room_from": 465,
+    "room_to": 24,
+    "door_id": null,
+    "effect_id": 8
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10605,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 466,
+    "room_to": 76,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10606,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 466,
+    "room_to": 74,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10607,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 466,
+    "room_to": 88,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10608,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 466,
+    "room_to": 81,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10615,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 467,
+    "room_to": 77,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10616,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 467,
+    "room_to": 75,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10617,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 467,
+    "room_to": 87,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10618,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 467,
+    "room_to": 82,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10625,
+  "fields": {
+    "adventure": 6,
+    "direction": "n",
+    "room_from": 468,
+    "room_to": 78,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10626,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 468,
+    "room_to": 76,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10627,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 468,
+    "room_to": 86,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10628,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 468,
+    "room_to": 83,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10636,
+  "fields": {
+    "adventure": 6,
+    "direction": "s",
+    "room_from": 469,
+    "room_to": 77,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10637,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 469,
+    "room_to": 85,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10638,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 469,
+    "room_to": 84,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10647,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 470,
+    "room_to": 73,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10657,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 471,
+    "room_to": 74,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10667,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 472,
+    "room_to": 75,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10677,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 473,
+    "room_to": 76,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10687,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 474,
+    "room_to": 77,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10697,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 475,
+    "room_to": 78,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10708,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 476,
+    "room_to": 78,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10718,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 477,
+    "room_to": 77,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10728,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 478,
+    "room_to": 76,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10738,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 479,
+    "room_to": 75,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10748,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 480,
+    "room_to": 74,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 10758,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 481,
+    "room_to": 73,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 125116,
+  "fields": {
+    "adventure": 6,
+    "direction": "e",
+    "room_from": 408,
+    "room_to": 91,
+    "door_id": null,
+    "effect_id": null
+  }
+},
+{
+  "model": "adventure.roomexit",
+  "pk": 125117,
+  "fields": {
+    "adventure": 6,
+    "direction": "w",
+    "room_from": 408,
+    "room_to": 15,
+    "door_id": null,
+    "effect_id": 6
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 365,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 1,
+    "article": null,
+    "name": "light sabre",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see your father's light sabre.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 3,
+    "value": 6000,
+    "type": 3,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 5,
+    "hands": 1,
+    "weapon_odds": 45,
+    "dice": 2,
+    "sides": 10,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": ""
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 366,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 2,
+    "article": null,
+    "name": "dark sabre",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see Darth Vader's weapon.  Instead of being a light sabre, it is a dark sabre.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 3,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 3,
+    "value": 6000,
+    "type": 3,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 5,
+    "hands": 1,
+    "weapon_odds": 40,
+    "dice": 2,
+    "sides": 10,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 367,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 3,
+    "article": null,
+    "name": "power machinery equipment",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the equipment that produces the power for this space station, in perfect working order.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 45,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 368,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 4,
+    "article": null,
+    "name": "weapon control equipment",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the equipment that controls the planet-destroying weapon, in perfect working order.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 36,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 369,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 5,
+    "article": null,
+    "name": "tractor beam equipment",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the equipment that produces the tractor beam, in perfect working order.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 49,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 370,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 6,
+    "article": null,
+    "name": "broken power machinery equipment",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the machinery that produces the power for the Death Star, utterly destroyed.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 371,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 7,
+    "article": null,
+    "name": "broken weapon control equipment",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the control panel for the planet-destroying weapon, in pieces.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 372,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 8,
+    "article": null,
+    "name": "broken tractor beam equipment",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the equipment that produces the tractor beam, except it doesn't look like it will ever work again.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 1,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 373,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 9,
+    "article": null,
+    "name": "roast boar",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a succulent roast boar here.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 34,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 5,
+    "value": 0,
+    "type": 9,
+    "is_worn": false,
+    "is_open": true,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": 24,
+    "sides": 1,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": 1,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 374,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 10,
+    "article": null,
+    "name": "blaster",
+    "synonyms": "blasters",
+    "is_markdown": false,
+    "description": "One of the stormtroopers dropped a blaster with a full charge.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": null,
+    "monster_id": 8,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 3,
+    "value": 600,
+    "type": 3,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 2,
+    "hands": 1,
+    "weapon_odds": 25,
+    "dice": 1,
+    "sides": 6,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 375,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 11,
+    "article": null,
+    "name": "blaster",
+    "synonyms": "blasters",
+    "is_markdown": false,
+    "description": "You see a blaster like the stormtroopers use.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 3,
+    "value": 600,
+    "type": 3,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": 2,
+    "hands": 1,
+    "weapon_odds": 25,
+    "dice": 1,
+    "sides": 6,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 376,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 12,
+    "article": null,
+    "name": "stormtroopers blocking the entrance",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "A squad of stormtroopers blocks the way into the detention center. You'll have to find another way.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": ""
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 377,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 13,
+    "article": null,
+    "name": "stormtroopers blocking the exit",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "A squad of stormtroopers has arrived in the detention center entrance, and is shooting at you down the hallway. You'll have to find another way out.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": 999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": ""
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 378,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 14,
+    "article": null,
+    "name": "Chewbacca's body",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the dead body of the wookie.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 379,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 15,
+    "article": null,
+    "name": "Princess Leia's body",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see Princess Leia's body.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 380,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 16,
+    "article": null,
+    "name": "Darth Vader's body",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see Darth Vader's body.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 381,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 17,
+    "article": null,
+    "name": "Garbage Monster's body",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the dead Garbage Monster.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 382,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 18,
+    "article": null,
+    "name": "destroyed C3PO",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the destroyed body of C3PO.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 383,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 19,
+    "article": null,
+    "name": "destroyed R2D2",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the destroyed body of R2D2.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 384,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 20,
+    "article": null,
+    "name": "Kzin's body",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the dead body of the cute little Kzin.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.artifact",
+  "pk": 385,
+  "fields": {
+    "adventure": 6,
+    "artifact_id": 21,
+    "article": null,
+    "name": "Soldier's body",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You should never see the Soldier's body.",
+    "effect": null,
+    "effect_inline": null,
+    "room_id": 0,
+    "monster_id": null,
+    "container_id": null,
+    "guard_id": null,
+    "weight": -999,
+    "value": 0,
+    "type": 0,
+    "is_worn": false,
+    "is_open": false,
+    "key_id": null,
+    "linked_door_id": null,
+    "hardiness": null,
+    "weapon_type": null,
+    "hands": 1,
+    "weapon_odds": null,
+    "dice": null,
+    "sides": null,
+    "clothing_type": null,
+    "armor_class": 0,
+    "armor_type": null,
+    "armor_penalty": 0,
+    "get_all": true,
+    "embedded": false,
+    "hidden": false,
+    "quantity": null,
+    "effect_id": null,
+    "num_effects": null,
+    "data": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 141,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 1,
+    "is_markdown": false,
+    "text": "You have no trouble taking off.  You fly back to the rebel base whereupon they blast you into itsy bitsy pieces (you're in a tie-fighter, dummy!)",
+    "style": null,
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 142,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 2,
+    "is_markdown": false,
+    "text": "You run out of air and die in the vacuum of space.",
+    "style": "danger",
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 143,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 3,
+    "is_markdown": false,
+    "text": "You shift back into your normal reality, ready to do battle with simple things like dragons and ogres!",
+    "style": null,
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 144,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 4,
+    "is_markdown": false,
+    "text": "I know how you feel about the evil Empire, but you are in too great of a hurry to go around vandalizing everything!",
+    "style": null,
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 3945,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 5,
+    "is_markdown": false,
+    "text": "The stormtroopers shoot at you and miss, leaving smoking holes in the wall. There are too many of them to fight. Find a different way.",
+    "style": null,
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 3946,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 6,
+    "is_markdown": false,
+    "text": "Whew! You manage to get back through the force field, not a moment too soon.\r\n\r\n\"Air! I'm breathing air!\" you think, as you stumble back into the hangar deck.",
+    "style": null,
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 3947,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 7,
+    "is_markdown": false,
+    "text": "As Obi-wan dies, his body disappears and his empty robes fall to the ground.",
+    "style": "special2",
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.effect",
+  "pk": 3948,
+  "fields": {
+    "adventure": 6,
+    "effect_id": 8,
+    "is_markdown": false,
+    "text": "You jump into the garbage chute and slide a long way down a dark tunnel. The tunnel deposits you with a splash into some foul-smelling water.",
+    "style": "emphasis",
+    "next": null,
+    "next_inline": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 143,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 1,
+    "article": null,
+    "name": "Chewbacca",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a huge, ferocious wookie here!",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 25,
+    "agility": 19,
+    "friendliness": "friend",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 83,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 3,
+    "weapon_sides": 6,
+    "defense_bonus": 0,
+    "armor_class": 3,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 144,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 2,
+    "article": null,
+    "name": "Princess Leia",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see the famed Princess Leia here, wearing her white cloak and that horrible earmuff hairdo.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 15,
+    "agility": 16,
+    "friendliness": "friend",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 150,
+    "pursues": true,
+    "room_id": 89,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": null,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 6,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 145,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 3,
+    "article": null,
+    "name": "Darth Vader",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see an incredibly large figure wearing black armor and an imposing black mask. It's Darth Vader! He wields a special \"dark side\" light sabre, called a dark sabre.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 30,
+    "agility": 15,
+    "friendliness": "hostile",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": null,
+    "container_id": null,
+    "gender": null,
+    "weapon_id": 2,
+    "attack_odds": 50,
+    "weapon_dice": 2,
+    "weapon_sides": 10,
+    "defense_bonus": 0,
+    "armor_class": 2,
+    "special": null,
+    "data": "",
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 146,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 4,
+    "article": null,
+    "name": "Garbage Monster",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a long, slimy worm-like monster.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 7,
+    "agility": 24,
+    "friendliness": "hostile",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 24,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 3,
+    "defense_bonus": 0,
+    "armor_class": 1,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 147,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 5,
+    "article": null,
+    "name": "C3PO",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a glittering gold robot with a very worried look on his face.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 10,
+    "agility": 0,
+    "friendliness": "friend",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 70,
+    "pursues": true,
+    "room_id": 53,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 1,
+    "defense_bonus": 0,
+    "armor_class": 2,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 148,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 6,
+    "article": null,
+    "name": "R2D2",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a small, stubby robot who bears a remarkable resemblance to a trash can.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 15,
+    "agility": 12,
+    "friendliness": "friend",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 53,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 10,
+    "defense_bonus": 0,
+    "armor_class": 2,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 149,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 7,
+    "article": null,
+    "name": "Kzin",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see a huge, upright and obviously intelligent cat.  You recognize his race as the Kzinti.  He is smiling at you.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 23,
+    "agility": 17,
+    "friendliness": "random",
+    "friend_odds": 80,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 34,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 12,
+    "defense_bonus": 0,
+    "armor_class": 1,
+    "special": null,
+    "data": null,
+    "combat_verbs": null
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 150,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 8,
+    "article": "a",
+    "name": "stormtrooper",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see some Imperial Stormtroopers, dressed in white armor and wearing white helmets, carrying blasters.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 200,
+    "hardiness": 1,
+    "agility": 0,
+    "friendliness": "hostile",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": false,
+    "room_id": 0,
+    "container_id": null,
+    "gender": "",
+    "weapon_id": 0,
+    "attack_odds": 10,
+    "weapon_dice": 1,
+    "weapon_sides": 6,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": "shoots wildly at, blasts, zaps"
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 4589,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 9,
+    "article": "an",
+    "name": "Imperial officer",
+    "name_plural": "",
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see two Imperial officers, wearing black uniforms and armed with blasters.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 2,
+    "hardiness": 10,
+    "agility": 12,
+    "friendliness": "hostile",
+    "friend_odds": 0,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": 11,
+    "container_id": null,
+    "gender": null,
+    "weapon_id": 0,
+    "attack_odds": 30,
+    "weapon_dice": 1,
+    "weapon_sides": 6,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": "shoots at, blasts, zaps"
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 4590,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 10,
+    "article": "a",
+    "name": "Imperial gunner",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "You see two Imperial gunners, the soldiers who operate the Death Star's main weapon. They wear black uniforms with oddly-shaped black helmets. ",
+    "effect": null,
+    "effect_inline": null,
+    "count": 2,
+    "hardiness": 10,
+    "agility": 12,
+    "friendliness": "hostile",
+    "friend_odds": 0,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": false,
+    "room_id": 36,
+    "container_id": null,
+    "gender": null,
+    "weapon_id": 0,
+    "attack_odds": 30,
+    "weapon_dice": 1,
+    "weapon_sides": 6,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": null,
+    "combat_verbs": "shoots at, blasts, zaps"
+  }
+},
+{
+  "model": "adventure.monster",
+  "pk": 4591,
+  "fields": {
+    "adventure": 6,
+    "monster_id": 11,
+    "article": null,
+    "name": "Obi-wan Kenobi",
+    "name_plural": null,
+    "synonyms": null,
+    "is_markdown": false,
+    "description": "Obi-wan Kenobi is here, facing off against Darth Vader. He is an older man with a gray beard, wearing Jedi robes and wielding a light sabre.",
+    "effect": null,
+    "effect_inline": null,
+    "count": 1,
+    "hardiness": 12,
+    "agility": 12,
+    "friendliness": "friend",
+    "friend_odds": 50,
+    "combat_code": 0,
+    "courage": 200,
+    "pursues": true,
+    "room_id": null,
+    "container_id": null,
+    "gender": "male",
+    "weapon_id": 0,
+    "attack_odds": 50,
+    "weapon_dice": 1,
+    "weapon_sides": 6,
+    "defense_bonus": 0,
+    "armor_class": 0,
+    "special": null,
+    "data": "",
+    "combat_verbs": "swings at"
+  }
+},
+{
+  "model": "adventure.hint",
+  "pk": 25,
+  "fields": {
+    "adventure": 6,
+    "index": 6,
+    "edx": "E002",
+    "question": "The Death Star -- New commands & deleted commands."
+  }
+},
+{
+  "model": "adventure.hint",
+  "pk": 26,
+  "fields": {
+    "adventure": 6,
+    "index": 7,
+    "edx": "E002",
+    "question": "The Death Star -- How to CHEAT!"
+  }
+},
+{
+  "model": "adventure.hintanswer",
+  "pk": 61,
+  "fields": {
+    "adventure": 6,
+    "hint": 25,
+    "index": 1,
+    "answer": "Note the two extra commands in this adventure.  \"TAKE-OFF\" is used to pilot a ship when you are in one;  \"DESTROY\" is used to wreck the Empire's evil machinery.",
+    "spoiler": false
+  }
+},
+{
+  "model": "adventure.hintanswer",
+  "pk": 62,
+  "fields": {
+    "adventure": 6,
+    "hint": 25,
+    "index": 2,
+    "answer": "Also note that several of the standard commands are missing from this adventure.  These include:  open, close, put, drink, light, use, free, and the four spells.",
+    "spoiler": false
+  }
+},
+{
+  "model": "adventure.hintanswer",
+  "pk": 63,
+  "fields": {
+    "adventure": 6,
+    "hint": 26,
+    "index": 1,
+    "answer": "!! WARNING !!  This section will give you special passwords that will allow you to:  1) Kill all of the soldiers in EVERY room, and 2) Heal your wounds any time you wish.",
+    "spoiler": false
+  }
+},
+{
+  "model": "adventure.hintanswer",
+  "pk": 64,
+  "fields": {
+    "adventure": 6,
+    "hint": 26,
+    "index": 2,
+    "answer": "To heal yourself whenever you want to, just say \"HEAL\".  (Type \"SAY HEAL\" at the command prompt.)",
+    "spoiler": false
+  }
+},
+{
+  "model": "adventure.hintanswer",
+  "pk": 65,
+  "fields": {
+    "adventure": 6,
+    "hint": 26,
+    "index": 3,
+    "answer": "To wipe out all of those annoying soldiers for the entire adventure...",
+    "spoiler": false
+  }
+},
+{
+  "model": "adventure.hintanswer",
+  "pk": 66,
+  "fields": {
+    "adventure": 6,
+    "hint": 26,
+    "index": 4,
+    "answer": "...Just say \"OOGA-SHAKA\".  (At the command prompt, type \"SAY OOGA-SHAKA\")",
+    "spoiler": false
+  }
+}
+]

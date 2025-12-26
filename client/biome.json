@@ -32,6 +32,9 @@
         "noUnusedFunctionParameters": "info",
         "useUniqueElementIds": "warn"
       },
+      "style": {
+        "useImportType": "off"
+      },
       "suspicious": {
         "noArrayIndexKey": "warn",
         "useIterableCallbackReturn": "warn"
