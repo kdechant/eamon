@@ -109,7 +109,6 @@ const MainProgram: React.FC = () => {
     if (!data) {
       return;
     }
-    console.log("init game", data);
 
     // In a real game we want to log to the API, so pass in a live Logger class.
     // This replaces the dummy logger class which is the default in the Game object.
