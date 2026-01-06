@@ -1,3 +1,4 @@
+import uuid
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins, status
@@ -95,9 +96,8 @@ class PlayerProfileViewSet(viewsets.ModelViewSet):
         This doesn't require any input. It just creates a new profile
         with a randomly generated access code and returns it.
         """
-        # TODO: generate UUID so we can match profile to players.
-        pl, created = PlayerProfile.objects.create(slug=generate_slug())
-        serializer = serializers.PlayerProfileSerializer(pl)
+        profile = PlayerProfile.objects.create(slug=generate_slug(), uuid=uuid.uuid4())
+        serializer = serializers.PlayerProfileSerializer(profile)
         return Response(serializer.data)
 
     # OLD VERSION - FOR FB LOGIN

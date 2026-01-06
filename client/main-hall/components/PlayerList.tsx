@@ -16,8 +16,6 @@ const PlayerList = () => {
   const [accessCodeError, setAccessCodeError] = useState("");
   const queryClient = useQueryClient();
 
-  // old local storage key: eamon_uuid
-  const lsUuid = window.localStorage.getItem("eamon_uuid");
   // new local storage key: eamon_access_code
   const lsAccessCode = window.localStorage.getItem("eamon_access_code");
   // code from URL
@@ -48,14 +46,13 @@ const PlayerList = () => {
       code = urlCode;
     } else if (lsAccessCode) {
       code = lsAccessCode;
-    } else if (lsUuid) {
-      code = lsUuid;
     }
     if (!code) {
       createProfileMutation.mutate();
+    } else {
+      setAccessCode(code);
     }
-    setAccessCode(code);
-  }, [lsUuid, lsAccessCode, urlCode, createProfileMutation.mutate]);
+  }, [lsAccessCode, urlCode, createProfileMutation.mutate]);
 
   const { data: profile, ...profileQuery } = useQuery({
     queryKey: ["profile"],
