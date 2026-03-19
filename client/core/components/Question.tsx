@@ -18,7 +18,9 @@ const Question = (props: PropsWithGame) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Not fixing this now.
   useEffect(() => {
-    document.addEventListener("keypress", handleMultipleChoiceKeyPress);
+    if (game.modal.current_question.type === "multiple_choice") {
+      document.addEventListener("keypress", handleMultipleChoiceKeyPress);
+    }
     return () => {
       document.removeEventListener("keypress", handleMultipleChoiceKeyPress);
     };
