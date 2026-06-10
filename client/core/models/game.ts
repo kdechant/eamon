@@ -439,21 +439,26 @@ export default class Game {
     }
 
     // new timed effects
-    console.log("new spells", this.player.timed_effects);
+    console.log("timed effects", this.player.timed_effects);
     for (const [spell_name, effect] of Object.entries(this.player.timed_effects)) {
-      if (effect.duration > 0) {
-        effect.duration--;
-        if (effect.duration <= 0) {
-          if (spell_name === 'speed') {
+      if (effect.timer > 0) {
+        effect.timer--;
+        if (effect.timer <= 0) {
+          effect.counters--;
+          effect.timer = effect.duration;
+        }
+        if (effect.counters <= 0) {
+          if (spell_name === "speed") {
             this.history.write("Your speed spell just expired!", "success");
             this.player.speed_multiplier = 1;
           }
           // other spells (typically custom spells in adventures) don't have an "expires" message.
           // if a message is desired, print it inside the "spellExpires" event handler.
-          this.triggerEvent('spellExpires', spell_name);
+          this.triggerEvent("spellExpires", spell_name);
           delete this.player.timed_effects[spell_name];
         }
       }
+      // TODO: what if it doesn't have a value for effect.timer?
       // The actual effects of the spells is calculated in Monster.updateStats()
     }
     this.player.updateStats();
@@ -843,6 +848,7 @@ export default class Game {
 
     // save to the API
     const axios = getAxios();
+    // @ts-expect-error TODO: figure out TS types here
     sv.data = compressToBase64(JSON.stringify(sv.data));
     axios
       .post(`/saves?uuid=${window.localStorage.getItem("eamon_uuid")}`, sv)

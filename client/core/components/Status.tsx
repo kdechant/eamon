@@ -22,20 +22,24 @@ const Status: React.FC<StatusProps> = (props) => {
 
   const inTheDark = game.rooms.current_room.is_dark && !game.artifacts.isLightSource();
 
-  let hdClass = "hardiness col-4";
-  if (game.player.hardiness < game.player.base_stats.hardiness) {
+  let hdClass = "";
+  if (game.player.hardiness > game.player.base_stats.hardiness) {
+    hdClass += " success";
+  } else if (game.player.hardiness < game.player.base_stats.hardiness) {
     hdClass += " danger";
   }
 
-  let agClass = "agility col-4";
-  if (game.player.speed_multiplier > 1) {
+  let agClass = "";
+  if (game.player.agility > game.player.base_stats.agility) {
     agClass += " success";
   } else if (game.player.agility < game.player.base_stats.agility) {
     agClass += " danger";
   }
 
-  let chClass = "charisma col-4";
-  if (game.player.charisma < game.player.base_stats.charisma) {
+  let chClass = "";
+  if (game.player.charisma > game.player.base_stats.charisma) {
+    chClass += " success";
+  } else if (game.player.charisma < game.player.base_stats.charisma) {
     chClass += " danger";
   }
 
@@ -72,16 +76,24 @@ const Status: React.FC<StatusProps> = (props) => {
               HP: <span className={hp_class}>{game.player.hardiness - game.player.damage}</span>/{game.player.hardiness}
             </div>
           </div>
-
           <div className="stats row no-gutters">
-            <div className={hdClass}>HD: {game.player.hardiness}</div>
-            <div className={agClass}>
-              AG: <span>{game.player.agility * game.player.speed_multiplier}</span>
+            <div className="hardiness col-4">
+              HD: <span className={hdClass}>{game.player.hardiness}</span>
             </div>
-            <div className={chClass}>CH: {game.player.charisma}</div>
+            <div className="agility col-4">
+              AG: <span className={agClass}>{game.player.agility}</span>
+            </div>
+            <div className="charisma col-4">
+              CH: <span className={chClass}>{game.player.charisma}</span>
+            </div>
             {game.player.status_message ? <div className="status-text col-12">({game.player.status_message})</div> : ""}
           </div>
-
+          Timed effects:
+          {Object.values(game.player.timed_effects).map((eff, i) => (
+            <span key={eff.name}>
+              {eff.name}: {eff.timer}
+            </span>
+          ))}
           <div className="weapon-abilities row no-gutters">
             <div className="axe col">
               Axe:
@@ -109,7 +121,6 @@ const Status: React.FC<StatusProps> = (props) => {
               {game.player.weapon_abilities[5]}%
             </div>
           </div>
-
           <div className="spell-abilities row no-gutters">
             <div className="col">
               Blast:
@@ -132,11 +143,9 @@ const Status: React.FC<StatusProps> = (props) => {
               {game.player.spell_abilities.speed}%
             </div>
           </div>
-
           <div className="ae row">
             <div className="col">Armor expertise: {game.player.armor_expertise}%</div>
           </div>
-
           {game.player.weapon ? (
             <div className="weapon row">
               <div className="col">
@@ -149,7 +158,6 @@ const Status: React.FC<StatusProps> = (props) => {
               <div className="col">Ready weapon: none!</div>
             </div>
           )}
-
           {armor.length > 0 && (
             <div className="armor row">
               <div className="col">
@@ -159,7 +167,6 @@ const Status: React.FC<StatusProps> = (props) => {
               </div>
             </div>
           )}
-
           {game.player.armor_class === 0 && (
             <div className="armor none row">
               <div className="col">Armor: none!</div>

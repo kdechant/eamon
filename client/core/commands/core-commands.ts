@@ -1519,10 +1519,27 @@ export class SpeedCommand implements BaseCommand {
       game.triggerEvent("speed", arg);
       // double player's agility
       game.history.write("You can feel the new agility flowing through you!", "success");
-      if (game.player.spell_counters.speed === 0) {
-        game.player.speed_multiplier = 2;
+
+      const duration = 11 + game.diceRoll(1, 10);
+      if (game.player.timed_effects.speed) {
+        // This stacks by extending the duration.
+        game.player.timed_effects.speed.timer += duration;
       }
-      game.player.spell_counters.speed += 10 + game.diceRoll(1, 10);
+      // TODO: helper function for starting a timed effect
+      game.player.timed_effects.speed = {
+        name: "speed",
+        duration,
+        timer: duration,
+        counters: 1,
+        properties: {
+          ag: game.player.base_stats.agility,
+        },
+      };
+
+      // if (game.player.spell_counters.speed === 0) {
+      //   game.player.speed_multiplier = 2;
+      // }
+      // game.player.spell_counters.speed += 10 + game.diceRoll(1, 10);
     }
   }
 }

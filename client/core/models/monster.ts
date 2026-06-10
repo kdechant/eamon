@@ -102,10 +102,14 @@ export class Monster extends GameObject {
   weight_carried = 0;
   weapon: Artifact;
   inventory: Artifact[];
+  // Legacy spell counters - For new adventures, use timed_effects instead.
   spell_counters: { [key: string]: number }; // time remaining on various spells (e.g., speed)
-  timed_effects: { [key: string]: TimedEffect }; // spells or other status effects currently running
   speed_multiplier = 1; // multiplier for to hit: 2 when speed spell is active; 1 otherwise
   dead_body_id: number; // the ID of the auto-generated dead body artifact for non-player monsters
+
+  // status effects that are currently running
+  timed_effects: { [key: string]: TimedEffect } = {}; // spells or other status effects currently running
+  stat_modifiers: { [key: string]: number }; // The current modifiers applied to the stats
 
   /**
    * Shows the description, including any chained effects
@@ -341,44 +345,51 @@ export class Monster extends GameObject {
 
   public updateStats(): void {
     const modifiers = {
-      hd_multi: 1,
       hd: 0,
-      ag_multi: 1,
       ag: 0,
-      ch_multi: 1,
       ch: 0,
       armor_class: 0,
-      damage_multi: 1,
       damage: 0,
     };
 
     // Artifacts equipped
     // Armor handling currently only applies to the player
-    // TODO: Read stat modifiers from artifacts
+    let base_ac = 0;
+    // TODO: Apply the artifact logic to NPCs
     if (this.id === Monster.PLAYER) {
-      const armors = game.artifacts.all.filter((a) => game.player.hasArtifact(a.id) && a.is_worn && a.armor_class);
-      const ac = armors.reduce((ac, armor) => ac + armor.armor_class, 0);
-      this.armor_class = ac + modifiers.armor_class;
+      const equipped_artifacts = game.artifacts.all.filter(
+        (a) => this.hasArtifact(a.id) && (a.is_worn || a.id === this.weapon_id),
+      );
+      for (const artifact of equipped_artifacts) {
+        console.log("worn artifact", artifact.name, artifact.data);
+        if (artifact.armor_class) {
+          modifiers.armor_class += artifact.armor_class;
+        }
+        if (artifact.data?.hd) {
+          modifiers.hd += artifact.data.hd;
+        }
+        if (artifact.data?.ag) {
+          modifiers.ag += artifact.data.ag;
+        }
+        if (artifact.data?.ch) {
+          modifiers.ch += artifact.data.ch;
+        }
+        if (artifact.data?.damage) {
+          modifiers.damage += artifact.data.damage;
+        }
+        // TODO: spell regen rate, spell success %, wpn abilities
+      }
     } else {
-      this.armor_class = this.base_stats.armor_class;
+      base_ac = this.base_stats.armor_class;
     }
 
     // spells running
     for (const effect of Object.values(this.timed_effects)) {
-      if (effect.properties.hd_multi) {
-        modifiers.hd_multi *= effect.properties.hd_multi;
-      }
       if (effect.properties.hd) {
         modifiers.hd += effect.properties.hd;
       }
-      if (effect.properties.ag_multi) {
-        modifiers.ag_multi *= effect.properties.ag_multi;
-      }
       if (effect.properties.ag) {
         modifiers.ag += effect.properties.ag;
-      }
-      if (effect.properties.ch_multi) {
-        modifiers.ch_multi *= effect.properties.ch_multi;
       }
       if (effect.properties.ch) {
         modifiers.ch += effect.properties.ch;
@@ -386,18 +397,23 @@ export class Monster extends GameObject {
       if (effect.properties.armor_class) {
         modifiers.armor_class += effect.properties.armor_class;
       }
-      if (effect.properties.damage_multi) {
-        modifiers.damage_multi *= effect.properties.damage_multi;
-      }
       if (effect.properties.damage) {
         modifiers.damage += effect.properties.damage;
       }
     }
 
-    this.hardiness = this.base_stats.hardiness * modifiers.hd_multi + modifiers.hd;
-    this.agility = this.base_stats.agility * modifiers.ag_multi + modifiers.ag;
-    this.charisma = this.base_stats.charisma * modifiers.ch_multi + modifiers.ch;
-    // TODO: set ac/damage modifiers so we can read them elsewhere
+    console.log("modifiers", modifiers);
+
+    this.hardiness = this.base_stats.hardiness + modifiers.hd;
+    this.agility = this.base_stats.agility + modifiers.ag;
+    this.charisma = this.base_stats.charisma + modifiers.ch;
+    this.armor_class = base_ac + modifiers.armor_class;
+    // TODO: spell regen rate, spell success %, wpn abilities
+
+    // TODO: what happens if a spell ends and player loses HD, bringing their HP to zero?
+
+    // Keep a reference to the modifiers, so other code can refer to them
+    this.stat_modifiers = modifiers;
 
     // allow event handler to adjust armor class after the standard calculation
     game.triggerEvent("armorClass", this);

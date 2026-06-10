@@ -23,8 +23,25 @@ export type ModalProps = {
  */
 export type TimedEffect = {
   name: string;
+  /**
+   * Duration of the effect, in turns. When the effect is created, or a counter is removed,
+   * the timer is set to this value.
+   */
   duration: number;
+
+  /**
+   * Countdown until effect expires. Based on the duration.
+   */
+  timer: number;
+
+  /**
+   * Counters are used for stackable effects. When the timer counts down to zero, a counter is removed.
+   */
   counters: number;
+
+  /**
+   * What the effect does. e.g., { hd: 1 } gives a bonus of 1 to HD while it's active.
+   */
   properties: { [key: string]: number };
   // TODO: end of timed effect handler
 };
